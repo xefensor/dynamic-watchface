@@ -1,6 +1,98 @@
 # Dynamic validation
 
-## 0.4.1 unified typography and fixed music sizes
+## 0.5.0 meaning, calmer updates and settings clarity
+
+The full UX pass keeps Dynamic's unified typography, chunky clock, two reading
+homes and fixed music footer. It adopts Core 0.3.0 for precise reading identity,
+explicit expiry and separate notification app/sender fields. It also revises
+attention/motion rules, colour roles and the relationships between settings
+preview, privacy choices, drafts and delivery.
+
+- **65 Dynamic JavaScript tests and six strict C99 suites pass.** The complete
+  release's final native/browser/package identity results are recorded below.
+- **Core 0.3.0 passes 116 JavaScript tests and three native suites**, with
+  ASan/UBSan checks passing. Strict legacy v1/v2/v3 support remains alongside
+  v4 detail, forecast and observation fields. V4 has 56-byte record headers
+  and a 5,206-byte maximum packet. Non-ready public records retain identity
+  only, EXPIRED=7 is explicit, and private source values/labels do not persist.
+  Core source commit: `e5d99b5033c6aa461023ec0674a1802deb5c0a04`.
+  Pinned archive SHA-256:
+  `c352cd062c062b3888941194aad571c3a9046ffcc271485267cc2f711443e7a1`.
+- Reading labels distinguish Temperature, Feels like, High, Low, Phone and
+  forecast temperature. Failure/expiry retains configured public identity.
+  A clock mark means a known observation at least an hour old, not native
+  cache origin. Unknown observation age is not represented as known freshness.
+- Nominal fonts and the bottom anchor stay fixed. Idle values/labels move
+  4px/6px closer to symbols. Quieter artist/label ink has a 4.5:1 guard with
+  foreground fallback; accent graphics have a 2:1 guard. Normal symbols use
+  accent/source treatment and actual low-battery/connection warnings use amber.
+- New primary title text defines a track change because the source supplies
+  no track ID. Late cover/artist/icon updates repaint without a content slide.
+  A notice burst enters once; replacements coalesce for a 900ms stable interval
+  within its eight-second maximum. Privacy/body removal and invalidation clear
+  immediately. Sender and app identity are transported/rendered separately.
+- Settings use Appearance, Content and Connection & help with five independent
+  sample states. Exploring an example does not enable its feature or change
+  privacy. Follow Pebble examples use the last reported OS style; an unknown
+  style receives an explicit illustrative-format label. CLOCK_FORMAT=255 only
+  queries OS style, and all 34 existing message-key bindings remain intact.
+- Dirty state and last save/delivery appear near Save. Automatic-retry wording
+  matches actual reconnection behavior. Custom palette exploration is reversible;
+  app filters are removable entries with no invented installed-app validation.
+  Shared Pebble readings and nearby recovery help are explicit. New strings
+  cover all 17 supported settings languages.
+- All 20 state/clock/theme presets, seven edge sheets and six motion sheets
+  were visually reviewed. Precise details, public failure/expiry identity,
+  long international text, missing artwork and custom colours fit without
+  concrete clipping, collisions or footer drift.
+- Twelve upgrade captures and two exact pixel comparisons passed from the
+  released 0.4.1 PBW, covering legacy v3 cache, retained 12/24-hour preference
+  and saved palette. Historical seed captures are separate from new-render
+  validation.
+
+- **71 native stills, nine pixel/clock-bridge checks and six motion paths pass.**
+  All 26 late-artwork frames preserve every pixel outside the cover rectangle;
+  all 26 notice-update frames keep the header pixel-identical. Clock-format
+  queries report actual 12/24-hour system style while the forced clock image
+  remains unchanged. The music footer, notification expiry and private-context
+  relaunch checks pass. The source supplies no stable track ID: a changed
+  primary title remains the boundary for a track transition.
+- **20 actual Clay native-preview identities and 68 phone layouts pass:**
+  seventeen languages × 320/390px × light/dark. Independent examples do not
+  change privacy; known 12-hour and unknown-format examples are honest.
+  Dirty/revert/reconnect copy, shared-source identity/recovery/ages, reversible
+  custom palettes, app-chip add/remove/deduplication and pending-entry real
+  Clay submission all pass with no page errors or external requests.
+- The native renderer was captured from candidate PBW
+  `ebff5110f0dc3983313d27ff5dbf2fe26fcc6936bd6e4395b6c85106a767cdd6`.
+  The final PBW's native binary and resource pack are byte-identical; only
+  phone assets change when those captures are embedded. A final install adds
+  five native smoke captures and five exact RGB comparisons covering Idle,
+  Music, Banner, Message and Timeline Peek. They all match the reviewed samples.
+- The exact final SDK/package/source audit passes: 34 unchanged wire keys,
+  UUID, permissions, committed Core 0.3 pin, packaged font/glyph metrics,
+  generated native outlines and source-map identity. Resources are 246,928 bytes;
+  static RAM footprint 63,974 bytes, available heap 67,098 bytes before startup
+  allocation. A native run reports 67,096 heap bytes total and 30,828 bytes used;
+  shutdown reports zero still allocated. These observations are not a claim
+  about physical power draw or worst-case native heap usage.
+
+PBW SHA-256:
+
+`fb2841fdf0a18072e269e79e4381ee962b5a9d94ae2ec3d985e60cb117e827a7`
+
+Native binary SHA-256:
+
+`44b7d16acfeea0eda26cf7b41cb0296779291204b322c38f0772cab0fb9ed6ce`
+
+
+Physical PT2 behavior, live plugin/media and notification delivery, actual
+Timeline event text and hardware animation FPS/power remain untested. Native
+emulator fixtures and actual Clay browser checks do not establish those device
+results. Earlier release checks below remain historical and are not relabelled
+as coverage of 0.5.0.
+
+## Historical 0.4.1 unified typography and fixed music sizes
 
 Dynamic 0.4.1 retires the Larger text mode for new and existing installations.
 Its persisted choice is no longer read or written, live size inputs have no

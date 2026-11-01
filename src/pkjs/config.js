@@ -5,11 +5,8 @@
 module.exports = [
   {type:'heading',defaultValue:'Dynamic Settings'},
   {type:'section',items:[
-    {type:'heading',defaultValue:'Sample preview'},
-    {type:'text',id:'dynamic-preview',defaultValue:'Example screens, not live data.'}
-  ]},
-  {type:'section',items:[
-    {type:'heading',defaultValue:'Display'},
+    {type:'heading',defaultValue:'Appearance'},
+    {type:'text',id:'dynamic-preview',defaultValue:'Layout & colour preview'},
     {type:'text',id:'dynamic-theme',defaultValue:'Theme'},
     {type:'color',messageKey:'BACKGROUND_COLOR',defaultValue:'0xFFFFFF',label:'Background color',layout:'COLOR',sunlight:false},
     {type:'color',messageKey:'TEXT_COLOR',defaultValue:'0x000000',label:'Text color',layout:'COLOR',sunlight:false},
@@ -23,13 +20,13 @@ module.exports = [
     {type:'text',defaultValue:'Language follows your watch.'}
   ]},
   {type:'section',items:[
-    {type:'heading',defaultValue:'Your two readings'},
+    {type:'heading',defaultValue:'Content'},
+    {type:'text',defaultValue:'Your two readings'},
     {type:'text',id:'dynamic-readings',defaultValue:'Complications 1 and 2 sit side by side. Both shrink above music or notifications.'},
+    {type:'text',defaultValue:'These are shared Pebble slots. Changing them also affects other watchfaces that use them.'},
     {type:'text',defaultValue:'Choose slots 1 and 2 in Pebble → Settings → Complications.'},
-    {type:'text',defaultValue:'Units come from Pebble and the selected plugin.'}
-  ]},
-  {type:'section',items:[
-    {type:'heading',defaultValue:'Music & notifications'},
+    {type:'text',defaultValue:'Units come from Pebble and the selected plugin.'},
+    {type:'text',defaultValue:'Music & notifications'},
     {type:'toggle',messageKey:'SHOW_MUSIC',defaultValue:true,label:'Show music while playing'},
     {type:'text',id:'dynamic-notification-mode',defaultValue:'Notifications'},
     {type:'toggle',messageKey:'SHOW_NOTIFICATIONS',defaultValue:false,label:'New notifications'},
@@ -39,7 +36,7 @@ module.exports = [
     {type:'input',messageKey:'NOTIFICATION_APPS',defaultValue:'',label:'Selected apps',description:'Use exact app names or Android package names, separated by commas. For example: Signal, org.thoughtcrime.securesms',attributes:{type:'text',maxlength:160,autocapitalize:'none',autocomplete:'off',spellcheck:'false'}}
   ]},
   {type:'section',items:[
-    {type:'heading',defaultValue:'Help & connection'},
+    {type:'heading',defaultValue:'Connection & help'},
     {type:'text',id:'dynamic-save-status',defaultValue:'Changes apply after you save.'},
     {type:'text',defaultValue:'Status when settings opened. Reopen settings to refresh.'},
     {type:'text',id:'dynamic-source-status',defaultValue:'Dynamic content: waiting for Pebble'},

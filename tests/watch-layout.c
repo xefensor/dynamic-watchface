@@ -10,6 +10,8 @@ int main(void) {
   assert(watch_clock_format(99,0)==WATCH_CLOCK_24);
   assert(watch_clock_format(1,-1)==WATCH_CLOCK_FOLLOW);
   assert(watch_clock_format(13,-1)==WATCH_CLOCK_FOLLOW);
+  assert(watch_clock_format(WATCH_CLOCK_QUERY,0)==WATCH_CLOCK_24);
+  assert(watch_clock_format(WATCH_CLOCK_QUERY,1)==WATCH_CLOCK_12);
   assert(watch_clock_uses_12(WATCH_CLOCK_FOLLOW,false));
   assert(!watch_clock_uses_12(WATCH_CLOCK_FOLLOW,true));
   assert(watch_clock_uses_12(WATCH_CLOCK_12,true));
@@ -25,6 +27,7 @@ int main(void) {
     assert(active.row_y+active.label_y+3<92);
     assert(active.icon_size>=14&&peek.icon_size>=16);
     assert(active.number_size==22&&idle.number_size==36);
+    assert(idle.value_y==48&&idle.label_y==64);
     assert(50+active.icon_x+active.icon_radius<50+active.value_x-60/2);
     assert(50+peek.icon_x+peek.icon_radius<50+peek.value_x-60/2);
     assert(watch_date_split(idle.context)==0 && watch_date_split(peek.context)==0);

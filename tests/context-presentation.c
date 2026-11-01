@@ -30,6 +30,21 @@ int main(void) {
   ContextView view=render_context_view(&live,true,false,201);
   assert(render_context_equal(&snapshot,&view)); // A confirmation cannot replay motion.
 
+  // Late artwork and lease refresh leave text identity and motion alone.
+  live.slots[0].flags|=COMPLICATION_FLAG_BITMAP|COMPLICATION_FLAG_IMAGE;
+  live.slots[0].width=4;live.slots[0].height=4;live.slots[0].stride=4;live.slots[0].pixel_bytes=16;
+  live.slots[0].bitmap[0]=0x11;
+  view=render_context_view(&live,true,false,201);
+  assert(render_context_equal(&snapshot,&view));
+  assert(!render_context_should_slide(&snapshot,&view));
+  text(1,"Late artist correction",300);
+  view=render_context_view(&live,true,false,201);
+  assert(!render_context_equal(&snapshot,&view));
+  assert(!render_context_should_slide(&snapshot,&view));
+  text(0,"Different track",300);view=render_context_view(&live,true,false,201);
+  assert(render_context_should_slide(&snapshot,&view));
+  text(0,"Track title",300);text(1,"Artist name",300);capture(200);
+
   text(2,"Private messenger",212);capture(200);
   assert(snapshot.mode==CONTEXT_NOTIFICATION&&snapshot.heading_only&&snapshot.has_music);
   assert(!strcmp(render_context_music(&snapshot,true)->text,"Artist name"));
@@ -37,6 +52,22 @@ int main(void) {
   assert(snapshot.mode==CONTEXT_MUSIC&&!snapshot.has_music&&!snapshot.heading_only);
   assert(!strcmp(snapshot.title.text,"Track title"));
   assert(!contains(&snapshot,sizeof(snapshot),"Private messenger"));
+
+  text(2,"Same sender",212);strcpy(live.slots[2].label,"Signal");capture(200);
+  live.slots[2].flags|=COMPLICATION_FLAG_BITMAP;live.slots[2].pixel_bytes=16;
+  live.slots[2].bitmap[0]=0x22;
+  view=render_context_view(&live,true,false,201);
+  assert(render_context_equal(&snapshot,&view)); // Late app icon has no entrance.
+  render_context_redact(&snapshot,&live,true,false,201);
+  assert(snapshot.mode==CONTEXT_NOTIFICATION); // Asset refresh cannot redact the notice.
+  text(2,"Updated sender",212);strcpy(live.slots[2].label,"Signal");
+  view=render_context_view(&live,true,false,201);
+  assert(!render_context_equal(&snapshot,&view));
+  assert(!render_context_should_slide(&snapshot,&view)); // One entrance per burst.
+  capture(201);strcpy(live.slots[2].label,"Other app");
+  view=render_context_view(&live,true,false,201);
+  assert(!render_context_equal(&snapshot,&view));
+  assert(!render_context_should_slide(&snapshot,&view));
 
   text(2,"Private messenger",212);text(3,"Secret preview body",212);capture(200);
   assert(snapshot.mode==CONTEXT_NOTIFICATION&&!snapshot.heading_only&&!snapshot.has_music);

@@ -7,6 +7,7 @@ typedef enum { READING_VALUE, READING_LOADING, READING_UNAVAILABLE, READING_EXPI
 
 static inline ReadingState reading_state(const ComplicationSlot *slot,time_t now) {
   if(slot->status==COMPLICATION_STATUS_LOADING)return READING_LOADING;
+  if(slot->status==COMPLICATION_STATUS_EXPIRED)return READING_EXPIRED;
   if(slot->status==COMPLICATION_STATUS_READY)
     return complication_is_fresh(slot,now)?READING_VALUE:READING_EXPIRED;
   return READING_UNAVAILABLE;
@@ -37,28 +38,30 @@ static inline bool reading_range(const ComplicationSlot *slot,double *amount) {
 typedef struct {
   const char *lang;
   const char *labels[12];
+  const char *details[12];
+  const char *forecast;
   const char *loading,*unavailable,*expired,*first,*second;
 } ReadingLanguage;
 
 static inline const ReadingLanguage *reading_language(const char *locale) {
   static const ReadingLanguage languages[]={
-    {"en",{"READING","NOW","RAIN","BATTERY","HUMIDITY","WIND","UV","WEATHER","RANGE","VALUE","STATUS","TIME"},"Loading","Unavailable","Expired","SLOT 1","SLOT 2"},
-    {"cs",{"HODNOTA","NYNÍ","DÉŠŤ","BATERIE","VLHKOST","VÍTR","UV","POČASÍ","ROZSAH","HODNOTA","STAV","ČAS"},"Načítání","Nedostupné","Vypršelo","POZICE 1","POZICE 2"},
-    {"sk",{"HODNOTA","TERAZ","DÁŽĎ","BATÉRIA","VLHKOSŤ","VIETOR","UV","POČASIE","ROZSAH","HODNOTA","STAV","ČAS"},"Načítanie","Nedostupné","Vypršalo","POZÍCIA 1","POZÍCIA 2"},
-    {"de",{"ANZEIGE","JETZT","REGEN","AKKU","FEUCHTE","WIND","UV","WETTER","BEREICH","WERT","STATUS","ZEIT"},"Lädt","Nicht da","Abgelaufen","FELD 1","FELD 2"},
-    {"fr",{"DONNÉE","ACTUEL","PLUIE","BATTERIE","HUMIDITÉ","VENT","UV","MÉTÉO","PLAGE","VALEUR","ÉTAT","HEURE"},"Chargement","Indisponible","Expiré","ZONE 1","ZONE 2"},
-    {"es",{"DATO","AHORA","LLUVIA","BATERÍA","HUMEDAD","VIENTO","UV","TIEMPO","RANGO","VALOR","ESTADO","HORA"},"Cargando","No disponible","Caducado","ESPACIO 1","ESPACIO 2"},
-    {"it",{"DATO","ORA","PIOGGIA","BATTERIA","UMIDITÀ","VENTO","UV","METEO","INTERVALLO","VALORE","STATO","ORA"},"Caricamento","Non disponibile","Scaduto","SPAZIO 1","SPAZIO 2"},
-    {"pt",{"DADO","AGORA","CHUVA","BATERIA","UMIDADE","VENTO","UV","TEMPO","INTERVALO","VALOR","ESTADO","HORA"},"Carregando","Indisponível","Expirado","ESPAÇO 1","ESPAÇO 2"},
-    {"nl",{"WAARDE","NU","REGEN","ACCU","VOCHT","WIND","UV","WEER","BEREIK","WAARDE","STATUS","TIJD"},"Laden","Niet beschikbaar","Verlopen","VAK 1","VAK 2"},
-    {"pl",{"DANE","TERAZ","DESZCZ","BATERIA","WILGOTNOŚĆ","WIATR","UV","POGODA","ZAKRES","WARTOŚĆ","STAN","CZAS"},"Ładowanie","Niedostępne","Wygasło","POLE 1","POLE 2"},
-    {"da",{"VÆRDI","NU","REGN","BATTERI","FUGT","VIND","UV","VEJR","OMRÅDE","VÆRDI","STATUS","TID"},"Indlæser","Utilgængelig","Udløbet","FELT 1","FELT 2"},
-    {"sv",{"VÄRDE","NU","REGN","BATTERI","FUKT","VIND","UV","VÄDER","INTERVALL","VÄRDE","STATUS","TID"},"Laddar","Ej tillgänglig","Utgånget","FÄLT 1","FÄLT 2"},
-    {"no",{"VERDI","NÅ","REGN","BATTERI","FUKT","VIND","UV","VÆR","OMRÅDE","VERDI","STATUS","TID"},"Laster","Utilgjengelig","Utløpt","FELT 1","FELT 2"},
-    {"fi",{"ARVO","NYT","SADE","AKKU","KOSTEUS","TUULI","UV","SÄÄ","ALUE","ARVO","TILA","AIKA"},"Ladataan","Ei saatavilla","Vanhentunut","PAIKKA 1","PAIKKA 2"},
-    {"hu",{"ÉRTÉK","MOST","ESŐ","AKKU","PÁRA","SZÉL","UV","IDŐJÁRÁS","TARTOMÁNY","ÉRTÉK","ÁLLAPOT","IDŐ"},"Betöltés","Nem elérhető","Lejárt","HELY 1","HELY 2"},
-    {"ro",{"VALOARE","ACUM","PLOAIE","BATERIE","UMIDITATE","VÂNT","UV","VREME","INTERVAL","VALOARE","STARE","ORĂ"},"Se încarcă","Indisponibil","Expirat","POZIȚIA 1","POZIȚIA 2"},
-    {"tr",{"DEĞER","ŞİMDİ","YAĞMUR","PİL","NEM","RÜZGÂR","UV","HAVA","ARALIK","DEĞER","DURUM","SAAT"},"Yükleniyor","Kullanılamıyor","Süresi doldu","ALAN 1","ALAN 2"}
+    {"en",{"READING","TEMP","RAIN","BATTERY","HUMIDITY","WIND","UV","WEATHER","RANGE","VALUE","STATUS","TIME"},{"","TEMP","FEELS LIKE","HIGH","LOW","RAIN","HUMIDITY","WIND SPEED","DIRECTION","UV","WEATHER","PHONE"},"FORECAST","Loading","Unavailable","Expired","SLOT 1","SLOT 2"},
+    {"cs",{"HODNOTA","TEPLOTA","DÉŠŤ","BATERIE","VLHKOST","VÍTR","UV","POČASÍ","ROZSAH","HODNOTA","STAV","ČAS"},{"","TEPLOTA","POCITOVÁ","MAXIMUM","MINIMUM","DÉŠŤ","VLHKOST","RYCHLOST","SMĚR","UV","POČASÍ","TELEFON"},"PŘEDPOVĚĎ","Načítání","Nedostupné","Vypršelo","POZICE 1","POZICE 2"},
+    {"sk",{"HODNOTA","TEPLOTA","DÁŽĎ","BATÉRIA","VLHKOSŤ","VIETOR","UV","POČASIE","ROZSAH","HODNOTA","STAV","ČAS"},{"","TEPLOTA","POCITOVÁ","MAXIMUM","MINIMUM","DÁŽĎ","VLHKOSŤ","RÝCHLOSŤ","SMER","UV","POČASIE","TELEFÓN"},"PREDPOVEĎ","Načítanie","Nedostupné","Vypršalo","POZÍCIA 1","POZÍCIA 2"},
+    {"de",{"ANZEIGE","TEMP","REGEN","AKKU","FEUCHTE","WIND","UV","WETTER","BEREICH","WERT","STATUS","ZEIT"},{"","TEMP","GEFÜHLT","HOCH","TIEF","REGEN","FEUCHTE","WINDSTÄRKE","RICHTUNG","UV","WETTER","TELEFON"},"VORHERSAGE","Lädt","Nicht da","Abgelaufen","FELD 1","FELD 2"},
+    {"fr",{"DONNÉE","TEMP","PLUIE","BATTERIE","HUMIDITÉ","VENT","UV","MÉTÉO","PLAGE","VALEUR","ÉTAT","HEURE"},{"","TEMP","RESSENTI","MAX","MIN","PLUIE","HUMIDITÉ","VITESSE","DIRECTION","UV","MÉTÉO","TÉLÉPHONE"},"PRÉVISION","Chargement","Indisponible","Expiré","ZONE 1","ZONE 2"},
+    {"es",{"DATO","TEMP","LLUVIA","BATERÍA","HUMEDAD","VIENTO","UV","TIEMPO","RANGO","VALOR","ESTADO","HORA"},{"","TEMP","SENSACIÓN","MÁX","MÍN","LLUVIA","HUMEDAD","VELOCIDAD","DIRECCIÓN","UV","TIEMPO","TELÉFONO"},"PRONÓSTICO","Cargando","No disponible","Caducado","ESPACIO 1","ESPACIO 2"},
+    {"it",{"DATO","TEMP","PIOGGIA","BATTERIA","UMIDITÀ","VENTO","UV","METEO","INTERVALLO","VALORE","STATO","ORA"},{"","TEMP","PERCEPITA","MAX","MIN","PIOGGIA","UMIDITÀ","VELOCITÀ","DIREZIONE","UV","METEO","TELEFONO"},"PREVISIONE","Caricamento","Non disponibile","Scaduto","SPAZIO 1","SPAZIO 2"},
+    {"pt",{"DADO","TEMP","CHUVA","BATERIA","UMIDADE","VENTO","UV","TEMPO","INTERVALO","VALOR","ESTADO","HORA"},{"","TEMP","SENSAÇÃO","MÁX","MÍN","CHUVA","UMIDADE","VELOCIDADE","DIREÇÃO","UV","TEMPO","TELEFONE"},"PREVISÃO","Carregando","Indisponível","Expirado","ESPAÇO 1","ESPAÇO 2"},
+    {"nl",{"WAARDE","TEMP","REGEN","ACCU","VOCHT","WIND","UV","WEER","BEREIK","WAARDE","STATUS","TIJD"},{"","TEMP","GEVOEL","HOOG","LAAG","REGEN","VOCHT","WINDSNELHEID","RICHTING","UV","WEER","TELEFOON"},"VERWACHTING","Laden","Niet beschikbaar","Verlopen","VAK 1","VAK 2"},
+    {"pl",{"DANE","TEMP","DESZCZ","BATERIA","WILGOTNOŚĆ","WIATR","UV","POGODA","ZAKRES","WARTOŚĆ","STAN","CZAS"},{"","TEMP","ODCZUWALNA","MAKS","MIN","DESZCZ","WILGOTNOŚĆ","PRĘDKOŚĆ","KIERUNEK","UV","POGODA","TELEFON"},"PROGNOZA","Ładowanie","Niedostępne","Wygasło","POLE 1","POLE 2"},
+    {"da",{"VÆRDI","TEMP","REGN","BATTERI","FUGT","VIND","UV","VEJR","OMRÅDE","VÆRDI","STATUS","TID"},{"","TEMP","FØLES SOM","HØJ","LAV","REGN","FUGT","VINDHAST","RETNING","UV","VEJR","TELEFON"},"PROGNOSE","Indlæser","Utilgængelig","Udløbet","FELT 1","FELT 2"},
+    {"sv",{"VÄRDE","TEMP","REGN","BATTERI","FUKT","VIND","UV","VÄDER","INTERVALL","VÄRDE","STATUS","TID"},{"","TEMP","KÄNNS SOM","HÖG","LÅG","REGN","FUKT","VINDHAST","RIKTNING","UV","VÄDER","TELEFON"},"PROGNOS","Laddar","Ej tillgänglig","Utgånget","FÄLT 1","FÄLT 2"},
+    {"no",{"VERDI","TEMP","REGN","BATTERI","FUKT","VIND","UV","VÆR","OMRÅDE","VERDI","STATUS","TID"},{"","TEMP","FØLES SOM","HØY","LAV","REGN","FUKT","VINDSTYRKE","RETNING","UV","VÆR","TELEFON"},"PROGNOSE","Laster","Utilgjengelig","Utløpt","FELT 1","FELT 2"},
+    {"fi",{"ARVO","LÄMPÖ","SADE","AKKU","KOSTEUS","TUULI","UV","SÄÄ","ALUE","ARVO","TILA","AIKA"},{"","LÄMPÖ","TUNTUU","YLIN","ALIN","SADE","KOSTEUS","NOPEUS","SUUNTA","UV","SÄÄ","PUHELIN"},"ENNUSTE","Ladataan","Ei saatavilla","Vanhentunut","PAIKKA 1","PAIKKA 2"},
+    {"hu",{"ÉRTÉK","HŐFOK","ESŐ","AKKU","PÁRA","SZÉL","UV","IDŐJÁRÁS","TARTOMÁNY","ÉRTÉK","ÁLLAPOT","IDŐ"},{"","HŐFOK","HŐÉRZET","MAX","MIN","ESŐ","PÁRA","SEBESSÉG","IRÁNY","UV","IDŐJÁRÁS","TELEFON"},"ELŐREJELZÉS","Betöltés","Nem elérhető","Lejárt","HELY 1","HELY 2"},
+    {"ro",{"VALOARE","TEMP","PLOAIE","BATERIE","UMIDITATE","VÂNT","UV","VREME","INTERVAL","VALOARE","STARE","ORĂ"},{"","TEMP","RESIMȚITĂ","MAX","MIN","PLOAIE","UMIDITATE","VITEZĂ","DIRECȚIE","UV","VREME","TELEFON"},"PROGNOZĂ","Se încarcă","Indisponibil","Expirat","POZIȚIA 1","POZIȚIA 2"},
+    {"tr",{"DEĞER","SICAKLIK","YAĞMUR","PİL","NEM","RÜZGÂR","UV","HAVA","ARALIK","DEĞER","DURUM","SAAT"},{"","SICAKLIK","HİSSEDİLEN","EN YÜKSEK","EN DÜŞÜK","YAĞMUR","NEM","HIZ","YÖN","UV","HAVA","TELEFON"},"TAHMİN","Yükleniyor","Kullanılamıyor","Süresi doldu","ALAN 1","ALAN 2"}
   };
   if(locale)for(size_t i=1;i<sizeof(languages)/sizeof(languages[0]);++i) {
     const char *code=languages[i].lang;
@@ -73,6 +76,15 @@ static inline const char *reading_label(const ComplicationSlot *slot,unsigned ki
                                          unsigned index,const char *locale) {
   const ReadingLanguage *language=reading_language(locale);
   if(kind>COMPLICATION_SEMANTIC_TIMESTAMP)kind=COMPLICATION_SEMANTIC_GENERIC;
+  if(slot->detail==COMPLICATION_DETAIL_TEMPERATURE&&
+      (slot->qualifiers&COMPLICATION_QUALIFIER_FORECAST))return language->forecast;
+  if(slot->detail>COMPLICATION_DETAIL_NONE&&slot->detail<=COMPLICATION_DETAIL_PHONE_BATTERY)
+    return language->details[slot->detail];
+  if(kind==COMPLICATION_SEMANTIC_BATTERY&&slot->source_kind==COMPLICATION_SOURCE_PHONE)
+    return language->details[COMPLICATION_DETAIL_PHONE_BATTERY];
+  // Legacy v3 packets lack a detail code. Their temperature label may still
+  // distinguish a high, low or feels-like value; never replace it with NOW.
+  if(kind==COMPLICATION_SEMANTIC_TEMPERATURE&&slot->label[0])return slot->label;
   if(slot->label[0]&&(kind==COMPLICATION_SEMANTIC_GENERIC||kind==COMPLICATION_SEMANTIC_NUMBER||
       kind==COMPLICATION_SEMANTIC_RANGE||kind==COMPLICATION_SEMANTIC_BOOLEAN||
       kind==COMPLICATION_SEMANTIC_TIMESTAMP))return slot->label;
@@ -90,15 +102,48 @@ static inline void reading_label_ellipsize(char *text,size_t capacity,int width,
   char prefix[COMPLICATION_MAX_LABEL_BYTES+16];
   const size_t prefix_capacity=capacity-3<sizeof(prefix)?capacity-3:sizeof(prefix);
   watch_layout_copy_utf8(text,prefix,prefix_capacity);
-  while(watch_layout_pop_utf8(prefix)) {
+  for(;;) {
     const size_t length=strlen(prefix);
     memcpy(text,prefix,length);memcpy(text+length,"…",4);
-    if(measure(context,text)<=width)return;
+    if(measure(context,text)<=width||!watch_layout_pop_utf8(prefix))return;
   }
-  memcpy(text,"…",4);
 }
 
 static inline const char *reading_state_label(ReadingState state,const char *locale) {
   const ReadingLanguage *language=reading_language(locale);
   return state==READING_LOADING?language->loading:state==READING_EXPIRED?language->expired:language->unavailable;
+}
+
+// A clock mark means a known observation is at least an hour old. Native
+// cache origin or an unknown measurement time alone never earns this mark.
+static inline bool reading_is_aged(const ComplicationSlot *slot,time_t now) {
+  return slot->observed_at>0&&now>0&&(uint64_t)now>=(uint64_t)slot->observed_at+3600;
+}
+
+// The display has four intensities per channel. These lookup values are
+// linear-sRGB luminance scaled by1e6, so contrast needs no pow()/float math.
+static inline uint32_t reading_color_luminance(uint8_t color) {
+  static const uint32_t linear[]={0,90842,401978,1000000};
+  return (uint32_t)(((uint64_t)linear[(color>>4)&3]*2126+
+      (uint64_t)linear[(color>>2)&3]*7152+(uint64_t)linear[color&3]*722)/10000);
+}
+static inline bool reading_color_contrasts(uint8_t a,uint8_t b,unsigned thousandths) {
+  uint32_t x=reading_color_luminance(a),y=reading_color_luminance(b);
+  if(x<y){const uint32_t swap=x;x=y;y=swap;}
+  return (uint64_t)(x+50000)*1000>=(uint64_t)(y+50000)*thousandths;
+}
+static inline uint8_t reading_contrast_ink(uint8_t background) {
+  const uint32_t light=reading_color_luminance(background);
+  return (uint64_t)(light+50000)*(light+50000)>=52500000000ULL?0xc0:0xff;
+}
+static inline uint8_t reading_secondary_ink(uint8_t foreground,uint8_t background) {
+  uint8_t muted=0xc0;
+  for(unsigned shift=0;shift<=4;shift+=2)
+    muted|=((((2*((foreground>>shift)&3)+((background>>shift)&3)+1)/3)&3)<<shift);
+  return reading_color_contrasts(muted,background,4500)?muted:foreground;
+}
+static inline uint8_t reading_accent_ink(uint8_t accent,uint8_t background,uint8_t foreground) {
+  if(reading_color_contrasts(accent,background,2000))return accent;
+  if(reading_color_contrasts(foreground,background,2000))return foreground;
+  return reading_contrast_ink(background);
 }

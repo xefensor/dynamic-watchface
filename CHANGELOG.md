@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.5.0
+
+- Preserves precise Temperature / Feels like / High / Low / Forecast / Phone
+  labels and public reading identity through loading, failure and expiry.
+- Marks a known observation at least an hour old, rather than marking cache
+  origin as age. Receipt and observation times stay distinct.
+- Uses source/accent colour for ordinary content, amber for warnings, guarded
+  secondary ink and visible accent fallbacks. Artist text is quieter; idle
+  values and labels sit closer to their symbols.
+- Separates notification sender/title from app identity. Late artwork/artist
+  updates repaint quietly; a notification burst enters once and coalesces
+  replacements for a 900ms stable interval within its existing eight-second
+  maximum. Privacy clearing remains immediate.
+- Groups settings into Appearance, Content and Connection & help. Five example
+  states are independent of enabled features and privacy choices.
+- Uses the watch's last reported OS clock style for Follow Pebble examples;
+  labels an unknown-format example and adds a read-only CLOCK_FORMAT=255 query.
+- Shows unsaved edits and last delivery beside Save, with automatic-retry
+  wording. Restores the session's Custom palette when switching themes.
+- Replaces the raw app filter with removable entries, explains shared Pebble
+  readings and shows source recovery help nearby. Updates all 17 languages.
+- Pins Core 0.3.0 and strict v4 packets with precise detail/forecast/observation
+  metadata, explicit Expired status and identity-only public missing states.
+  Legacy v1–v3 decode remains supported. Keeps the UUID, 34 message keys,
+  unified typography, two reading homes and fixed music footer.
+
 ## 0.4.1
 
 - Uses one unified typography/layout for new and existing installations,

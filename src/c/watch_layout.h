@@ -7,7 +7,7 @@
 
 #define WATCH_LAYOUT_SLOT_COUNT 5
 
-enum { WATCH_CLOCK_FOLLOW=0, WATCH_CLOCK_12=12, WATCH_CLOCK_24=24 };
+enum { WATCH_CLOCK_FOLLOW=0, WATCH_CLOCK_12=12, WATCH_CLOCK_24=24, WATCH_CLOCK_QUERY=255 };
 static inline uint8_t watch_clock_format(int stored,int legacy) {
   if(stored==WATCH_CLOCK_FOLLOW||stored==WATCH_CLOCK_12||stored==WATCH_CLOCK_24)return (uint8_t)stored;
   return legacy<0?WATCH_CLOCK_FOLLOW:legacy?WATCH_CLOCK_12:WATCH_CLOCK_24;
@@ -49,7 +49,7 @@ static inline float watch_date_split(float context) {
 
 static inline WatchPose watch_pose_idle(void) {
   return (WatchPose){100,108,80,100,23,
-    145,0,0,16,22,0,52,36,16,70,1,0,0,0,0};
+    145,0,0,16,22,0,48,36,16,64,1,0,0,0,0};
 }
 
 static inline WatchPose watch_pose_context(bool notice) {

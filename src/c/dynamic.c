@@ -78,9 +78,11 @@ static uint32_t s_layout_started, s_slide_started, s_slide_duration;
 static float s_slide_amount = 1;
 static int s_slide_direction = 1;
 static bool s_private_rebaseline,s_banner_slide;
+static bool s_format_reply_pending,s_outbox_format_only;
 
 static void prv_apply_unobstructed_layout(void);
 static void prv_sync_layers(void);
+static void prv_send_clock_format(void);
 static void prv_schedule_context_expiry(void);
 static void prv_context_expired(void *context);
 static MusicTextMetrics prv_music_measure(void *context,const char *text,int point);
@@ -317,16 +319,21 @@ static void prv_ellipsize(char *text,size_t capacity,int point,int width) {
   memcpy(text,"…",4);
 }
 static GColor prv_contrast_ink(GColor color) {
-  const unsigned r=(color.argb>>4)&3,g=(color.argb>>2)&3,b=color.argb&3;
-  return 299*r+587*g+114*b>=1500 ? GColorBlack : GColorWhite;
+  return (GColor){.argb=reading_contrast_ink(color.argb)};
+}
+static GColor prv_accent_color(void) {
+  return (GColor){.argb=reading_accent_ink(s_accent_color.argb,s_background_color.argb,s_text_color.argb)};
+}
+static GColor prv_warning_color(void) {
+  return reading_color_luminance(s_background_color.argb)>400000?
+      GColorFromHEX(0xAA5500):GColorFromHEX(0xFFAA00);
 }
 static GColor prv_muted_text(float alpha) {
-  const unsigned fr=(s_text_color.argb>>4)&3,fg=(s_text_color.argb>>2)&3,fb=s_text_color.argb&3;
-  const unsigned br=(s_background_color.argb>>4)&3,bg=(s_background_color.argb>>2)&3,bb=s_background_color.argb&3;
+  const uint8_t ink=reading_secondary_ink(s_text_color.argb,s_background_color.argb);
   alpha=watch_clamp(alpha);
-  const unsigned r=prv_round(watch_lerp(br,(2*fr+br+1)/3,alpha));
-  const unsigned g=prv_round(watch_lerp(bg,(2*fg+bg+1)/3,alpha));
-  const unsigned b=prv_round(watch_lerp(bb,(2*fb+bb+1)/3,alpha));
+  const unsigned r=prv_round(watch_lerp((s_background_color.argb>>4)&3,(ink>>4)&3,alpha));
+  const unsigned g=prv_round(watch_lerp((s_background_color.argb>>2)&3,(ink>>2)&3,alpha));
+  const unsigned b=prv_round(watch_lerp(s_background_color.argb&3,ink&3,alpha));
   return (GColor){.argb=0xc0|(r<<4)|(g<<2)|b};
 }
 static GColor prv_faded_text(float alpha) {
@@ -494,6 +501,7 @@ static void prv_apply_unobstructed_layout(void) {
   if(s_window_layer==NULL) return;
   const ContextView next=render_context_view(&s_context,s_phone_connected,s_private_rebaseline,time(NULL));
   const ContextMode previous=s_context_to.mode;
+  const bool content_slide=render_context_should_slide(&s_context_to,&next);
   prv_redact_context(&s_context_to);prv_redact_context(&s_context_from);
   const bool motion=s_animations_enabled && !s_peek_transition &&
       layer_get_unobstructed_bounds(s_window_layer).size.h>=228;
@@ -503,13 +511,13 @@ static void prv_apply_unobstructed_layout(void) {
     const ComplicationSlot *new_music=next.mode==CONTEXT_MUSIC?next.title:next.music_title;
     const ComplicationSlot *new_artist=next.mode==CONTEXT_MUSIC?next.subtitle:next.music_artist;
     s_banner_slide=(s_context_to.heading_only||next.heading_only)&&old_music&&new_music&&
-        render_slot_equal(old_music,new_music)&&old_artist&&
+        render_slot_identity_equal(old_music,new_music)&&old_artist&&
         render_optional_slot_equal(old_artist,new_artist);
     s_context_from=s_context_to;render_context_capture(&s_context_to,&next);
     prv_redact_context(&s_context_from);
     s_slide_direction=next.mode==CONTEXT_MUSIC && previous==CONTEXT_NOTIFICATION ? -1 : 1;
     s_slide_duration=next.mode==previous ? 280 : 340;
-    s_slide_active=motion && previous!=CONTEXT_NONE && next.mode!=CONTEXT_NONE;
+    s_slide_active=motion && content_slide;
     s_slide_amount=s_slide_active ? 0 : 1;s_slide_started=prv_millis();
     if(!s_slide_active) memset(&s_context_from,0,sizeof(s_context_from));
   } else render_context_capture(&s_context_to,&next); // A lease confirmation does not replay motion.
@@ -569,12 +577,12 @@ static void prv_draw_symbol(GContext *ctx,const ComplicationSlot *slot,int cx,in
     graphics_context_set_stroke_width(ctx,radius/4<2?2:radius/4);
     graphics_context_set_stroke_color(ctx,prv_muted_text(0.4f));
     graphics_draw_circle(ctx,GPoint(cx,cy),radius);
-    graphics_context_set_stroke_color(ctx,s_accent_color);
+    graphics_context_set_stroke_color(ctx,prv_accent_color());
     if(range>0)graphics_draw_arc(ctx,GRect(cx-radius,cy-radius,2*radius,2*radius),
         GOvalScaleModeFitCircle,0,TRIG_MAX_ANGLE*range/10000);
   } else if(kind!=COMPLICATION_SEMANTIC_GENERIC || (bitmap&&!(slot->flags&COMPLICATION_FLAG_IMAGE))) {
-    graphics_context_set_fill_color(ctx,s_accent_color);graphics_fill_circle(ctx,GPoint(cx,cy),radius);
-    ink=prv_contrast_ink(s_accent_color);
+    graphics_context_set_fill_color(ctx,prv_accent_color());graphics_fill_circle(ctx,GPoint(cx,cy),radius);
+    ink=prv_contrast_ink(prv_accent_color());
   }
   if(bitmap)prv_draw_bitmap(ctx,slot,cx-size/2,cy-size/2,size,ink,false);
   else if(kind==COMPLICATION_SEMANTIC_PRECIPITATION||kind==COMPLICATION_SEMANTIC_HUMIDITY)
@@ -587,16 +595,16 @@ static void prv_draw_symbol(GContext *ctx,const ComplicationSlot *slot,int cx,in
     graphics_draw_line(ctx,GPoint(cx,cy-h/3),GPoint(cx,cy+h/2));
   } else if(kind==COMPLICATION_SEMANTIC_BATTERY) {
     const int w=size>12?size-4:8,h=w/2;
-    graphics_context_set_stroke_width(ctx,1);graphics_context_set_stroke_color(ctx,ink);
-    graphics_draw_round_rect(ctx,GRect(cx-w/2,cy-h/2,w,h),1);
+    graphics_context_set_stroke_width(ctx,2);graphics_context_set_stroke_color(ctx,ink);
+    graphics_draw_round_rect(ctx,GRect(cx-w/2,cy-h/2,w,h),2);
     graphics_draw_line(ctx,GPoint(cx+w/2,cy-1),GPoint(cx+w/2,cy+1));
   } else if(kind==COMPLICATION_SEMANTIC_WIND) {
-    graphics_context_set_stroke_width(ctx,1);graphics_context_set_stroke_color(ctx,ink);
+    graphics_context_set_stroke_width(ctx,2);graphics_context_set_stroke_color(ctx,ink);
     graphics_draw_line(ctx,GPoint(cx-size/3,cy-2),GPoint(cx+size/3,cy-2));
     graphics_draw_line(ctx,GPoint(cx-size/3,cy+2),GPoint(cx+size/4,cy+2));
     graphics_draw_line(ctx,GPoint(cx+size/3,cy-2),GPoint(cx+size/3,cy-4));
   } else if(kind==COMPLICATION_SEMANTIC_UV) {
-    graphics_context_set_stroke_width(ctx,1);graphics_context_set_stroke_color(ctx,ink);
+    graphics_context_set_stroke_width(ctx,2);graphics_context_set_stroke_color(ctx,ink);
     graphics_draw_circle(ctx,GPoint(cx,cy),2);
     graphics_draw_line(ctx,GPoint(cx-4,cy),GPoint(cx-3,cy));
     graphics_draw_line(ctx,GPoint(cx+3,cy),GPoint(cx+4,cy));
@@ -636,15 +644,15 @@ static void prv_reading_label(GContext *ctx,const ComplicationSlot *slot,unsigne
   const int point=14;
   char label[COMPLICATION_MAX_LABEL_BYTES+16];
   watch_layout_copy_utf8(reading_label(slot,kind,index,i18n_get_system_locale()),label,sizeof(label));
-  reading_label_ellipsize(label,sizeof(label),slot->cached?76:88,prv_label_width,&point);
+  reading_label_ellipsize(label,sizeof(label),reading_is_aged(slot,time(NULL))?76:88,prv_label_width,&point);
   const int baseline=prv_round(p.row_y+p.label_y);
   if(s_window_layer&&baseline+body_text_descent(label,point)>
       layer_get_unobstructed_bounds(s_window_layer).size.h-2)return;
-  prv_text(ctx,label,point,center-44,baseline,slot->cached?76:88,
+  prv_text(ctx,label,point,center-44,baseline,reading_is_aged(slot,time(NULL))?76:88,
       prv_muted_text(p.label_alpha),GTextAlignmentCenter);
 }
-static void prv_cached_mark(GContext *ctx,const ComplicationSlot *slot,unsigned index,WatchPose p,bool label) {
-  if(slot->cached) {
+static void prv_age_mark(GContext *ctx,const ComplicationSlot *slot,unsigned index,WatchPose p,bool label) {
+  if(reading_is_aged(slot,time(NULL))) {
     const int baseline=prv_round(p.row_y+(label?p.label_y:p.value_y));
     if(s_window_layer&&baseline>layer_get_unobstructed_bounds(s_window_layer).size.h-2)return;
     graphics_context_set_stroke_width(ctx,1);graphics_context_set_stroke_color(ctx,prv_muted_text(p.label_alpha));
@@ -660,7 +668,7 @@ static bool prv_reading_text(GContext *ctx,const char *text,int center,int basel
   int point=state?(compact?14:16):(compact?16:24);
   if(p.context>0.5f&&body_text_ascent(text,point)>16)point=14;
   MusicLines lines;
-  music_wrap(text,point,width,2,false,prv_music_measure,NULL,&lines);
+  music_wrap(text,point,width,state&&compact?1:2,false,prv_music_measure,NULL,&lines);
   if(compact&&lines.count>1&&point>14) {
     point=14;music_wrap(text,point,width,2,false,prv_music_measure,NULL,&lines);
   }
@@ -684,9 +692,13 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
   const ReadingState state=reading_state(slot,time(NULL));
   const bool fresh=state==READING_VALUE;
   if(!fresh) {
+    if(p.icon_x==0&&slot->semantic_kind>=COMPLICATION_SEMANTIC_TEMPERATURE&&
+        slot->semantic_kind<=COMPLICATION_SEMANTIC_UV)
+      prv_draw_symbol(ctx,slot,index?150:50,prv_round(p.row_y+p.icon_y),
+          prv_round(p.icon_radius),prv_round(p.icon_size),slot->semantic_kind,-1);
     const bool two=prv_reading_text(ctx,reading_state_label(state,i18n_get_system_locale()),
         index?150:50,prv_round(p.row_y+p.value_y),88,p,true);
-    if(!two)prv_reading_label(ctx,slot,COMPLICATION_SEMANTIC_GENERIC,index,p);
+    if(!two)prv_reading_label(ctx,slot,slot->semantic_kind,index,p);
     return;
   }
   const bool bitmap=fresh&&(slot->flags&COMPLICATION_FLAG_BITMAP);
@@ -710,7 +722,7 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
     prv_draw_bitmap(ctx,slot,prv_round(center-size/2.0f),
         prv_round(p.row_y+p.value_y-size),size,s_text_color,false);
     prv_reading_label(ctx,slot,kind,index,p);
-    prv_cached_mark(ctx,slot,index,p,true);
+    prv_age_mark(ctx,slot,index,p,true);
     return;
   }
   if(symbol) {
@@ -718,7 +730,7 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
         prv_round(p.icon_radius),prv_round(p.icon_size),kind,range);
   }
   const float value_center=center+(symbol?p.value_x:0);
-  const float value_width=(symbol?88-28*inline_amount:88)-(slot->cached?8:0);
+  const float value_width=(symbol?88-28*inline_amount:88)-(reading_is_aged(slot,time(NULL))?8:0);
   const float baseline=p.row_y+p.value_y;
   bool text_takes_label=false;
   if(has_text) {
@@ -735,13 +747,13 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
     }
   }
   if(p.label_alpha>0.01f&&!text_takes_label)prv_reading_label(ctx,slot,kind,index,p);
-  prv_cached_mark(ctx,slot,index,p,!text_takes_label&&p.label_alpha>0.01f);
+  prv_age_mark(ctx,slot,index,p,!text_takes_label&&p.label_alpha>0.01f);
 }
 static void prv_draw_status(GContext *ctx,WatchPose p) {
   if(!s_show_status)return;
   const int y=prv_round(watch_lerp(watch_lerp(115,45,watch_clamp(p.context)),104,p.peek));
-  int x=5;graphics_context_set_stroke_color(ctx,s_text_color);
-  graphics_context_set_fill_color(ctx,s_text_color);graphics_context_set_stroke_width(ctx,1);
+  int x=5;graphics_context_set_stroke_color(ctx,prv_warning_color());
+  graphics_context_set_fill_color(ctx,prv_warning_color());graphics_context_set_stroke_width(ctx,1);
   if(s_battery.charge_percent<=10&&!s_battery.is_charging) {
     graphics_draw_rect(ctx,GRect(x,y+2,9,6));graphics_fill_rect(ctx,GRect(x+9,y+4,1,2),0,GCornerNone);
     graphics_fill_rect(ctx,GRect(x+2,y+4,1,2),0,GCornerNone);x+=12;
@@ -818,20 +830,42 @@ static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const Com
   const int left=visible?60:10;
   for(int i=0;i<layout.artist.count;++i)
     prv_text(ctx,layout.artist.text[i],layout.artist_point,x+left,y+layout.artist_baseline[i],
-        190-left,s_text_color,GTextAlignmentLeft);
+        190-left,prv_muted_text(1),GTextAlignmentLeft);
 }
-typedef struct { char text[COMPLICATION_MAX_TEXT_BYTES+5];int point,baseline,bottom; } NoticeLine;
+typedef struct {
+  char text[COMPLICATION_MAX_TEXT_BYTES+5];
+  int point,baseline,bottom,app_baseline;
+  bool app_line;
+} NoticeLine;
+static bool prv_notice_app_line(const ComplicationSlot *title) {
+  return !(title->flags&COMPLICATION_FLAG_BITMAP)&&title->label[0]&&strcmp(title->label,title->text)!=0;
+}
+static int prv_notice_music_top(const ComplicationSlot *title) {
+  return prv_notice_app_line(title)?130:116;
+}
 static void prv_notice_line(const ComplicationSlot *title,bool banner,int bottom,NoticeLine *line) {
+  memset(line,0,sizeof(*line));
   watch_layout_copy_utf8(title->text,line->text,sizeof(line->text));
   line->point=banner?16:20;
   const int width=banner?155:147;
-  while(line->point>14&&(prv_measure(line->text,line->point).w>width||
-      (banner?body_text_ascent(line->text,line->point)+body_text_descent(line->text,line->point)>19:
-              body_text_ascent(line->text,line->point)>24)))
-    line->point=prv_point(line->point-1);
+  // App and sender are separate source fields. Long app names never force
+  // the sender into a smaller face; only the sender's last word truncates.
   prv_ellipsize(line->text,sizeof(line->text),line->point,width);
-  line->baseline=banner?bottom-body_text_descent(line->text,line->point):120;
+  line->app_line=prv_notice_app_line(title);
+  if(banner) {
+    const int target=bottom+(line->app_line&&bottom<MUSIC_BOTTOM?14:0);
+    line->baseline=target-body_text_descent(line->text,line->point);
+  } else line->baseline=line->app_line?124:120;
   line->bottom=line->baseline+body_text_descent(line->text,line->point);
+  line->app_baseline=line->app_line?(banner?line->baseline-18:102):0;
+}
+static void prv_notice_app(GContext *ctx,const ComplicationSlot *title,const NoticeLine *line,
+                             int x,int y,int left,int width) {
+  if(!line->app_line)return;
+  char app[COMPLICATION_MAX_LABEL_BYTES+5];
+  watch_layout_copy_utf8(title->label,app,sizeof(app));
+  prv_ellipsize(app,sizeof(app),14,width);
+  prv_text(ctx,app,14,x+left,y+line->app_baseline,width,prv_muted_text(1),GTextAlignmentLeft);
 }
 static void prv_notice_icon(GContext *ctx,const ComplicationSlot *title,int x,int y,int bottom,int size) {
   const bool bitmap=(title->flags&COMPLICATION_FLAG_BITMAP)!=0;
@@ -840,8 +874,8 @@ static void prv_notice_icon(GContext *ctx,const ComplicationSlot *title,int x,in
     if(visible)prv_draw_bitmap(ctx,title,x+10,y+bottom-visible,size,s_text_color,false);
   } else {
     const int radius=size/2,cx=x+10+radius,cy=y+bottom-radius;
-    const GColor ink=prv_contrast_ink(GColorChromeYellow);
-    graphics_context_set_fill_color(ctx,GColorChromeYellow);graphics_fill_circle(ctx,GPoint(cx,cy),radius);
+    const GColor ink=prv_contrast_ink(prv_accent_color());
+    graphics_context_set_fill_color(ctx,prv_accent_color());graphics_fill_circle(ctx,GPoint(cx,cy),radius);
     const int symbol=size==24?18:12;
     if(bitmap)prv_draw_bitmap(ctx,title,cx-symbol/2,cy-symbol/2,symbol,ink,false);
     else {
@@ -855,6 +889,7 @@ static void prv_draw_notice_banner(GContext *ctx,const RenderContext *value,int 
   if(!value->heading_only||!context_slot_fresh(&value->title,time(NULL)))return;
   NoticeLine line;prv_notice_line(&value->title,true,music?112:MUSIC_BOTTOM,&line);
   prv_notice_icon(ctx,&value->title,x,y,line.bottom,16);
+  prv_notice_app(ctx,&value->title,&line,x,y,35,155);
   prv_text(ctx,line.text,line.point,x+35,y+line.baseline,155,s_text_color,GTextAlignmentLeft);
 }
 static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int x,int y) {
@@ -865,11 +900,12 @@ static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int 
   if(value->mode==CONTEXT_MUSIC) {
     prv_draw_music(ctx,title,subtitle,x,y,prv_music_top());
   } else if(value->heading_only) {
-    if(value->has_music)prv_draw_music(ctx,&value->music_title,&value->music_artist,x,y,116);
+    if(value->has_music)prv_draw_music(ctx,&value->music_title,&value->music_artist,x,y,prv_notice_music_top(title));
     prv_draw_notice_banner(ctx,value,x,y,value->has_music);
   } else {
     NoticeLine heading;prv_notice_line(title,false,0,&heading);
     prv_notice_icon(ctx,title,x,y,heading.bottom,24);
+    prv_notice_app(ctx,title,&heading,x,y,43,147);
     prv_text(ctx,heading.text,heading.point,x+43,y+heading.baseline,147,s_text_color,GTextAlignmentLeft);
     if(has_subtitle) {
       const int top=heading.bottom+8>132?heading.bottom+8:132;
@@ -891,7 +927,7 @@ static void prv_draw_context(Layer *layer,GContext *ctx) {
   if(s_slide_active&&s_banner_slide) {
     const ComplicationSlot *music=render_context_music(&s_context_to,false);
     const ComplicationSlot *artist=render_context_music(&s_context_to,true);
-    prv_draw_music(ctx,music,artist,0,y,s_context_to.heading_only?116:prv_music_top());
+    prv_draw_music(ctx,music,artist,0,y,s_context_to.heading_only?prv_notice_music_top(&s_context_to.title):prv_music_top());
     prv_draw_notice_banner(ctx,&s_context_from,prv_round(-s_slide_direction*200*s_slide_amount),y,true);
     prv_draw_notice_banner(ctx,&s_context_to,prv_round(s_slide_direction*200*(1-s_slide_amount)),y,true);
   } else if(s_slide_active) {
@@ -912,6 +948,18 @@ static void prv_update_clock(void) {
   prv_apply_unobstructed_layout();
 }
 
+// A settings preview asks for the OS clock style, independently of this
+// face's explicit override. If the normal request owns the outbox, its packet
+// already carries the style; otherwise finish the query after that callback.
+static void prv_send_clock_format(void) {
+  if(!s_format_reply_pending)return;
+  DictionaryIterator *iterator;
+  if(app_message_outbox_begin(&iterator)!=APP_MSG_OK)return;
+  dict_write_uint8(iterator,MESSAGE_KEY_CLOCK_FORMAT,clock_is_24h_style()?24:12);
+  s_outbox_format_only=true;s_format_reply_pending=false;
+  if(app_message_outbox_send()!=APP_MSG_OK)s_outbox_format_only=false;
+}
+
 static void prv_request_complications(void) {
   DictionaryIterator *iterator;
   const AppMessageResult result = app_message_outbox_begin(&iterator);
@@ -921,11 +969,13 @@ static void prv_request_complications(void) {
   }
   dict_write_uint8(iterator, MESSAGE_KEY_REQUEST_COMPLICATIONS, 1);
   dict_write_uint32(iterator, MESSAGE_KEY_REQUEST_CONTEXT, wfc_request_marker(&s_core));
+  dict_write_uint8(iterator, MESSAGE_KEY_CLOCK_FORMAT, clock_is_24h_style()?24:12);
+  s_outbox_format_only=false;
   const AppMessageResult sent = app_message_outbox_send();
   if (sent != APP_MSG_OK) {
     wfc_request_failed(&s_core);
     APP_LOG(APP_LOG_LEVEL_WARNING, "Complication request failed: %d", sent);
-  } else { wfc_request_accepted(&s_core, time(NULL)); }
+  } else { s_format_reply_pending=false;wfc_request_accepted(&s_core, time(NULL)); }
 }
 
 static void prv_startup_request(void *context) {
@@ -1064,7 +1114,9 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
     persist_write_bool(PERSIST_KEY_TEXT_SHADOW, s_text_shadow_enabled);
   }
   uint32_t format;
-  if(prv_color_value(clock_format,&format)&&
+  if(prv_color_value(clock_format,&format)&&format==WATCH_CLOCK_QUERY) {
+    s_format_reply_pending=true;prv_send_clock_format();
+  } else if(prv_color_value(clock_format,&format)&&
       (format==WATCH_CLOCK_FOLLOW||format==WATCH_CLOCK_12||format==WATCH_CLOCK_24)) {
     s_clock_format=(uint8_t)format;persist_write_int(PERSIST_KEY_CLOCK_FORMAT,s_clock_format);
   } else if (twelve != NULL) {
@@ -1088,11 +1140,15 @@ static void prv_inbox_dropped(AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_WARNING, "Complication message dropped: %d", reason);
 }
 static void prv_outbox_failed(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+  if(s_outbox_format_only){s_outbox_format_only=false;return;}
   wfc_request_failed(&s_core);
   APP_LOG(APP_LOG_LEVEL_WARNING, "Complication request failed: %d", reason);
+  prv_send_clock_format();
 }
 static void prv_outbox_sent(DictionaryIterator *iterator, void *context) {
-  wfc_request_acknowledged(&s_core);
+  if(s_outbox_format_only)s_outbox_format_only=false;
+  else wfc_request_acknowledged(&s_core);
+  prv_send_clock_format();
 }
 
 
@@ -1157,7 +1213,7 @@ static bool prv_init(void) {
   window_set_window_handlers(s_window,(WindowHandlers){.load=prv_window_load,.unload=prv_window_unload});
   app_message_register_inbox_received(prv_inbox_received);app_message_register_inbox_dropped(prv_inbox_dropped);
   app_message_register_outbox_failed(prv_outbox_failed);app_message_register_outbox_sent(prv_outbox_sent);
-  // One v3 snapshot is bounded at5186bytes, plus dictionary/setting overhead.
+  // One v4 snapshot is bounded at5206bytes, plus dictionary/setting overhead.
   app_message_open(NATIVE_INBOX_BYTES,32);tick_timer_service_subscribe(MINUTE_UNIT,prv_tick_handler);
   window_stack_push(s_window,false);
   connection_service_subscribe((ConnectionHandlers){.pebble_app_connection_handler=prv_phone_connection_changed});

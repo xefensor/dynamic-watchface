@@ -13,17 +13,22 @@ typedef struct {
   const ComplicationSlot *title,*subtitle,*music_title,*music_artist;
 } ContextView;
 
-// Confirmation timestamps and optional diagnostic metadata do not change the
-// visible song/notice, so refreshing a lease never restarts its animation.
+// Text/app identity controls transitions. Covers and icons may arrive later;
+// their pixels repaint without moving already-readable content again.
+static inline bool render_slot_identity_equal(const ComplicationSlot *a,const ComplicationSlot *b) {
+  const unsigned identity_flags=COMPLICATION_FLAG_TEXT|COMPLICATION_FLAG_TIMESTAMP;
+  return (a->flags&identity_flags)==(b->flags&identity_flags)&&a->status==b->status&&
+      a->text_length==b->text_length&&a->timestamp==b->timestamp&&
+      memcmp(a->text,b->text,a->text_length)==0&&strcmp(a->label,b->label)==0;
+}
 static inline bool render_slot_equal(const ComplicationSlot *a,const ComplicationSlot *b) {
-  return a->flags==b->flags&&a->status==b->status&&a->width==b->width&&a->height==b->height&&
-      a->stride==b->stride&&a->text_length==b->text_length&&a->pixel_bytes==b->pixel_bytes&&
-      a->display_kind==b->display_kind&&memcmp(a->text,b->text,a->text_length)==0&&
+  return render_slot_identity_equal(a,b)&&a->flags==b->flags&&a->width==b->width&&a->height==b->height&&
+      a->stride==b->stride&&a->pixel_bytes==b->pixel_bytes&&a->display_kind==b->display_kind&&
       (!(a->flags&COMPLICATION_FLAG_BITMAP)||
        (memcmp(a->palette,b->palette,COMPLICATION_PALETTE_BYTES)==0&&memcmp(a->bitmap,b->bitmap,a->pixel_bytes)==0));
 }
 static inline bool render_optional_slot_equal(const ComplicationSlot *snapshot,const ComplicationSlot *live) {
-  return live?render_slot_equal(snapshot,live):snapshot->flags==0;
+  return live?render_slot_identity_equal(snapshot,live):snapshot->flags==0;
 }
 static inline ContextView render_context_view(const ComplicationSet *live,bool connected,
                                                bool rebaseline,time_t now) {
@@ -52,6 +57,15 @@ static inline bool render_context_equal(const RenderContext *snapshot,const Cont
        render_optional_slot_equal(&snapshot->music_title,view->music_title)&&
        render_optional_slot_equal(&snapshot->music_artist,view->music_artist)));
 }
+// A burst has one entrance. Edits to its heading/body remain in place, and
+// an artist arriving after a title also must not replay the song entrance.
+static inline bool render_context_should_slide(const RenderContext *snapshot,const ContextView *view) {
+  if(snapshot->mode==CONTEXT_NONE||view->mode==CONTEXT_NONE)return false;
+  if(snapshot->mode==CONTEXT_NOTIFICATION&&view->mode==CONTEXT_NOTIFICATION)return false;
+  if(snapshot->mode==CONTEXT_MUSIC&&view->mode==CONTEXT_MUSIC)
+    return !render_slot_identity_equal(&snapshot->title,view->title);
+  return true;
+}
 static inline void render_context_capture(RenderContext *snapshot,const ContextView *view) {
   memset(snapshot,0,sizeof(*snapshot));snapshot->mode=view->mode;
   snapshot->heading_only=view->heading_only;snapshot->has_music=view->has_music;
@@ -74,7 +88,7 @@ static inline void render_context_redact(RenderContext *snapshot,const Complicat
   if(!connected||rebaseline) {memset(snapshot,0,sizeof(*snapshot));return;}
   unsigned i=snapshot->mode==CONTEXT_NOTIFICATION?2:0;
   if(!context_slot_fresh(&snapshot->title,now)||!context_slot_fresh(&live->slots[i],now)||
-      (i==2&&!render_slot_equal(&snapshot->title,&live->slots[i]))) {
+      (i==2&&!render_slot_identity_equal(&snapshot->title,&live->slots[i]))) {
     if(snapshot->heading_only&&snapshot->has_music&&
         context_slot_fresh(&snapshot->music_title,now)&&context_slot_fresh(&live->slots[0],now)) {
       snapshot->title=snapshot->music_title;snapshot->subtitle=snapshot->music_artist;

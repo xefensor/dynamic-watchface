@@ -1,108 +1,120 @@
 {
-  "version": "0.4.1",
+  "version": "0.5.0",
   "pbw": {
-    "file": "Dynamic-0.4.1.pbw",
-    "sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625"
+    "file": "Dynamic-0.5.0.pbw",
+    "sha256": "fb2841fdf0a18072e269e79e4381ee962b5a9d94ae2ec3d985e60cb117e827a7"
   },
   "native_payload_sha256": {
-    "appinfo.json": "7915a421426a25920349c8f987d690ee52745122e3c97eaec1853293069bbbd1",
+    "appinfo.json": "d2346e80d161c070ef5bbddc2c150822f04da50a05853c25c60e555335f9f3d8",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "a03eb9b0b1bc1ea443b6053c1fe6bd6ba54d325f14e3cc2363fd9bb9481992d3",
-    "emery/pebble-app.bin": "187bf03a7c27ade41c0d1e55a58e2cc134bd6ee243c160a9f57a003dafb6e596"
+    "emery/manifest.json": "7e0973c85d831322415f715fbe7d8a7604415fd662860638cf39e2eb3aa85337",
+    "emery/pebble-app.bin": "44b7d16acfeea0eda26cf7b41cb0296779291204b322c38f0772cab0fb9ed6ce"
   },
   "core": {
     "package": "pebble-watchface-core",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "repository": "https://github.com/xefensor/pebble-watchface-core",
-    "artifact": "pebble-watchface-core-0.2.0.tgz",
-    "sha256": "1525575a2e8e17201fb3625c48a9752553f54ab34ac7b72a7ab455cb36949c3e",
-    "integrity": "sha512-qy2dDS8fWsUaY7mRSaZ58RjwW+QhoBpJuVH1ROXx5+piydrpOSYmn5+SXwyeyHcIVXvabWASyRDaoyqOk1BAAw==",
+    "artifact": "pebble-watchface-core-0.3.0.tgz",
+    "sha256": "c352cd062c062b3888941194aad571c3a9046ffcc271485267cc2f711443e7a1",
+    "integrity": "sha512-G/69pOZCDKT4kkHnjldBOVYrPieRkd1JIMx94KeQOwNSEVu1A4Rhdmb7zdw7qZTh35d+h1wu73u1VJ8EDTkGHw==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "e5510d4998973d5bd339eb9c771594313f6764a3"
+    "source_commit": "e5d99b5033c6aa461023ec0674a1802deb5c0a04"
   },
   "images": [
     {
       "file": "docs/images/layout-states.png",
-      "sha256": "9fd6e338faeb9b365a19d1d1d74f9c4acd334e4c0eae74602fbf72bdc21ce412",
+      "sha256": "2811338a3c100fe92ef00d70d9c31c670bd1fd4164592a83ee07872ca449d6eb",
       "pixels": [
-        880,
+        1100,
         282
       ],
       "fixture_captures": [
-        "status-12da079f/captures/final-idle.png",
-        "status-12da079f/captures/final-music.png",
-        "status-12da079f/captures/final-notification.png",
-        "status-12da079f/captures/final-timeline.png"
+        "final-fb2841fd/captures/idle.png",
+        "final-fb2841fd/captures/music.png",
+        "final-fb2841fd/captures/notification-summary.png",
+        "final-fb2841fd/captures/notification.png",
+        "final-fb2841fd/captures/timeline.png"
       ],
       "native_frame_pixels_modified": false,
-      "provenance": "Composite of final0.4.1 native frames; labels/margins outside unmodified screen pixels."
+      "provenance": "Five final-package native frames with labels/margins outside the unmodified screen pixels."
     },
     {
       "file": "docs/images/normal.png",
-      "sha256": "c0cddaedd45e9132ad04604c22072c0e791ad0a86ec3957f7e4b7470f8d1920d",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "status-12da079f/captures/final-idle.png",
+      "fixture_capture": "final-fb2841fd/captures/idle.png",
       "native_pixels_modified": false,
-      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
+      "provenance": "Direct native Screenshot service from exact final0.5.0 PBW using production-core synthetic fixture data; no phone JavaScript."
     },
     {
       "file": "docs/images/music.png",
-      "sha256": "40f22d680b504cf52bd7be74a089a083f8495f3a264139688359f2f3533819bc",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "status-12da079f/captures/final-music.png",
+      "fixture_capture": "final-fb2841fd/captures/music.png",
       "native_pixels_modified": false,
-      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
+      "provenance": "Direct native Screenshot service from exact final0.5.0 PBW using production-core synthetic fixture data; no phone JavaScript."
+    },
+    {
+      "file": "docs/images/notification-summary.png",
+      "sha256": "9f58fdc7d2884da85365d866d269bc26e337cc82000c6cc67f708fffabd5b4b0",
+      "pixels": [
+        200,
+        228
+      ],
+      "fixture_capture": "final-fb2841fd/captures/notification-summary.png",
+      "native_pixels_modified": false,
+      "provenance": "Direct native Screenshot service from exact final0.5.0 PBW using production-core synthetic fixture data; no phone JavaScript."
     },
     {
       "file": "docs/images/notification.png",
-      "sha256": "12298d14b6bc2c449da9e510b696c82cb3d8d9ed8272669f7352446fb802cbdd",
+      "sha256": "1a79003f9b9179b8f39cb7bd69c9ed44361b91ee380753fc4a8790b7f196af25",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "status-12da079f/captures/final-notification.png",
+      "fixture_capture": "final-fb2841fd/captures/notification.png",
       "native_pixels_modified": false,
-      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
+      "provenance": "Direct native Screenshot service from exact final0.5.0 PBW using production-core synthetic fixture data; no phone JavaScript."
     },
     {
       "file": "docs/images/timeline-peek.png",
-      "sha256": "905200988f26d73920d76e1c5ff23a307f36653fe7fb2c079979aa9194578932",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "status-12da079f/captures/final-timeline.png",
+      "fixture_capture": "final-fb2841fd/captures/timeline.png",
       "native_pixels_modified": false,
-      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
+      "provenance": "Direct native Screenshot service from exact final0.5.0 PBW using production-core synthetic fixture data; no phone JavaScript."
     },
     {
       "file": "docs/images/settings-light.png",
-      "sha256": "b4da11183602dc58965e78f0a7cb38b126aaf4f6ae3b4759c5decebded5b73b9",
+      "sha256": "4928e6099c7eaca94347f5bfac42f1af97a1373cc1cbaee76729529244f278a3",
       "pixels": [
         390,
         844
       ],
-      "fixture_capture": "../dynamic041-settings/settings-en-light-390x844.png",
-      "provenance": "Actual current Clay settings browser capture, fixture bridge; not a physical phone."
+      "fixture_capture": "../dynamic050-settings/settings-en-light-390x844.png",
+      "provenance": "Actual current Clay settings browser capture with fixture bridge, not a physical phone."
     },
     {
       "file": "docs/images/settings-dark.png",
-      "sha256": "2f3480e5fb09cfa7877298b3269c3177fa7035fb6b29fe0d90ba918e952d8a79",
+      "sha256": "34887ddee220a87b5241503177532933c032431c0cbacff02643799815a45b02",
       "pixels": [
         390,
         844
       ],
-      "fixture_capture": "../dynamic041-settings/settings-cs-dark-390x844.png",
-      "provenance": "Actual current Clay settings browser capture, fixture bridge; not a physical phone."
+      "fixture_capture": "../dynamic050-settings/settings-cs-dark-390x844.png",
+      "provenance": "Actual current Clay settings browser capture with fixture bridge, not a physical phone."
     }
   ],
   "design_reference": {
@@ -115,72 +127,676 @@
     "reference_images_redistributed": false
   },
   "native_qa": {
-    "release_pbw_sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625",
-    "exact_final_package_smoke_captures": 8,
-    "final_package_sample_pixel_identities": 5,
+    "release_pbw_sha256": "fb2841fdf0a18072e269e79e4381ee962b5a9d94ae2ec3d985e60cb117e827a7",
+    "candidate_native_stills": 71,
     "native_renderer_identity": {
-      "final_pbw_sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625",
-      "captured_candidate_pbw_sha256": "9f8265d3167ee7fd791bddac40e6a02241c47326e2dacfeb48fdcc0e92bc02e4",
+      "candidate_pbw_sha256": "ebff5110f0dc3983313d27ff5dbf2fe26fcc6936bd6e4395b6c85106a767cdd6",
+      "final_pbw_sha256": "fb2841fdf0a18072e269e79e4381ee962b5a9d94ae2ec3d985e60cb117e827a7",
       "native_binary_and_resources_identical": true,
-      "payload_sha256": {
-        "emery/pebble-app.bin": "187bf03a7c27ade41c0d1e55a58e2cc134bd6ee243c160a9f57a003dafb6e596",
+      "native_payload_sha256": {
+        "emery/pebble-app.bin": "44b7d16acfeea0eda26cf7b41cb0296779291204b322c38f0772cab0fb9ed6ce",
         "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
       }
     },
-    "candidate_native_stills": 58,
-    "candidate_pixel_checks": 8,
-    "motion_paths": 4,
+    "candidate_pixel_clock_checks": 9,
+    "candidate_motion_paths": 6,
+    "migration_report": "migration-ebff5110/checks.json",
+    "migration": {
+      "result": "PASS",
+      "old_release_sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625",
+      "release_sha256": "ebff5110f0dc3983313d27ff5dbf2fe26fcc6936bd6e4395b6c85106a767cdd6",
+      "checks": [
+        {
+          "name": "12-hour-preferences-preserved",
+          "pass": true,
+          "comparison": "exact current RGB"
+        },
+        {
+          "name": "24-hour-preferences-preserved",
+          "pass": true,
+          "comparison": "exact current RGB"
+        }
+      ],
+      "captures": [
+        {
+          "name": "old041-music",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/12/old041-music.png",
+          "sha256": "01ad63c8f7636c113abb504f30693ddc05e08d14931c41de6e243cf58945ee29"
+        },
+        {
+          "name": "upgraded050-v3-public-cache-only",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/12/upgraded050-v3-public-cache-only.png",
+          "sha256": "4aed290f2bf774ff737ed5f5a3b8374d8932640aea4cd29859a76dbc029a1f74"
+        },
+        {
+          "name": "upgraded050-preferences",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/12/upgraded050-preferences.png",
+          "sha256": "159e52c130fed9dc23a9c278da2ade62511e861dceba19278fcfbbea2cf8e421"
+        },
+        {
+          "name": "explicit-equivalent-preferences",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/12/explicit-equivalent-preferences.png",
+          "sha256": "159e52c130fed9dc23a9c278da2ade62511e861dceba19278fcfbbea2cf8e421"
+        },
+        {
+          "name": "upgraded050-v4-music",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/12/upgraded050-v4-music.png",
+          "sha256": "497df9c70dd66303c9dfb50b06071246913a02b411a1ba24de3cd435e51ebdd4"
+        },
+        {
+          "name": "relaunch-no-private-music",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/12/relaunch-no-private-music.png",
+          "sha256": "159e52c130fed9dc23a9c278da2ade62511e861dceba19278fcfbbea2cf8e421"
+        },
+        {
+          "name": "old041-music",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/24/old041-music.png",
+          "sha256": "6668b01a0100519506205549ce3680e2c13181684222558140457f1046e13723"
+        },
+        {
+          "name": "upgraded050-v3-public-cache-only",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/24/upgraded050-v3-public-cache-only.png",
+          "sha256": "9b3b3c4197d2b74681eedaebadbc0e366c59d9ac5f4ea2a64edac56290e950ac"
+        },
+        {
+          "name": "upgraded050-preferences",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/24/upgraded050-preferences.png",
+          "sha256": "c5fe0d39c70719a69dadf47b22ecfe56576ca4c45d719382682b30b9c96405bf"
+        },
+        {
+          "name": "explicit-equivalent-preferences",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/24/explicit-equivalent-preferences.png",
+          "sha256": "c5fe0d39c70719a69dadf47b22ecfe56576ca4c45d719382682b30b9c96405bf"
+        },
+        {
+          "name": "upgraded050-v4-music",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/24/upgraded050-v4-music.png",
+          "sha256": "eeba9112b4681eb7fdf01b34406b7dd3532bd00097c784a55c945e77bdd556e1"
+        },
+        {
+          "name": "relaunch-no-private-music",
+          "path": "/workspace/scratch/b42a493b9f28/tmp/dynamic-050-native-qa/migration-ebff5110/24/relaunch-no-private-music.png",
+          "sha256": "c5fe0d39c70719a69dadf47b22ecfe56576ca4c45d719382682b30b9c96405bf"
+        }
+      ],
+      "phone_javascript_executed": false,
+      "physical_phone_tested": false,
+      "visual_review": {
+        "status": "PASS",
+        "scope": "All12 migrationcaptures reviewed: historical0.4.1 music, publicv3 cache afterupgrade, equivalentforced12/24 preferences, currentv4musicandrelaunchwithnoprivatecontext."
+      }
+    },
+    "final_package_smoke_captures": 5,
+    "final_package_pixel_checks": 5,
     "visual_review": {
       "status": "PASS",
-      "scope": "Root reviewed all20 light/dark,12/24-hour presets. Independent review covered all5 edge sheets,3 motion sheets and5 Timeline frames. No concrete clipping, label/icon collision or footer drift found."
+      "reviewed_presets": 20,
+      "reviewed_edge_sheets": 7,
+      "reviewed_motion_sheets": 6,
+      "scope": "All native preset and edge screenshots reviewed, including precise meaning/error labels, missing appicons, custom secondary ink/accent, wide times and Greek/Cyrillic metadata. No concrete text/icon collision, clipping or footer drift found. Late-art26frames preserve every native pixel outside the art rectangle; notice-update26frames preserve header pixels."
     },
-    "migration_captures": 28,
-    "migration_checks": 23,
-    "migration_scope": "Two real persisted-size upgrades. Unified idle/music/Timeline images equal across migrations; obsolete live size 0/1 ignored; old size cannot return after relaunch.",
     "phone_javascript_executed": false,
     "physical_phone_tested": false,
-    "actual_timeline_event_text_verified": false,
-    "manifests": [
-      "native-9f8265d3/manifest.json",
-      "migration-9f8265d3/checks.json",
-      "status-12da079f/manifest.json"
-    ]
+    "actual_timeline_event_text_verified": false
   },
   "settings_qa": {
-    "native_presets": 20,
-    "canvas_rgba_identities": 20,
-    "saved_size_preview_checks": 10,
-    "clock_migration_cases": 5,
-    "submitted_legacy_size": false,
-    "page_errors": [],
-    "external_requests": [],
-    "viewports": [
+    "pass": true,
+    "actualAppClay": true,
+    "fixtureBridge": true,
+    "physicalPhone": false,
+    "version": "0.5.0",
+    "nativePresetCanvasIdentities": 20,
+    "independentPreviewPrivacy": true,
+    "knownAndUnknownSystemFormat": true,
+    "dirtySaveState": true,
+    "automaticReconnectCopy": true,
+    "customPaletteRestored": true,
+    "editableAppChips": true,
+    "sourceRecoveryAndAges": true,
+    "realClaySavePayload": {
+      "BACKGROUND_COLOR": {
+        "value": 16733440
+      },
+      "TEXT_COLOR": {
+        "value": 16777215
+      },
+      "ACCENT_COLOR": {
+        "value": 5614335
+      },
+      "CLOCK_FORMAT": {
+        "value": 0
+      },
+      "ANIMATIONS": {
+        "value": true
+      },
+      "SHOW_STATUS": {
+        "value": true
+      },
+      "SHOW_MUSIC": {
+        "value": true
+      },
+      "SHOW_NOTIFICATIONS": {
+        "value": true
+      },
+      "NOTIFICATION_PREVIEW": {
+        "value": false
+      },
+      "NOTIFICATION_APPS": {
+        "value": "Signal, org.test.pending"
+      }
+    },
+    "viewportCases": [
       {
         "language": "en",
+        "width": 320,
         "scheme": "light",
-        "width": 390,
-        "height": 844,
         "noOverflow": true,
-        "fixedSaveVisible": true,
-        "presetCanvasRgbaIdentity": true
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "en",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "en",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "en",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
       },
       {
         "language": "cs",
-        "scheme": "dark",
-        "width": 390,
-        "height": 844,
+        "width": 320,
+        "scheme": "light",
         "noOverflow": true,
-        "fixedSaveVisible": true,
-        "presetCanvasRgbaIdentity": true
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "cs",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "cs",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "cs",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sk",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sk",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sk",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sk",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "de",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "de",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "de",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "de",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fr",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fr",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fr",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fr",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "es",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "es",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "es",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "es",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "it",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "it",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "it",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "it",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pt",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pt",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pt",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pt",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "nl",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "nl",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "nl",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "nl",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pl",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pl",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pl",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "pl",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "da",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "da",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "da",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "da",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sv",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sv",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sv",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "sv",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "no",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "no",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "no",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "no",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fi",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fi",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fi",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "fi",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "hu",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "hu",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "hu",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "hu",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "ro",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "ro",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "ro",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "ro",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "tr",
+        "width": 320,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "tr",
+        "width": 320,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "tr",
+        "width": 390,
+        "scheme": "light",
+        "noOverflow": true,
+        "fixedSaveVisible": true
+      },
+      {
+        "language": "tr",
+        "width": 390,
+        "scheme": "dark",
+        "noOverflow": true,
+        "fixedSaveVisible": true
       }
     ],
-    "physical_phone_tested": false,
-    "source_sha256": {
-      "src/pkjs/index.js": "4236180d32ff28e869bde53681ea5490cad748bf2cb0fb1d8e107f78bd1c4cf8",
-      "src/pkjs/config.js": "f78c47c72a081ac26ab14907c635bcfbc4d325b93ac4406116c892e45d2f8db7",
-      "src/pkjs/settings-page.js": "3581cb7d0c8b46be6066baba33a8a1cfd3888c21c1dfe31293306c303e8cbd7f",
-      "src/pkjs/localization.js": "099ea75e63f52f9219274e23a3cf0a79e357a24648ba1ddb1e1547cef14191c9",
-      "src/pkjs/settings-preview.js": "bf2839aa2f65ad558337d456bc2d6e0af8d2f14f8e2f7fa394f20904cf6cd064"
+    "pageErrors": [],
+    "externalRequests": [],
+    "dataUriLengths": {
+      "actual-en": 508806,
+      "follow12": 508758,
+      "follow-unknown": 508760,
+      "dirty": 508739,
+      "delivery-pending": 508741,
+      "delivery-failed": 508741,
+      "actual-cs": 511349,
+      "actual-sk": 511088,
+      "actual-de": 510079,
+      "actual-fr": 511512,
+      "actual-es": 510695,
+      "actual-it": 510177,
+      "actual-pt": 511425,
+      "actual-nl": 509584,
+      "actual-pl": 510492,
+      "actual-da": 509631,
+      "actual-sv": 510249,
+      "actual-no": 509409,
+      "actual-fi": 510500,
+      "actual-hu": 513094,
+      "actual-ro": 511057,
+      "actual-tr": 511156,
+      "source-help": 508723,
+      "save-roundtrip": 508818
+    },
+    "sourceSha256": {
+      "src/pkjs/index.js": "599dcf6a3d23b219a37aac0b48a2b2559071f53437ab082d1d90a6679c7494c1",
+      "src/pkjs/config.js": "66acaa6e8516ac9875dc2d1b70007bfac8b09b8baefb76bb8d9bbeaedf5f208d",
+      "src/pkjs/settings-page.js": "f8ac4a597fff6da18d6ca9aca98c7f4a0db7576cc795ef6e2c8ca0a280ff950d",
+      "src/pkjs/localization.js": "e3781ac1bfb9bf3dc8ec67ba68210aec7eb7874031d8401bd4c6f49aa5df1184",
+      "src/pkjs/settings-preview.js": "8c152a9ce1b18e1f7c726a2d707a0850824cc50684e33f8b2fecd3ebe36eac02"
     }
   },
   "fonts": {
@@ -725,16 +1341,42 @@
     "fixed_title_font_px": 24,
     "fixed_artist_font_px": 20,
     "per_track_font_resizing": false,
-    "notification_banner_title_top_px": 116
+    "notification_banner_title_top_px": 116,
+    "artist_secondary_ink_guarded": true,
+    "late_artwork_restarts_transition": false,
+    "notification_banner_missing_icon_may_use_one_title_line": true
   },
   "validation": {
-    "dynamic_js_tests": 61,
+    "dynamic_js_tests": 65,
     "dynamic_native_suites": 6,
-    "core_js_tests_reused": 103,
-    "core_native_suites_reused": 3,
+    "core_js_tests": 116,
+    "core_native_suites": 3,
+    "core_native_asan_ubsan": true,
     "build_audit": "PASS",
     "resources_bytes": 246928,
-    "static_ram_footprint_bytes": 60858,
-    "heap_before_startup_allocation_bytes": 70214
+    "static_ram_footprint_bytes": 63974,
+    "heap_before_startup_allocation_bytes": 67098,
+    "runtime_heap_total_bytes": 67096,
+    "runtime_heap_used_bytes": 30828
+  },
+  "reading_presentation": {
+    "precise_detail_labels": true,
+    "public_identity_retained_when_unavailable": true,
+    "expired_status_distinct": true,
+    "observation_age_mark_seconds": 3600,
+    "cache_origin_alone_marked_aged": false,
+    "muted_ink_min_contrast": 4.5,
+    "accent_fallback_min_contrast": 2,
+    "stored_palette_mutated": false
+  },
+  "native_clock_bridge": {
+    "query_clock_format": 255,
+    "response_system_format": [
+      12,
+      24
+    ],
+    "overrides_user_preference": false,
+    "settings_uses_last_reported_style": true,
+    "unknown_format_labelled_example": true
   }
 }

@@ -140,9 +140,9 @@ test('all custom controls, source states and save outcomes have complete transla
   assert.equal(localization.t('permissionHelp','en'),'Allow access in Pebble, then reopen settings.');
   assert.equal(localization.t('pluginHelp','en'),'Check that the matching plugin is enabled in Pebble.');
   assert.equal(localization.t('connectionHelp','en'),'Connect your phone and watch, then reopen settings.');
-  assert.equal(localization.t('saveSaved','en'),'Watch settings delivered.');
-  assert.equal(localization.t('savePending','en'),'Saved on phone; waiting for watch.');
-  assert.equal(localization.t('saveFailed','en'),'Saved on phone. Reconnect and save again to update the watch.');
+  assert.equal(localization.t('saveSaved','en'),'Last save delivered');
+  assert.equal(localization.t('savePending','en'),'Saved on phone—will apply when the watch reconnects.');
+  assert.equal(localization.t('saveFailed','en'),'Saved on phone—will apply when the watch reconnects.');
   assert.equal(localization.t('receivedAge','en'),'Received {age} min ago');
   assert.equal(localization.t('observedAge','en'),'Observed {age} min ago');
 });
@@ -191,4 +191,39 @@ test('chunky-motion appearance controls are translated without stale panel or sh
   }
   assert.doesNotMatch(visible(config).join('\n'),/information panel color|Panel text|bolder time digits/);
   assert.equal(localization.t('animationsHelp','en'),'Short transitions when music or notifications change.');
+});
+
+
+test('the full UX pass has explicit translations and keeps privacy and save meanings separate',()=>{
+  const keys=['content','layoutPreview','previewBanner','previewMessage','previewDisabled',
+    'previewUnknownFormat','previewSafeHelp','sharedReadingsHelp','saveUnsaved','saveLastDelivered',
+    'savePhoneWaiting','appAdd','appRemove','appEntryLabel','appEntryHelp','appDuplicate','appInvalid',
+    'appLimit','sourceExpired','justObserved','justReceived','readingSetupHelp','sourceNoUpdateHelp',
+    'accentContrastHelp','notificationSummaryHelp'];
+  for(const language of languages){
+    const strings=localization.settingsStrings(language);
+    for(const key of keys){
+      assert.equal(typeof strings[key],'string',language+': '+key);
+      assert.ok(strings[key].trim(),language+': '+key);
+      assert.notEqual(strings[key],key,language+': '+key);
+      if(language!=='en')assert.notEqual(strings[key],localization.t(key,'en'),language+': '+key);
+      assert.equal(localization.t(localization.t(key,'en'),language),strings[key],language+': literal '+key);
+    }
+    assert.match(strings.appRemove,/\{app\}/,language+': remove placeholder');
+    assert.equal(localization.t('appRemove',language,{app:'Signal'}),strings.appRemove.replace('{app}','Signal'));
+    assert.match(strings.appLimit,/160/,language+': app transport bound');
+    assert.match(strings.previewUnknownFormat,/24/,language+': example clock format');
+    assert.match(strings.sharedReadingsHelp,/Pebble/,language+': shared ownership');
+    assert.equal(strings.saveSaved,strings.saveLastDelivered);
+    assert.equal(strings.saveFailed,strings.savePhoneWaiting);
+    assert.equal(strings.savePending,strings.savePhoneWaiting);
+    assert.notEqual(strings.saveUnsaved,strings.saveLastDelivered);
+    assert.notEqual(strings.previewBanner,strings.previewMessage);
+    assert.notEqual(strings.justObserved,strings.justReceived);
+    assert.notEqual(strings.sourceExpired,strings.sourceUnavailable);
+    assert.equal(localization.t('Help & connection',language),strings.helpConnection);
+  }
+  assert.doesNotMatch(localization.t('saveFailed','en'),/save again/i);
+  assert.match(localization.t('notificationSummaryHelp','en'),/sender.*not the message body/);
+  assert.equal(localization.t('helpConnection','en'),'Connection & help');
 });

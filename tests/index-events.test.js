@@ -14,7 +14,7 @@ function fixture(settings = {}, locales = {}) {
   let options, contextOptions, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
   const deferred=[];
   const contextRefreshes=[], connections=[];
-  const handlers = {}, deliveries = [], urls = [], timers = [];
+  const handlers = {}, deliveries = [], clockQueries = [], urls = [], timers = [];
   const status = {available:true,configured:0,ready:0,error:'',slots:[]};
   const contextStatus = {available:true,ready:false,error:''};
   vm.runInNewContext(source, {
@@ -55,7 +55,7 @@ function fixture(settings = {}, locales = {}) {
     Pebble: {
       getActiveWatchInfo:()=> {if(locales.throwWatchInfo)throw Error('Disconnected');return {language:watchLanguage};},
       addEventListener:(event,fn)=> {handlers[event]=fn;},
-      sendAppMessage:(payload,ok,error)=> {deliveries.push(payload);if(hold){deferred.push({ok,error});}else if(fail){if(error)error();}else if(ok)ok();},
+      sendAppMessage:(payload,ok,error)=> {if(payload[keys.CLOCK_FORMAT]===255)clockQueries.push(payload);else deliveries.push(payload);if(hold){deferred.push({ok,error});}else if(fail){if(error)error();}else if(ok)ok();},
       openURL:url=>urls.push(url)
     },
     navigator:{language:locales.phone || 'en-US'},
@@ -65,7 +65,7 @@ function fixture(settings = {}, locales = {}) {
     clearTimeout:id=>{const at=timers.findIndex(timer=>timer.id===id);if(at>=0)timers.splice(at,1);},
     console:{log:()=>{}}
   });
-  return {handlers,deliveries,urls,status,contextStatus,clay,options,contextOptions,timers,contextRefreshes,connections,
+  return {handlers,deliveries,clockQueries,urls,status,contextStatus,clay,options,contextOptions,timers,contextRefreshes,connections,
     refreshes:()=>refreshed,configured:()=>configured,settings:()=>JSON.parse(saved),
     contextConfigured:()=>contextConfigured,storage,
     fail:value=>{fail=value;},hold:value=>{hold=value;},deferred,watchLanguage:value=>{watchLanguage=value;}};
@@ -430,4 +430,35 @@ test('private selected readings never enter settings examples or provider error 
   const visible=JSON.stringify(f.clay.config);
   assert.doesNotMatch(visible,/Private artist|Private song|Private provider detail|Private sender|Private message/);
   assert.match(visible,/PLUGIN_UNAVAILABLE/);
+});
+
+function metadataItem(f,id) {
+  return JSON.parse(item(f,id).defaultValue.replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#39;/g,"'"));
+}
+test('native system-format replies are cached independently of an explicit clock override',()=>{
+  const f=fixture({CLOCK_FORMAT:24});
+  f.handlers.appmessage({payload:{CLOCK_FORMAT:12}});
+  assert.equal(f.storage['dynamic-system-clock-v1'],'12');
+  assert.deepEqual(f.settings(),{CLOCK_FORMAT:24});
+  assert.equal(f.options.getSettings().clockFormat,24);
+  f.handlers.showConfiguration();
+  assert.equal(metadataItem(f,'dynamic-preview-assets').systemFormat,12);
+  assert.equal(f.clockQueries.length,1);assert.equal(f.clockQueries[0][keys.CLOCK_FORMAT],255);
+  for(const invalid of [0,255,'12',true,{},null])f.handlers.appmessage({payload:{CLOCK_FORMAT:invalid}});
+  assert.equal(f.storage['dynamic-system-clock-v1'],'12');
+  f.handlers.appmessage({payload:{[keys.CLOCK_FORMAT]:24}});f.handlers.showConfiguration();
+  assert.equal(metadataItem(f,'dynamic-preview-assets').systemFormat,24);
+  assert.deepEqual(f.settings(),{CLOCK_FORMAT:24});
+});
+test('unknown system-format remains explicit metadata instead of inventing a watch preference',()=>{
+  const f=fixture({CLOCK_FORMAT:0});f.handlers.showConfiguration();
+  assert.equal(metadataItem(f,'dynamic-preview-assets').systemFormat,null);
+  assert.equal(require('../src/pkjs/settings-preview').systemFormat,undefined,'shared sample assets are not mutated');
+  assert.deepEqual(f.settings(),{CLOCK_FORMAT:0});
+});
+test('settings group appearance, content and recovery in one three-section page',()=>{
+  const f=fixture();f.handlers.showConfiguration();
+  const sections=f.clay.config.filter(x=>x.type==='section');
+  assert.equal(sections.length,3);
+  assert.deepEqual(sections.map(x=>x.items[0].defaultValue),['Appearance','Content','Connection & help']);
 });

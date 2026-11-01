@@ -95,7 +95,19 @@ Pebble.addEventListener('ready', function() {
   retrySavedSettings();
   complications.refresh(); context.refresh(true); requestContextSession(1);
 });
+var SYSTEM_CLOCK_KEY = 'dynamic-system-clock-v1';
+function systemClockFormat() {
+  try {
+    var value = JSON.parse(localStorage.getItem(SYSTEM_CLOCK_KEY));
+    return value === 12 || value === 24 ? value : null;
+  } catch (ignored) { return null; }
+}
 Pebble.addEventListener('appmessage', function(event) {
+  var format = messageValue(event.payload || {}, 'CLOCK_FORMAT');
+  if (format === 12 || format === 24) {
+    // This is the OS format, not the watchface's saved override.
+    try { localStorage.setItem(SYSTEM_CLOCK_KEY, JSON.stringify(format)); } catch (ignored) {}
+  }
   retrySavedSettings();
   if (messageValue(event.payload || {}, 'REQUEST_COMPLICATIONS')) { complications.refresh(); }
   var requested = messageValue(event.payload || {}, 'REQUEST_CONTEXT');
@@ -104,6 +116,8 @@ Pebble.addEventListener('appmessage', function(event) {
   else if (token === 1) { context.refresh(); }
 });
 Pebble.addEventListener('showConfiguration', function() {
+  var clockQuery = {}; clockQuery[MessageKeys.CLOCK_FORMAT] = 255;
+  send(clockQuery); // Native replies separately; this offline page remains a snapshot.
   var language = settingsLanguage();
   clay.config = localization.translateConfig(clayConfig, language);
   var saved = savedSettings();
@@ -127,7 +141,10 @@ Pebble.addEventListener('showConfiguration', function() {
       if (item.messageKey === 'NOTIFICATION_APPS' && typeof previous === 'string') { item.defaultValue = previous; }
       if (item.messageKey === 'CLOCK_FORMAT') { item.defaultValue = clockFormat(saved); }
       if (item.id === 'dynamic-settings-data') { item.defaultValue = escapeHtml(JSON.stringify(metadata)); return; }
-      if (item.id === 'dynamic-preview-assets') { item.defaultValue = escapeHtml(JSON.stringify(previewAssets)); return; }
+      if (item.id === 'dynamic-preview-assets') {
+        var assets = Object.assign({}, previewAssets, {systemFormat:systemClockFormat()});
+        item.defaultValue = escapeHtml(JSON.stringify(assets)); return;
+      }
       if (item.id === 'dynamic-settings-strings') {
         item.defaultValue = escapeHtml(JSON.stringify(localization.settingsStrings(language))); return;
       }
@@ -149,7 +166,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.4.1. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.5.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }

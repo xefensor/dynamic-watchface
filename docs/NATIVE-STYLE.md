@@ -1,6 +1,6 @@
 # Design references and motion
 
-Dynamic 0.4.1 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.5.0 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -43,9 +43,13 @@ positions. The Complication Face demo selects slots by data shape.
 - **One recognizable clock:** Fredoka outlines give the time its rounded
   character. The same shapes scale and move between the large idle clock and
   compact contextual clock. Temperature and percent units share that style.
-- **One canvas:** Roboto Condensed text, two horizontal readings and small
-  symbols share the page. Accent colors identify meaningful graphics and
-  status; the date remains plain.
+- **One canvas:** Roboto Condensed text, two horizontal readings and rounded
+  symbols share the page. The date remains plain. Ordinary content uses the
+  accent; amber is reserved for low-battery/connection warnings.
+- **Literal information:** Temperature, Feels like, High, Low and Phone labels
+  retain what the data means. Forecast temperature is identified as such.
+  Loading/failure/expiry retains public reading identity without stale values.
+  Known observation age is distinct from a recent transport receipt.
 - **Space follows the task:** the compact header stacks weekday/date while
   keeping both horizontal readings. Music's artwork and up to two artist
   lines stay anchored to the bottom; a full-width title grows upward through
@@ -53,10 +57,11 @@ positions. The Complication Face demo selects slots by data shape.
   source heading and optional bounded body. Summary banners retain the music
   footer and briefly reduce the title area instead of taking over the whole face.
   A heading-only banner can retain two title lines with a gap above that footer.
-- **Motion explains the change:** the clock and readings move together as
-  context enters or leaves. In the active layout, fresh track and notice
-  updates move inside the context area while the surrounding layout stays
-  stable.
+- **Motion explains priority:** the clock and readings move together as
+  context enters or leaves. A changed primary song title defines a track
+  change. Late artwork/artist metadata and notification icons repaint in
+  place. A notification burst enters once; rapid replacements are coalesced
+  for a stable reading interval instead of repeating its entrance.
 - **Calm resting states:** transitions are bounded and stop when complete.
   The Animations setting disables Dynamic's local transitions.
 
@@ -73,6 +78,25 @@ preserves both readability and the fixed bottom composition. Artwork stays
 40px and shares y216 with the bottom of the artist text. The former Larger
 text mode is retired, including existing saved choices, and sample previews
 have no size selector.
+
+Idle values and labels sit 4px and 6px closer to their symbols than in 0.4.1.
+Artist text uses a quieter secondary treatment while retaining its 20px size.
+After native palette rounding, secondary ink falls back to foreground when
+muting would lose 4.5:1 contrast. Accent graphics have a 2:1 visibility guard;
+provider artwork retains its colours.
+
+Notification sender/title and app identity are separate. The sender is primary,
+with an app icon as context, or a quieter app-name line when its icon is absent.
+Long app names do not reduce sender text size. A banner preserves the music
+footer while its available title lines adjust to the bounded notice heading.
+
+The settings page follows the same principles: one page with Appearance,
+Content and Connection & help. Safe layout/colour samples are independent of
+privacy settings. The Save area describes draft versus last delivery, theme
+exploration is reversible, source ownership/recovery is explicit and app filters
+are visible individual entries. Read-only OS clock-style queries support
+Follow Pebble examples without changing the watchface override; unknown format
+is labelled rather than implied.
 
 The face renders source-provided data and recognized semantic symbols. Its
 gauges use a validated provider-supplied range, with source-identified rain

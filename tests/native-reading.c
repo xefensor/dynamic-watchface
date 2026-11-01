@@ -25,6 +25,8 @@ int main(void) {
   assert(reading_state(&slot,200)==READING_UNAVAILABLE);
   slot.status=COMPLICATION_STATUS_DENIED;
   assert(reading_state(&slot,200)==READING_UNAVAILABLE);
+  slot.status=COMPLICATION_STATUS_EXPIRED;
+  assert(reading_state(&slot,200)==READING_EXPIRED);
   slot.status=COMPLICATION_STATUS_READY;slot.confirmed_at=100;slot.valid_until=1000;
   assert(reading_state(&slot,200)==READING_VALUE);
   slot.cached=true;
@@ -65,6 +67,46 @@ int main(void) {
   strcpy(slot.label,"Provider words");
   assert(strcmp(reading_label(&slot,COMPLICATION_SEMANTIC_HUMIDITY,0,"cs"),"VLHKOST")==0);
 
+  // Accurate meaning survives value expiry and does not claim a measurement
+  // is current merely because it was received/cached recently.
+  slot.semantic_kind=COMPLICATION_SEMANTIC_TEMPERATURE;
+  slot.detail=COMPLICATION_DETAIL_FEELS_LIKE;
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,0,"en"),"FEELS LIKE")==0);
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,0,"cs"),"POCITOVÁ")==0);
+  slot.detail=COMPLICATION_DETAIL_HIGH;
+  slot.status=COMPLICATION_STATUS_EXPIRED;
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,0,"en"),"HIGH")==0);
+  slot.detail=COMPLICATION_DETAIL_LOW;
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,1,"en"),"LOW")==0);
+  slot.detail=COMPLICATION_DETAIL_TEMPERATURE;slot.qualifiers=COMPLICATION_QUALIFIER_FORECAST;
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,0,"en"),"FORECAST")==0);
+  slot.qualifiers=0;slot.detail=0;slot.label[0]='\0';
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,0,"en"),"TEMP")==0);
+  strcpy(slot.label,"Daily high");
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,0,"cs"),"Daily high")==0); // v3 meaning.
+  slot.semantic_kind=COMPLICATION_SEMANTIC_BATTERY;slot.source_kind=COMPLICATION_SOURCE_PHONE;
+  assert(strcmp(reading_label(&slot,slot.semantic_kind,0,"en"),"PHONE")==0);
+  slot.cached=true;slot.confirmed_at=100;slot.observed_at=0;
+  assert(!reading_is_aged(&slot,5000));
+  slot.observed_at=100;assert(!reading_is_aged(&slot,3699));assert(reading_is_aged(&slot,3700));
+  slot.cached=false;assert(reading_is_aged(&slot,3700));
+  slot.observed_at=5000;assert(!reading_is_aged(&slot,4000));
+
+  // Guard the actual four-level display palette, not just CSS input colours.
+  assert(reading_secondary_ink(0xc0,0xff)==0xd5);
+  assert(reading_secondary_ink(0xc6,0xff)==0xc6); // Muted blue would wash out.
+  assert(reading_accent_ink(0xdb,0xff,0xc0)==0xdb); // Default blue stays blue.
+  assert(reading_accent_ink(0xff,0xff,0xc0)==0xc0);
+  for(unsigned background=0xc0;background<=0xff;++background) {
+    assert(reading_color_contrasts(reading_contrast_ink(background),background,4500));
+    for(unsigned foreground=0xc0;foreground<=0xff;++foreground) {
+      const uint8_t secondary=reading_secondary_ink(foreground,background);
+      if(reading_color_contrasts(foreground,background,4500))
+        assert(reading_color_contrasts(secondary,background,4500));
+      assert(reading_color_contrasts(reading_accent_ink(foreground,background,foreground),background,2000));
+    }
+  }
+
   double range=-1;
   assert(!reading_range(&slot,&range)); // A plain73% has no implied meaning/range.
   slot.numeric_value=73;slot.minimum=0;slot.maximum=100;
@@ -89,6 +131,8 @@ int main(void) {
     assert(strcmp(language->lang,locales[i])==0);
     assert(strcmp(language->loading,language->unavailable)!=0&&strcmp(language->expired,language->unavailable)!=0);
     for(unsigned kind=0;kind<12;++kind) {assert(language->labels[kind][0]);covered(language->labels[kind]);}
+    for(unsigned detail=1;detail<12;++detail) {assert(language->details[detail][0]);covered(language->details[detail]);}
+    covered(language->forecast);
     covered(language->loading);covered(language->unavailable);covered(language->expired);
     covered(language->first);covered(language->second);
   }
