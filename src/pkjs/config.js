@@ -18,7 +18,6 @@ module.exports = [
     {type:'select',messageKey:'CLOCK_FORMAT',defaultValue:0,label:'Time format',serializeValueAs:'integer',options:[
       {label:'Follow Pebble',value:0},{label:'12-hour time',value:12},{label:'24-hour time',value:24}
     ]},
-    {type:'toggle',messageKey:'LARGE_TEXT',defaultValue:false,label:'Larger text',description:'Larger date, readings and messages. The clock fits the available width.'},
     {type:'toggle',messageKey:'ANIMATIONS',defaultValue:true,label:'Animations',description:'Short transitions when music or notifications change.'},
     {type:'toggle',messageKey:'SHOW_STATUS',defaultValue:true,label:'Status indicators',description:'Low watch or phone battery and lost connection.'},
     {type:'text',defaultValue:'Language follows your watch.'}

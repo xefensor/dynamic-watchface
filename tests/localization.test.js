@@ -90,7 +90,7 @@ test('translation preserves provider values and API identifiers in settings meta
 });
 test('all custom controls, source states and save outcomes have complete translations',()=>{
   const keys=['samplePreview','sampleHelp','previewIdle','previewMusic','previewNotification','previewTimeline',
-    'display','theme','themeLight','themeDark','themeCustom','timeFormat','followPebble','time24','largerText',
+    'display','theme','themeLight','themeDark','themeCustom','timeFormat','followPebble','time24',
     'accentHelp','languageHelp','twoReadings','leftReading','rightReading','musicNotifications','notifications',
     'notificationSummary','notificationAppsMode','allApps','selectedApps','appFilterHelp','appFilterRequired',
     'helpConnection','snapshotHelp','permissionHelp','pluginHelp','connectionHelp','technicalDetails','musicSource','notificationsSource','phoneSource',
@@ -166,7 +166,7 @@ test('borderless settings expose only applicable controls and preserve privacy d
     assert.equal(transport.messageKey,undefined);
     assert.equal(transport.defaultValue,'{}');
   }
-  for(const key of ['DEPTH_EFFECT','TEXT_SHADOW','PANEL_TRANSITIONS','LAYOUT_STYLE','WEATHER_LOCATION','FOLLOW_PEBBLE_UNITS','USE_FAHRENHEIT']){
+  for(const key of ['DEPTH_EFFECT','TEXT_SHADOW','PANEL_TRANSITIONS','LAYOUT_STYLE','WEATHER_LOCATION','FOLLOW_PEBBLE_UNITS','USE_FAHRENHEIT','LARGE_TEXT']){
     assert.equal(find(key),undefined,key);
   }
   assert.ok(visible(config).some(value=>value.includes('slots 1 and 2')));
@@ -179,12 +179,10 @@ test('chunky-motion appearance controls are translated without stale panel or sh
   for(const language of languages) {
     const all=items(localization.translateConfig(config,language));
     const accent=all.find(item=>item.messageKey==='ACCENT_COLOR');
-    const big=all.find(item=>item.messageKey==='LARGE_TEXT');
     const motion=all.find(item=>item.messageKey==='ANIMATIONS');
     assert.equal(accent.label,localization.t('accentColor',language));
     assert.equal(accent.description,localization.t('accentHelp',language));
-    assert.equal(big.label,localization.t('largerText',language));
-    assert.equal(big.description,localization.t('largeTextHelp',language));
+    assert.equal(all.find(item=>item.messageKey==='LARGE_TEXT'),undefined);
     assert.equal(motion.label,localization.t('animations',language));
     assert.equal(motion.description,localization.t('animationsHelp',language));
     assert.equal(motion.defaultValue,true);

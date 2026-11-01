@@ -1,14 +1,14 @@
 {
-  "version": "0.4.0",
+  "version": "0.4.1",
   "pbw": {
-    "file": "Dynamic-0.4.0.pbw",
-    "sha256": "b83feab5e9ceef828632a95dd9ac25d45e29a6b3bdb392a8e309fc3a5b581946"
+    "file": "Dynamic-0.4.1.pbw",
+    "sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625"
   },
   "native_payload_sha256": {
-    "appinfo.json": "d3b98705b7e229c5585b7e690dfb7e17962d3163d6ec16468edbaa6dfc9ad242",
+    "appinfo.json": "7915a421426a25920349c8f987d690ee52745122e3c97eaec1853293069bbbd1",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "10634f3fe283047c56bdce14ef4a83bfa0dd08764cc77fa982870dc90dc5c095",
-    "emery/pebble-app.bin": "0735401b8d683baa5b9ed04616d04d8deaceea7a2f017442915d951ab5f77fe1"
+    "emery/manifest.json": "a03eb9b0b1bc1ea443b6053c1fe6bd6ba54d325f14e3cc2363fd9bb9481992d3",
+    "emery/pebble-app.bin": "187bf03a7c27ade41c0d1e55a58e2cc134bd6ee243c160a9f57a003dafb6e596"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -26,83 +26,83 @@
   "images": [
     {
       "file": "docs/images/layout-states.png",
-      "sha256": "a189f306636b5b66b1f620d515f6b428cd436055b53b9baf8bef27a9e159b58f",
+      "sha256": "9fd6e338faeb9b365a19d1d1d74f9c4acd334e4c0eae74602fbf72bdc21ce412",
       "pixels": [
         880,
         282
       ],
       "fixture_captures": [
-        "provider-labels-b83feab5/captures/normal-idle-unchanged.png",
-        "provider-labels-b83feab5/captures/normal-music-typed-labels.png",
-        "provider-labels-b83feab5/captures/normal-notice-body-unchanged.png",
-        "provider-labels-b83feab5/captures/normal-timeline-unchanged.png"
+        "status-12da079f/captures/final-idle.png",
+        "status-12da079f/captures/final-music.png",
+        "status-12da079f/captures/final-notification.png",
+        "status-12da079f/captures/final-timeline.png"
       ],
       "native_frame_pixels_modified": false,
-      "provenance": "Composite of the four final-PBW native frames; labels and margins outside the unchanged native pixels."
+      "provenance": "Composite of final0.4.1 native frames; labels/margins outside unmodified screen pixels."
     },
     {
       "file": "docs/images/normal.png",
-      "sha256": "6b0c89507b40b92fe3d5e6b3fdb3a1cee390de12db8f000cca798d09a934c93d",
+      "sha256": "c0cddaedd45e9132ad04604c22072c0e791ad0a86ec3957f7e4b7470f8d1920d",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "provider-labels-b83feab5/captures/normal-idle-unchanged.png",
+      "fixture_capture": "status-12da079f/captures/final-idle.png",
       "native_pixels_modified": false,
-      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
+      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
     },
     {
       "file": "docs/images/music.png",
-      "sha256": "39b883004252cb334df5347038e816969e295777bb8d4dc5199b97e9f2f0b5aa",
+      "sha256": "40f22d680b504cf52bd7be74a089a083f8495f3a264139688359f2f3533819bc",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "provider-labels-b83feab5/captures/normal-music-typed-labels.png",
+      "fixture_capture": "status-12da079f/captures/final-music.png",
       "native_pixels_modified": false,
-      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
+      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
     },
     {
       "file": "docs/images/notification.png",
-      "sha256": "59c477850a4288cabec92d6f49ea653db4867442d15c29a0625afc79c8bf057a",
+      "sha256": "12298d14b6bc2c449da9e510b696c82cb3d8d9ed8272669f7352446fb802cbdd",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "provider-labels-b83feab5/captures/normal-notice-body-unchanged.png",
+      "fixture_capture": "status-12da079f/captures/final-notification.png",
       "native_pixels_modified": false,
-      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
+      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
     },
     {
       "file": "docs/images/timeline-peek.png",
-      "sha256": "dbe01964b6ac1ca94934698dcc34de0223e93f23d214e174b5d695dc971788ef",
+      "sha256": "905200988f26d73920d76e1c5ff23a307f36653fe7fb2c079979aa9194578932",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "provider-labels-b83feab5/captures/normal-timeline-unchanged.png",
+      "fixture_capture": "status-12da079f/captures/final-timeline.png",
       "native_pixels_modified": false,
-      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
+      "provenance": "Direct Screenshot-service capture of exact final0.4.1 PBW, synthetic production-core data, no live phone JavaScript."
     },
     {
       "file": "docs/images/settings-light.png",
-      "sha256": "44fd247f74266f2740b8eaadb707e815877d9515edcbd81ea8748409a7d23f3b",
+      "sha256": "b4da11183602dc58965e78f0a7cb38b126aaf4f6ae3b4759c5decebded5b73b9",
       "pixels": [
         390,
         844
       ],
-      "fixture_capture": "../dynamic040-settings/settings-en-light-390x844.png",
-      "provenance": "Saved actual Clay browser capture of unchanged final settings source, fixture bridge, not a physical phone."
+      "fixture_capture": "../dynamic041-settings/settings-en-light-390x844.png",
+      "provenance": "Actual current Clay settings browser capture, fixture bridge; not a physical phone."
     },
     {
       "file": "docs/images/settings-dark.png",
-      "sha256": "ebbd2c812d3464083d8362c382ec9fce0dd2b4fe36129aeb8e94329b7b9ce89c",
+      "sha256": "2f3480e5fb09cfa7877298b3269c3177fa7035fb6b29fe0d90ba918e952d8a79",
       "pixels": [
         390,
         844
       ],
-      "fixture_capture": "../dynamic040-settings/settings-cs-dark-390x844.png",
-      "provenance": "Saved actual Clay browser capture of unchanged final settings source, fixture bridge, not a physical phone."
+      "fixture_capture": "../dynamic041-settings/settings-cs-dark-390x844.png",
+      "provenance": "Actual current Clay settings browser capture, fixture bridge; not a physical phone."
     }
   ],
   "design_reference": {
@@ -115,41 +115,73 @@
     "reference_images_redistributed": false
   },
   "native_qa": {
-    "release_pbw_sha256": "b83feab5e9ceef828632a95dd9ac25d45e29a6b3bdb392a8e309fc3a5b581946",
-    "exact_release_pbw_tested": true,
-    "final_focused_captures": 34,
-    "final_exact_rgb_comparisons": 16,
-    "final_visual_review": {
+    "release_pbw_sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625",
+    "exact_final_package_smoke_captures": 8,
+    "final_package_sample_pixel_identities": 5,
+    "native_renderer_identity": {
+      "final_pbw_sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625",
+      "captured_candidate_pbw_sha256": "9f8265d3167ee7fd791bddac40e6a02241c47326e2dacfeb48fdcc0e92bc02e4",
+      "native_binary_and_resources_identical": true,
+      "payload_sha256": {
+        "emery/pebble-app.bin": "187bf03a7c27ade41c0d1e55a58e2cc134bd6ee243c160a9f57a003dafb6e596",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
+    },
+    "candidate_native_stills": 58,
+    "candidate_pixel_checks": 8,
+    "motion_paths": 4,
+    "visual_review": {
       "status": "PASS",
-      "scope": "All five final provider-label contact sheets reviewed. Distinct neutral provider labels, UTF-8 ellipses, range/time labels and both text sizes in idle/music/Timeline; no label overlap or clipping."
+      "scope": "Root reviewed all20 light/dark,12/24-hour presets. Independent review covered all5 edge sheets,3 motion sheets and5 Timeline frames. No concrete clipping, label/icon collision or footer drift found."
     },
-    "reused_matrix": {
-      "pbw_sha256": "3cb33a351e2471367b8dbda6f90cf84bb55146d7c447f640997be67ddcc71f4e",
-      "rendering_cases": 35,
-      "native_stills": 68,
-      "motion_paths": 11,
-      "scope": "Unaffected behavior reused. Original neutral NUMBER fallback issue superseded by final focused captures; ten unaffected final states pixel-identical."
-    },
+    "migration_captures": 28,
+    "migration_checks": 23,
+    "migration_scope": "Two real persisted-size upgrades. Unified idle/music/Timeline images equal across migrations; obsolete live size 0/1 ignored; old size cannot return after relaunch.",
     "phone_javascript_executed": false,
     "physical_phone_tested": false,
     "actual_timeline_event_text_verified": false,
-    "synthetic_bluetooth_disconnect_verified": false,
-    "final_manifest": "provider-labels-b83feab5/manifest.json"
+    "manifests": [
+      "native-9f8265d3/manifest.json",
+      "migration-9f8265d3/checks.json",
+      "status-12da079f/manifest.json"
+    ]
   },
   "settings_qa": {
-    "interaction_cases": 68,
-    "languages": 17,
-    "native_preview_presets": 40,
-    "native_canvas_rgba_identities": 40,
+    "native_presets": 20,
+    "canvas_rgba_identities": 20,
+    "saved_size_preview_checks": 10,
     "clock_migration_cases": 5,
-    "page_errors": 0,
+    "submitted_legacy_size": false,
+    "page_errors": [],
     "external_requests": [],
-    "viewport": [
-      390,
-      844
+    "viewports": [
+      {
+        "language": "en",
+        "scheme": "light",
+        "width": 390,
+        "height": 844,
+        "noOverflow": true,
+        "fixedSaveVisible": true,
+        "presetCanvasRgbaIdentity": true
+      },
+      {
+        "language": "cs",
+        "scheme": "dark",
+        "width": 390,
+        "height": 844,
+        "noOverflow": true,
+        "fixedSaveVisible": true,
+        "presetCanvasRgbaIdentity": true
+      }
     ],
     "physical_phone_tested": false,
-    "saved_results_reused": true
+    "source_sha256": {
+      "src/pkjs/index.js": "4236180d32ff28e869bde53681ea5490cad748bf2cb0fb1d8e107f78bd1c4cf8",
+      "src/pkjs/config.js": "f78c47c72a081ac26ab14907c635bcfbc4d325b93ac4406116c892e45d2f8db7",
+      "src/pkjs/settings-page.js": "3581cb7d0c8b46be6066baba33a8a1cfd3888c21c1dfe31293306c303e8cbd7f",
+      "src/pkjs/localization.js": "099ea75e63f52f9219274e23a3cf0a79e357a24648ba1ddb1e1547cef14191c9",
+      "src/pkjs/settings-preview.js": "bf2839aa2f65ad558337d456bc2d6e0af8d2f14f8e2f7fa394f20904cf6cd064"
+    }
   },
   "fonts": {
     "source_manifest": "resources/fonts/font-provenance.json",
@@ -683,23 +715,26 @@
     "maximum_title_lines": 3,
     "maximum_artist_lines": 2,
     "title_metadata_gap_px": 8,
-    "minimum_title_ink_top_px": 86,
+    "minimum_title_ink_top_px": 92,
     "native_ascent_and_descent_metrics": true,
     "content_grows_upward": true,
     "per_track_vertical_centering": false,
     "compact_weekday_baseline_px": 19,
     "compact_numeric_date_baseline_px": 40,
-    "idle_and_peek_date_inline": true
+    "idle_and_peek_date_inline": true,
+    "fixed_title_font_px": 24,
+    "fixed_artist_font_px": 20,
+    "per_track_font_resizing": false,
+    "notification_banner_title_top_px": 116
   },
   "validation": {
-    "dynamic_js_tests": 59,
+    "dynamic_js_tests": 61,
     "dynamic_native_suites": 6,
-    "core_js_tests": 103,
-    "core_native_suites": 3,
-    "native_suites_rechecked_after_label_fix": true,
+    "core_js_tests_reused": 103,
+    "core_native_suites_reused": 3,
     "build_audit": "PASS",
     "resources_bytes": 246928,
-    "static_ram_footprint_bytes": 61798,
-    "heap_before_startup_allocation_bytes": 69274
+    "static_ram_footprint_bytes": 60858,
+    "heap_before_startup_allocation_bytes": 70214
   }
 }

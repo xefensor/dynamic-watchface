@@ -47,26 +47,24 @@ static inline float watch_date_split(float context) {
   return watch_smooth((watch_clamp(context) - 0.55f) / 0.45f);
 }
 
-static inline WatchPose watch_pose_idle(bool large) {
-  return (WatchPose){100,108,large ? 84 : 80,100,23,
-    145,0,0,16,22,0,52,large ? 36 : 34,16,70,1,0,0,0,0};
+static inline WatchPose watch_pose_idle(void) {
+  return (WatchPose){100,108,80,100,23,
+    145,0,0,16,22,0,52,36,16,70,1,0,0,0,0};
 }
 
-static inline WatchPose watch_pose_context(bool large, bool notice) {
-  return (WatchPose){58,43,large ? 42 : 40,158,24,
-    68,large ? -36 : -25,-2,large ? 6 : 10,large ? 10 : 14,
-    large ? 8 : 12,4,large ? 22 : 20,12,large ? 21 : 18,1,
+static inline WatchPose watch_pose_context(bool notice) {
+  return (WatchPose){58,43,42,158,24,
+    66,-30,-2,10,14,12,4,22,12,19,1,
     1,notice ? 0 : 1,notice ? 1 : 0,0};
 }
 
-static inline WatchPose watch_pose_peek(bool large) {
-  return (WatchPose){100,89,large ? 68 : 66,100,23,
-    135,large ? -36 : -25,-2,large ? 7 : 11,large ? 10 : 16,
-    large ? 8 : 12,6,large ? 26 : 24,13,22,1,0,0,0,1};
+static inline WatchPose watch_pose_peek(void) {
+  return (WatchPose){100,89,68,100,23,
+    135,-30,-2,11,16,12,6,26,13,22,1,0,0,0,1};
 }
 
-static inline WatchPose watch_pose_summary(bool large) {
-  WatchPose pose=watch_pose_peek(large);
+static inline WatchPose watch_pose_summary(void) {
+  WatchPose pose=watch_pose_peek();
   pose.peek=0;pose.notice=1;
   return pose;
 }
@@ -99,10 +97,10 @@ static inline WatchPose watch_pose_between(WatchPose a, WatchPose b, float amoun
 
 // Native Peek may briefly overshoot its settled 171px height. Do not clamp
 // that animation to its endpoint: the face follows every unobstructed frame.
-static inline WatchPose watch_pose_at_height(WatchPose full, bool large, int height) {
+static inline WatchPose watch_pose_at_height(WatchPose full, int height) {
   if (height >= 228) { return full; }
   if (height < 160) { height = 160; }
-  return watch_pose_between(full,watch_pose_peek(large),(228-height)/57.0f);
+  return watch_pose_between(full,watch_pose_peek(),(228-height)/57.0f);
 }
 
 // Used while fitting text to a pixel width, never as a fixed character limit.

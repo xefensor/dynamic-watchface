@@ -1,6 +1,6 @@
 # Dynamic and the shared core
 
-Dynamic 0.4.0 pins Pebble Watchface Core 0.2.0. Halftone retains its own
+Dynamic 0.4.1 pins Pebble Watchface Core 0.2.0. Halftone retains its own
 0.1.0 pin until independently upgraded. Each PBW embeds its library and keeps
 its UUID, settings and permission manifest. The core is not a background app.
 
@@ -28,7 +28,7 @@ positions. Roboto Condensed resources provide the body text. Font sources,
 licenses and generation provenance belong to this repository.
 
 Temperature and percent units use Fredoka outlines with the reading numbers,
-and reading labels use muted 11px text. Body assets add Greek, Cyrillic and
+and reading labels use muted 14px text. Body assets add Greek, Cyrillic and
 Latin Extended Additional coverage and a visible missing-character glyph for
 unsupported text.
 
@@ -47,9 +47,12 @@ supplied text, units and images. A percentage becomes a 0–100% gauge only when
 the provider identifies it as precipitation probability. Temperatures use
 source images when available or a semantic thermometer symbol.
 
-The idle view gives the weekday/date and rounded clock a hero area, followed
-by two horizontal readings. Active context contracts the clock, stacks the
-weekday/date and moves the readings together above the title/body area.
+One unified typography/layout applies to new and existing installations.
+The idle view uses an 80px clock, 20px date, 36px values, 22px symbols and 14px
+labels. Active context uses a 42px clock, 22px values and 14px symbols, stacks
+the weekday/date and moves the readings together above the title/body area.
+Timeline Peek uses a 68px clock, 26px values and 16px symbols. These sizes
+change with the layout state, never with a saved text-size mode.
 Idle and Peek keep the date on one line. A heading-only notice uses a compact source banner; with music present it
 reduces title space while retaining the fixed artist/artwork footer. A message
 preview uses a bounded panel. Summary-only notices without music preserve
@@ -61,10 +64,14 @@ Music is anchored from the bottom. The 40px artwork and up to two artist
 lines share a visible bottom at y=216. When artwork or artist text is present,
 the footer reserves at least 40px, expanding for taller artist ink. A title of
 up to three lines grows upward, ending 8px above that footer. With neither
-artwork nor artist text, the title can extend to y=216. Track length changes
-the title's top edge while the footer remains fixed. Measured native ink
-bounds determine fit within the title/footer areas, including a smaller
-Big-font fallback when needed.
+artwork nor artist text, the title can extend to y=216. Title text is fixed at
+24px and artist text at 20px, with up to two artist lines. Measured native ink
+bounds determine line count within the title/footer areas: text wraps and the
+last available line receives an ellipsis rather than selecting a smaller
+font. The 24px title size fits three measured native lines where 26px does not.
+Heading-only banners can reduce the title area to two lines while retaining
+its font size and a clear gap above the fixed footer. Track length changes
+the title's top edge while the footer remains fixed.
 
 Animations run for bounded transitions and stop when settled. The
 `ANIMATIONS` setting controls Dynamic's own transitions. Native Timeline Peek
@@ -72,8 +79,11 @@ remains driven by the actual unobstructed area on each update, including
 temporary overshoot. The renderer yields its context area and retains the
 clock and both readings above Pebble's event panel.
 
-The old `TEXT_SHADOW` message/persistent setting remains a compatibility input
-without a visible effect. `ACCENT_COLOR` retains its 0.2 number, and
+The former Larger text preference is retired for every installation. Stored
+size choices are no longer loaded or saved, and live `LARGE_TEXT` inputs do
+not change the composition. Its existing wire-key number remains reserved so
+later keys keep their bindings. The old `TEXT_SHADOW` message/persistent
+setting also remains a compatibility input without a visible effect. `ACCENT_COLOR` retains its 0.2 number, and
 `ANIMATIONS` retains its existing number and `CLOCK_FORMAT` is appended.
 CLOCK_FORMAT uses 0 (follow Pebble), 12 or 24. The native migration preserves
 legacy explicit USE_12_HOUR choices. Unset new installations follow the watch.
@@ -81,13 +91,13 @@ legacy explicit USE_12_HOUR choices. Unset new installations follow the watch.
 The build audit checks the packaged SDK payload, pinned core, declared font
 resources and generated clock assets. Native captures check text fitting,
 glyph appearance, colors, images and motion. Validation from earlier versions
-remains historical rather than being relabeled for 0.3.2. See
+remains historical rather than being relabeled for 0.4.1. See
 [the design references](NATIVE-STYLE.md) and the
 [build-specific validation record](VALIDATION.md).
 
 ## Pinned dependency
 
-The dependency is `file:vendor/pebble-watchface-core-0.1.0.tgz`, committed with
+The dependency is `file:vendor/pebble-watchface-core-0.2.0.tgz`, committed with
 the lockfile and `vendor/CORE.json`. Release updates use a new versioned core
 archive, updated integrity/provenance and a consumer rebuild. The core is not
 fetched from a moving branch at startup and does not run as another watch app.
@@ -148,8 +158,9 @@ notifications and Help. Dependent notification fields are conditional. Source
 health is a snapshot at open, with human-readable recovery and collapsed raw
 errors. All 17 supported locales cover new controls. Preview assets are native
 rendered samples for idle, music, summary/body notifications and Timeline,
-each with two text sizes, two clock formats and Light/Dark presets;
-Custom recolouring is explicitly approximate and preserves artwork/system areas.
+with two clock formats and Light/Dark themes: 20 presets in total. There is
+no text-size preference or preview size selector. Custom recolouring is
+explicitly approximate and preserves artwork/system areas.
 
 Only validated appearance/time preferences reach the watch. Phone-only privacy
 changes configure context immediately. A separate nonprivate delivery record

@@ -101,10 +101,39 @@ test('obsolete layout choices are ignored while unrelated appearance settings su
     const payload=f.deliveries.at(-1);
     assert.equal(payload[keys.LAYOUT_STYLE],undefined);
     assert.equal(payload[keys.TEXT_COLOR],0);
-    assert.equal(payload[keys.LARGE_TEXT],1);
+    assert.equal(payload[keys.LARGE_TEXT],undefined);
     assert.equal(f.settings().LAYOUT_STYLE,value);
   }
   assert.equal(f.configured(),4);
+});
+
+test('one text layout ignores saved and incoming legacy text-size choices',()=>{
+  for(const field of ['LARGE_TEXT',String(keys.LARGE_TEXT)])for(const value of [false,0,true,1]) {
+    const saved={[field]:value,TEXT_COLOR:123};
+    const f=fixture(saved);
+    f.handlers.showConfiguration();
+    assert.equal(named(f,'LARGE_TEXT'),undefined);
+    assert.deepEqual(f.settings(),saved,'opening settings need not rewrite old phone storage');
+    f.handlers.webviewclosed({response:JSON.stringify({[field]:{value},TEXT_COLOR:456})});
+    assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.TEXT_COLOR)]);
+    assert.equal(f.deliveries[0][keys.TEXT_COLOR],456);
+    f.handlers.webviewclosed({response:JSON.stringify({[field]:{value}})});
+    assert.equal(f.deliveries.length,1,'a retired size-only save must not send a watch packet');
+  }
+});
+
+test('queued legacy text-size settings are inert and cannot leave a false pending-save status',()=>{
+  for(const mixed of [false,true]) {
+    const f=fixture();
+    const payload={[keys.LARGE_TEXT]:1,...(mixed?{[keys.TEXT_COLOR]:123}:{})};
+    f.storage['dynamic-settings-delivery-v1']=JSON.stringify({id:'old-size',state:'pending',payload});
+    f.handlers.ready();
+    assert.ok(f.deliveries.every(value=>value[keys.LARGE_TEXT]===undefined));
+    assert.equal(f.deliveries.some(value=>value[keys.TEXT_COLOR]===123),mixed);
+    f.handlers.showConfiguration();
+    const metadata=JSON.parse(item(f,'dynamic-settings-data').defaultValue.replace(/&quot;/g,'"'));
+    assert.equal(metadata.save.state,mixed?'saved':'none');
+  }
 });
 
 test('invalid layouts and unsupported fields cannot override unrelated visual settings',()=>{

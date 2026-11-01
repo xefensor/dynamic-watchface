@@ -1,6 +1,6 @@
 # Design references and motion
 
-Dynamic 0.4.0 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.4.1 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -52,12 +52,27 @@ positions. The Complication Face demo selects slots by data shape.
   up to three lines with an 8px gap above the footer. Notifications keep their
   source heading and optional bounded body. Summary banners retain the music
   footer and briefly reduce the title area instead of taking over the whole face.
+  A heading-only banner can retain two title lines with a gap above that footer.
 - **Motion explains the change:** the clock and readings move together as
   context enters or leaves. In the active layout, fresh track and notice
   updates move inside the context area while the surrounding layout stays
   stable.
 - **Calm resting states:** transitions are bounded and stop when complete.
   The Animations setting disables Dynamic's local transitions.
+
+A single typography system applies to new and existing installations. Idle
+uses an 80px clock, 20px date and 36px reading values; 14px labels explain each
+source. Context contracts the clock to 42px while retaining 22px values and
+readable 14px symbols. Timeline Peek uses 26px values and 16px symbols.
+
+Music titles use a fixed 24px size and artists a fixed 20px size. Track length
+changes wrapping through up to three title lines and two artist lines, then
+ellipsis; it never changes the type size. Native ink measurements showed
+that 26px cannot reliably fit three title lines above the footer, so 24px
+preserves both readability and the fixed bottom composition. Artwork stays
+40px and shares y216 with the bottom of the artist text. The former Larger
+text mode is retired, including existing saved choices, and sample previews
+have no size selector.
 
 The face renders source-provided data and recognized semantic symbols. Its
 gauges use a validated provider-supplied range, with source-identified rain
@@ -87,7 +102,7 @@ Licenses accompany Dynamic's generated clock-outline and body-baseline assets.
 The optional regeneration tools are pinned in
 [`scripts/requirements-font-assets.txt`](../scripts/requirements-font-assets.txt).
 
-The type details include Fredoka temperature/percent units and muted 11px
+The type details include Fredoka temperature/percent units and muted 14px
 reading labels. The body font adds Greek, Cyrillic and Latin Extended
 Additional coverage for provider text.
 Unsupported characters use a visible missing-character glyph.

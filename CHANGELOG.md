@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.1
+
+- Uses one unified typography/layout for new and existing installations,
+  retiring Larger text and the settings preview size selector.
+- Tunes the idle hierarchy with an 80px clock, 20px date, 36px readings and 14px
+  labels. Compact context uses a 42px clock, 14px symbols and 22px values;
+  Timeline Peek keeps 16px symbols and 26px values.
+- Keeps song titles at 24px and artists at 20px, wrapping before ellipsis
+  without changing font size between tracks. Three title lines and two artist
+  lines share the fixed 40px artwork/footer anchor at y216.
+- Lets heading-only notification banners retain up to two song-title lines
+  and a gap above the fixed music footer at the same typography sizes.
+- Reduces native settings samples to 20 presets: five states, two clock
+  formats and two themes, with no separate size choice.
+- Retains provider labels, Core 0.2.0, the app UUID and message-key numbers.
+  LARGE_TEXT remains reserved for wire compatibility and no longer changes
+  the rendering or stores an active size preference.
+
 ## 0.4.0
 
 - Makes short notifications proportional to their content, retaining the fixed

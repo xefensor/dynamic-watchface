@@ -14,19 +14,19 @@ int main(void) {
   assert(!watch_clock_uses_12(WATCH_CLOCK_FOLLOW,true));
   assert(watch_clock_uses_12(WATCH_CLOCK_12,true));
   assert(!watch_clock_uses_12(WATCH_CLOCK_24,false));
-  for (int large=0;large<=1;++large) {
-    const WatchPose idle=watch_pose_idle(large), active=watch_pose_context(large,false);
-    const WatchPose notice=watch_pose_context(large,true), peek=watch_pose_peek(large);
-    const WatchPose summary=watch_pose_summary(large);
+  {
+    const WatchPose idle=watch_pose_idle(), active=watch_pose_context(false);
+    const WatchPose notice=watch_pose_context(true), peek=watch_pose_peek();
+    const WatchPose summary=watch_pose_summary();
     assert(summary.clock_size==peek.clock_size&&summary.row_y==peek.row_y&&summary.peek==0);
     assert(watch_context_visibility(summary)==1&&watch_context_visibility(peek)==0);
     assert(watch_context_visibility(active)==1&&watch_context_visibility(notice)==1);
-    assert(watch_context_visibility(watch_pose_at_height(summary,large,171))==0);
-    assert(active.row_y+active.label_y<(large?96:92));
-    if(large) {
-      assert(active.icon_size==10&&active.icon_radius==6);
-      assert(50+active.icon_x+active.icon_radius<50+active.value_x-72/2);
-    }
+    assert(watch_context_visibility(watch_pose_at_height(summary,171))==0);
+    assert(active.row_y+active.label_y+3<92);
+    assert(active.icon_size>=14&&peek.icon_size>=16);
+    assert(active.number_size==22&&idle.number_size==36);
+    assert(50+active.icon_x+active.icon_radius<50+active.value_x-60/2);
+    assert(50+peek.icon_x+peek.icon_radius<50+peek.value_x-60/2);
     assert(watch_date_split(idle.context)==0 && watch_date_split(peek.context)==0);
     assert(watch_date_split(active.context)==1);
     assert(active.date_y-5==19 && active.date_y+16==40);
@@ -35,7 +35,7 @@ int main(void) {
     assert(active.clock_x==58 && active.context==1 && active.music==1);
     assert(notice.notice==1 && notice.row_y==active.row_y);
     for (int height=160;height<=228;++height) {
-      WatchPose p=watch_pose_at_height(active,large,height);
+      WatchPose p=watch_pose_at_height(active,height);
       assert(p.clock_size>=40 && p.clock_size<=76);
       assert(p.row_y+p.value_y<height);
       assert(p.row_y+p.icon_y+p.icon_radius<height);
@@ -45,14 +45,14 @@ int main(void) {
         assert(p.row_y==peek.row_y && p.context==0);
       }
     }
-    const WatchPose overshoot=watch_pose_at_height(active,large,166);
+    const WatchPose overshoot=watch_pose_at_height(active,166);
     assert(overshoot.peek>1 && overshoot.row_y>peek.row_y);
     for (int step=0;step<=100;++step) {
       const float amount=watch_ease(step/100.0f);
       const WatchPose p=watch_pose_between(idle,active,amount);
       const WatchPose reverse=watch_pose_between(active,idle,1-amount);
       assert(p.clock_y<p.row_y && p.clock_size>=38 && p.clock_size<=85);
-      assert(p.icon_x<=0 && p.icon_x>=(large?-36:-25) && p.value_x>=0 && p.value_x<=12);
+      assert(p.icon_x<=0 && p.icon_x>=-30 && p.value_x>=0 && p.value_x<=12);
       assert(reverse.icon_x-p.icon_x<0.0001f && reverse.icon_x-p.icon_x>-0.0001f);
       assert(reverse.number_size-p.number_size<0.0001f && reverse.number_size-p.number_size>-0.0001f);
       assert(watch_smooth(p.context)>=0 && watch_smooth(p.context)<=1);

@@ -149,7 +149,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.4.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.4.1. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }
@@ -159,7 +159,7 @@ Pebble.addEventListener('showConfiguration', function() {
 
 function watchSettings(payload) {
   var result = {};
-  ['BACKGROUND_COLOR', 'TEXT_COLOR', 'ACCENT_COLOR', 'LARGE_TEXT',
+  ['BACKGROUND_COLOR', 'TEXT_COLOR', 'ACCENT_COLOR',
     'USE_12_HOUR', 'CLOCK_FORMAT', 'SHOW_STATUS', 'ANIMATIONS'].forEach(function(name) {
     var value = messageValue(payload, name);
     if (value === undefined) { return; }
@@ -184,8 +184,12 @@ var deliverySequence = 0;
 function deliveryRecord() {
   try {
     var record = JSON.parse(localStorage.getItem(DELIVERY_KEY));
-    return record && typeof record.id === 'string' &&
-      ['pending', 'failed', 'saved'].indexOf(record.state) >= 0 ? record : null;
+    if (!record || typeof record.id !== 'string' ||
+        ['pending', 'failed', 'saved'].indexOf(record.state) < 0) { return null; }
+    // An earlier build may have queued only its now-retired text-size choice.
+    // There is no active setting to deliver or to show as waiting in this UI.
+    if (record.state !== 'saved' && !Object.keys(watchSettings(record.payload || {})).length) { return null; }
+    return record;
   } catch (ignored) { return null; }
 }
 function storeDelivery(record) {

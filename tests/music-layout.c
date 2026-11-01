@@ -16,8 +16,8 @@ static MusicTextMetrics measure(void *context, const char *text, int point) {
 static void check(const MusicLayout *layout, bool art) {
   assert(layout->title.count >= 0 && layout->title.count <= 3);
   assert(layout->artist.count >= 0 && layout->artist.count <= 2);
-  assert(layout->title_point >= 24 && layout->title_point <= 32);
-  assert(layout->artist_point == 20 || layout->artist_point == 24);
+  assert(layout->title_point == 24);
+  assert(layout->artist_point == 20);
   assert(layout->title_top >= MUSIC_TOP && layout->cover_top == 176);
   const bool metadata = art || layout->artist.count;
   assert(layout->metadata_top <= (metadata ? 176 : 216));
@@ -75,22 +75,21 @@ int main(void) {
     "Verylongunbrokenartistnamewithoutanyspacesatall"};
   for (unsigned ti=0;ti<sizeof(titles)/sizeof(titles[0]);++ti)
     for (unsigned ai=0;ai<sizeof(artists)/sizeof(artists[0]);++ai)
-      for (int art=0;art<=1;++art)
-        for (int large=0;large<=1;++large) {
+      for (int art=0;art<=1;++art) {
           MusicLayout layout;
-          music_layout_build(titles[ti],artists[ai],art,large,measure,NULL,&layout);
+          music_layout_build(titles[ti],artists[ai],art,measure,NULL,&layout);
           check(&layout,art);
           if (!titles[ti][0]) assert(layout.title.count == 0);
           if (!artists[ai][0]) assert(layout.artist.count == 0);
         }
-  MusicLayout short_song,long_song,big;
-  music_layout_build("Genesis","Justice, Tame Impala",true,false,measure,NULL,&short_song);
-  music_layout_build(titles[1],"Justice, Tame Impala",true,false,measure,NULL,&long_song);
-  assert(short_song.title_point == 32 && short_song.title.count == 1);
+  MusicLayout short_song,long_song;
+  music_layout_build("Genesis","Justice, Tame Impala",true,measure,NULL,&short_song);
+  music_layout_build(titles[1],"Justice, Tame Impala",true,measure,NULL,&long_song);
+  assert(short_song.title_point == 24 && short_song.title.count == 1);
   assert(long_song.title.count == 3 && long_song.title_top < short_song.title_top);
   assert(short_song.title_bottom == long_song.title_bottom && long_song.cover_top == short_song.cover_top);
-  music_layout_build("Genesis","Justice, Tame Impala",true,true,measure,NULL,&big);
-  assert(big.artist_point == 20 && big.artist.count == 2);
+  assert(short_song.artist_point == 20 && short_song.artist.count == 2);
+  assert(short_song.title_point==long_song.title_point);
   // The source remains one scalar string, even when a band name contains
   // punctuation that offers a useful line break.
   music_wrap("Earth, Wind & Fire",20,110,2,true,measure,NULL,&lines);
@@ -99,11 +98,11 @@ int main(void) {
   memset(long_text,'W',sizeof(long_text)-1);long_text[sizeof(long_text)-1]='\0';
   music_wrap(long_text,26,180,3,false,measure,NULL,&lines);
   assert(!lines.complete&&lines.count==3&&strstr(lines.text[2],"…"));
-  for(int large=0;large<=1;++large) {
+  {
     MusicLayout banner;
-    music_layout_build_at(long_text,"Justice, Tame Impala",true,large,120,measure,NULL,&banner);
+    music_layout_build_at(long_text,"Justice, Tame Impala",true,116,measure,NULL,&banner);
     check(&banner,true);
-    assert(banner.title_top>=120&&banner.cover_top==176&&banner.artist.count==2);
+    assert(banner.title_top>=116&&banner.cover_top==176&&banner.artist.count==2);
     const int last=banner.artist.count-1;
     assert(banner.artist_baseline[last]+body_text_descent(banner.artist.text[last],banner.artist_point)==216);
   }

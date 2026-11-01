@@ -291,14 +291,13 @@ module.exports = function() {
     }
     function renderPreview() {
       if (!canvas) { return; }
-      var size = field('LARGE_TEXT').get() ? 'large' : 'normal';
       var format = Number(field('CLOCK_FORMAT').get());
       if (format !== 12 && format !== 24) { format = Number(assets.systemFormat) === 12 ? 12 : 24; }
       var background = color('BACKGROUND_COLOR'), foreground = color('TEXT_COLOR'), highlight = color('ACCENT_COLOR');
       var exactTheme = highlight === 0x55AAFF && background === 0xFFFFFF && foreground === 0 ? 'light' :
         highlight === 0x55AAFF && background === 0 && foreground === 0xFFFFFF ? 'dark' : '';
       var sampleState = previewState === 'notification' && noticeMode.value !== 'preview' ? 'notification-summary' : previewState;
-      var key = sampleState + '-' + size + '-' + format + '-' + (exactTheme || 'light');
+      var key = sampleState + '-' + format + '-' + (exactTheme || 'light');
       var frame = (assets.frames || {})[key];
       var ctx = canvas.getContext('2d'), serial = ++request;
       canvas.setAttribute('aria-label',t('samplePreview') + ': ' + t({idle:'previewIdle',music:'previewMusic',notification:'previewNotification',timeline:'previewTimeline'}[previewState]));
@@ -340,7 +339,7 @@ module.exports = function() {
       if (imageCache[key] && imageCache[key].complete) { draw(imageCache[key]); return; }
       var image = new Image(); imageCache[key] = image; image.onload = function() { draw(image); }; image.onerror = function() { if (serial === request) { previewCaption.textContent = t('noExample'); } }; image.src = frame.src;
     }
-    ['LARGE_TEXT','CLOCK_FORMAT'].forEach(function(key) { field(key).on('change',renderPreview); });
+    field('CLOCK_FORMAT').on('change',renderPreview);
     updateNotifications(); updateColors();
     var form = document.getElementById('main-form');
     if (form) {

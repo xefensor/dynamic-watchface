@@ -1,6 +1,75 @@
 # Dynamic validation
 
-## 0.4.0 settings, richer readings and proportional notifications
+## 0.4.1 unified typography and fixed music sizes
+
+Dynamic 0.4.1 retires the Larger text mode for new and existing installations.
+Its persisted choice is no longer read or written, live size inputs have no
+rendering effect, and the reserved LARGE_TEXT wire-key number keeps later
+bindings intact. Core 0.2.0 and source-label behavior remain unchanged.
+
+The unified idle layout uses an 80px clock, 20px date, 36px values and 14px
+labels. Context uses a 42px clock, 22px values and 14px symbols; Timeline Peek
+uses 26px values and 16px symbols. Song titles stay at 24px and artist text at
+20px across tracks. Native metric inspection showed that 26px cannot reliably
+fit three title lines above the footer; 24px preserves that line budget without
+per-track font changes. Titles wrap through up to three lines and artists
+through up to two, then use an ellipsis. The 40px artwork/footer remains
+anchored at y216. Heading-only banners can retain two title lines with a gap
+above the same fixed footer.
+
+- **61 JavaScript tests and six strict C99 suites pass.** Updated native tests
+  require one pose hierarchy, clear icon/value separation, fixed music font
+  sizes, stable footer geometry and bounded UTF-8 wrapping. Settings tests
+  prove both named and numeric obsolete size inputs are inert, including old
+  queued saves, while current preferences still deliver normally.
+- **58 native stills, eight exact pixel comparisons and four motion paths**
+  cover the unified renderer, light/dark and 12/24-hour states, long Latin,
+  Czech, Cyrillic and Greek text, missing/rectangular artwork, typed readings,
+  summary/body notices, Timeline Peek and expiry. All 20 preset images and
+  five edge sheets were visually reviewed, alongside track/layout motion.
+  Notification summaries retain the exact footer and expiry restores the
+  preceding music image.
+- **28 migration captures and 23 pixel checks** exercise upgrades from the real
+  released 0.4.0 PBW with each old size preference. Four historical seed images
+  demonstrate that the old modes really differed; both upgrades then produce
+  identical unified idle/music/Timeline images. Live obsolete size packets
+  and relaunch cannot restore either retired mode. The 23 checks comprise 21
+  equalities and two old-mode inequalities.
+- **20 actual Clay preview/canvas identities and 10 saved-size preview checks**
+  pass, together with five clock migrations, conditional notification/app
+  controls and the real Clay save round trip without LARGE_TEXT. English/light
+  and Czech/dark at 390×844 captures have no overflow and keep Save visible.
+  There are no page errors or external requests. Existing 17-language
+  translation checks remain part of the complete JavaScript suite.
+- The native images were captured from candidate PBW
+  `9f8265d3167ee7fd791bddac40e6a02241c47326e2dacfeb48fdcc0e92bc02e4`.
+  Bundling those images changes only phone assets: the final native executable
+  and resource pack are byte-identical to the captured renderer. Eight further
+  final-package captures check low battery/wide dates and sample identity;
+  five current sample states match their preview captures pixel for pixel.
+  One status capture records the immediate return from music, not a settled
+  idle-layout claim.
+- The final SDK/source/package audit passes all 34 wire-key bindings, the UUID,
+  permission manifest, pinned Core 0.2.0 and font tables. The SDK reports 246,928
+  resource bytes, a 60,858-byte RAM footprint and 70,214 bytes free heap before
+  startup allocation. The native executable is 62,248 bytes.
+- Core 0.2.0 is unchanged. Its saved 103 JavaScript tests and three native suites
+  remain applicable. Previous Dynamic releases and the first 26px prototype
+  are historical; they are not counted as current unified-layout coverage.
+
+PBW SHA-256:
+
+`12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625`
+
+Native binary SHA-256:
+
+`187bf03a7c27ade41c0d1e55a58e2cc134bd6ee243c160a9f57a003dafb6e596`
+
+Physical PT2 behavior, live plugin/media and notification delivery, actual
+Timeline event text and hardware animation FPS/power require device checks.
+Emulator fixture delivery and browser settings checks are reported separately.
+
+## Historical 0.4.0 settings, richer readings and proportional notifications
 
 Dynamic 0.4.0 adopts the pinned Core 0.2.0 package while retaining its UUID,
 existing message-key numbers, two horizontal reading slots and fixed music

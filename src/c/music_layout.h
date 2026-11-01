@@ -8,6 +8,8 @@
 #define MUSIC_MAX_LINES 3
 #define MUSIC_BOTTOM 216
 #define MUSIC_TOP 86
+#define MUSIC_TITLE_POINT 24
+#define MUSIC_ARTIST_POINT 20
 
 typedef struct { int width, ascent, descent; } MusicTextMetrics;
 typedef MusicTextMetrics (*MusicMeasure)(void *context, const char *text, int point);
@@ -150,47 +152,23 @@ static void music_position(MusicLayout *out, bool art, MusicMeasure measure, voi
     out->artist_baseline[i] += MUSIC_BOTTOM - artist_height;
 }
 
-static void music_layout_build_at(const char *title, const char *artist, bool art, bool large,
+static void music_layout_build_at(const char *title, const char *artist, bool art,
                                     int top, MusicMeasure measure, void *context, MusicLayout *out) {
   memset(out, 0, sizeof(*out));
-  out->artist_point = large ? 24 : 20;
+  out->artist_point = MUSIC_ARTIST_POINT;
+  out->title_point = MUSIC_TITLE_POINT;
   const int artist_width = art ? 130 : 180;
   music_wrap(artist, out->artist_point, artist_width, 2, true, measure, context, &out->artist);
-  int offsets[MUSIC_MAX_LINES];
-  if (large && out->artist.count > 1 &&
-      music_line_offsets(&out->artist, 24, measure, context, offsets) > 40) {
-    out->artist_point = 20;
-    music_wrap(artist, 20, artist_width, 2, true, measure, context, &out->artist);
-  }
-  const int preferred = title && !strchr(title, '\n') &&
-      measure(context, title, 32).width <= 180 ? 32 : large ? 28 : 26;
-  const int points[] = {preferred,26,24};
-  int first_fit = 0;
-  for (size_t i = 0; i < sizeof(points)/sizeof(points[0]); ++i) {
-    if (i && points[i] >= points[i - 1]) continue;
-    out->title_point = points[i];
-    music_wrap(title, out->title_point, 180, 3, false, measure, context, &out->title);
-    music_position(out, art, measure, context);
-    if (out->title_top >= top) {
-      if (!first_fit) first_fit = out->title_point;
-      if (out->title.complete) return;
-    }
-  }
-  // Preserve the largest readable face when every size needs an ellipsis.
-  if (first_fit) {
-    out->title_point = first_fit;
-    music_wrap(title, first_fit, 180, 3, false, measure, context, &out->title);
-    music_position(out, art, measure, context); return;
-  }
-  out->title_point = 24;
-  for (int lines = 2; lines >= 1; --lines) {
-    music_wrap(title, 24, 180, lines, false, measure, context, &out->title);
+  // Track length changes wrapping, never the type size or footer anchor.
+  // A notification banner reduces the available line count at the same size.
+  for (int lines = MUSIC_MAX_LINES; lines >= 1; --lines) {
+    music_wrap(title, out->title_point, 180, lines, false, measure, context, &out->title);
     music_position(out, art, measure, context);
     if (out->title_top >= top) return;
   }
 }
 
-static inline void music_layout_build(const char *title, const char *artist, bool art, bool large,
+static inline void music_layout_build(const char *title, const char *artist, bool art,
                                         MusicMeasure measure, void *context, MusicLayout *out) {
-  music_layout_build_at(title,artist,art,large,MUSIC_TOP,measure,context,out);
+  music_layout_build_at(title,artist,art,MUSIC_TOP,measure,context,out);
 }

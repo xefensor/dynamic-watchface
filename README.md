@@ -2,7 +2,7 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.4.0 uses Fredoka clock outlines and Roboto Condensed text to
+Peek. Version 0.4.1 uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
@@ -10,8 +10,8 @@ It uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-cor
 0.2.0, an updated version of the data engine used by
 [Halftone](https://github.com/xefensor/halftone-watchface).
 
-Install [Dynamic-0.4.0.pbw](dist/Dynamic-0.4.0.pbw); the
-[source archive](dist/Dynamic-0.4.0-source.zip) is included. Dynamic has its own UUID,
+Install [Dynamic-0.4.1.pbw](dist/Dynamic-0.4.1.pbw); the
+[source archive](dist/Dynamic-0.4.1-source.zip) is included. Dynamic has its own UUID,
 `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, so it can be installed alongside Halftone.
 This is an early sideloaded build for the Pebble plugin preview. Public-store
 submission remains on hold while Pebble's preview restriction applies.
@@ -57,13 +57,27 @@ Rain-probability percentages can use a 0–100% gauge when the source identifies
 them as precipitation data. Other percentages keep their ordinary reading
 presentation. Temperatures use a source image when supplied, or a thermometer.
 
-Big text prefers larger date, reading and message text within the available
-space. The clock fits its rounded digits to the width in both modes. Long text
-wraps or ends in an ellipsis. Music text keeps the preferred Big size when its
-measured native ink fits, with a smaller fallback only when needed. With
-notification previews disabled, a brief app/title banner reduces the song-title
-space while preserving its bottom artwork/artist footer. Heading-only notices
-without music leave room for a larger clock and readings.
+One unified layout gives every installation the same readable hierarchy:
+
+| Element | Idle | Music or message context | Timeline Peek |
+| --- | --- | --- | --- |
+| Rounded clock | 80px | 42px | 68px |
+| Reading values | 36px | 22px | 26px |
+| Reading symbols | 22px | 14px | 16px |
+
+The idle date uses 20px text and reading labels use 14px. Music titles stay at
+24px and artist text at 20px for every track. Titles wrap through up to three
+lines, artists through up to two, then end in an ellipsis; track changes never
+select a smaller font. The 40px artwork and artist text retain their bottom
+anchor at y216. The 24px title size preserves three measured native lines above
+the footer; 26px cannot reliably fit that space.
+
+With notification previews disabled, a brief app/title banner reduces the
+song-title area while preserving the footer. A heading-only notice can leave
+two title lines at the same 24px size with a clear gap above the fixed footer.
+Heading-only notices without music leave room for a larger clock and readings.
+The former Larger text preference and preview size selector are retired;
+existing saved choices also use this unified layout.
 
 Short transitions connect layout and content changes. In the active layout,
 fresh tracks and notices slide within the context area while the clock and
@@ -80,8 +94,9 @@ follows native Timeline Peek.
    arrangement can use Temperature on the left and Precipitation on the right;
    other supported readings can replace either choice.
 3. Open Dynamic's settings to try native sample Idle, Music, Notification and
-   Timeline screens, then choose Light / Dark / Custom, Larger text and Follow
-   Pebble / 12-hour / 24-hour time. Existing explicit clock choices are retained.
+   Timeline screens, then choose Light / Dark / Custom and Follow Pebble /
+   12-hour / 24-hour time. The 20 native presets cover five states, two clock
+   formats and two themes. Existing explicit clock choices are retained.
 4. Check the two reading-source summaries and separate feature-health states.
    Status is a snapshot from when settings opened, not a live phone feed.
 5. Choose music and notifications Off / App summary / Message preview. App
@@ -152,7 +167,7 @@ npm ci
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.4.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.4.1.pbw
 python3 scripts/package-source.py
 ```
 
@@ -164,7 +179,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.4.0.pbw
+pebble install --emulator emery dist/Dynamic-0.4.1.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source

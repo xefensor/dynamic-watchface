@@ -31,7 +31,7 @@
 static Window *s_window;
 static Layer *s_window_layer, *s_background_layer, *s_context_layer;
 static GColor s_background_color, s_text_color, s_accent_color;
-static bool s_text_shadow_enabled, s_large_text_enabled, s_use_12_hour;
+static bool s_text_shadow_enabled, s_use_12_hour;
 static uint8_t s_clock_format;
 static bool s_show_status, s_animations_enabled;
 static BatteryChargeState s_battery;
@@ -453,13 +453,13 @@ static uint32_t prv_millis(void) {
   return (uint32_t)seconds*1000u+millis;
 }
 static WatchPose prv_full_pose(void) {
-  if(s_context_to.mode==CONTEXT_NONE||s_private_rebaseline)return watch_pose_idle(s_large_text_enabled);
-  if(s_context_to.heading_only&&!s_context_to.has_music)return watch_pose_summary(s_large_text_enabled);
-  return watch_pose_context(s_large_text_enabled,s_context_to.mode==CONTEXT_NOTIFICATION);
+  if(s_context_to.mode==CONTEXT_NONE||s_private_rebaseline)return watch_pose_idle();
+  if(s_context_to.heading_only&&!s_context_to.has_music)return watch_pose_summary();
+  return watch_pose_context(s_context_to.mode==CONTEXT_NOTIFICATION);
 }
 static WatchPose prv_current_pose(void) {
   const int height=s_window_layer ? layer_get_unobstructed_bounds(s_window_layer).size.h : 228;
-  return watch_pose_at_height(s_pose,s_large_text_enabled,height);
+  return watch_pose_at_height(s_pose,height);
 }
 static void prv_redact_context(RenderContext *value) {
   render_context_redact(value,&s_context,s_phone_connected,s_private_rebaseline,time(NULL));
@@ -633,7 +633,7 @@ static int prv_label_width(const void *context,const char *text) {
 static void prv_reading_label(GContext *ctx,const ComplicationSlot *slot,unsigned kind,
                                unsigned index,WatchPose p) {
   const int center=index?150:50;
-  const int point=s_large_text_enabled?14:11;
+  const int point=14;
   char label[COMPLICATION_MAX_LABEL_BYTES+16];
   watch_layout_copy_utf8(reading_label(slot,kind,index,i18n_get_system_locale()),label,sizeof(label));
   reading_label_ellipsize(label,sizeof(label),slot->cached?76:88,prv_label_width,&point);
@@ -657,7 +657,7 @@ static void prv_cached_mark(GContext *ctx,const ComplicationSlot *slot,unsigned 
 static bool prv_reading_text(GContext *ctx,const char *text,int center,int baseline,int width,
                               WatchPose p,bool state) {
   const bool compact=p.icon_x<0;
-  int point=state?(compact?14:16):(compact?16:s_large_text_enabled?24:20);
+  int point=state?(compact?14:16):(compact?16:24);
   if(p.context>0.5f&&body_text_ascent(text,point)>16)point=14;
   MusicLines lines;
   music_wrap(text,point,width,2,false,prv_music_measure,NULL,&lines);
@@ -704,7 +704,7 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
       kind==COMPLICATION_SEMANTIC_UV||range>=0;
   const float center=index?150:50;
   const float inline_amount=watch_clamp(-p.icon_x/25);
-  if(s_large_text_enabled&&!numeric&&has_text&&prv_measure(text,16).w>72)symbol=false;
+  if(inline_amount>0.5f&&!numeric&&has_text&&prv_measure(text,16).w>60)symbol=false;
   if(bitmap&&!has_text) {
     const int size=prv_round(watch_lerp(40,22,inline_amount));
     prv_draw_bitmap(ctx,slot,prv_round(center-size/2.0f),
@@ -718,7 +718,7 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
         prv_round(p.icon_radius),prv_round(p.icon_size),kind,range);
   }
   const float value_center=center+(symbol?p.value_x:0);
-  const float value_width=(symbol?88-(s_large_text_enabled?16:42)*inline_amount:88)-(slot->cached?8:0);
+  const float value_width=(symbol?88-28*inline_amount:88)-(slot->cached?8:0);
   const float baseline=p.row_y+p.value_y;
   bool text_takes_label=false;
   if(has_text) {
@@ -764,7 +764,7 @@ static void prv_draw_date(GContext *ctx,WatchPose p) {
   const float vertical=watch_clamp(split*2);
   // Separate the baselines before converging the two text runs horizontally.
   const float lateral=watch_smooth((split-0.25f)/0.75f);
-  const int inline_point=s_large_text_enabled?20:16;
+  const int inline_point=20;
   const float whole_width=prv_measure(s_compact_date_buffer,inline_point).w;
   const float week_width=prv_measure(s_weekday_buffer,inline_point).w;
   const float date_width=prv_measure(s_numeric_date_buffer,inline_point).w;
@@ -799,7 +799,7 @@ static MusicTextMetrics prv_music_measure(void *context,const char *text,int poi
   return (MusicTextMetrics){prv_measure(text,point).w,body_text_ascent(text,point),
       body_text_descent(text,point)};
 }
-static int prv_music_top(void) { return s_large_text_enabled?96:92; }
+static int prv_music_top(void) { return 92; }
 static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const ComplicationSlot *artist,
                             int x,int y,int top) {
   if(!title||!context_slot_fresh(title,time(NULL)))return;
@@ -809,7 +809,7 @@ static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const Com
   const bool cover=(title->flags&COMPLICATION_FLAG_IMAGE)!=0;
   const int visible=bitmap?prv_bitmap_visible_bottom(title,40,cover):0;
   MusicLayout layout;
-  music_layout_build_at(title->text,has_artist?artist->text:"",visible>0,s_large_text_enabled,
+  music_layout_build_at(title->text,has_artist?artist->text:"",visible>0,
       top,prv_music_measure,NULL,&layout);
   for(int i=0;i<layout.title.count;++i)
     prv_text(ctx,layout.title.text[i],layout.title_point,x+10,y+layout.title_baseline[i],
@@ -823,7 +823,7 @@ static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const Com
 typedef struct { char text[COMPLICATION_MAX_TEXT_BYTES+5];int point,baseline,bottom; } NoticeLine;
 static void prv_notice_line(const ComplicationSlot *title,bool banner,int bottom,NoticeLine *line) {
   watch_layout_copy_utf8(title->text,line->text,sizeof(line->text));
-  line->point=banner?16:s_large_text_enabled?24:20;
+  line->point=banner?16:20;
   const int width=banner?155:147;
   while(line->point>14&&(prv_measure(line->text,line->point).w>width||
       (banner?body_text_ascent(line->text,line->point)+body_text_descent(line->text,line->point)>19:
@@ -865,7 +865,7 @@ static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int 
   if(value->mode==CONTEXT_MUSIC) {
     prv_draw_music(ctx,title,subtitle,x,y,prv_music_top());
   } else if(value->heading_only) {
-    if(value->has_music)prv_draw_music(ctx,&value->music_title,&value->music_artist,x,y,120);
+    if(value->has_music)prv_draw_music(ctx,&value->music_title,&value->music_artist,x,y,116);
     prv_draw_notice_banner(ctx,value,x,y,value->has_music);
   } else {
     NoticeLine heading;prv_notice_line(title,false,0,&heading);
@@ -873,14 +873,8 @@ static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int 
     prv_text(ctx,heading.text,heading.point,x+43,y+heading.baseline,147,s_text_color,GTextAlignmentLeft);
     if(has_subtitle) {
       const int top=heading.bottom+8>132?heading.bottom+8:132;
-      int point=s_large_text_enabled?28:26,offsets[MUSIC_MAX_LINES];MusicLines lines;
+      const int point=26;int offsets[MUSIC_MAX_LINES];MusicLines lines;
       music_wrap(subtitle->text,point,180,3,false,prv_music_measure,NULL,&lines);
-      if(top+music_line_offsets(&lines,point,prv_music_measure,NULL,offsets)>MUSIC_BOTTOM) {
-        point=26;music_wrap(subtitle->text,point,180,3,false,prv_music_measure,NULL,&lines);
-      }
-      if(top+music_line_offsets(&lines,point,prv_music_measure,NULL,offsets)>MUSIC_BOTTOM) {
-        point=24;music_wrap(subtitle->text,point,180,3,false,prv_music_measure,NULL,&lines);
-      }
       for(int count=2;top+music_line_offsets(&lines,point,prv_music_measure,NULL,offsets)>MUSIC_BOTTOM&&count>=1;--count)
         music_wrap(subtitle->text,point,180,count,false,prv_music_measure,NULL,&lines);
       music_line_offsets(&lines,point,prv_music_measure,NULL,offsets);
@@ -897,7 +891,7 @@ static void prv_draw_context(Layer *layer,GContext *ctx) {
   if(s_slide_active&&s_banner_slide) {
     const ComplicationSlot *music=render_context_music(&s_context_to,false);
     const ComplicationSlot *artist=render_context_music(&s_context_to,true);
-    prv_draw_music(ctx,music,artist,0,y,s_context_to.heading_only?120:prv_music_top());
+    prv_draw_music(ctx,music,artist,0,y,s_context_to.heading_only?116:prv_music_top());
     prv_draw_notice_banner(ctx,&s_context_from,prv_round(-s_slide_direction*200*s_slide_amount),y,true);
     prv_draw_notice_banner(ctx,&s_context_to,prv_round(s_slide_direction*200*(1-s_slide_amount)),y,true);
   } else if(s_slide_active) {
@@ -1053,7 +1047,6 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   Tuple *text = dict_find(iterator, MESSAGE_KEY_TEXT_COLOR);
   Tuple *accent = dict_find(iterator, MESSAGE_KEY_ACCENT_COLOR);
   Tuple *shadow = dict_find(iterator, MESSAGE_KEY_TEXT_SHADOW);
-  Tuple *large = dict_find(iterator, MESSAGE_KEY_LARGE_TEXT);
   Tuple *twelve = dict_find(iterator, MESSAGE_KEY_USE_12_HOUR);
   Tuple *clock_format = dict_find(iterator, MESSAGE_KEY_CLOCK_FORMAT);
   Tuple *show_status = dict_find(iterator, MESSAGE_KEY_SHOW_STATUS);
@@ -1069,10 +1062,6 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   if (shadow != NULL) {
     s_text_shadow_enabled = shadow->value->int32 != 0;
     persist_write_bool(PERSIST_KEY_TEXT_SHADOW, s_text_shadow_enabled);
-  }
-  if (large != NULL) {
-    s_large_text_enabled = large->value->int32 != 0;
-    persist_write_bool(PERSIST_KEY_LARGE_TEXT, s_large_text_enabled);
   }
   uint32_t format;
   if(prv_color_value(clock_format,&format)&&
@@ -1155,7 +1144,8 @@ static bool prv_init(void) {
     if(color>=0&&color<=0xffffff)s_accent_color=GColorFromHEX(color);
   }
   if(persist_exists(PERSIST_KEY_TEXT_SHADOW))s_text_shadow_enabled=persist_read_bool(PERSIST_KEY_TEXT_SHADOW);
-  if(persist_exists(PERSIST_KEY_LARGE_TEXT))s_large_text_enabled=persist_read_bool(PERSIST_KEY_LARGE_TEXT);
+  // Retire the old size preference; legacy live packets are also ignored.
+  persist_delete(PERSIST_KEY_LARGE_TEXT);
   s_clock_format=watch_clock_format(persist_exists(PERSIST_KEY_CLOCK_FORMAT)?persist_read_int(PERSIST_KEY_CLOCK_FORMAT):-1,
       persist_exists(PERSIST_KEY_USE_12_HOUR)?persist_read_bool(PERSIST_KEY_USE_12_HOUR):-1);
   if(persist_exists(PERSIST_KEY_SHOW_STATUS))s_show_status=persist_read_bool(PERSIST_KEY_SHOW_STATUS);
