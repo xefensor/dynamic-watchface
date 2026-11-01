@@ -7,62 +7,75 @@
 
 #define WATCH_LAYOUT_SLOT_COUNT 5
 
-typedef enum { WATCH_LAYOUT_CLASSIC = 0 } WatchLayoutStyle;
-typedef struct { int16_t x, y, width, height; } WatchLayoutRect;
-typedef struct { WatchLayoutRect rect; uint8_t font_size; } WatchSlotGeometry;
 typedef struct {
-  WatchLayoutRect date, time, minutes;
-  WatchSlotGeometry slots[WATCH_LAYOUT_SLOT_COUNT];
-  WatchLayoutRect context, band;
-  int16_t divider_x, divider_top, divider_bottom;
-  bool compact_header;
-} WatchLayoutGeometry;
+  float clock_x, clock_y, clock_size, date_x, date_y;
+  float row_y, icon_x, icon_y, icon_radius, icon_size;
+  float value_x, value_y, number_size, unit_size, label_y, label_alpha;
+  float context, music, notice, peek;
+} WatchPose;
 
-static inline int watch_layout_interpolate(int full, int peek, int height) {
-  if (height >= 228) { return full; }
-  if (height <= 171) { return peek; }
-  const int distance = full - peek;
-  return peek + (distance * (height - 171) + (distance >= 0 ? 28 : -28)) / 57;
+static inline float watch_clamp(float value) {
+  return value < 0 ? 0 : value > 1 ? 1 : value;
 }
 
-// All positions are native 200px-wide PT2 coordinates. A dynamic panel yields
-// to the system Timeline Peek, while its compact clock remains stable.
-static inline WatchLayoutGeometry watch_layout_geometry(int style, int height,
-                                                         bool large, bool contextual) {
-  (void)style;
-  if (height < 171) { height = 171; }
-  if (height > 228) { height = 228; }
-  WatchLayoutGeometry result = {0};
-  result.compact_header = contextual;
-  result.date = (WatchLayoutRect){8,0,184,28};
-  result.time = (WatchLayoutRect){4,watch_layout_interpolate(48,30,height),192,78};
-  int row_y = watch_layout_interpolate(148,112,height);
-  int row_height = height - row_y;
-  int font = large ? 36 : 32;
-  if (contextual) {
-    result.time = (WatchLayoutRect){8,-3,84,36};
-    result.date = (WatchLayoutRect){98,5,94,22};
-    if (height >= 228) {
-      row_y = 34;
-      row_height = 36;
-      font = large ? 26 : 20;
-      result.context = (WatchLayoutRect){0,78,200,150};
-      result.band = result.context;
-    } else {
-      // Keep both readings side by side as the system takes the context area.
-      row_y = 34;
-      row_height = height - row_y;
-      result.band = (WatchLayoutRect){0,row_y,200,row_height};
-    }
-  } else {
-    result.band = (WatchLayoutRect){0,row_y,200,row_height};
-  }
-  result.slots[0] = (WatchSlotGeometry){{8,row_y,88,row_height},font};
-  result.slots[1] = (WatchSlotGeometry){{104,row_y,88,row_height},font};
-  result.divider_x = 100;
-  result.divider_top = row_y + (row_height > 36 ? 12 : 4);
-  result.divider_bottom = row_y + row_height - (row_height > 36 ? 12 : 4);
+static inline float watch_lerp(float first, float last, float amount) {
+  return first + (last - first) * amount;
+}
+
+static inline float watch_smooth(float value) {
+  value = watch_clamp(value);
+  return value * value * (3 - 2 * value);
+}
+
+static inline float watch_ease(float value) {
+  value = watch_clamp(value) - 1;
+  return 1 + 1.65f * value * value * value + 0.65f * value * value;
+}
+
+static inline WatchPose watch_pose_idle(bool large) {
+  return (WatchPose){100,108,large ? 84 : 80,100,23,
+    145,0,0,16,22,0,52,large ? 36 : 34,16,70,1,0,0,0,0};
+}
+
+static inline WatchPose watch_pose_context(bool large, bool notice) {
+  return (WatchPose){58,43,large ? 42 : 40,158,24,
+    68,-25,-2,10,14,12,6,large ? 22 : 20,12,22,0,
+    1,notice ? 0 : 1,notice ? 1 : 0,0};
+}
+
+static inline WatchPose watch_pose_peek(bool large) {
+  return (WatchPose){100,89,large ? 68 : 66,100,23,
+    135,-25,-2,11,16,12,6,large ? 26 : 24,13,22,0,0,0,0,1};
+}
+
+// Horizontal separation and number fitting precede vertical convergence.
+// This avoids the icon/value collision a straight interpolation would cause.
+static inline WatchPose watch_pose_between(WatchPose a, WatchPose b, float amount) {
+  WatchPose result;
+  const bool enter = a.icon_x == 0 && b.icon_x < 0;
+  const bool leave = a.icon_x < 0 && b.icon_x == 0;
+  const float lateral = enter ? watch_clamp(amount * 1.7f) :
+      leave ? 1 - watch_clamp((1 - amount) * 1.7f) : amount;
+#define WATCH_MIX(field) result.field = watch_lerp(a.field,b.field,amount)
+#define WATCH_LATERAL(field) result.field = watch_lerp(a.field,b.field,lateral)
+  WATCH_MIX(clock_x); WATCH_MIX(clock_y); WATCH_MIX(clock_size);
+  WATCH_MIX(date_x); WATCH_MIX(date_y); WATCH_MIX(row_y);
+  WATCH_LATERAL(icon_x); WATCH_MIX(icon_y); WATCH_MIX(icon_radius);
+  WATCH_MIX(icon_size); WATCH_LATERAL(value_x); WATCH_MIX(value_y);
+  WATCH_LATERAL(number_size); WATCH_LATERAL(unit_size);
+  WATCH_MIX(label_y); WATCH_MIX(label_alpha); WATCH_MIX(context);
+  WATCH_MIX(music); WATCH_MIX(notice); WATCH_MIX(peek);
+#undef WATCH_MIX
+#undef WATCH_LATERAL
   return result;
+}
+
+// Native Peek may briefly overshoot its settled 171px height. Do not clamp
+// that animation to its endpoint: the face follows every unobstructed frame.
+static inline WatchPose watch_pose_at_height(WatchPose full, bool large, int height) {
+  if (height >= 228) { return full; }
+  if (height < 160) { height = 160; }
+  return watch_pose_between(full,watch_pose_peek(large),(228-height)/57.0f);
 }
 
 // Used while fitting text to a pixel width, never as a fixed character limit.

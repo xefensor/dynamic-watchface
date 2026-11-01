@@ -1,6 +1,82 @@
 # Dynamic validation
 
-## 0.2.0 native-style rebuild
+## 0.3.0 chunky animated build
+
+This is the native Emery implementation of the approved motion study, using
+Fredoka outlines and bundled Roboto Condensed text. The original UUID and
+Pebble Watchface Core 0.1.0 remain unchanged.
+
+- **48 phone-side tests and two strict C99 suites pass.** The native suites
+  cover pose interpolation, icon/value separation, unobstructed heights down
+  to 160px, UTF-8 handling, probability validation and generated font contracts.
+- **68 actual Clay browser cases pass:** 17 languages × 320/390px × light/dark,
+  with no page errors or overflowing/clipped controls. Real animation-toggle
+  saving and named/numeric preference restoration pass. These are fixture
+  sessions of the actual form, not physical-phone captures.
+- The exact packaged build passes SDK payload, source-map, UUID, permission,
+  pinned-core and message-key audits. All original 32 bindings are preserved;
+  `ANIMATIONS` is appended at 10032. Four host and five core modules match their
+  sources. Six intentional corruption checks were correctly rejected.
+- Seven packaged body fonts provide 396 selected source codepoints plus the
+  fallback glyph. **686 required localized glyph checks** and **2,779 exact
+  packaged bitmap-descent checks** pass. The Fredoka point/contour/glyph arrays
+  and body-metric tables are verified inside the ARM binary. Both asset
+  generators reproduce their committed headers. The clock has 17 glyphs,
+  1,376 points and a maximum 145-point contour. Native font rasterization was
+  inspected; the open counter in the digit 2 matches the original font.
+- **77 native rendering cases pass**, including normal/Big text, sparse/empty/
+  stale/loading readings, long text, 12-hour and wide clocks, numeric units,
+  Unicode minus, generic percentages, ranges, bitmap/image-only readings,
+  artwork shapes, light/dark/custom colors, descenders, four localized content
+  samples and native Timeline Peek. All 12 contact sheets were visually reviewed.
+- Three lifecycle checks pass: music expires without menu navigation, a notice
+  expires back to fresh music, and relaunch clears private context. Three
+  privacy-clear paths remove content during motion. Idle/music pixel stability
+  and the ignored legacy shadow preference pass.
+- Nine initial motion paths and nine focused repeat captures were inspected.
+  The focused runs show **4–10 distinct geometry poses including endpoints**
+  (2–8 intermediate poses). Track/notice changes retain the clock and readings;
+  all focused runs settle. Two Animations Off checks, including relaunch,
+  show no intermediate geometry. Native Timeline motion remains OS-controlled.
+- Motion fixtures are prepared before their capture trigger. Raw HMP captures
+  are retained; exact per-frame four-level palette decoding removes the QEMU
+  backlight fade before counting geometry. Settled images match the native
+  Screenshot service. This is a capture correction, not a change to artwork
+  or positions. An earlier harness assertion counted ordinary old-to-settled
+  redraw latency as an animation; the corrected focused check is recorded
+  separately from that retained diagnostic result.
+- A supplemental launch/status-toggle check shows both battery badges with
+  the virtual watch at 5% and a phone fixture at 15%. Real hardware battery
+  callbacks and power use have not been measured.
+- SDK **4.33.1**, with emulator firmware **4.33.2**, targets Emery only.
+  The resource pack is **98,449 bytes**, including 94,341 bytes of font payloads.
+  The SDK reports a **40,280-byte RAM footprint** and **90,792 bytes free heap**.
+- Native captures use the exact release C/resources with production-packed
+  fixtures; phone JavaScript is not executed during those captures. The final
+  release changes only phone help text and SDK manifest timestamps relative
+  to the tested native candidate. Native binary/resource bytes and remaining
+  platform-manifest fields are equal. Live plugin delivery, physical playback,
+  Bluetooth, real Timeline event text, full installed-language-pack coverage
+  and physical PT2 behavior still need a device check.
+
+Release PBW SHA-256:
+
+`04489566a5f843ee611ac83df905ba91435c6e8e175a2ea3cd9d18f74c1f9c11`
+
+Native binary SHA-256:
+
+`ffb6fe2b7602e7b57d85e023fdcc5743185b691e86d3a955a5f1471675258f52`
+
+Resources SHA-256:
+
+`8867b114b67ac3c9eb83340cc5093018aef4e9026e0ec81dea15a940d24cf7f6`
+
+Current image, font and core provenance is in
+[asset-provenance.json](asset-provenance.json). Historical validation below is
+retained with each corresponding source archive in `dist/`.
+
+
+## Historical 0.2.0 native-style rebuild
 
 Dynamic 0.2.0 replaces its bundled fonts with PebbleOS LECO and Gothic,
 introduces native-style information bands, and retains Pebble Watchface Core

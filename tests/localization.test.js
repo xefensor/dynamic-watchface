@@ -35,7 +35,7 @@ for(const language of languages)test(language+' translates every active control 
   assert.ok(english.length>25);
   translated.forEach((value,index)=>{
     assert.ok(value.length>0,english[index]);
-    const sharedWord=english[index]==='Complications'&&language==='fr';
+    const sharedWord=language==='fr'&&['Complications','Animations'].includes(english[index]);
     if(language!=='en'&&!sharedWord)assert.notEqual(value,english[index],english[index]);
     assert.doesNotMatch(value,/Halftone|halftone/);
   });
@@ -68,6 +68,7 @@ test('borderless settings expose only applicable controls and preserve privacy d
   assert.equal(find('BACKGROUND_COLOR').defaultValue,'0xFFFFFF');
   assert.equal(find('TEXT_COLOR').defaultValue,'0x000000');
   assert.equal(find('ACCENT_COLOR').defaultValue,'0x55AAFF');
+  assert.equal(find('ANIMATIONS').defaultValue,true);
   assert.equal(find('TEXT_SHADOW'),undefined);
   assert.equal(find('SHOW_MUSIC').defaultValue,true);
   assert.equal(find('SHOW_NOTIFICATIONS').defaultValue,false);
@@ -81,15 +82,21 @@ test('borderless settings expose only applicable controls and preserve privacy d
 });
 
 
-test('native-style panel help and Big text descriptions are translated without stale shadow controls',()=>{
+test('chunky-motion appearance controls are translated without stale panel or shadow promises',()=>{
   for(const language of languages) {
     const all=items(localization.translateConfig(config,language));
     const accent=all.find(item=>item.messageKey==='ACCENT_COLOR');
     const big=all.find(item=>item.messageKey==='LARGE_TEXT');
+    const motion=all.find(item=>item.messageKey==='ANIMATIONS');
     assert.equal(accent.label,localization.t('accentColor',language));
     assert.equal(accent.description,localization.t('accentHelp',language));
     assert.equal(big.description,localization.t('largeTextHelp',language));
+    assert.equal(motion.label,localization.t('animations',language));
+    assert.equal(motion.description,localization.t('animationsHelp',language));
+    assert.equal(motion.defaultValue,true);
     assert.equal(all.find(item=>item.messageKey==='TEXT_SHADOW'),undefined);
     assert.equal(localization.t('shadow',language),'shadow');
   }
+  assert.doesNotMatch(visible(config).join('\n'),/information panel color|Panel text|bolder time digits/);
+  assert.equal(localization.t('animationsHelp','en'),'Short transitions when music or notifications change.');
 });

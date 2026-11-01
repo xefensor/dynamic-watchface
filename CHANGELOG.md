@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.3.0
+
+- Adds a chunky Fredoka clock whose shapes scale and move together as the
+  layout changes, with Roboto Condensed body text.
+- Uses one canvas with two horizontal readings and rounded symbols, with a
+  0–100% gauge for source-identified rain probability.
+- Makes room for full-width song titles, artist/artwork and notification
+  content with bounded layout transitions and context-only content slides.
+- Follows native Timeline Peek's available area throughout its movement,
+  retaining the clock and both readings.
+- Adds a translated Animations toggle for Dynamic's own transitions. The
+  native Timeline layout continues to adapt when local animations are off.
+- Keeps the shared core, source choices, cache/expiry rules, notification
+  privacy defaults, permissions and app UUID unchanged.
+- Appends `ANIMATIONS` after the existing 32 message keys and retains the
+  earlier release artifacts.
+
 ## 0.2.0
 
 - Rebuilds Dynamic with PebbleOS LECO numbers and Gothic text, inspired by the

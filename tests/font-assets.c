@@ -1,0 +1,70 @@
+#include <assert.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+#include "../src/c/generated_clock_glyphs.h"
+#include "../src/c/generated_body_metrics.h"
+
+static const ClockGlyph *glyph(char code) {
+  for (size_t i = 0; i < CLOCK_GLYPH_COUNT; ++i) {
+    if (clock_glyphs[i].code == code) { return &clock_glyphs[i]; }
+  }
+  return NULL;
+}
+
+static unsigned holes(char code) {
+  const ClockGlyph *g = glyph(code);
+  assert(g != NULL);
+  unsigned result = 0;
+  for (size_t i = g->first_contour; i < g->first_contour + g->contour_count; ++i) {
+    result += clock_contours[i].hole;
+  }
+  return result;
+}
+
+int main(void) {
+  assert(CLOCK_FONT_UNITS_PER_EM > 0);
+  for (size_t i = 0; i < CLOCK_GLYPH_COUNT; ++i) {
+    const ClockGlyph *g = &clock_glyphs[i];
+    assert(g->advance > 0 && g->contour_count > 0);
+    assert(g->first_contour + g->contour_count <= CLOCK_CONTOUR_COUNT);
+    assert(g->x_min < g->x_max && g->y_min < g->y_max);
+    bool found_hole = false;
+    for (size_t j = g->first_contour; j < g->first_contour + g->contour_count; ++j) {
+      const ClockContour *c = &clock_contours[j];
+      assert(c->point_count >= 3 && c->point_count <= CLOCK_CONTOUR_MAX_POINTS);
+      assert(c->first_point + c->point_count <= CLOCK_POINT_COUNT);
+      if (c->hole) { found_hole = true; }
+      else { assert(!found_hole); } // Fill outers before clearing their holes.
+      int64_t twice_area = 0;
+      for (size_t k = 0; k < c->point_count; ++k) {
+        const ClockPoint a = clock_points[c->first_point + k];
+        const ClockPoint b = clock_points[c->first_point + (k + 1) % c->point_count];
+        twice_area += (int64_t)a.x * b.y - (int64_t)b.x * a.y;
+      }
+      assert(twice_area != 0);
+    }
+  }
+  // These counters are essential to the approved numeric shapes.
+  assert(holes('0') == 1 && holes('6') == 1 && holes('8') == 2 && holes('9') == 1);
+  assert(holes('%') == 2 && holes(':') == 0);
+  assert(glyph('A') == NULL);
+
+  assert(body_text_descent(NULL, 20) == 0);
+  assert(body_text_descent("", 20) == 0);
+  assert(body_text_descent("Justice", 18) == 0); // Unsupported resource size.
+  assert(body_text_descent("Tame Impala", 20) > body_text_descent("Justice", 20));
+  assert(body_text_descent("gypq", 28) > 0);
+  const unsigned char *cursor = (const unsigned char *)"ČčŘřŐőŰűȘșȚțİıĞğŞş°…−";
+  while (*cursor) {
+    const uint32_t cp = body_metric_next_codepoint(&cursor);
+    const size_t index = body_metric_index(cp);
+    assert(index < BODY_METRIC_COUNT && body_metric_codepoints[index] == cp);
+  }
+  assert(body_metric_codepoints[body_metric_index(0x1f30d)] == 0x25af);
+  const char *invalid[] = {"\xc2", "\xe2\x80", "\xf0\x9f\x8c", "\xff"};
+  for (size_t i = 0; i < sizeof(invalid) / sizeof(*invalid); ++i) {
+    assert(body_text_descent(invalid[i], 20) >= 0);
+  }
+  return 0;
+}

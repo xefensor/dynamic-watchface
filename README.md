@@ -1,16 +1,17 @@
 # Dynamic
 
-A Pebble Time 2 watchface with native LECO numbers, Gothic text and full-width
-information bands. Version 0.2.0 takes its visual cues from Pebble's built-in
-Weather and Workout apps while giving music and notifications room to read.
-Dynamic is an independent watchface by Xef.
+A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
+and a layout that moves to make room for music, notifications and Timeline
+Peek. Version 0.3.0 uses Fredoka clock outlines and Roboto Condensed text to
+keep a consistent face as its layout changes. Dynamic is an independent
+watchface by Xef.
 
 It uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
 0.1.0, the same data engine used by
 [Halftone](https://github.com/xefensor/halftone-watchface).
 
-Install [Dynamic-0.2.0.pbw](dist/Dynamic-0.2.0.pbw); the
-[source archive](dist/Dynamic-0.2.0-source.zip) is included. Dynamic has its own UUID,
+Install [Dynamic-0.3.0.pbw](dist/Dynamic-0.3.0.pbw); the
+[source archive](dist/Dynamic-0.3.0-source.zip) is included. Dynamic has its own UUID,
 `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, so it can be installed alongside Halftone.
 This is an early sideloaded build for the Pebble plugin preview. Public-store
 submission remains on hold while Pebble's preview restriction applies.
@@ -21,30 +22,40 @@ submission remains on hold while Pebble's preview restriction applies.
 
 | State | Presentation |
 | --- | --- |
-| Normal | A plain weekday/date header, large LECO clock and two equal readings in an accent band |
-| Music | A compact clock/date header and reading row leave a full-width accent panel for the song, artist and optional artwork |
-| New notification | A yellow panel with the source app/title/icon and optional message text; notification context briefly takes priority over music |
-| Timeline Peek | Pebble owns its event panel; the face adapts the clock/date and both readings to the remaining space |
+| Normal | A shortened localized weekday and numeric date, large rounded clock and two equal reading columns |
+| Music | The clock contracts and the readings move together above a full-width song title, with artist and optional artwork below |
+| New notification | A source heading/icon and optional large message text briefly take priority over music |
+| Timeline Peek | The face follows Pebble's changing available area, retaining its clock and both readings above the native event panel |
 
-New installs use a white page, black text and a Picton Blue accent. Saved page
-and text colors are retained when upgrading. The accent color controls the
-information band; its text switches automatically between black and white for
-contrast. Notification panels use yellow. Dark page colors give the same
-layout a Workout-like presentation.
+New installs use a white page, black text and a Picton Blue accent. Saved page,
+text and accent colors are retained when upgrading. The chosen accent colors
+reading symbols. Recognized rain-probability gauges and notification symbols
+use yellow. The same composition works with a dark page.
 
-The face uses PebbleOS system fonts rather than bundled Fira fonts. Thin rules,
-aligned columns and restrained accents separate information. The date stays
-plain, with no enclosing box, dot border or text shadow. See
-[the native-style notes](docs/NATIVE-STYLE.md) for the reference sources and
-design decisions.
+The clock keeps the same Fredoka shapes while it scales and moves. Body text
+uses bundled Roboto Condensed. Both come with their SIL Open Font Licenses.
+The date stays plain, and the layout shares one canvas without a dot border
+or text shadows. See [the design notes](docs/NATIVE-STYLE.md) for the reference
+sources and decisions.
 
 The first two global complication choices keep their left/right positions,
 including when one is empty. Selected readings without a usable value show
 `--`. Timeline events remain native rather than being duplicated inside the face.
 
-Big text uses larger date, reading and message text, with bolder time digits.
-Long text fits the available area or ends in an ellipsis. With notification
-previews disabled, the app/title appears without the message body.
+Rain-probability percentages can use a 0–100% gauge when the source identifies
+them as precipitation data. Other percentages keep their ordinary reading
+presentation. Temperatures use a source image when supplied, or a thermometer.
+
+Big text prefers larger date, reading and message text within the available
+space. The clock fits its rounded digits to the width in both modes. Long text
+wraps or ends in an ellipsis. With notification previews disabled, the
+app/title appears without the message body.
+
+Short transitions connect layout and content changes. In the active layout,
+fresh tracks and notices slide within the context area while the clock and
+readings stay stable. The face settles after each transition. Turn
+**Animations** off to disable Dynamic's own transitions; the layout still
+follows native Timeline Peek.
 
 ## Set up
 
@@ -54,14 +65,16 @@ previews disabled, the app/title appears without the message body.
 2. Configure slots 1–2 in the phone app's **Complications** settings. A weather
    arrangement can use Temperature on the left and Precipitation on the right;
    other supported readings can replace either choice.
-3. Open Dynamic's gear/settings page to choose page, text and accent colors, 12-hour time, text size,
-   music, notification and status options, then save.
+3. Open Dynamic's gear/settings page to choose page, text and accent colors,
+   12-hour time, text size, animations, music, notification and status options,
+   then save.
 4. Allow the selected sources' permissions in Pebble. Music uses `ReadMusic`.
 
-Music and compact status indicators default to on. Notification summaries and
-message previews default to off. Enable them explicitly if wanted, and use the
-app-name filter to limit which notifications appear. Startup and reconnect
-establish a fresh baseline so accumulated notifications are not replayed.
+Music, animations and compact status indicators default to on. Notification
+summaries and message previews default to off. Enable them explicitly if
+wanted, and use the app-name filter to limit which notifications appear.
+Startup and reconnect establish a fresh baseline so accumulated notifications
+are not replayed.
 
 Dynamic follows the selected sources' formatted values and units. Weather
 comes through Pebble's chosen plugin; this face has no separate HTTP weather
@@ -73,7 +86,9 @@ Notifications last at most 12 seconds. Paused music releases its panel after a
 five-second grace period. Music and phone battery need confirmation at least
 every two minutes, with a one-minute phone-side refresh. Expiry, disconnection
 and privacy changes clear transient content. Music and notification text is
-not persisted or logged by the shared core.
+not persisted or logged. The renderer keeps only the temporary RAM snapshots
+needed for a bounded transition; clearing private or expired data takes
+priority over showing an outgoing animation.
 
 The two selected complication readings can remain cached for up to two hours
 from confirmed receipt, capped by an earlier source expiry. Reloading a cache
@@ -92,34 +107,49 @@ Weekdays and phone settings support English, Czech, Slovak, German, French,
 Spanish, Italian, Portuguese, Dutch, Polish, Danish, Swedish, Norwegian,
 Finnish, Hungarian, Romanian and Turkish. The watch language is preferred,
 then the phone language for settings, with English as fallback. Provider text,
-names and units remain as supplied. Glyphs come from PebbleOS and its installed
-language packs; the PBW does not carry a second set of fonts. Supporting text is
-distinct from physical verification of every firmware language pack.
+names and units remain as supplied. Bundled body-font coverage includes the
+Latin characters used by these languages. Other provider text depends on
+available glyphs and Pebble's fallback behavior. Language support and font
+coverage are distinct from physical verification of every device/language.
 
 ## Build and install
 
 Use Node.js, a C99 compiler for portable tests and a Pebble C SDK with Emery
-support.
+support. The release audit and optional font regeneration also require the
+Python packages pinned in
+[scripts/requirements-font-assets.txt](scripts/requirements-font-assets.txt),
+installed in your build environment.
 
 ```sh
 npm ci
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.2.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.3.0.pbw
 python3 scripts/package-source.py
 ```
 
 `npm test` covers phone-side behavior and portable native layout/core use;
 `npm run test:native` runs only the native suites. Release packaging verifies
 the permission manifest and exact SDK payloads before producing the PBW in
-`dist/`. The native-style audit checks the packaged build and use of system
-fonts. Firmware glyphs are not embedded PFO resources, so the old custom-font
-corpus counts are not presented as 0.2 checks. For a packaged build:
+`dist/`. The audit checks the packaged build, pinned core and declared font
+assets. Native captures check the appearance of the clock, text and motion.
+Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.2.0.pbw
+pebble install --emulator emery dist/Dynamic-0.3.0.pbw
 ```
+
+The clock outline and body-baseline headers are committed with their source
+fonts. With the pinned Python tools installed, check them using:
+
+```sh
+python3 scripts/generate-clock-glyphs.py --check
+python3 scripts/generate-body-metrics.py --check
+```
+
+The body metrics use the SDK's FreeType rendering mode. The normal SDK build
+uses the committed fonts and headers.
 
 For a real PT2, enable Dev Connection in the phone app and install with your
 normal Pebble developer connection. Native screenshots exercise deterministic
@@ -135,8 +165,8 @@ records upstream/version/checksum provenance. `npm ci` installs this archive;
 users install only Dynamic's PBW, not a separate core app.
 
 Core source handling, expiry, reconnect behavior and notification privacy are
-shared with Halftone. Layout, system-font choices, settings presentation, app
-identity and release artifacts belong to Dynamic. See
+shared with Halftone. Layout, font assets, transitions, settings presentation,
+app identity and release artifacts belong to Dynamic. See
 [the architecture notes](docs/ARCHITECTURE.md) for that boundary and the update
 workflow. Updating the core repository alone does not change installed PBWs.
 
@@ -147,6 +177,9 @@ Use, modification and sharing are permitted for noncommercial purposes under
 that license. Commercial use requires separate permission. This is
 source-available software rather than an OSI-approved open-source license.
 
-Version 0.2 loads fonts already supplied by PebbleOS; it does not redistribute
-font files. The historical 0.1 release remains in `dist/`; its source archive preserves
-the Fira Sans Condensed font files and SIL Open Font License.
+Fredoka and Roboto Condensed use the SIL Open Font License 1.1. Their copyright
+notices and licenses accompany the source fonts:
+[Fredoka](resources/fonts/OFL-Fredoka.txt) and
+[Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). The historical 0.1
+and 0.2 artifacts remain in `dist/`; the 0.1 source archive preserves its Fira
+Sans Condensed files and font license, while 0.2 uses PebbleOS system fonts.

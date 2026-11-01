@@ -274,7 +274,7 @@ test('existing colors and privacy choices remain untouched when opening the rebu
   assert.equal(named(f,'TEXT_SHADOW'),undefined);
 });
 
-test('the accent key is appended after the existing 31-key wire contract',()=>{
+test('new appearance keys extend the original wire contract without renumbering existing keys',()=>{
   const legacy=['TEMPERATURE','REQUEST_WEATHER','BACKGROUND_COLOR','TEXT_COLOR','DEPTH_EFFECT',
     'TEXT_SHADOW','LARGE_TEXT','USE_12_HOUR','USE_FAHRENHEIT','TEMPERATURE_FAHRENHEIT',
     'WEATHER_UPDATED_AT','FORECAST_DATA','FOLLOW_PEBBLE_UNITS','WEATHER_LOCATION','WEATHER_CLEAR',
@@ -282,6 +282,46 @@ test('the accent key is appended after the existing 31-key wire contract',()=>{
     'WEATHER_CONDITION','COMPLICATION_DATA','REQUEST_COMPLICATIONS','CONTEXT_DATA','REQUEST_CONTEXT',
     'SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS','SHOW_STATUS','PANEL_TRANSITIONS'];
   assert.deepEqual(packageInfo.pebble.messageKeys.slice(0,31),legacy);
-  assert.equal(packageInfo.pebble.messageKeys.length,32);
+  assert.equal(packageInfo.pebble.messageKeys.length,33);
   assert.equal(keys.ACCENT_COLOR,10031);
+  assert.equal(keys.ANIMATIONS,10032);
+});
+
+test('animations deliver explicit on and off through named and numeric settings',()=>{
+  for(const field of ['ANIMATIONS',String(keys.ANIMATIONS)])for(const value of [false,0,true,1]) {
+    const f=fixture();
+    f.handlers.webviewclosed({response:JSON.stringify({[field]:{value}})});
+    assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.ANIMATIONS)]);
+    assert.equal(f.deliveries[0][keys.ANIMATIONS],Number(value));
+    assert.equal(f.contextConfigured(),1);
+    assert.equal(f.contextOptions.getSettings().showNotifications,false);
+    assert.equal(f.contextOptions.getSettings().notificationPreview,false);
+  }
+});
+
+test('malformed animation settings cannot override other valid settings',()=>{
+  for(const field of ['ANIMATIONS',String(keys.ANIMATIONS)])for(const value of [-1,2,0.5,null,'true','false','1','0',{},[]]) {
+    const f=fixture();
+    f.handlers.webviewclosed({response:JSON.stringify({[field]:{value},TEXT_COLOR:123})});
+    assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.TEXT_COLOR)]);
+    assert.equal(f.deliveries[0][keys.ANIMATIONS],undefined);
+  }
+});
+
+test('opening the face and settings retains saved animation opt-outs',()=>{
+  for(const saved of [{ANIMATIONS:false},{ANIMATIONS:0},{[keys.ANIMATIONS]:false},{[keys.ANIMATIONS]:0}]) {
+    const f=fixture(saved);f.handlers.ready();f.handlers.showConfiguration();
+    assert.deepEqual(f.settings(),saved);
+    assert.equal(named(f,'ANIMATIONS').defaultValue,false,'the form retains the opt-out for either key format');
+    assert.equal(f.contextOptions.getSettings().showMusic,true);
+    assert.equal(f.contextOptions.getSettings().showNotifications,false);
+  }
+});
+
+test('missing or malformed saved animation choices retain the enabled new-install default',()=>{
+  for(const saved of [{},{ANIMATIONS:null},{ANIMATIONS:'false'},{ANIMATIONS:2},{[keys.ANIMATIONS]:-1}]) {
+    const f=fixture(saved);f.handlers.showConfiguration();
+    assert.equal(named(f,'ANIMATIONS').defaultValue,true);
+    assert.deepEqual(f.settings(),saved);
+  }
 });

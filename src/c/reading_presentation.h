@@ -51,7 +51,7 @@ static inline bool reading_parts(const char *text, ReadingParts *result) {
   return true;
 }
 
-// System LECO fonts are intentionally a numeric subset. Normalize only the
+// Fredoka vector glyphs are intentionally a numeric subset. Normalize only the
 // rendered sign; the shared complication value and unit remain untouched.
 static inline void reading_native_number(const char *source, char *result, size_t capacity) {
   if (capacity == 0) { return; }

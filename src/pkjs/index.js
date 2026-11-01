@@ -92,10 +92,15 @@ Pebble.addEventListener('appmessage', function(event) {
 Pebble.addEventListener('showConfiguration', function() {
   var language = settingsLanguage();
   clay.config = localization.translateConfig(clayConfig, language);
+  var savedMotion = messageValue(savedSettings(), 'ANIMATIONS');
   var status = complications.status();
   function t(key, params) { return localization.t(key, language, params); }
   clay.config.forEach(function(section) {
     (section.items || []).forEach(function(item) {
+      // Clay restores named keys. Keep a numeric-key opt-out visible without
+      // rewriting the user's saved settings when the configuration is opened.
+      if (item.messageKey === 'ANIMATIONS' && (savedMotion === true || savedMotion === false ||
+          savedMotion === 0 || savedMotion === 1)) { item.defaultValue = !!savedMotion; }
       if (item.id === 'context-status') {
         var dynamic = context.status();
         item.defaultValue = escapeHtml(t(dynamic.error ? 'contextError' : dynamic.ready ? 'contextReady' : 'contextWaiting',
@@ -114,7 +119,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.2.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.3.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   });
@@ -124,7 +129,7 @@ Pebble.addEventListener('showConfiguration', function() {
 function watchSettings(payload) {
   var result = {};
   ['BACKGROUND_COLOR', 'TEXT_COLOR', 'ACCENT_COLOR', 'LARGE_TEXT',
-    'USE_12_HOUR', 'SHOW_STATUS'].forEach(function(name) {
+    'USE_12_HOUR', 'SHOW_STATUS', 'ANIMATIONS'].forEach(function(name) {
     var value = messageValue(payload, name);
     if (value === undefined) { return; }
     if (name === 'BACKGROUND_COLOR' || name === 'TEXT_COLOR' || name === 'ACCENT_COLOR') {

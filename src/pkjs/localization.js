@@ -10,7 +10,7 @@ var MESSAGES = {
     "textColor": "Text color",
     "time12": "12-hour time",
     "largeText": "Big text",
-    "largeTextHelp": "Larger date, readings and messages, with bolder time digits.",
+    "largeTextHelp": "Larger date, readings and messages. The clock fits the available width.",
     "showStatus": "Status indicators",
     "statusIndicatorsHelp": "Low watch or phone battery and lost connection.",
     "complications": "Complications",
@@ -37,7 +37,9 @@ var MESSAGES = {
     "stateOn": "On",
     "stateOff": "Off",
     "accentColor": "Accent color",
-    "accentHelp": "Sets the information panel color. Panel text adjusts for contrast; notifications use yellow."
+    "accentHelp": "Color for reading symbols. Rain gauges and notification symbols use yellow.",
+    "animations": "Animations",
+    "animationsHelp": "Short transitions when music or notifications change."
   },
   "cs": {
     "title": "Nastavení Dynamic",
@@ -46,7 +48,7 @@ var MESSAGES = {
     "textColor": "Barva textu",
     "time12": "12hodinový čas",
     "largeText": "Velký text",
-    "largeTextHelp": "Větší datum, údaje a zprávy, s tučnějšími číslicemi času.",
+    "largeTextHelp": "Větší datum, údaje a zprávy. Čas se přizpůsobí dostupné šířce.",
     "showStatus": "Ukazatele stavu",
     "statusIndicatorsHelp": "Slabá baterie hodinek nebo telefonu a ztráta připojení.",
     "complications": "Komplikace",
@@ -73,7 +75,9 @@ var MESSAGES = {
     "stateOn": "Zapnuto",
     "stateOff": "Vypnuto",
     "accentColor": "Barva zvýraznění",
-    "accentHelp": "Barva informačního panelu. Text panelu se přizpůsobí kontrastu; oznámení používají žlutou."
+    "accentHelp": "Barva symbolů u údajů. Ukazatele deště a symboly oznámení jsou žluté.",
+    "animations": "Animace",
+    "animationsHelp": "Krátké přechody při změně hudby nebo oznámení."
   },
   "sk": {
     "title": "Nastavenia Dynamic",
@@ -82,7 +86,7 @@ var MESSAGES = {
     "textColor": "Farba textu",
     "time12": "12-hodinový čas",
     "largeText": "Veľký text",
-    "largeTextHelp": "Väčší dátum, údaje a správy s tučnejšími číslicami času.",
+    "largeTextHelp": "Väčší dátum, údaje a správy. Čas sa prispôsobí dostupnej šírke.",
     "showStatus": "Ukazovatele stavu",
     "statusIndicatorsHelp": "Slabá batéria hodiniek alebo telefónu a strata pripojenia.",
     "complications": "Komplikácie",
@@ -109,7 +113,9 @@ var MESSAGES = {
     "stateOn": "Zapnuté",
     "stateOff": "Vypnuté",
     "accentColor": "Farba zvýraznenia",
-    "accentHelp": "Farba informačného panela. Text panela sa prispôsobí kontrastu; oznámenia používajú žltú."
+    "accentHelp": "Farba symbolov pri údajoch. Ukazovatele dažďa a symboly oznámení sú žlté.",
+    "animations": "Animácie",
+    "animationsHelp": "Krátke prechody pri zmene hudby alebo oznámení."
   },
   "de": {
     "title": "Dynamic-Einstellungen",
@@ -118,7 +124,7 @@ var MESSAGES = {
     "textColor": "Textfarbe",
     "time12": "12-Stunden-Zeit",
     "largeText": "Großer Text",
-    "largeTextHelp": "Größeres Datum, größere Werte und Nachrichten sowie kräftigere Zeitziffern.",
+    "largeTextHelp": "Größeres Datum, größere Werte und Nachrichten. Die Uhrzeit passt sich der verfügbaren Breite an.",
     "showStatus": "Statusanzeigen",
     "statusIndicatorsHelp": "Niedriger Akku von Uhr oder Telefon und unterbrochene Verbindung.",
     "complications": "Komplikationen",
@@ -145,7 +151,9 @@ var MESSAGES = {
     "stateOn": "Ein",
     "stateOff": "Aus",
     "accentColor": "Akzentfarbe",
-    "accentHelp": "Farbe des Infobereichs. Die Textfarbe passt sich dem Kontrast an; Benachrichtigungen sind gelb."
+    "accentHelp": "Farbe der Symbole für Messwerte. Regenanzeigen und Benachrichtigungssymbole sind gelb.",
+    "animations": "Animationen",
+    "animationsHelp": "Kurze Übergänge bei Änderungen von Musik oder Benachrichtigungen."
   },
   "fr": {
     "title": "Réglages Dynamic",
@@ -154,7 +162,7 @@ var MESSAGES = {
     "textColor": "Couleur du texte",
     "time12": "Format 12 heures",
     "largeText": "Grand texte",
-    "largeTextHelp": "Date, valeurs et messages plus grands, avec des chiffres de l’heure plus épais.",
+    "largeTextHelp": "Date, valeurs et messages plus grands. L’heure s’adapte à la largeur disponible.",
     "showStatus": "Indicateurs d’état",
     "statusIndicatorsHelp": "Batterie faible de la montre ou du téléphone et perte de connexion.",
     "complications": "Complications",
@@ -181,7 +189,9 @@ var MESSAGES = {
     "stateOn": "Activé",
     "stateOff": "Désactivé",
     "accentColor": "Couleur d’accentuation",
-    "accentHelp": "Couleur du panneau d’information. Le texte s’adapte au contraste ; les notifications sont jaunes."
+    "accentHelp": "Couleur des symboles des données. Les jauges de pluie et les symboles de notification sont jaunes.",
+    "animations": "Animations",
+    "animationsHelp": "Transitions brèves lors des changements de musique ou de notifications."
   },
   "es": {
     "title": "Ajustes de Dynamic",
@@ -190,7 +200,7 @@ var MESSAGES = {
     "textColor": "Color del texto",
     "time12": "Formato de 12 horas",
     "largeText": "Texto grande",
-    "largeTextHelp": "Fecha, valores y mensajes más grandes, con dígitos de la hora más gruesos.",
+    "largeTextHelp": "Fecha, valores y mensajes más grandes. La hora se ajusta al ancho disponible.",
     "showStatus": "Indicadores de estado",
     "statusIndicatorsHelp": "Batería baja del reloj o teléfono y pérdida de conexión.",
     "complications": "Complicaciones",
@@ -217,7 +227,9 @@ var MESSAGES = {
     "stateOn": "Activado",
     "stateOff": "Desactivado",
     "accentColor": "Color de acento",
-    "accentHelp": "Color del panel de información. El texto se adapta al contraste; las notificaciones usan amarillo."
+    "accentHelp": "Color de los símbolos de las lecturas. Los indicadores de lluvia y los símbolos de notificación son amarillos.",
+    "animations": "Animaciones",
+    "animationsHelp": "Transiciones breves al cambiar la música o las notificaciones."
   },
   "it": {
     "title": "Impostazioni Dynamic",
@@ -226,7 +238,7 @@ var MESSAGES = {
     "textColor": "Colore del testo",
     "time12": "Formato a 12 ore",
     "largeText": "Testo grande",
-    "largeTextHelp": "Data, valori e messaggi più grandi, con cifre dell’ora più marcate.",
+    "largeTextHelp": "Data, valori e messaggi più grandi. L’ora si adatta alla larghezza disponibile.",
     "showStatus": "Indicatori di stato",
     "statusIndicatorsHelp": "Batteria scarica di orologio o telefono e connessione persa.",
     "complications": "Complicazioni",
@@ -253,7 +265,9 @@ var MESSAGES = {
     "stateOn": "Attivato",
     "stateOff": "Disattivato",
     "accentColor": "Colore accento",
-    "accentHelp": "Colore del pannello informazioni. Il testo si adatta al contrasto; le notifiche sono gialle."
+    "accentHelp": "Colore dei simboli dei dati. Gli indicatori di pioggia e i simboli delle notifiche sono gialli.",
+    "animations": "Animazioni",
+    "animationsHelp": "Brevi transizioni quando cambiano musica o notifiche."
   },
   "pt": {
     "title": "Configurações do Dynamic",
@@ -262,7 +276,7 @@ var MESSAGES = {
     "textColor": "Cor do texto",
     "time12": "Formato de 12 horas",
     "largeText": "Texto grande",
-    "largeTextHelp": "Data, valores e mensagens maiores, com dígitos da hora mais espessos.",
+    "largeTextHelp": "Data, valores e mensagens maiores. A hora adapta-se à largura disponível.",
     "showStatus": "Indicadores de estado",
     "statusIndicatorsHelp": "Bateria fraca do relógio ou telefone e perda de conexão.",
     "complications": "Complicações",
@@ -289,7 +303,9 @@ var MESSAGES = {
     "stateOn": "Ativado",
     "stateOff": "Desativado",
     "accentColor": "Cor de destaque",
-    "accentHelp": "Cor do painel de informações. O texto adapta-se ao contraste; as notificações usam amarelo."
+    "accentHelp": "Cor dos símbolos dos dados. Os indicadores de chuva e os símbolos de notificação são amarelos.",
+    "animations": "Animações",
+    "animationsHelp": "Transições curtas quando a música ou as notificações mudam."
   },
   "nl": {
     "title": "Dynamic-instellingen",
@@ -298,7 +314,7 @@ var MESSAGES = {
     "textColor": "Tekstkleur",
     "time12": "12-uursnotatie",
     "largeText": "Grote tekst",
-    "largeTextHelp": "Grotere datum, waarden en berichten, met dikkere tijdcijfers.",
+    "largeTextHelp": "Grotere datum, waarden en berichten. De tijd past zich aan de beschikbare breedte aan.",
     "showStatus": "Statusindicatoren",
     "statusIndicatorsHelp": "Lage batterij van horloge of telefoon en verbroken verbinding.",
     "complications": "Complicaties",
@@ -325,7 +341,9 @@ var MESSAGES = {
     "stateOn": "Aan",
     "stateOff": "Uit",
     "accentColor": "Accentkleur",
-    "accentHelp": "Kleur van het informatievlak. De tekst past zich aan voor contrast; meldingen zijn geel."
+    "accentHelp": "Kleur van de symbolen bij waarden. Regenindicatoren en meldingssymbolen zijn geel.",
+    "animations": "Animaties",
+    "animationsHelp": "Korte overgangen wanneer muziek of meldingen veranderen."
   },
   "pl": {
     "title": "Ustawienia Dynamic",
@@ -334,7 +352,7 @@ var MESSAGES = {
     "textColor": "Kolor tekstu",
     "time12": "Format 12-godzinny",
     "largeText": "Duży tekst",
-    "largeTextHelp": "Większa data, wartości i wiadomości oraz grubsze cyfry godziny.",
+    "largeTextHelp": "Większa data, wartości i wiadomości. Godzina dopasowuje się do dostępnej szerokości.",
     "showStatus": "Wskaźniki stanu",
     "statusIndicatorsHelp": "Słaba bateria zegarka lub telefonu i utrata połączenia.",
     "complications": "Komplikacje",
@@ -361,7 +379,9 @@ var MESSAGES = {
     "stateOn": "Wł.",
     "stateOff": "Wył.",
     "accentColor": "Kolor akcentu",
-    "accentHelp": "Kolor panelu informacji. Tekst dopasowuje się do kontrastu; powiadomienia są żółte."
+    "accentHelp": "Kolor symboli przy odczytach. Wskaźniki deszczu i symbole powiadomień są żółte.",
+    "animations": "Animacje",
+    "animationsHelp": "Krótkie przejścia przy zmianie muzyki lub powiadomień."
   },
   "da": {
     "title": "Dynamic-indstillinger",
@@ -370,7 +390,7 @@ var MESSAGES = {
     "textColor": "Tekstfarve",
     "time12": "12-timersformat",
     "largeText": "Stor tekst",
-    "largeTextHelp": "Større dato, værdier og beskeder samt kraftigere tidsangivelse.",
+    "largeTextHelp": "Større dato, værdier og beskeder. Klokkeslættet tilpasses den tilgængelige bredde.",
     "showStatus": "Statusindikatorer",
     "statusIndicatorsHelp": "Lavt batteri på ur eller telefon og mistet forbindelse.",
     "complications": "Komplikationer",
@@ -397,7 +417,9 @@ var MESSAGES = {
     "stateOn": "Til",
     "stateOff": "Fra",
     "accentColor": "Accentfarve",
-    "accentHelp": "Informationspanelets farve. Teksten tilpasses kontrasten; notifikationer er gule."
+    "accentHelp": "Farve på symbolerne ved værdierne. Regnindikatorer og notifikationssymboler er gule.",
+    "animations": "Animationer",
+    "animationsHelp": "Korte overgange, når musik eller notifikationer ændres."
   },
   "sv": {
     "title": "Dynamic-inställningar",
@@ -406,7 +428,7 @@ var MESSAGES = {
     "textColor": "Textfärg",
     "time12": "12-timmarsformat",
     "largeText": "Stor text",
-    "largeTextHelp": "Större datum, värden och meddelanden samt kraftigare tidssiffror.",
+    "largeTextHelp": "Större datum, värden och meddelanden. Klockslaget anpassas till den tillgängliga bredden.",
     "showStatus": "Statusindikatorer",
     "statusIndicatorsHelp": "Lågt batteri i klocka eller telefon och förlorad anslutning.",
     "complications": "Komplikationer",
@@ -433,7 +455,9 @@ var MESSAGES = {
     "stateOn": "På",
     "stateOff": "Av",
     "accentColor": "Accentfärg",
-    "accentHelp": "Informationspanelens färg. Texten anpassas för kontrast; aviseringar är gula."
+    "accentHelp": "Färg på symbolerna vid värdena. Regnindikatorer och aviseringssymboler är gula.",
+    "animations": "Animationer",
+    "animationsHelp": "Korta övergångar när musik eller aviseringar ändras."
   },
   "no": {
     "title": "Dynamic-innstillinger",
@@ -442,7 +466,7 @@ var MESSAGES = {
     "textColor": "Tekstfarge",
     "time12": "12-timersformat",
     "largeText": "Stor tekst",
-    "largeTextHelp": "Større dato, verdier og meldinger, med kraftigere klokkesifre.",
+    "largeTextHelp": "Større dato, verdier og meldinger. Klokkeslettet tilpasses den tilgjengelige bredden.",
     "showStatus": "Statusindikatorer",
     "statusIndicatorsHelp": "Lavt batteri på klokke eller telefon og mistet forbindelse.",
     "complications": "Komplikasjoner",
@@ -469,7 +493,9 @@ var MESSAGES = {
     "stateOn": "På",
     "stateOff": "Av",
     "accentColor": "Aksentfarge",
-    "accentHelp": "Fargen på informasjonspanelet. Teksten tilpasses kontrasten; varsler er gule."
+    "accentHelp": "Farge på symbolene ved verdiene. Regnindikatorer og varselsymboler er gule.",
+    "animations": "Animasjoner",
+    "animationsHelp": "Korte overganger når musikk eller varsler endres."
   },
   "fi": {
     "title": "Dynamic-asetukset",
@@ -478,7 +504,7 @@ var MESSAGES = {
     "textColor": "Tekstin väri",
     "time12": "12 tunnin kellonaika",
     "largeText": "Suuri teksti",
-    "largeTextHelp": "Suurempi päivämäärä, lukemat ja viestit sekä paksummat kellonajan numerot.",
+    "largeTextHelp": "Suurempi päivämäärä, arvot ja viestit. Kellonaika mukautuu käytettävissä olevaan leveyteen.",
     "showStatus": "Tilailmaisimet",
     "statusIndicatorsHelp": "Kellon tai puhelimen vähäinen akku ja katkennut yhteys.",
     "complications": "Kellon lisätiedot",
@@ -505,7 +531,9 @@ var MESSAGES = {
     "stateOn": "Päällä",
     "stateOff": "Pois",
     "accentColor": "Korostusväri",
-    "accentHelp": "Tietopaneelin väri. Teksti mukautuu kontrastiin; ilmoitukset ovat keltaisia."
+    "accentHelp": "Arvojen symbolien väri. Sadeilmaisimet ja ilmoitussymbolit ovat keltaisia.",
+    "animations": "Animaatiot",
+    "animationsHelp": "Lyhyet siirtymät musiikin tai ilmoitusten vaihtuessa."
   },
   "hu": {
     "title": "Dynamic beállításai",
@@ -514,7 +542,7 @@ var MESSAGES = {
     "textColor": "Szövegszín",
     "time12": "12 órás időformátum",
     "largeText": "Nagy szöveg",
-    "largeTextHelp": "Nagyobb dátum, értékek és üzenetek, vastagabb időszámjegyekkel.",
+    "largeTextHelp": "Nagyobb dátum, értékek és üzenetek. Az idő a rendelkezésre álló szélességhez igazodik.",
     "showStatus": "Állapotjelzők",
     "statusIndicatorsHelp": "Az óra vagy telefon alacsony töltöttsége és megszakadt kapcsolat.",
     "complications": "Komplikációk",
@@ -541,7 +569,9 @@ var MESSAGES = {
     "stateOn": "Be",
     "stateOff": "Ki",
     "accentColor": "Kiemelőszín",
-    "accentHelp": "Az információs panel színe. A szöveg a kontraszthoz igazodik; az értesítések sárgák."
+    "accentHelp": "Az értékek melletti szimbólumok színe. Az esőjelzők és az értesítési szimbólumok sárgák.",
+    "animations": "Animációk",
+    "animationsHelp": "Rövid átmenetek a zene vagy az értesítések változásakor."
   },
   "ro": {
     "title": "Setări Dynamic",
@@ -550,7 +580,7 @@ var MESSAGES = {
     "textColor": "Culoare text",
     "time12": "Format de 12 ore",
     "largeText": "Text mare",
-    "largeTextHelp": "Dată, valori și mesaje mai mari, cu cifrele orei mai îngroșate.",
+    "largeTextHelp": "Dată, valori și mesaje mai mari. Ora se adaptează la lățimea disponibilă.",
     "showStatus": "Indicatori de stare",
     "statusIndicatorsHelp": "Baterie scăzută la ceas sau telefon și conexiune pierdută.",
     "complications": "Complicații",
@@ -577,7 +607,9 @@ var MESSAGES = {
     "stateOn": "Pornit",
     "stateOff": "Oprit",
     "accentColor": "Culoare de accent",
-    "accentHelp": "Culoarea panoului informativ. Textul se adaptează pentru contrast; notificările sunt galbene."
+    "accentHelp": "Culoarea simbolurilor pentru valori. Indicatoarele de ploaie și simbolurile notificărilor sunt galbene.",
+    "animations": "Animații",
+    "animationsHelp": "Tranziții scurte când se schimbă muzica sau notificările."
   },
   "tr": {
     "title": "Dynamic Ayarları",
@@ -586,7 +618,7 @@ var MESSAGES = {
     "textColor": "Metin rengi",
     "time12": "12 saat biçimi",
     "largeText": "Büyük metin",
-    "largeTextHelp": "Daha büyük tarih, değerler ve mesajlar; daha kalın saat rakamları.",
+    "largeTextHelp": "Daha büyük tarih, değerler ve mesajlar. Saat, kullanılabilir genişliğe uyum sağlar.",
     "showStatus": "Durum göstergeleri",
     "statusIndicatorsHelp": "Saat veya telefonun düşük pili ve kesilen bağlantı.",
     "complications": "Komplikasyonlar",
@@ -613,7 +645,9 @@ var MESSAGES = {
     "stateOn": "Açık",
     "stateOff": "Kapalı",
     "accentColor": "Vurgu rengi",
-    "accentHelp": "Bilgi panelinin rengi. Metin kontrasta göre ayarlanır; bildirimler sarıdır."
+    "accentHelp": "Değer simgelerinin rengi. Yağmur göstergeleri ve bildirim simgeleri sarıdır.",
+    "animations": "Animasyonlar",
+    "animationsHelp": "Müzik veya bildirimler değiştiğinde kısa geçişler."
   }
 };
 var LANGUAGES = Object.keys(MESSAGES);

@@ -27,7 +27,7 @@ module.exports = [
         "messageKey": "ACCENT_COLOR",
         "defaultValue": "0x55AAFF",
         "label": "Accent color",
-        "description": "Sets the information panel color. Panel text adjusts for contrast; notifications use yellow."
+        "description": "Color for reading symbols. Rain gauges and notification symbols use yellow."
       },
       {
         "type": "toggle",
@@ -40,7 +40,14 @@ module.exports = [
         "messageKey": "LARGE_TEXT",
         "defaultValue": false,
         "label": "Big text",
-        "description": "Larger date, readings and messages, with bolder time digits."
+        "description": "Larger date, readings and messages. The clock fits the available width."
+      },
+      {
+        "type": "toggle",
+        "messageKey": "ANIMATIONS",
+        "defaultValue": true,
+        "label": "Animations",
+        "description": "Short transitions when music or notifications change."
       },
       {
         "type": "toggle",

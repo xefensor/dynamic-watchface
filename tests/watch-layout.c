@@ -4,32 +4,33 @@
 
 int main(void) {
   for (int large=0;large<=1;++large) {
-    for (int contextual=0;contextual<=1;++contextual) {
-      for (int height=171;height<=228;++height) {
-        const WatchLayoutGeometry g=watch_layout_geometry(0,height,large,contextual);
-        assert(g.slots[0].rect.x==8 && g.slots[1].rect.x==104);
-        assert(g.slots[0].rect.width==88 && g.slots[1].rect.width==88);
-        assert(g.slots[0].rect.y==g.slots[1].rect.y);
-        assert(g.slots[0].rect.height==g.slots[1].rect.height);
-        assert(g.slots[0].rect.y>=0);
-        assert(g.slots[0].rect.y+g.slots[0].rect.height<=height);
-        assert(g.band.x==0 && g.band.width==200);
-        assert(g.band.y+g.band.height==height);
-        assert(g.divider_top<g.divider_bottom);
-        assert(g.divider_bottom<=height);
-        assert(g.time.y+g.time.height<=g.slots[0].rect.y);
-        if (!contextual || height<228) { assert(g.context.width==0); }
-        else {
-          assert(g.context.x==0 && g.context.width==200);
-          assert(g.context.y==78 && g.context.height==150);
-          assert(g.slots[0].rect.y+g.slots[0].rect.height==70);
-        }
-        if (height<228) {
-          const WatchLayoutGeometry next=watch_layout_geometry(0,height+1,large,contextual);
-          assert(next.time.y>=g.time.y && next.time.y<=g.time.y+1);
-          assert(next.time.width==g.time.width && next.time.height==g.time.height);
-        }
+    const WatchPose idle=watch_pose_idle(large), active=watch_pose_context(large,false);
+    const WatchPose notice=watch_pose_context(large,true), peek=watch_pose_peek(large);
+    assert(idle.clock_x==100 && idle.clock_y==108 && idle.context==0);
+    assert(active.clock_x==58 && active.context==1 && active.music==1);
+    assert(notice.notice==1 && notice.row_y==active.row_y);
+    for (int height=160;height<=228;++height) {
+      WatchPose p=watch_pose_at_height(active,large,height);
+      assert(p.clock_size>=40 && p.clock_size<=76);
+      assert(p.row_y+p.value_y<height);
+      assert(p.row_y+p.icon_y+p.icon_radius<height);
+      assert(p.date_y<p.clock_y && p.clock_y<p.row_y);
+      if(height==171) {
+        assert(p.clock_x==peek.clock_x && p.clock_y==peek.clock_y);
+        assert(p.row_y==peek.row_y && p.context==0);
       }
+    }
+    const WatchPose overshoot=watch_pose_at_height(active,large,166);
+    assert(overshoot.peek>1 && overshoot.row_y>peek.row_y);
+    for (int step=0;step<=100;++step) {
+      const float amount=watch_ease(step/100.0f);
+      const WatchPose p=watch_pose_between(idle,active,amount);
+      const WatchPose reverse=watch_pose_between(active,idle,1-amount);
+      assert(p.clock_y<p.row_y && p.clock_size>=38 && p.clock_size<=85);
+      assert(p.icon_x<=0 && p.icon_x>=-25 && p.value_x>=0 && p.value_x<=12);
+      assert(reverse.icon_x-p.icon_x<0.0001f && reverse.icon_x-p.icon_x>-0.0001f);
+      assert(reverse.number_size-p.number_size<0.0001f && reverse.number_size-p.number_size>-0.0001f);
+      assert(watch_smooth(p.context)>=0 && watch_smooth(p.context)<=1);
     }
   }
   char abbr[16];
