@@ -1,14 +1,14 @@
 {
-  "version": "0.3.1",
+  "version": "0.3.2",
   "pbw": {
-    "file": "Dynamic-0.3.1.pbw",
-    "sha256": "f98a6bc977e176d121d391ae98b5d6305d40aa0394dd90f33babc92585e3f781"
+    "file": "Dynamic-0.3.2.pbw",
+    "sha256": "41ba35aab4ccf6c49f8416ad6cf3206fe29cfc58e956261edcb14507075b4cb8"
   },
   "native_payload_sha256": {
-    "appinfo.json": "021dc0ae0c90fa3d82384651653b6e1c4effaedab27981e7f622bb95d2742020",
-    "emery/pebble-app.bin": "da6c02dccebebadb4d1159d68f653fb88fdd94ddf7a3777c0511828cbf5130b1",
+    "appinfo.json": "c91e3e996b8a4c23224fab50ac47ddaed547fbc9f66024dbc94a62a63d756dd0",
+    "emery/pebble-app.bin": "4681302d80ef430f4a3b0ce0d9e5b0a06d923e8a46b012f196cb8326936ecaf0",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "f8e11bfeed80d8ebfbe8de5492b4b08869974aab4f06206c0165cb3c5bad9b89"
+    "emery/manifest.json": "859bf8f18a1929181212c2c490fbc679f6f84fbb6b926b6bbbe885f4c35368b2"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -26,81 +26,81 @@
   "images": [
     {
       "file": "docs/images/layout-states.png",
-      "sha256": "efc542f9a8b7f26f7ed305374a671e2727afdd0eb7dd044d16401c31fb69baaa",
+      "sha256": "396397e6a7d024ffdcac90bc3747a35cdcb0994e5d4336f60f334603734977b8",
       "pixels": [
         880,
         282
       ],
       "fixture_captures": [
-        "native-f98a6bc9/captures/private-context-clear-native-after.png",
-        "native-f98a6bc9/captures/idle-music-native-after.png",
-        "native-f98a6bc9/captures/music-notice-native-after.png",
-        "native-f98a6bc9/captures/music-peek-native-after.png"
+        "matrix-41ba35aa/captures/normal-idle.png",
+        "matrix-41ba35aa/captures/normal-flower.png",
+        "matrix-41ba35aa/notice-supplement/captures/normal-notice.png",
+        "matrix-41ba35aa/captures/normal-peek.png"
       ],
       "native_frame_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
+      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
     },
     {
       "file": "docs/images/music.png",
-      "sha256": "79e39b84d97091d39c7217977cbd3452a7093586ba7fb1064871c90b08a5fd91",
+      "sha256": "eb7a2b372ae87ff3d634fc7e161e0051fa2192aa97ce7e2b0113db407739bc9d",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "native-f98a6bc9/captures/idle-music-native-after.png",
+      "fixture_capture": "matrix-41ba35aa/captures/normal-flower.png",
       "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
+      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
     },
     {
       "file": "docs/images/normal.png",
-      "sha256": "9aaadeb8d0a53732e72d779549c9bda0277333c896326e390f88dc3b1be0a7cc",
+      "sha256": "11e35dd3f7c424fccf6fe6aad979f04d8bda09e244f1b14f824289bc982c94a0",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "native-f98a6bc9/captures/private-context-clear-native-after.png",
+      "fixture_capture": "matrix-41ba35aa/captures/normal-idle.png",
       "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
+      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
     },
     {
       "file": "docs/images/notification.png",
-      "sha256": "e5ef0a19ae6732ab1e8580fe00c9c0a52442481806f40311ddc733b29007b425",
+      "sha256": "12df6eefb4c8d84e7729ae06d956725ecbc583f2a8f10e7dd201880f19f0ff1d",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "native-f98a6bc9/captures/music-notice-native-after.png",
+      "fixture_capture": "matrix-41ba35aa/notice-supplement/captures/normal-notice.png",
       "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
+      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
     },
     {
       "file": "docs/images/settings-dark.png",
-      "sha256": "47ac5afd5b6db87e1f830ea9eeb5ecb4e9d86bbf04a1be2eba5bb1e4967c5fdf",
+      "sha256": "a8d49c14b60a0defb085669d2b1faecd1f290e4acac6029763667c38a75bdcbf",
       "pixels": [
         390,
         1754
       ],
-      "provenance": "Actual 0.3.1 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
+      "provenance": "Actual 0.3.2 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
     },
     {
       "file": "docs/images/settings-light.png",
-      "sha256": "ffa0f6521e207de627d9c09b50ff247879aba554474f55026e5e1da3c8ec55c4",
+      "sha256": "9bc689454f0e749ea0072f905864f31d6a89f9b123778e5b962db174f5a549d7",
       "pixels": [
         390,
         1735
       ],
-      "provenance": "Actual 0.3.1 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
+      "provenance": "Actual 0.3.2 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
     },
     {
       "file": "docs/images/timeline-peek.png",
-      "sha256": "2a05f46c098352bdbbf0bcdb3279c43d21f07b2172076d54f64e2c7704acaf3e",
+      "sha256": "f38f546fb2d025e852fe419c58c724521f7f8b087410c8cba3f51219ab004be8",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "native-f98a6bc9/captures/music-peek-native-after.png",
+      "fixture_capture": "matrix-41ba35aa/captures/normal-peek.png",
       "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
+      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
     }
   ],
   "design_reference": {
@@ -113,130 +113,180 @@
     "reference_images_redistributed": false
   },
   "native_qa": {
-    "release_pbw_sha256": "f98a6bc977e176d121d391ae98b5d6305d40aa0394dd90f33babc92585e3f781",
+    "release_pbw_sha256": "41ba35aab4ccf6c49f8416ad6cf3206fe29cfc58e956261edcb14507075b4cb8",
     "exact_release_pbw_tested": true,
-    "rendering_cases": 25,
-    "native_still_captures": 36,
-    "all_contact_sheets_root_reviewed": true,
-    "motion_paths": 8,
+    "rendering_cases": 50,
+    "effective_native_still_captures": 68,
+    "raw_matrix_stills_including_superseded": 73,
+    "initial_preview_stills": 2,
+    "root_visual_approval": {
+      "all9_contact_sheets": true,
+      "corrected_notice_supplement": true,
+      "all6_requested_wide_date_and_track_filmstrips": true
+    },
+    "motion_paths": 15,
     "motion_summary": {
+      "track-short-long": {
+        "distinct_geometry_poses": 7,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true,
+        "clock_date_and_both_readings_pixel_constant": true,
+        "every_frame_visible_cover_bottom_216": true
+      },
+      "track-long-short": {
+        "distinct_geometry_poses": 7,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true,
+        "clock_date_and_both_readings_pixel_constant": true,
+        "every_frame_visible_cover_bottom_216": true
+      },
       "idle-music": {
-        "distinct_geometry_poses": 12,
-        "frames": 23,
+        "distinct_geometry_poses": 2,
         "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
-      },
-      "music-peek": {
-        "distinct_geometry_poses": 5,
-        "frames": 23,
-        "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
-      },
-      "peek-music": {
-        "distinct_geometry_poses": 3,
-        "frames": 23,
-        "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
+        "final_equals_native_screenshot": true
       },
       "music-notice": {
-        "distinct_geometry_poses": 8,
-        "frames": 23,
+        "distinct_geometry_poses": 4,
         "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
+        "final_equals_native_screenshot": true
+      },
+      "notice-music": {
+        "distinct_geometry_poses": 3,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true
+      },
+      "music-peek": {
+        "distinct_geometry_poses": 6,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true
+      },
+      "peek-music": {
+        "distinct_geometry_poses": 4,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true
+      },
+      "music-idle": {
+        "distinct_geometry_poses": 12,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true
       },
       "artist-clear": {
-        "distinct_geometry_poses": 1,
-        "frames": 18,
+        "distinct_geometry_poses": 2,
         "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
+        "final_equals_native_screenshot": true
       },
-      "private-body-clear": {
+      "notice-body-clear": {
         "distinct_geometry_poses": 1,
-        "frames": 18,
         "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
+        "final_equals_native_screenshot": true
       },
-      "private-context-clear": {
+      "private-clear-mid-track": {
+        "distinct_geometry_poses": 5,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true
+      },
+      "normal-wide-idle-music": {
         "distinct_geometry_poses": 12,
-        "frames": 18,
         "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
+        "final_equals_native_screenshot": true
       },
-      "private-clear-mid-slide": {
-        "distinct_geometry_poses": 10,
-        "frames": 18,
+      "normal-wide-peek-music": {
+        "distinct_geometry_poses": 4,
         "final_5_frames_stable": true,
-        "normalized_final_frame_equals_native_screenshot": true
+        "final_equals_native_screenshot": true
+      },
+      "big-wide-idle-music": {
+        "distinct_geometry_poses": 12,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true
+      },
+      "big-wide-peek-music": {
+        "distinct_geometry_poses": 4,
+        "final_5_frames_stable": true,
+        "final_equals_native_screenshot": true
       }
     },
     "privacy_checks": [
       {
         "name": "artist-clear",
         "pass": true,
-        "cleared_region_blank_from_first_post_trigger_capture": true,
-        "region": [
-          65,
-          190,
-          200,
+        "old_framebuffer_indices_before_first_redraw": [
+          0
+        ],
+        "private_region_blank_in_every_subsequent_pose": true,
+        "checked_region": [
+          60,
+          195,
+          192,
           228
-        ]
+        ],
+        "no_zero_latency_physical_display_claim": true
       },
       {
-        "name": "private-body-clear",
+        "name": "notice-body-clear",
         "pass": true,
-        "cleared_region_blank_from_first_post_trigger_capture": true,
-        "region": [
+        "old_framebuffer_indices_before_first_redraw": [],
+        "private_region_blank_in_every_subsequent_pose": true,
+        "checked_region": [
           0,
           126,
           200,
           228
-        ]
+        ],
+        "no_zero_latency_physical_display_claim": true
       },
       {
-        "name": "private-context-clear",
+        "name": "private-clear-mid-track",
         "pass": true,
-        "method": "All normalized returning poses visually reviewed; old private context removed."
-      },
-      {
-        "name": "private-clear-mid-slide",
-        "pass": true,
-        "method": "One initial old framebuffer precedes next native redraw; all subsequent returning poses clear. No zero-latency or physical-display claim."
+        "old_framebuffer_indices_before_first_redraw": [
+          0
+        ],
+        "private_region_blank_in_every_subsequent_pose": true,
+        "checked_region": [
+          80,
+          175,
+          110,
+          228
+        ],
+        "no_zero_latency_physical_display_claim": true
       }
     ],
     "animations_off_checks": 2,
     "animation_optout": {
-      "animations-off": {
-        "distinct_endpoint_poses": 2,
+      "off": {
+        "distinct_geometry_poses": 2,
         "final_5_frames_stable": true
       },
-      "animations-off-relaunch": {
-        "distinct_endpoint_poses": 2,
+      "off-after-relaunch": {
+        "distinct_geometry_poses": 2,
         "final_5_frames_stable": true
       }
     },
-    "notice_transition_clock_and_both_readings_pixels_constant": true,
-    "positive_script_coverage": [
-      "Cyrillic",
-      "Greek",
-      "Vietnamese Latin Extended Additional"
+    "lifecycle_checks": [
+      {
+        "name": "notice_expiry_restores_exact_music",
+        "pass": true
+      }
     ],
-    "negative_fallback_samples": [
-      "rare Latin Extended Additional characters absent from source font",
-      "unsupported emoji"
-    ],
+    "footer_bottom_px": 216,
+    "primary_opaque_title_metadata_gap_px": 8,
+    "minimum_music_title_ink_top_px": 86,
+    "harness_correction": "Original positive notice fixtures had120s music leases; core correctly rejected them. Corrected12s notice stills/3motions replace those cases here; original report and raw captures preserved.",
     "physical_phone_tested": false,
     "actual_timeline_event_text_verified": false,
     "phone_javascript_executed_in_native_captures": false,
     "sdk": "4.33.1",
     "emulated_firmware": "4.33.2",
-    "os_locale": "English SDK firmware; Czech strings not injected",
-    "motion_capture_method": "Raw HMP frames preserved; exact per-frame four-level palette decoding removes emulator backlight fade. All eight settled frames match native Screenshot service. No still-image pixel edits.",
+    "os_locale": "English SDK firmware",
+    "motion_capture_method": "Exact native2-bit palette recovery from white clock/background; all observed channels checked. Removes emulator backlight scaling only; native stills unchanged.",
+    "motion_timing_is_not_hardware_fps": true,
     "limitations": [
-      "No physical phone/watch pairing, real plugin updates, real notification/music callbacks or hardware power/FPS measurements.",
-      "No phone JavaScript or RAF ran during native capture; fixtures packed by pinned production core and injected through real native AppMessage.",
-      "English emulator OS locale; Czech date/label wording was not injected.",
+      "English SDK firmware locale; Czech date/labels not injected.",
+      "Native Screenshot service stills are unchanged RGB200×228; motion HMP palette recovery only removes QEMU backlight scaling.",
+      "No phone JavaScript/RAF runtime or live plugin/music/notification callbacks executed. Production core codec fixtures were injected through real native AppMessage.",
+      "No physical watch/phone pairing, hardware FPS or power measurements.",
       "Native SDK Peek system card is empty; actual Timeline event text not verified.",
-      "Prior0.3.0 expiry/relaunch lifecycle tests were not repeated as0.3.1 focused font/coverage regressions."
+      "Artist-clear/mid-track privacy clear can first capture one previous framebuffer before next redraw; all subsequent poses clear."
     ]
   },
   "settings_qa": {
@@ -526,7 +576,7 @@
     },
     "body_metrics": {
       "header": "src/c/generated_body_metrics.h",
-      "headerSha256": "09f2522305437b7c5e343c4e5675afd97fa1553792928b4767fe0c96a98ff972",
+      "headerSha256": "33975d93d4aa7e8bb8d803432870103c53da137c758868910ec3b10498b68c5f",
       "codepoints": 920,
       "sizes": [
         11,
@@ -539,10 +589,11 @@
         32
       ],
       "packagedGlyphDescentChecks": 7360,
+      "packagedGlyphAscentChecks": 7360,
       "wildcardIndex": 908,
       "wildcardCodepoint": 9647,
       "nativeMetricTablesMatch": true,
-      "scope": "Every committed descent matches the exact packaged PFO bitmap metrics, including fallback; visible text alignment remains a native rendering check."
+      "scope": "Every committed ascent/descent matches the exact packaged PFO bitmap metrics, including fallback and empty glyph normalization; visible text alignment remains a native rendering check."
     },
     "firmware_fallback_font_keys": [
       "GOTHIC_14_BOLD",
@@ -564,5 +615,20 @@
     "maximum_glyph_points": 145,
     "maximum_glyph_contours": 5,
     "source_geometry_and_raster_validation_are_separate": true
+  },
+  "music_layout": {
+    "source": "src/c/music_layout.h",
+    "bottom_anchor_px": 216,
+    "artwork_target_px": 40,
+    "maximum_title_lines": 3,
+    "maximum_artist_lines": 2,
+    "title_metadata_gap_px": 8,
+    "minimum_title_ink_top_px": 86,
+    "native_ascent_and_descent_metrics": true,
+    "content_grows_upward": true,
+    "per_track_vertical_centering": false,
+    "compact_weekday_baseline_px": 19,
+    "compact_numeric_date_baseline_px": 40,
+    "idle_and_peek_date_inline": true
   }
 }

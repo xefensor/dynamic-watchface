@@ -1,6 +1,6 @@
 # Dynamic and the shared core
 
-Dynamic 0.3.1 uses Pebble Watchface Core 0.1.0, the same pinned engine release
+Dynamic 0.3.2 uses Pebble Watchface Core 0.1.0, the same pinned engine release
 used by Halftone 1.9.0 rc.6. This redesign changes Dynamic's presentation; it
 keeps the data engine, UUID and existing source/cache contract. Each PBW embeds
 its own library code and has its own identity and saved settings.
@@ -19,7 +19,7 @@ its own library code and has its own identity and saved settings.
 The core imposes no coordinates, dot border or font family. Native callbacks
 forward events to its state object; Dynamic renders the current snapshots.
 Phone coordinators receive generated keys, storage, settings and clocks
-explicitly. Halftone's renderer is unchanged by Dynamic's 0.3.1 changes.
+explicitly. Halftone's renderer is unchanged by Dynamic's 0.3.2 changes.
 
 ## Native-style presentation
 
@@ -28,10 +28,10 @@ allows the clock to scale and move continuously between its idle and compact
 positions. Roboto Condensed resources provide the body text. Font sources,
 licenses and generation provenance belong to this repository.
 
-The 0.3.1 type correction keeps that geometry. Temperature and percent units
-use Fredoka outlines with the reading numbers, and reading labels use muted
-11px text. Body assets add Greek, Cyrillic and Latin Extended Additional
-coverage and a visible missing-character glyph for unsupported text.
+Temperature and percent units use Fredoka outlines with the reading numbers,
+and reading labels use muted 11px text. Body assets add Greek, Cyrillic and
+Latin Extended Additional coverage and a visible missing-character glyph for
+unsupported text.
 
 Fredoka clock, number and unit rendering uses 4×4 fractional pixel coverage.
 Edge pixels blend the chosen foreground and background without adding stroke
@@ -48,11 +48,21 @@ the provider identifies it as precipitation probability. Temperatures use
 source images when available or a semantic thermometer symbol.
 
 The idle view gives the weekday/date and rounded clock a hero area, followed
-by two horizontal readings. Active context contracts the clock and moves the
-readings together above a full-width title/body area. Music keeps a separate
-artist/artwork row. A notice uses its source heading/icon and optional body.
-Within the active layout, fresh tracks or notices slide inside that context
-area while the surrounding clock/readings retain their positions.
+by two horizontal readings. Active context contracts the clock, stacks the
+weekday/date and moves the readings together above the title/body area.
+Idle and Peek keep the date on one line. A notice uses its source heading/icon
+and optional body. Within the active layout, fresh tracks or notices slide
+inside that context area while the surrounding clock/readings retain their
+positions.
+
+Music is anchored from the bottom. The 40px artwork and up to two artist
+lines share a visible bottom at y=216. When artwork or artist text is present,
+the footer reserves at least 40px, expanding for taller artist ink. A title of
+up to three lines grows upward, ending 8px above that footer. With neither
+artwork nor artist text, the title can extend to y=216. Track length changes
+the title's top edge while the footer remains fixed. Measured native ink
+bounds determine fit within the title/footer areas, including a smaller
+Big-font fallback when needed.
 
 Animations run for bounded transitions and stop when settled. The
 `ANIMATIONS` setting controls Dynamic's own transitions. Native Timeline Peek
@@ -68,7 +78,7 @@ settings; the core data packet and dependency remain unchanged.
 The build audit checks the packaged SDK payload, pinned core, declared font
 resources and generated clock assets. Native captures check text fitting,
 glyph appearance, colors, images and motion. Validation from earlier versions
-remains historical rather than being relabeled for 0.3.1. See
+remains historical rather than being relabeled for 0.3.2. See
 [the design references](NATIVE-STYLE.md) and the
 [build-specific validation record](VALIDATION.md).
 

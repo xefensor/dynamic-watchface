@@ -351,11 +351,13 @@ def audit_body_metrics(root, resources, binary, sources):
         r"0x([0-9a-f]+)", header.split("body_metric_codepoints[BODY_METRIC_COUNT] = {", 1)[1].split("};", 1)[0])]
     rows = [list(map(int, row.split(","))) for row in re.findall(
         r"\{([\d,-]+)\}", header.split("body_metric_descents[BODY_METRIC_COUNT][BODY_METRIC_POINT_COUNT] = {", 1)[1].split("};", 1)[0])]
+    ascents = [list(map(int, row.split(","))) for row in re.findall(
+        r"\{([\d,-]+)\}", header.split("body_metric_ascents[BODY_METRIC_COUNT][BODY_METRIC_POINT_COUNT] = {", 1)[1].split("};", 1)[0])]
     provenance = json.loads((root / "resources/fonts/font-provenance.json").read_text())
     record = provenance["generatedBodyMetrics"]
-    require(len(points) == len(rows) == record["metricCodepointCountIncludingWildcard"] and
+    require(len(points) == len(rows) == len(ascents) == record["metricCodepointCountIncludingWildcard"] and
             record["fontCodepointCount"] == len(points) - 1 and points == sorted(set(points)) and
-            all(len(row) == len(sizes) for row in rows), "Body metric lookup shape changed")
+            all(len(row) == len(sizes) for row in rows + ascents), "Body metric lookup shape changed")
     fallback = re.search(r"#define BODY_METRIC_WILDCARD_INDEX (\d+)\b", header)
     require(fallback and int(fallback.group(1)) < len(points) and
             points[int(fallback.group(1))] == 0x25af,
@@ -367,17 +369,24 @@ def audit_body_metrics(root, resources, binary, sources):
     for column, size in enumerate(sizes):
         font = read_pfo(resources[column + 1]["data"])
         require(set(points) == set(font["metrics"]), "Body metric/PFO repertoires differ")
-        for point, row in zip(points, rows):
+        for point, row, ascent_row in zip(points, rows, ascents):
             glyph = font["metrics"][point]
             # The SDK stores a glyph's bitmap top relative to the font-size baseline.
             descent = glyph["top"] + glyph["height"] - font["height"]
             require(row[column] == descent,
                     "Body baseline differs from exact packaged glyph: %dpx U+%04X" % (size, point))
+            # fontgen normalizes an empty glyph into a blank 1x1 bitmap at
+            # top=size-1. It has no visible ascent despite those dummy bounds.
+            ascent = font["height"] - glyph["top"] if glyph["hasInk"] else 0
+            require(ascent_row[column] == ascent,
+                    "Body ascent differs from exact packaged glyph: %dpx U+%04X" % (size, point))
             checks += 1
     raw_points = struct.pack("<" + "H" * len(points), *points)
     raw_rows = bytes(value & 0xff for row in rows for value in row)
-    require(binary.count(raw_points) == 1 and binary.count(raw_rows) == 1,
-            "Native binary does not contain the exact body codepoint/descent tables")
+    raw_ascents = bytes(value & 0xff for row in ascents for value in row)
+    require(binary.count(raw_points) == 1 and binary.count(raw_rows) == 1 and
+            binary.count(raw_ascents) == 1,
+            "Native binary does not contain the exact body codepoint/descent/ascent tables")
     require(record["header"] == "src/c/generated_body_metrics.h" and
             record["sha256"] == sha256(header.encode()) and record["pointSizes"] == sizes,
             "Body metric header differs from reviewed provenance")
@@ -388,9 +397,10 @@ def audit_body_metrics(root, resources, binary, sources):
             "Body metric header has stale source-font provenance")
     return {"header": record["header"], "headerSha256": record["sha256"],
             "codepoints": len(points), "sizes": sizes, "packagedGlyphDescentChecks": checks,
+            "packagedGlyphAscentChecks": checks,
             "wildcardIndex": int(fallback.group(1)), "wildcardCodepoint": 0x25af,
             "nativeMetricTablesMatch": True,
-            "scope": "Every committed descent matches the exact packaged PFO bitmap metrics, including fallback; visible text alignment remains a native rendering check."}
+            "scope": "Every committed ascent/descent matches the exact packaged PFO bitmap metrics, including fallback and empty glyph normalization; visible text alignment remains a native rendering check."}
 
 
 def audit_clock_outlines(root, binary, sources):
@@ -527,7 +537,7 @@ def read_core(root, package):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.3.1", "Review this auditor for a different release version")
+    require(package["version"] == "0.3.2", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and

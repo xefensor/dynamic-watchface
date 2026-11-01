@@ -60,6 +60,13 @@ int main(void) {
   assert(body_text_descent("Justice", 18) == 0); // Unsupported resource size.
   assert(body_text_descent("Tame Impala", 20) > body_text_descent("Justice", 20));
   assert(body_text_descent("gypq", 28) > 0);
+  assert(body_text_ascent(NULL, 20) == 0);
+  assert(body_text_ascent("", 20) == 0);
+  assert(body_text_ascent(" ", 26) == 0);
+  assert(body_text_ascent("Justice", 18) == 0); // Unsupported resource size.
+  assert(body_text_ascent("Justice", 20) > 0);
+  assert(body_text_ascent("Č", 20) > body_text_ascent("C", 20));
+  assert(body_text_ascent("ČC", 20) == body_text_ascent("Č", 20));
   const unsigned char *cursor = (const unsigned char *)"ČčŘřŐőŰűȘșȚțİıĞğŞş°…−КолесомΑθήναTiếngViệt";
   while (*cursor) {
     const uint32_t cp = body_metric_next_codepoint(&cursor);
@@ -72,6 +79,7 @@ int main(void) {
   const char *invalid[] = {"\xc2", "\xe2\x80", "\xf0\x9f\x8c", "\xff"};
   for (size_t i = 0; i < sizeof(invalid) / sizeof(*invalid); ++i) {
     assert(body_text_descent(invalid[i], 20) >= 0);
+    assert(body_text_ascent(invalid[i], 20) >= 0);
   }
   return 0;
 }

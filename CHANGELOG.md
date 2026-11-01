@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.2
+
+- Stacks the weekday and date in the compact music/notification header,
+  retaining both horizontal complications.
+- Anchors artwork and up to two artist lines to a fixed bottom edge. Song
+  titles grow upward through up to three lines with a fixed gap above them.
+- Fits the music text using measured native ink bounds, keeping the preferred
+  Big font when it fits.
+- Retains the single-line idle/Peek date, notification content layout and
+  native Timeline priority.
+
 ## 0.3.1
 
 - Expands body-font coverage for Greek, Cyrillic and Latin Extended Additional

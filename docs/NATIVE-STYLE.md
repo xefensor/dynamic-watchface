@@ -1,6 +1,6 @@
 # Design references and motion
 
-Dynamic 0.3.1 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.3.2 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -46,9 +46,11 @@ positions. The Complication Face demo selects slots by data shape.
 - **One canvas:** Roboto Condensed text, two horizontal readings and small
   symbols share the page. Accent colors identify meaningful graphics and
   status; the date remains plain.
-- **Space follows the task:** music gets a full-width title and separate
-  artist/artwork row. Notifications use a source heading and optional large
-  body text. The two selected readings remain visible in both states.
+- **Space follows the task:** the compact header stacks weekday/date while
+  keeping both horizontal readings. Music's artwork and up to two artist
+  lines stay anchored to the bottom; a full-width title grows upward through
+  up to three lines with an 8px gap above the footer. Notifications keep their
+  source heading and optional large body.
 - **Motion explains the change:** the clock and readings move together as
   context enters or leaves. In the active layout, fresh track and notice
   updates move inside the context area while the surrounding layout stays
@@ -83,9 +85,9 @@ Licenses accompany Dynamic's generated clock-outline and body-baseline assets.
 The optional regeneration tools are pinned in
 [`scripts/requirements-font-assets.txt`](../scripts/requirements-font-assets.txt).
 
-Version 0.3.1 keeps the layout geometry while correcting its type details:
-Fredoka temperature/percent units and muted 11px reading labels. The body font
-adds Greek, Cyrillic and Latin Extended Additional coverage for provider text.
+The type details include Fredoka temperature/percent units and muted 11px
+reading labels. The body font adds Greek, Cyrillic and Latin Extended
+Additional coverage for provider text.
 Unsupported characters use a visible missing-character glyph.
 
 The native Fredoka renderer uses 4×4 fractional pixel coverage, preserving the

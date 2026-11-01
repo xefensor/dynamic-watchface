@@ -119,7 +119,7 @@
   },
   "generatedBodyMetrics": {
     "header": "src/c/generated_body_metrics.h",
-    "sha256": "09f2522305437b7c5e343c4e5675afd97fa1553792928b4767fe0c96a98ff972",
+    "sha256": "33975d93d4aa7e8bb8d803432870103c53da137c758868910ec3b10498b68c5f",
     "generator": "scripts/generate-body-metrics.py",
     "verificationCommand": "python3 scripts/generate-body-metrics.py --check --json (requires freetype-py; the SDK Python environment provides it)",
     "fontSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
@@ -146,7 +146,15 @@
     "maximumBitmapDescentPx": 9,
     "optionalBuildRequirements": "scripts/requirements-font-assets.txt",
     "wildcardCodepoint": 9647,
-    "wildcardIndex": 908
+    "wildcardIndex": 908,
+    "minimumBitmapAscentPx": -2,
+    "maximumBitmapAscentPx": 34,
+    "blankGlyphAscentPx": 0,
+    "ascentTable": "body_metric_ascents[920][8]",
+    "ascentTableBytes": 7360,
+    "ascentDefinition": "FreeType bitmap_top for glyphs with actual bitmap ink; zero for blank glyphs. SDK PFO equivalent is font pixel size minus glyph top offset, with blank-bitmaps normalized to zero.",
+    "ascentHelper": "body_text_ascent(const char *utf8, int point)",
+    "descentsUnchangedFrom031": true
   },
   "bodyResources": {
     "sdk": "4.33.1",

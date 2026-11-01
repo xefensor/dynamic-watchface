@@ -32,6 +32,12 @@ static inline float watch_ease(float value) {
   return 1 + 1.65f * value * value * value + 0.65f * value * value;
 }
 
+// Wait for the large clock to vacate the right column, then unfold the date.
+// Native Peek uses the same context interpolation in the reverse direction.
+static inline float watch_date_split(float context) {
+  return watch_smooth((watch_clamp(context) - 0.55f) / 0.45f);
+}
+
 static inline WatchPose watch_pose_idle(bool large) {
   return (WatchPose){100,108,large ? 84 : 80,100,23,
     145,0,0,16,22,0,52,large ? 36 : 34,16,70,1,0,0,0,0};

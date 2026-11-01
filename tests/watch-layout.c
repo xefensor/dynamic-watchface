@@ -6,6 +6,10 @@ int main(void) {
   for (int large=0;large<=1;++large) {
     const WatchPose idle=watch_pose_idle(large), active=watch_pose_context(large,false);
     const WatchPose notice=watch_pose_context(large,true), peek=watch_pose_peek(large);
+    assert(watch_date_split(idle.context)==0 && watch_date_split(peek.context)==0);
+    assert(watch_date_split(active.context)==1);
+    assert(active.date_y-5==19 && active.date_y+16==40);
+    assert(watch_date_split(0.55f)==0 && watch_date_split(0.8f)>0);
     assert(idle.clock_x==100 && idle.clock_y==108 && idle.context==0);
     assert(active.clock_x==58 && active.context==1 && active.music==1);
     assert(notice.notice==1 && notice.row_y==active.row_y);
@@ -31,6 +35,8 @@ int main(void) {
       assert(reverse.icon_x-p.icon_x<0.0001f && reverse.icon_x-p.icon_x>-0.0001f);
       assert(reverse.number_size-p.number_size<0.0001f && reverse.number_size-p.number_size>-0.0001f);
       assert(watch_smooth(p.context)>=0 && watch_smooth(p.context)<=1);
+      const float split=watch_date_split(p.context);
+      assert(split>=0 && split<=1);
     }
   }
   char abbr[16];

@@ -7,6 +7,7 @@
 #include "generated_clock_glyphs.h"
 #include "generated_body_metrics.h"
 #include "font_raster.h"
+#include "music_layout.h"
 
 #define PERSIST_KEY_BACKGROUND_COLOR 2
 #define PERSIST_KEY_TEXT_COLOR 3
@@ -36,6 +37,7 @@ static WatchfaceCore s_core;
 #define s_phone_connected s_core.phone_connected
 static AppTimer *s_context_timer, *s_startup_timer, *s_motion_timer;
 static char s_date_buffer[48], s_compact_date_buffer[48], s_time_buffer[6];
+static char s_weekday_buffer[16], s_numeric_date_buffer[16];
 static const uint8_t s_body_points[] = {11,14,16,20,24,26,28,32};
 #define BODY_FONT_COUNT (sizeof(s_body_points)/sizeof(s_body_points[0]))
 static GFont s_body_fonts[BODY_FONT_COUNT];
@@ -308,6 +310,13 @@ static GColor prv_muted_text(float alpha) {
   const unsigned r=prv_round(watch_lerp(br,(2*fr+br+1)/3,alpha));
   const unsigned g=prv_round(watch_lerp(bg,(2*fg+bg+1)/3,alpha));
   const unsigned b=prv_round(watch_lerp(bb,(2*fb+bb+1)/3,alpha));
+  return (GColor){.argb=0xc0|(r<<4)|(g<<2)|b};
+}
+static GColor prv_faded_text(float alpha) {
+  alpha=watch_clamp(alpha);
+  const unsigned r=prv_round(watch_lerp((s_background_color.argb>>4)&3,(s_text_color.argb>>4)&3,alpha));
+  const unsigned g=prv_round(watch_lerp((s_background_color.argb>>2)&3,(s_text_color.argb>>2)&3,alpha));
+  const unsigned b=prv_round(watch_lerp(s_background_color.argb&3,s_text_color.argb&3,alpha));
   return (GColor){.argb=0xc0|(r<<4)|(g<<2)|b};
 }
 static const ClockGlyph *prv_clock_glyph(uint32_t code) {
@@ -698,6 +707,29 @@ static void prv_draw_status(GContext *ctx,WatchPose p) {
     graphics_draw_line(ctx,GPoint(bx-1,y+10),GPoint(bx+8,y));
   }
 }
+static void prv_draw_date(GContext *ctx,WatchPose p) {
+  const float split=watch_date_split(p.context);
+  const float vertical=watch_clamp(split*2);
+  // Separate the baselines before converging the two text runs horizontally.
+  const float lateral=watch_smooth((split-0.25f)/0.75f);
+  const int inline_point=s_large_text_enabled?20:16;
+  const float whole_width=prv_measure(s_compact_date_buffer,inline_point).w;
+  const float week_width=prv_measure(s_weekday_buffer,inline_point).w;
+  const float date_width=prv_measure(s_numeric_date_buffer,inline_point).w;
+  const float week_center=p.date_x+(week_width-whole_width)/2*(1-lateral);
+  const float date_center=p.date_x+(whole_width-date_width)/2*(1-lateral);
+  const int week_point=prv_point(prv_round(watch_lerp(inline_point,14,vertical)));
+  const int date_point=prv_point(prv_round(watch_lerp(inline_point,20,vertical)));
+  prv_text(ctx,s_weekday_buffer,week_point,prv_round(week_center-38),
+      prv_round(p.date_y-5*vertical),76,s_text_color,GTextAlignmentCenter);
+  prv_text(ctx,s_numeric_date_buffer,date_point,prv_round(date_center-38),
+      prv_round(p.date_y+16*vertical),76,s_text_color,GTextAlignmentCenter);
+  if(vertical<0.99f) {
+    const float center=p.date_x+(week_width-date_width)/2*(1-lateral);
+    prv_text(ctx,"·",inline_point,prv_round(center-38),prv_round(p.date_y),76,
+        prv_faded_text(1-vertical),GTextAlignmentCenter);
+  }
+}
 static void prv_draw_background(Layer *layer,GContext *ctx) {
   graphics_context_set_fill_color(ctx,s_background_color);
   graphics_fill_rect(ctx,layer_get_bounds(layer),0,GCornerNone);
@@ -707,33 +739,13 @@ static void prv_draw_background(Layer *layer,GContext *ctx) {
   const float available=watch_lerp(184,100,watch_clamp(p.context));
   if(width>available){point*=available/width;width=available;}
   prv_vector(ctx,s_time_buffer,p.clock_x-width/2,p.clock_y,point,s_text_color);
-  const int date_point=p.context>0.5f?14:s_large_text_enabled?20:16;
-  const int date_width=prv_round(watch_lerp(184,76,watch_clamp(p.context)));
-  char date[48];watch_layout_copy_utf8(s_compact_date_buffer,date,sizeof(date));
-  prv_ellipsize(date,sizeof(date),date_point,date_width);
-  prv_text(ctx,date,date_point,prv_round(p.date_x-date_width/2.0f),prv_round(p.date_y),
-      date_width,s_text_color,GTextAlignmentCenter);
+  prv_draw_date(ctx,p);
   prv_draw_reading(ctx,0,p);prv_draw_reading(ctx,1,p);prv_draw_status(ctx,p);
 }
-static bool prv_wrap_title(const char *source,char *first,char *second,int point,int width) {
-  size_t at=0,best=0,last_space=0;
-  char prefix[COMPLICATION_MAX_TEXT_BYTES+5]={0};
-  while(source[at]) {
-    size_t bytes=1;while(source[at+bytes]&&((unsigned char)source[at+bytes]&0xc0)==0x80)++bytes;
-    if(at+bytes>=sizeof(prefix))break;
-    memcpy(prefix+at,source+at,bytes);prefix[at+bytes]='\0';
-    if(prv_measure(prefix,point).w>width)break;
-    if(source[at]==' ')last_space=at;
-    at+=bytes;best=at;
-  }
-  if(!source[best]){watch_layout_copy_utf8(source,first,COMPLICATION_MAX_TEXT_BYTES+5);second[0]='\0';return true;}
-  if(last_space)best=last_space;
-  memcpy(first,source,best);first[best]='\0';
-  const char *tail=source+best;while(*tail==' ')++tail;
-  watch_layout_copy_utf8(tail,second,COMPLICATION_MAX_TEXT_BYTES+5);
-  const bool fits=prv_measure(second,point).w<=width;
-  prv_ellipsize(second,COMPLICATION_MAX_TEXT_BYTES+5,point,width);
-  return fits;
+static MusicTextMetrics prv_music_measure(void *context,const char *text,int point) {
+  (void)context;
+  return (MusicTextMetrics){prv_measure(text,point).w,body_text_ascent(text,point),
+      body_text_descent(text,point)};
 }
 static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int x,int y) {
   if(value->mode==CONTEXT_NONE || !context_slot_fresh(&value->title,time(NULL)))return;
@@ -742,27 +754,21 @@ static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int 
       (subtitle->flags&COMPLICATION_FLAG_TEXT)&&subtitle->text_length;
   const bool bitmap=(title->flags&COMPLICATION_FLAG_BITMAP)!=0;
   if(value->mode==CONTEXT_MUSIC) {
-    int preferred=s_large_text_enabled?28:26;
-    const bool short_title=prv_measure(title->text,32).w<=180;
-    if(short_title)prv_text(ctx,title->text,32,x+10,y+121,180,s_text_color,GTextAlignmentLeft);
-    else {
-      char first[COMPLICATION_MAX_TEXT_BYTES+5],second[COMPLICATION_MAX_TEXT_BYTES+5];
-      const bool fits=prv_wrap_title(title->text,first,second,preferred,180);
-      if(!fits&&preferred>26){preferred=26;prv_wrap_title(title->text,first,second,preferred,180);}
-      prv_text(ctx,first,preferred,x+10,y+115,180,s_text_color,GTextAlignmentLeft);
-      if(second[0])prv_text(ctx,second,preferred,x+10,y+115+preferred+2,180,s_text_color,GTextAlignmentLeft);
-    }
     const int artwork=40;
-    if(bitmap) {
-      const bool cover=(title->flags&COMPLICATION_FLAG_IMAGE)!=0;
-      const int visible=prv_bitmap_visible_bottom(title,artwork,cover);
-      if(visible)prv_draw_bitmap(ctx,title,x+10,y+216-visible,artwork,s_text_color,cover);
+    const bool cover=(title->flags&COMPLICATION_FLAG_IMAGE)!=0;
+    const int visible=bitmap?prv_bitmap_visible_bottom(title,artwork,cover):0;
+    MusicLayout layout;
+    music_layout_build(title->text,has_subtitle?subtitle->text:"",visible>0,s_large_text_enabled,
+        prv_music_measure,NULL,&layout);
+    for(int i=0;i<layout.title.count;++i) {
+      prv_text(ctx,layout.title.text[i],layout.title_point,x+10,y+layout.title_baseline[i],
+          180,s_text_color,GTextAlignmentLeft);
     }
-    if(has_subtitle) {
-      char artist[COMPLICATION_MAX_TEXT_BYTES+5];watch_layout_copy_utf8(subtitle->text,artist,sizeof(artist));
-      const int point=s_large_text_enabled?24:20,left=bitmap?60:10,width=190-left;
-      prv_ellipsize(artist,sizeof(artist),point,width);
-      prv_text(ctx,artist,point,x+left,y+216-body_text_descent(artist,point),width,s_text_color,GTextAlignmentLeft);
+    if(visible)prv_draw_bitmap(ctx,title,x+10,y+MUSIC_BOTTOM-visible,artwork,s_text_color,cover);
+    const int left=visible?60:10;
+    for(int i=0;i<layout.artist.count;++i) {
+      prv_text(ctx,layout.artist.text[i],layout.artist_point,x+left,y+layout.artist_baseline[i],
+          190-left,s_text_color,GTextAlignmentLeft);
     }
   } else {
     const int point=s_large_text_enabled?24:20;
@@ -809,8 +815,9 @@ static void prv_update_clock(void) {
   strftime(s_time_buffer,sizeof(s_time_buffer),s_use_12_hour?"%I:%M":"%H:%M",current);
   if(s_use_12_hour&&s_time_buffer[0]=='0')memmove(s_time_buffer,s_time_buffer+1,strlen(s_time_buffer));
   snprintf(s_date_buffer,sizeof(s_date_buffer),"%s · %d.%d.",day,current->tm_mday,current->tm_mon+1);
-  char abbreviated[16];watch_layout_abbreviate(day,abbreviated,sizeof(abbreviated),3);
-  snprintf(s_compact_date_buffer,sizeof(s_compact_date_buffer),"%s · %d.%d.",abbreviated,current->tm_mday,current->tm_mon+1);
+  watch_layout_abbreviate(day,s_weekday_buffer,sizeof(s_weekday_buffer),3);
+  snprintf(s_numeric_date_buffer,sizeof(s_numeric_date_buffer),"%d.%d.",current->tm_mday,current->tm_mon+1);
+  snprintf(s_compact_date_buffer,sizeof(s_compact_date_buffer),"%s · %s",s_weekday_buffer,s_numeric_date_buffer);
   prv_apply_unobstructed_layout();
 }
 

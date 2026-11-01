@@ -2,7 +2,7 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.3.1 uses Fredoka clock outlines and Roboto Condensed text to
+Peek. Version 0.3.2 uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
@@ -10,8 +10,8 @@ It uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-cor
 0.1.0, the same data engine used by
 [Halftone](https://github.com/xefensor/halftone-watchface).
 
-Install [Dynamic-0.3.1.pbw](dist/Dynamic-0.3.1.pbw); the
-[source archive](dist/Dynamic-0.3.1-source.zip) is included. Dynamic has its own UUID,
+Install [Dynamic-0.3.2.pbw](dist/Dynamic-0.3.2.pbw); the
+[source archive](dist/Dynamic-0.3.2-source.zip) is included. Dynamic has its own UUID,
 `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, so it can be installed alongside Halftone.
 This is an early sideloaded build for the Pebble plugin preview. Public-store
 submission remains on hold while Pebble's preview restriction applies.
@@ -23,7 +23,7 @@ submission remains on hold while Pebble's preview restriction applies.
 | State | Presentation |
 | --- | --- |
 | Normal | A shortened localized weekday and numeric date, large rounded clock and two equal reading columns |
-| Music | The clock contracts and the readings move together above a full-width song title, with artist and optional artwork below |
+| Music | A compact clock/header and both readings sit above a title that grows upward from a bottom-anchored artist/artwork footer |
 | New notification | A source heading/icon and optional large message text briefly take priority over music |
 | Timeline Peek | The face follows Pebble's changing available area, retaining its clock and both readings above the native event panel |
 
@@ -43,14 +43,21 @@ The first two global complication choices keep their left/right positions,
 including when one is empty. Selected readings without a usable value show
 `--`. Timeline events remain native rather than being duplicated inside the face.
 
+The compact music/notification header stacks the weekday above the date.
+Idle and Timeline Peek use a single-line date. Music titles can use up to
+three lines, growing upward with a fixed gap above the footer. Artwork and
+up to two artist lines share a fixed bottom edge, so their position stays
+stable across short and long tracks.
+
 Rain-probability percentages can use a 0–100% gauge when the source identifies
 them as precipitation data. Other percentages keep their ordinary reading
 presentation. Temperatures use a source image when supplied, or a thermometer.
 
 Big text prefers larger date, reading and message text within the available
 space. The clock fits its rounded digits to the width in both modes. Long text
-wraps or ends in an ellipsis. With notification previews disabled, the
-app/title appears without the message body.
+wraps or ends in an ellipsis. Music text keeps the preferred Big size when its
+measured native ink fits, with a smaller fallback only when needed. With
+notification previews disabled, the app/title appears without the message body.
 
 Short transitions connect layout and content changes. In the active layout,
 fresh tracks and notices slide within the context area while the clock and
@@ -128,7 +135,7 @@ npm ci
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.3.1.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.3.2.pbw
 python3 scripts/package-source.py
 ```
 
@@ -140,7 +147,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.3.1.pbw
+pebble install --emulator emery dist/Dynamic-0.3.2.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -184,5 +191,5 @@ Fredoka and Roboto Condensed use the SIL Open Font License 1.1. Their copyright
 notices and licenses accompany the source fonts:
 [Fredoka](resources/fonts/OFL-Fredoka.txt) and
 [Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). Earlier releases
-remain in `dist/`, including 0.3.0. The 0.1 source archive preserves its Fira
+remain in `dist/`, including 0.3.1. The 0.1 source archive preserves its Fira
 Sans Condensed files and font license, while 0.2 uses PebbleOS system fonts.

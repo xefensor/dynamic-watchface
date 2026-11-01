@@ -1,6 +1,74 @@
 # Dynamic validation
 
-## 0.3.1 preview fidelity correction
+## 0.3.2 bottom-anchored music and compact date
+
+Music uses a measured native layout with a fixed visible bottom at y216.
+A 40px artwork target and up to two artist lines share that bottom; up to
+three title lines grow upward with an 8px gap. Metadata reserves at least
+40px when artwork or artist text exists. If both are absent, the title uses
+the bottom anchor itself. Preferred Big sizes fall back only when needed
+for readable line spacing and the y86 content boundary.
+
+- **48 JavaScript tests and four strict C99 suites pass.** The music suite
+  checks UTF-8 character boundaries, word and unbroken-word wrapping, final
+  ellipses, comma-aware artist breaks, fixed bottoms, ascent/descent spacing,
+  missing metadata and Big fitting. Its geometry uses exact bundled metrics;
+  deterministic test advances isolate wrapping, while emulator checks use the
+  actual SDK text widths. Music tests also pass ASan/UBSan with leak detection
+  disabled for this environment.
+- All **7,360 ascents and 7,360 descents** match the exact packaged PFO bitmap
+  metrics and linked ARM tables. A checksum-consistent wrong ascent is rejected.
+  Source fonts, font resources, clock outlines, core pin, UUID, permission and
+  all 33 wire-key bindings remain unchanged from 0.3.1.
+- The compact weekday/date use baselines 19/40 with staged separation during
+  layout transitions. Idle and Timeline Peek retain the inline date. The
+  conditional status indicators remain below the compact date.
+- Two current actual Clay captures pass at 390px: English/light and Czech/dark,
+  showing version 0.3.2 with no page errors or overflow. Settings behavior and
+  the existing 17 translations are unchanged.
+- **50 effective native rendering cases and 68 native stills pass.** Short/
+  three-line titles, two-line artists, 48-byte/unbroken/UTF-8 content, missing/
+  transparent/padded/portrait art, descenders, Big fitting, sparse readings,
+  12-hour/wide clocks and dates, idle/music/notices/Peek and light/dark pages
+  were checked. Root reviewed all nine contact sheets, the corrected notice
+  supplement and six wide-date/track motion filmstrips.
+- Pixel checks confirm visible cover/last-artist bottoms at y216 in the music
+  cases, primary opaque title-to-metadata gaps of 8px and title ink at or below
+  y86. During both track slides, the header and both readings are pixel-constant,
+  and every captured cover bottom remains at y216. Active dates have two bands;
+  idle and Peek dates have one.
+- Fifteen motion paths and two animation opt-out runs pass. One notice-expiry
+  check restores the exact preceding music image. Artist/mid-track clears can
+  first capture the prior framebuffer before the next redraw; every subsequent
+  pose clears private content. Native stills are unchanged; raw HMP frames are
+  retained and exact palette recovery removes only QEMU backlight scaling.
+- The first positive notice fixtures mistakenly used 120-second music leases;
+  the core correctly rejected them. Corrected 12-second notice states and
+  three affected transitions replace them in the effective results. Five
+  superseded raw stills/reports and two initial preview stills are retained
+  separately; they are not counted as additional passing cases.
+- Captures use the exact final PBW, production core codec fixtures and native
+  AppMessage, with no phone JavaScript. The SDK locale is English; Czech date
+  wording was not injected. Live phone/plugin/media/notification callbacks,
+  actual Timeline event text, physical PT2 behavior and hardware FPS/power
+  remain untested. These are emulator render/interaction checks.
+- SDK 4.33.1 reports **246,928 resource bytes**, a **60,838-byte RAM footprint**
+  and **70,234 bytes free heap**. The native binary is 51,404 bytes. The resource
+  pack is byte-identical to 0.3.1.
+
+PBW SHA-256:
+
+`41ba35aab4ccf6c49f8416ad6cf3206fe29cfc58e956261edcb14507075b4cb8`
+
+Native binary SHA-256:
+
+`4681302d80ef430f4a3b0ce0d9e5b0a06d923e8a46b012f196cb8326936ecaf0`
+
+Resources SHA-256:
+
+`2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb`
+
+## Historical 0.3.1 preview fidelity correction
 
 The clock and reading values now use fractional 4×4 pixel coverage rather than
 rounding every outline vertex to a whole pixel. The original font geometry,
