@@ -1,6 +1,81 @@
 # Dynamic validation
 
-## 0.6.0 notification attention and readable settings
+## 0.6.1 publication refinement candidate
+
+The prepared release remains a **sideloaded plugin preview**. Its local store kit
+is consistent and ready for review, but public submission is held by Pebble's
+[current plugin-preview rule](https://developer.repebble.com/guides/plugins/preview/)
+(checked 2026-11-01). No appstore upload has been performed.
+
+- **72 Dynamic JavaScript tests and eight strict native C suites pass.**
+  Core 0.4.1 passes **126 JavaScript tests and three native C suites**. Its
+  native C is unchanged from 0.4.0, so the earlier Core ASan/UBSan result is
+  retained; it is not claimed as a new sanitizer run on Dynamic's host changes.
+- Core revalidates active and pending notification data on every source
+  snapshot. Fully redacted, malformed and newly filtered notices clear their
+  private text and cancel queued coalesced replacements. Regression cases cover
+  full/app-only modes, same/different IDs and recovery within the original burst.
+- Native preference parsing respects integer type, width and valid boolean
+  range. The retired shadow preference no longer stores an unused value; its
+  wire key stays reserved. All 41 existing key numbers and the UUID are retained.
+- Warning ink passes at least **3:1 across all 64 native backgrounds**. The
+  difficult #AAAA55 case renders black at **8.59:1** in QEMU. Invisible image
+  and monochrome notification icons use the generic icon/app-name fallback.
+- **74 native captures and 48 focused checks pass.** A real SDK system
+  notification covers the face during the title test: the current page is
+  preserved, receives a fresh reading dwell on return, then continues. This is
+  focus-aware title paging, not automatic deduplication of PebbleOS alerts.
+- **20 native state/format/appearance presets** are embedded in Clay. Five
+  additional native Screenshot-service captures from the exact final PBW match
+  the reviewed presets pixel for pixel. Candidate/final binary and resources
+  are byte-identical; mapped scanout was checked against the Screenshot service.
+- Actual Clay passes **68 layouts, 69 main contrast scenarios and 5,385
+  text/control checks** across all 17 languages, 320/390px and light/dark.
+  **34 additional Quiet Time preview cases add 2,380 checks**; picker coverage
+  adds **128 checks**. Minimum measured text contrast remains **5.82:1**.
+  No page errors or external requests occur.
+- Five targeted browser checks cover closed-picker Tab/Escape/ARIA, independent
+  day/night preview RGBA identity without saved/private changes, exclusion of
+  preview-only controls from Save, explicit additional-alert copy, and actual
+  phone bootstrap resync containing only validated watch presentation values.
+  Startup/new marked baselines restore unchanged saved appearance; pending-save
+  precedence and stale-ACK handling have portable regression coverage.
+- The **13-entry PBW installs successfully** and contains seven complete
+  notice/license documents for Dynamic, Core, Clay and bundled helpers, and
+  both fonts. Deterministic packaging preserves SDK payload bytes except the
+  intended permission-manifest transform. Repeated fixture packaging is byte
+  identical and corrupted notice inputs are rejected.
+- The exact SDK/source/core/font/license audit passes, including a new check
+  binding native preview metadata to the actual packaged binary/resources.
+  A mismatched renderer/preview pair is rejected. Resources remain **246,928
+  bytes**; native footprint is **65,398 bytes**, leaving **65,674 heap bytes
+  before startup**. The older runtime heap and migration results are reused
+  below with their original scope.
+
+Evidence is saved in [native QA](qa/0.6.1/native.json),
+[settings QA](qa/0.6.1/settings.json),
+[targeted settings checks](qa/0.6.1/settings-refinements.json),
+[night preview checks](qa/0.6.1/night-preview.json), and
+[the exact bundle audit](qa/0.6.1/bundle-audit.json).
+The [publication kit](../store/README.md) identifies the final five raw native
+screenshots, product copy, privacy/support documents and the explicit store hold.
+
+Final PBW SHA-256:
+
+`1328f66c3dff4f80d8590b7adb2d2f4b0c509a196201bb8ffebf396ce1a0123f`
+
+Core 0.4.1 source commit: `6a6fb32e5a52d146e60d32fd6ee1b92e67722ada`.
+Core archive SHA-256:
+`9bc0b432a40293a5551dc78991fd6817c523683a8f7a5d02f9bb96dfcfd6209c`.
+
+Physical PT2 vibration, power use, actual OS Quiet Time transitions and live
+phone/provider delivery remain unverified. The phone browser uses a fixture
+bridge; QEMU pulse requests do not measure a physical motor. Native system
+notification identity/alert correlation is unavailable to the current face,
+so additional banners/vibration may accompany PebbleOS alerts. No automatic
+cross-system deduplication is claimed.
+
+## Historical 0.6.0 notification attention and readable settings
 
 Dynamic 0.6.0 pins Core 0.4.0. The protocol stays v4; seven appended AppMessage
 keys add preferences and an ephemeral context sidecar while all previous 34 key

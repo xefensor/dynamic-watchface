@@ -1,6 +1,6 @@
 # Dynamic and the shared core
 
-Dynamic 0.6.0 pins Pebble Watchface Core 0.4.0. Halftone retains its own
+Dynamic 0.6.1 pins Pebble Watchface Core 0.4.1. Halftone retains its own
 0.1.0 pin until independently upgraded. Each PBW embeds its library and keeps
 its UUID, settings and permission manifest. The core is not a background app.
 
@@ -126,7 +126,7 @@ style, or labels its illustrative format when none has been received.
 
 ## Pinned dependency and v4 data contract
 
-The committed dependency is file:vendor/pebble-watchface-core-0.4.0.tgz.
+The committed dependency is file:vendor/pebble-watchface-core-0.4.1.tgz.
 package-lock.json and vendor/CORE.json record version/integrity/provenance.
 The exact source commit and archive SHA-256 are recorded in `vendor/CORE.json`
 and the build-specific validation record.
@@ -225,3 +225,21 @@ intermediate transitions check appearance and fitting; browser checks exercise
 actual Clay controls and saving. Emulator/plugin fixtures are separate from
 physical-phone delivery, hardware animation and battery-life verification.
 See [the build-specific validation record](VALIDATION.md).
+
+## Publication refinements in 0.6.1
+
+Core 0.4.1 revalidates active and queued notifications against each current
+source snapshot. Redacted, malformed and newly filtered instances clear private
+content immediately, including a queued coalesced replacement. The v4 packet
+contract is unchanged.
+
+Phone presentation resync restores validated saved watch settings on startup
+and a new native session, using the same delivery generation/ACK protections as
+a normal save. It never includes phone-only notification text/privacy fields.
+The palette preview selector is page-only; previewing Quiet Time colours changes
+no persisted watch preference or actual OS Quiet Time state.
+
+The release PBW adds deterministic readable license entries while retaining each
+SDK native/resource/JavaScript payload byte for byte. Store metadata and images
+are prepared separately and validated against the final PBW/provenance. Preparing
+a kit does not submit the app or remove Pebble's plugin-preview restriction.

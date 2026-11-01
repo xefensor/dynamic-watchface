@@ -1,0 +1,9 @@
+0.6.1 publication candidate
+
+Fixes notification privacy when a source fully redacts or filters an active or queued message. Old private text now clears immediately.
+
+Improves keyboard access to colour pickers, restores saved appearance after watch resets, and adds an independent daytime/Quiet Time colour preview. Clarifies that watchface banners and vibration are additional to PebbleOS alerts.
+
+Keeps warnings visible on custom palettes, supplies a fallback for invisible notification icons, and pauses song-title paging beneath system windows. Includes full license notices in the standalone PBW, plus privacy, support and store materials.
+
+The unified layout and existing preferences remain. Music and notifications require the Android plugin preview. Public store submission remains on hold while Pebble restricts plugin-based releases.

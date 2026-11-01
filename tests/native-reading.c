@@ -99,6 +99,7 @@ int main(void) {
   assert(reading_accent_ink(0xff,0xff,0xc0)==0xc0);
   for(unsigned background=0xc0;background<=0xff;++background) {
     assert(reading_color_contrasts(reading_contrast_ink(background),background,4500));
+    assert(reading_color_contrasts(reading_warning_ink(background),background,3000));
     for(unsigned foreground=0xc0;foreground<=0xff;++foreground) {
       const uint8_t secondary=reading_secondary_ink(foreground,background);
       if(reading_color_contrasts(foreground,background,4500))
@@ -106,6 +107,9 @@ int main(void) {
       assert(reading_color_contrasts(reading_accent_ink(foreground,background,foreground),background,2000));
     }
   }
+  assert(reading_warning_ink(0xff)==0xe4); // Existing amber on white remains.
+  assert(reading_warning_ink(0xc0)==0xf8); // Existing amber on black remains.
+  assert(reading_warning_ink(0xe9)==reading_contrast_ink(0xe9)); // Mustard requires fallback.
 
   double range=-1;
   assert(!reading_range(&slot,&range)); // A plain73% has no implied meaning/range.

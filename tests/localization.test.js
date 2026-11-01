@@ -253,7 +253,39 @@ test('app-only privacy, quiet alerts and colour sharing are explicit in every lo
     assert.notEqual(strings.nightBackground,strings.background,language+': separate night and day colours');
   }
   assert.match(localization.t('notificationAppOnlyHelp','en'),/without sender or message text/);
-  assert.match(localization.t('vibrationHelp','en'),/One vibration per new notification burst/);
+  assert.match(localization.t('vibrationHelp','en'),/One additional vibration per new notification burst/);
   assert.match(localization.t('paletteCodeHelp','en'),/only background, text and accent colours/);
   assert.match(localization.t('paletteApplied','en'),/Save to send/);
+});
+
+
+test('release copy distinguishes extra watchface alerts from system notification ownership',()=>{
+  const keys=['watchfaceBanners','notificationsHelp','notificationVibration','vibrationHelp',
+    'previewPalette','previewDay','previewQuietTime','previewPaletteHelp'];
+  for(const language of languages){
+    const strings=localization.settingsStrings(language);
+    for(const key of keys){
+      assert.equal(typeof strings[key],'string',language+': '+key);
+      assert.ok(strings[key].trim(),language+': '+key);
+      assert.notEqual(strings[key],key,language+': '+key);
+      if(language!=='en'&&key!=='previewQuietTime')assert.notEqual(strings[key],localization.t(key,'en'),language+': '+key);
+      assert.equal(localization.t(localization.t(key,'en'),language),strings[key],language+': literal '+key);
+    }
+    assert.equal(strings.notificationsSource,strings.notifications,language+': notification source label preserved');
+    assert.notEqual(strings.watchfaceBanners,strings.notificationsSource,language+': source and presentation stay distinct');
+    assert.match(strings.notificationsHelp,/Pebble/,language+': independent system alerts');
+    assert.match(strings.vibrationHelp,/Pebble/,language+': additional vibration owner');
+    assert.match(strings.vibrationHelp,/Quiet Time/,language+': quiet mode respected');
+    assert.equal(strings.previewQuietTime,'Quiet Time',language+': Pebble feature name');
+    assert.match(strings.previewPaletteHelp,/Pebble.*Quiet Time|Quiet Time.*Pebble/,language+': preview does not change OS mode');
+    assert.notEqual(strings.previewDay,strings.previewQuietTime,language+': preview palette choices');
+    assert.equal(localization.t('Notification vibration',language),strings.notificationVibration,language+': old configuration label');
+    assert.equal(localization.t('Allow notification access in Pebble. Only new notifications appear.',language),strings.notificationsHelp,language+': old configuration help');
+  }
+  assert.equal(localization.t('watchfaceBanners','en'),'Watchface banners');
+  assert.equal(localization.t('notificationVibration','en'),'Additional vibration');
+  assert.match(localization.t('notificationsHelp','en'),/same message twice/);
+  assert.match(localization.t('vibrationHelp','en'),/Turn this off if Pebble already vibrates/);
+  assert.match(localization.t('previewPaletteHelp','en'),/^Preview only/);
+  assert.doesNotMatch(localization.t('notificationsHelp','en'),/replaces|disables|turns off/i);
 });

@@ -2,19 +2,27 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.6.0 uses Fredoka clock outlines and Roboto Condensed text to
+Peek. Version 0.6.1 uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
 It uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
-0.4.0, an updated version of the data engine used by
+0.4.1, an updated version of the data engine used by
 [Halftone](https://github.com/xefensor/halftone-watchface).
 
-Install [Dynamic-0.6.0.pbw](dist/Dynamic-0.6.0.pbw); the
-[source archive](dist/Dynamic-0.6.0-source.zip) is included. Dynamic has its own UUID,
+Install [Dynamic-0.6.1.pbw](dist/Dynamic-0.6.1.pbw); the
+[source archive](dist/Dynamic-0.6.1-source.zip) is included. Dynamic has its own UUID,
 `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, so it can be installed alongside Halftone.
 This is an early sideloaded build for the Pebble plugin preview. Public-store
 submission remains on hold while Pebble's preview restriction applies.
+
+## Before installing
+
+- **Pebble Time 2 only** (`emery`, 200×228). Other Pebble displays are not included.
+- Requires the Pebble mobile app's **plugin preview**. Music and notification sources are currently Android-only.
+- The two readings follow your shared Pebble complication choices and their available providers.
+- Watchface banners and additional vibration default to Off. They do not replace PebbleOS notifications.
+- [Privacy and data](PRIVACY.md) · [Support](SUPPORT.md) · [Prepared publication materials](store/README.md).
 
 ## Layout
 
@@ -34,10 +42,9 @@ symbols. Amber identifies low-battery/connection warnings. Secondary text and
 artist text use quieter ink, falling back to foreground ink when muting would
 lose contrast. Accent graphics also have a visibility fallback after Pebble's
 palette rounding. The same composition works with a dark page. An optional
-Quiet Time palette
-uses separately chosen background, text and accent colours while the watch's
-Quiet Time is active, then restores the daytime palette. Changes follow the watch at the next minute refresh. It follows the watch,
-not a separate phone schedule.
+Quiet Time palette uses separately chosen background, text and accent colours
+while the watch's Quiet Time is active, then restores the daytime palette at the
+next minute refresh. It follows the watch rather than a separate phone schedule.
 
 The clock keeps the same Fredoka shapes while it scales and moves.
 Temperature and percent units share that rounded style, with small muted
@@ -83,6 +90,8 @@ and labels sit 4px and 6px closer to their symbols, respectively. Music titles s
 24px and artist text at 20px for every track. Titles wrap through up to three
 lines per page. A long received title continues through its remaining pages
 once, then holds the final page; it never loops or selects a smaller font.
+Paging pauses while a system window covers the face and resumes from the current
+page after it closes.
 Artists use up to two lines, then an ellipsis. The 40px artwork tile and artist
 text retain their bottom anchor at y216. Missing or transparent artwork uses a
 simple fallback tile, keeping the artist in the same position while covers
@@ -156,7 +165,11 @@ Notification controls appear only when relevant. Startup and reconnect establish
 a fresh baseline so accumulated notifications are not replayed. Native sample
 previews are illustrative, not live data; custom recolouring is labelled approximate.
 The settings page uses readable phone light/dark colours independently of the
-watch palette, including its controls and selected values.
+watch palette, including its controls and selected values. Its optional palette
+preview can show daytime or Quiet Time colours without changing a watch setting.
+Closed colour pickers keep their hidden swatches out of keyboard navigation.
+Saved appearance preferences are reapplied on startup and a new native session,
+so resetting the watch does not require a dummy settings edit.
 
 Dynamic follows the selected sources' formatted values and units. Weather
 comes through Pebble's chosen plugin; this face has no separate HTTP weather
@@ -177,7 +190,8 @@ phone battery need confirmation at least every two minutes, with a one-minute ph
 and privacy changes clear transient content. Music and notification text is
 not persisted or logged. The renderer keeps only the temporary RAM snapshots
 needed for a bounded transition; clearing private or expired data takes
-priority over showing an outgoing animation.
+priority over showing an outgoing animation. A source that removes or fully
+redacts a notice also cancels its queued private replacement immediately.
 
 Optional notification vibration occurs once per new allowed burst. Baseline
 history, reconnects, retries, artwork and redraws do not trigger it. Quiet Time
@@ -227,7 +241,7 @@ npm ci
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.6.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.6.1.pbw
 python3 scripts/package-source.py
 ```
 
@@ -239,7 +253,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.6.0.pbw
+pebble install --emulator emery dist/Dynamic-0.6.1.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -261,11 +275,11 @@ remaining limitations.
 
 ## Shared core
 
-Dynamic now pins Core 0.4.0. Halftone continues to bundle 0.1.0 until an
+Dynamic now pins Core 0.4.1. Halftone continues to bundle 0.1.0 until an
 independently checked upgrade; installing Dynamic does not change Halftone.
 
 
-`vendor/pebble-watchface-core-0.4.0.tgz` is a committed, version-pinned Pebble
+`vendor/pebble-watchface-core-0.4.1.tgz` is a committed, version-pinned Pebble
 package. `package-lock.json` records its integrity and `vendor/CORE.json`
 records upstream/version/checksum provenance. `npm ci` installs this archive;
 users install only Dynamic's PBW, not a separate core app.
@@ -284,7 +298,8 @@ that license. Commercial use requires separate permission. This is
 source-available software rather than an OSI-approved open-source license.
 
 Fredoka and Roboto Condensed use the SIL Open Font License 1.1. Their copyright
-notices and licenses accompany the source fonts:
+notices and licenses accompany the source fonts and are included in every
+release PBW alongside Clay's MIT license and the core/Dynamic notices:
 [Fredoka](resources/fonts/OFL-Fredoka.txt) and
 [Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). Earlier releases
 remain in `dist/`, including 0.3.1. The 0.1 source archive preserves its Fira

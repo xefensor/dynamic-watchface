@@ -11,6 +11,7 @@
 #include "native_reading.h"
 #include "context_presentation.h"
 #include "context_effects.h"
+#include "native_settings.h"
 
 #define PERSIST_KEY_BACKGROUND_COLOR 2
 #define PERSIST_KEY_TEXT_COLOR 3
@@ -41,7 +42,7 @@ static GColor s_day_colors[3],s_night_colors[3];
 static bool s_night_enabled,s_music_paused;
 static uint8_t s_vibration;
 static uint32_t s_seen_burst;
-static bool s_text_shadow_enabled, s_use_12_hour;
+static bool s_use_12_hour,s_app_focused=true;
 static uint8_t s_clock_format;
 static bool s_show_status, s_animations_enabled;
 static BatteryChargeState s_battery;
@@ -76,8 +77,9 @@ static NativeState *s_native;
 #define s_has_complications s_core.has_complications
 #define s_phone_connected s_core.phone_connected
 static AppTimer *s_context_timer, *s_startup_timer, *s_motion_timer,*s_title_timer;
-static char s_compact_date_buffer[48], s_time_buffer[6];
-static char s_weekday_buffer[16], s_numeric_date_buffer[16];
+// Three UTF-8 weekday scalars + separator + DD.MM. + NUL fit in24 bytes.
+static char s_compact_date_buffer[24], s_time_buffer[6];
+static char s_weekday_buffer[13], s_numeric_date_buffer[8];
 static const uint8_t s_body_points[] = {11,14,16,20,24,26,28,32};
 #define BODY_FONT_COUNT (sizeof(s_body_points)/sizeof(s_body_points[0]))
 static GFont s_body_fonts[BODY_FONT_COUNT];
@@ -100,6 +102,7 @@ static void prv_schedule_context_expiry(void);
 static void prv_context_expired(void *context);
 static MusicTextMetrics prv_music_measure(void *context,const char *text,int point);
 static void prv_music_reset(void);
+static void prv_music_cancel_timer(void);
 static void prv_music_continue(void *context);
 static void prv_apply_colors(void);
 
@@ -343,8 +346,7 @@ static GColor prv_accent_color(void) {
   return (GColor){.argb=reading_accent_ink(s_accent_color.argb,s_background_color.argb,s_text_color.argb)};
 }
 static GColor prv_warning_color(void) {
-  return reading_color_luminance(s_background_color.argb)>400000?
-      GColorFromHEX(0xAA5500):GColorFromHEX(0xFFAA00);
+  return (GColor){.argb=reading_warning_ink(s_background_color.argb)};
 }
 static GColor prv_muted_text(float alpha) {
   const uint8_t ink=reading_secondary_ink(s_text_color.argb,s_background_color.argb);
@@ -548,9 +550,7 @@ static void prv_apply_unobstructed_layout(void) {
   }
   s_native->music_visible=next.mode==CONTEXT_MUSIC&&
       layer_get_unobstructed_bounds(s_window_layer).size.h>=228;
-  if(!s_native->music_visible&&s_title_timer) {
-    app_timer_cancel(s_title_timer);s_title_timer=NULL;
-  }
+  if(!s_native->music_visible)prv_music_cancel_timer();
   const WatchPose target=prv_full_pose();
   if(!s_pose_ready) {s_pose=s_pose_from=s_pose_target=target;s_pose_ready=true;}
   else if(memcmp(&target,&s_pose_target,sizeof(target))!=0) {
@@ -842,14 +842,17 @@ static MusicTextMetrics prv_music_measure(void *context,const char *text,int poi
       body_text_descent(text,point)};
 }
 static int prv_music_top(void) { return 92; }
-static void prv_music_reset(void) {
+static void prv_music_cancel_timer(void) {
   if(s_title_timer){app_timer_cancel(s_title_timer);s_title_timer=NULL;}
+}
+static void prv_music_reset(void) {
+  prv_music_cancel_timer();
   s_native->music_identity[0]='\0';s_native->music_offset=s_native->music_next=0;
   s_native->music_visible=false;
 }
 static void prv_music_continue(void *context) {
   (void)context;s_title_timer=NULL;
-  if(!s_native->music_visible||!s_native->music_next)return;
+  if(!s_app_focused||!s_native->music_visible||!s_native->music_next)return;
   s_native->music_offset=s_native->music_next;s_native->music_next=0;
   prv_sync_layers();
 }
@@ -874,7 +877,7 @@ static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const Com
   MusicLayout layout;
   music_layout_build_at(title->text+offset,has_artist?artist->text:"",true,
       top,prv_music_measure,NULL,&layout);
-  if(active&&!layout.title.complete&&layout.title.consumed) {
+  if(s_app_focused&&active&&!layout.title.complete&&layout.title.consumed) {
     size_t next=offset+layout.title.consumed;
     while(music_space(title->text[next]))++next;
     if(title->text[next]) {
@@ -904,11 +907,15 @@ typedef struct {
   int point,baseline,bottom,app_baseline;
   bool app_line;
 } NoticeLine;
-static bool prv_notice_app_line(const ComplicationSlot *title) {
-  return !(title->flags&COMPLICATION_FLAG_BITMAP)&&title->label[0]&&strcmp(title->label,title->text)!=0;
+static int prv_notice_visible_bottom(const ComplicationSlot *title,int size) {
+  if(!(title->flags&COMPLICATION_FLAG_IMAGE))size=size==24?18:12;
+  return (title->flags&COMPLICATION_FLAG_BITMAP)?prv_bitmap_visible_bottom(title,size,false):0;
+}
+static bool prv_notice_app_line(const ComplicationSlot *title,bool banner) {
+  return !prv_notice_visible_bottom(title,banner?16:24)&&title->label[0]&&strcmp(title->label,title->text)!=0;
 }
 static int prv_notice_music_top(const ComplicationSlot *title) {
-  return prv_notice_app_line(title)?130:116;
+  return prv_notice_app_line(title,true)?130:116;
 }
 static void prv_notice_line(const ComplicationSlot *title,bool banner,int bottom,NoticeLine *line) {
   memset(line,0,sizeof(*line));
@@ -918,7 +925,7 @@ static void prv_notice_line(const ComplicationSlot *title,bool banner,int bottom
   // App and sender are separate source fields. Long app names never force
   // the sender into a smaller face; only the sender's last word truncates.
   prv_ellipsize(line->text,sizeof(line->text),line->point,width);
-  line->app_line=prv_notice_app_line(title);
+  line->app_line=prv_notice_app_line(title,banner);
   if(banner) {
     const int target=bottom+(line->app_line&&bottom<MUSIC_BOTTOM?14:0);
     line->baseline=target-body_text_descent(line->text,line->point);
@@ -935,10 +942,10 @@ static void prv_notice_app(GContext *ctx,const ComplicationSlot *title,const Not
   prv_text(ctx,app,14,x+left,y+line->app_baseline,width,prv_muted_text(1),GTextAlignmentLeft);
 }
 static void prv_notice_icon(GContext *ctx,const ComplicationSlot *title,int x,int y,int bottom,int size) {
-  const bool bitmap=(title->flags&COMPLICATION_FLAG_BITMAP)!=0;
+  const int visible=prv_notice_visible_bottom(title,size);
+  const bool bitmap=visible>0;
   if(bitmap&&(title->flags&COMPLICATION_FLAG_IMAGE)) {
-    const int visible=prv_bitmap_visible_bottom(title,size,false);
-    if(visible)prv_draw_bitmap(ctx,title,x+10,y+bottom-visible,size,s_text_color,false);
+    prv_draw_bitmap(ctx,title,x+10,y+bottom-visible,size,s_text_color,false);
   } else {
     const int radius=size/2,cx=x+10+radius,cy=y+bottom-radius;
     const GColor ink=prv_contrast_ink(prv_accent_color());
@@ -1101,7 +1108,12 @@ static void prv_apply_colors(void) {
   if(s_window)window_set_background_color(s_window,s_background_color);
   prv_sync_layers();
 }
-static void prv_apply_effects(void) { prv_sync_layers(); }
+static void prv_focus_will_change(bool focused) {
+  if(!focused){s_app_focused=false;prv_music_cancel_timer();}
+}
+static void prv_focus_did_change(bool focused) {
+  if(focused){s_app_focused=true;prv_sync_layers();}
+}
 
 static uint32_t prv_context_request_value(const Tuple *marker) {
   if (marker == NULL || (marker->type != TUPLE_INT && marker->type != TUPLE_UINT)) { return 0; }
@@ -1117,24 +1129,6 @@ static uint32_t prv_context_request_value(const Tuple *marker) {
     value = marker->value->uint32;
   }
   return value <= CONTEXT_MAX_SESSION_TOKEN ? value : 0;
-}
-
-static bool prv_color_value(const Tuple *tuple, uint32_t *result) {
-  if (tuple==NULL || (tuple->type!=TUPLE_INT && tuple->type!=TUPLE_UINT)) { return false; }
-  uint32_t value;
-  if (tuple->length==1) {
-    if (tuple->type==TUPLE_INT && tuple->value->int8<0) { return false; }
-    value=tuple->value->uint8;
-  } else if (tuple->length==2) {
-    if (tuple->type==TUPLE_INT && tuple->value->int16<0) { return false; }
-    value=tuple->value->uint16;
-  } else if (tuple->length==4) {
-    if (tuple->type==TUPLE_INT && tuple->value->int32<0) { return false; }
-    value=tuple->value->uint32;
-  } else { return false; }
-  if (value>0xffffff) { return false; }
-  *result=value;
-  return true;
 }
 
 static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
@@ -1180,54 +1174,47 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   Tuple *background = dict_find(iterator, MESSAGE_KEY_BACKGROUND_COLOR);
   Tuple *text = dict_find(iterator, MESSAGE_KEY_TEXT_COLOR);
   Tuple *accent = dict_find(iterator, MESSAGE_KEY_ACCENT_COLOR);
-  Tuple *shadow = dict_find(iterator, MESSAGE_KEY_TEXT_SHADOW);
   Tuple *twelve = dict_find(iterator, MESSAGE_KEY_USE_12_HOUR);
   Tuple *clock_format = dict_find(iterator, MESSAGE_KEY_CLOCK_FORMAT);
   Tuple *show_status = dict_find(iterator, MESSAGE_KEY_SHOW_STATUS);
   Tuple *animations = dict_find(iterator, MESSAGE_KEY_ANIMATIONS);
-  uint32_t rgb;
-  if(prv_color_value(background,&rgb)){s_day_colors[0]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_BACKGROUND_COLOR,(int32_t)rgb);}
-  if(prv_color_value(text,&rgb)){s_day_colors[1]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_TEXT_COLOR,(int32_t)rgb);}
+  uint32_t rgb,flag;
+  if(native_setting_value(background,&rgb)){s_day_colors[0]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_BACKGROUND_COLOR,(int32_t)rgb);}
+  if(native_setting_value(text,&rgb)){s_day_colors[1]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_TEXT_COLOR,(int32_t)rgb);}
   uint32_t accent_value;
-  if (prv_color_value(accent,&accent_value)) {
+  if (native_setting_value(accent,&accent_value)) {
     s_day_colors[2] = GColorFromHEX(accent_value);
     persist_write_int(PERSIST_KEY_ACCENT_COLOR,(int32_t)accent_value);
   }
-  if (shadow != NULL) {
-    s_text_shadow_enabled = shadow->value->int32 != 0;
-    persist_write_bool(PERSIST_KEY_TEXT_SHADOW, s_text_shadow_enabled);
-  }
   uint32_t format;
-  if(prv_color_value(clock_format,&format)&&format==WATCH_CLOCK_QUERY) {
+  if(native_setting_value(clock_format,&format)&&format==WATCH_CLOCK_QUERY) {
     s_format_reply_pending=true;prv_send_clock_format();
-  } else if(prv_color_value(clock_format,&format)&&
+  } else if(native_setting_value(clock_format,&format)&&
       (format==WATCH_CLOCK_FOLLOW||format==WATCH_CLOCK_12||format==WATCH_CLOCK_24)) {
     s_clock_format=(uint8_t)format;persist_write_int(PERSIST_KEY_CLOCK_FORMAT,s_clock_format);
-  } else if (twelve != NULL) {
-    s_use_12_hour = twelve->value->int32 != 0;
+  } else if (native_setting_value(twelve,&flag)&&flag<=1) {
+    s_use_12_hour = flag != 0;
     persist_write_bool(PERSIST_KEY_USE_12_HOUR, s_use_12_hour);
     s_clock_format=s_use_12_hour?WATCH_CLOCK_12:WATCH_CLOCK_24;
     persist_write_int(PERSIST_KEY_CLOCK_FORMAT,s_clock_format);
   }
-  if (show_status != NULL && (show_status->type == TUPLE_INT || show_status->type == TUPLE_UINT)) {
-    s_show_status = show_status->value->int32 != 0;
+  if (native_setting_value(show_status,&flag)&&flag<=1) {
+    s_show_status = flag != 0;
     persist_write_bool(PERSIST_KEY_SHOW_STATUS, s_show_status);
   }
-  uint32_t flag;
-  if(prv_color_value(animations,&flag)&&flag<=1){s_animations_enabled=flag!=0;persist_write_bool(PERSIST_KEY_ANIMATIONS,s_animations_enabled);}
-  if(prv_color_value(dict_find(iterator,MESSAGE_KEY_NOTIFICATION_VIBRATION),&flag)&&flag<=2) {
+  if(native_setting_value(animations,&flag)&&flag<=1){s_animations_enabled=flag!=0;persist_write_bool(PERSIST_KEY_ANIMATIONS,s_animations_enabled);}
+  if(native_setting_value(dict_find(iterator,MESSAGE_KEY_NOTIFICATION_VIBRATION),&flag)&&flag<=2) {
     s_vibration=(uint8_t)flag;persist_write_int(PERSIST_KEY_VIBRATION,(int32_t)flag);
   }
-  if(prv_color_value(dict_find(iterator,MESSAGE_KEY_NIGHT_PALETTE),&flag)&&flag<=1) {
+  if(native_setting_value(dict_find(iterator,MESSAGE_KEY_NIGHT_PALETTE),&flag)&&flag<=1) {
     s_night_enabled=flag!=0;persist_write_bool(PERSIST_KEY_NIGHT_ENABLED,s_night_enabled);
   }
   const uint32_t night_keys[]={MESSAGE_KEY_NIGHT_BACKGROUND_COLOR,MESSAGE_KEY_NIGHT_TEXT_COLOR,MESSAGE_KEY_NIGHT_ACCENT_COLOR};
-  for(unsigned i=0;i<3;++i)if(prv_color_value(dict_find(iterator,night_keys[i]),&rgb)) {
+  for(unsigned i=0;i<3;++i)if(native_setting_value(dict_find(iterator,night_keys[i]),&rgb)) {
     s_night_colors[i]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_NIGHT_BACKGROUND+i,(int32_t)rgb);
   }
   prv_update_clock();
   prv_apply_colors();
-  prv_apply_effects();
 }
 
 static void prv_inbox_dropped(AppMessageResult reason, void *context) {
@@ -1304,7 +1291,9 @@ static bool prv_init(void) {
     const int32_t preference=persist_read_int(PERSIST_KEY_VIBRATION);
     if(preference>=0&&preference<=2)s_vibration=(uint8_t)preference;
   }
-  if(persist_exists(PERSIST_KEY_TEXT_SHADOW))s_text_shadow_enabled=persist_read_bool(PERSIST_KEY_TEXT_SHADOW);
+  // The retired shadow effect had no rendering path. Keep its wire key
+  // reserved and remove stale state rather than accepting unused settings.
+  persist_delete(PERSIST_KEY_TEXT_SHADOW);
   // Retire the old size preference; legacy live packets are also ignored.
   persist_delete(PERSIST_KEY_LARGE_TEXT);
   s_clock_format=watch_clock_format(persist_exists(PERSIST_KEY_CLOCK_FORMAT)?persist_read_int(PERSIST_KEY_CLOCK_FORMAT):-1,
@@ -1319,6 +1308,8 @@ static bool prv_init(void) {
   window_set_window_handlers(s_window,(WindowHandlers){.load=prv_window_load,.unload=prv_window_unload});
   app_message_register_inbox_received(prv_inbox_received);app_message_register_inbox_dropped(prv_inbox_dropped);
   app_message_register_outbox_failed(prv_outbox_failed);app_message_register_outbox_sent(prv_outbox_sent);
+  app_focus_service_subscribe_handlers((AppFocusHandlers){.will_focus=prv_focus_will_change,
+      .did_focus=prv_focus_did_change});
   // One v4 snapshot is bounded at5206bytes, plus dictionary/setting overhead.
   app_message_open(NATIVE_INBOX_BYTES,32);tick_timer_service_subscribe(MINUTE_UNIT,prv_tick_handler);
   window_stack_push(s_window,false);
@@ -1333,6 +1324,7 @@ static void prv_deinit(void) {
   if(s_context_timer)app_timer_cancel(s_context_timer);
   prv_cancel_motion();prv_private_clear();memset(&s_context,0,sizeof(s_context));
   battery_state_service_unsubscribe();connection_service_unsubscribe();tick_timer_service_unsubscribe();
+  app_focus_service_unsubscribe();
   app_message_deregister_callbacks();window_destroy(s_window);s_window=NULL;
   memset(s_native,0,sizeof(*s_native));free(s_native);s_native=NULL;
 }

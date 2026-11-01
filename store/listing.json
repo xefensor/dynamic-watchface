@@ -1,0 +1,33 @@
+{
+  "name": "Dynamic",
+  "author": "Xef",
+  "version": "0.6.1",
+  "type": "watchface",
+  "target_platforms": [
+    "emery"
+  ],
+  "short_description": "A clear clock, two Pebble readings, and an adaptive layout for music, notifications and Timeline Peek.",
+  "description_file": "description.txt",
+  "release_notes_file": "release-notes.txt",
+  "source_url": "https://github.com/xefensor/dynamic-watchface",
+  "support_url": "https://github.com/xefensor/dynamic-watchface/issues",
+  "privacy_url": "https://github.com/xefensor/dynamic-watchface/blob/main/PRIVACY.md",
+  "license": "PolyForm Noncommercial 1.0.0 with required attribution; bundled third-party licenses remain separate",
+  "publication_status": "held-plugin-preview",
+  "store_submission_allowed": false,
+  "publication_rule_url": "https://developer.repebble.com/guides/plugins/preview/",
+  "requirements": [
+    "Pebble Time 2 (emery)",
+    "Pebble mobile app with its plugin preview enabled",
+    "Android for music and notification integration",
+    "Selected complication sources and their permissions"
+  ],
+  "screenshots": [
+    "emery_idle.png",
+    "emery_music.png",
+    "emery_notification_summary.png",
+    "emery_notification.png",
+    "emery_dark.png"
+  ],
+  "publication_rule_checked_on": "2026-11-01"
+}

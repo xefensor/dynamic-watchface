@@ -136,6 +136,10 @@ static inline uint8_t reading_contrast_ink(uint8_t background) {
   const uint32_t light=reading_color_luminance(background);
   return (uint64_t)(light+50000)*(light+50000)>=52500000000ULL?0xc0:0xff;
 }
+static inline uint8_t reading_warning_ink(uint8_t background) {
+  const uint8_t amber=reading_color_luminance(background)>400000?0xe4:0xf8;
+  return reading_color_contrasts(amber,background,3000)?amber:reading_contrast_ink(background);
+}
 static inline uint8_t reading_secondary_ink(uint8_t foreground,uint8_t background) {
   uint8_t muted=0xc0;
   for(unsigned shift=0;shift<=4;shift+=2)

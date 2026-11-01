@@ -1,0 +1,54 @@
+{
+  "pass": true,
+  "version": "0.6.1",
+  "checks": [
+    {
+      "name": "closed-picker-has-no-hidden-keyboard-or-aria-targets-light",
+      "pass": true
+    },
+    {
+      "name": "closed-picker-has-no-hidden-keyboard-or-aria-targets-dark",
+      "pass": true
+    },
+    {
+      "name": "day-quiet-preview-native-rgba-identity-and-no-dirty-or-private-setting-change",
+      "pass": true
+    },
+    {
+      "name": "preview-choice-is-not-serialized-and-notification-copy-is-explicit",
+      "pass": true
+    },
+    {
+      "name": "actual-phone-bootstrap-reapplies-only-validated-presentation-preferences",
+      "pass": true
+    }
+  ],
+  "contrastCases": [
+    {
+      "scheme": "light",
+      "scenario": "open-colour-picker",
+      "examined": 64,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "scheme": "dark",
+      "scenario": "open-colour-picker",
+      "examined": 64,
+      "minimumRatio": 6.797,
+      "failures": []
+    }
+  ],
+  "actualAppClay": true,
+  "fixtureBridge": true,
+  "physicalPhone": false,
+  "pageErrors": [],
+  "externalRequests": [],
+  "sourceSha256": {
+    "src/pkjs/index.js": "7e1927848c204ee537ae7aae43777f3e79f3f51a421add6f1a1a2f137b23bd5d",
+    "src/pkjs/config.js": "56f6362e3b13fc7f664cd99bc4703d87831267b505ec60dd30fd2c09c470ebe4",
+    "src/pkjs/settings-page.js": "39b19c917814a6b02f2d024a1871f2f2e12db5a39e0fcfa5c4a6d31bd81f59a5",
+    "src/pkjs/localization.js": "3183332babf68c309b1e77f0f40bf70400054e0a54a8c9af597c6de882aca757",
+    "src/pkjs/settings-preview.js": "d42e8c1ae763d392121c5772c609b6f01670d6acb5e91b6973effc6f5302d31b"
+  }
+}

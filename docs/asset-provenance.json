@@ -1,35 +1,35 @@
 {
-  "version": "0.6.0",
+  "version": "0.6.1",
   "pbw": {
-    "file": "Dynamic-0.6.0.pbw",
-    "sha256": "26a62a9c6209ebb65fd5f129685204d267d19d6dc0490c6837a77598c3b271bf"
+    "file": "Dynamic-0.6.1.pbw",
+    "sha256": "1328f66c3dff4f80d8590b7adb2d2f4b0c509a196201bb8ffebf396ce1a0123f"
   },
   "native_payload_sha256": {
-    "appinfo.json": "b0e75092cd2837a9f21118a100eae318e63adbc0b70dec91fbe1ddba884935e5",
-    "emery/pebble-app.bin": "119f5c81ffe08d690b8579f2fd8df963e25b77de21545b7f49d5929513c3869a",
+    "appinfo.json": "28d979a736c596f0b672f0d95d915b2bdd1b2e87373b04487420570a83830160",
+    "emery/pebble-app.bin": "e69f1b6411523889d2ca4d6d37459736f9f9a5b736aa9849144dde16bb9ada99",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "fea348cfe531ac8b07043c70b589c7c60faa6f2560937127c35b020daffd5b2c"
+    "emery/manifest.json": "2a8c137fb09bd41e842f64b77e65cd54e94e6d1bfb0c997c1469033a38e23024"
   },
   "core": {
     "package": "pebble-watchface-core",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "repository": "https://github.com/xefensor/pebble-watchface-core",
-    "artifact": "pebble-watchface-core-0.4.0.tgz",
-    "sha256": "702529c71fafe790a6fb6cb03a26a5aadee9569f77d35e17998c1efbd4a3a46c",
-    "integrity": "sha512-QTg9J4n7oRDmFhL330Inin0T9RZWLaksWjV+rOUM49wGFQMy4iXfr9Nd6p+Z54yO9rZPg3/EEzJOevmmxEQXhw==",
+    "artifact": "pebble-watchface-core-0.4.1.tgz",
+    "sha256": "9bc0b432a40293a5551dc78991fd6817c523683a8f7a5d02f9bb96dfcfd6209c",
+    "integrity": "sha512-DygC3UHi+bjuyqC3yOPWYUijXLeVWo7cK7uLEvLXdDzQCaAiLIcD99juVn0mcjcVNLLIG+5LYvzzIzyD/xhovw==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "6894a97347b1e1101650f4244038296ab475a24e"
+    "source_commit": "6a6fb32e5a52d146e60d32fd6ee1b92e67722ada"
   },
   "images": [
     {
       "file": "docs/images/context-details.png",
-      "sha256": "80632602d8faf6ffeb4d1f5586056dcf2557ad890a2c4edeca1f36d9a261a542",
+      "sha256": "9bafa274419c3e4c5232c7ab54d441c3e5ecf2eb72e3b9f0557f12c13db67754",
       "pixels": [
         880,
-        1280
+        3328
       ],
       "native_pixels_modified": false
     },
@@ -79,8 +79,17 @@
       "native_pixels_modified": false
     },
     {
+      "file": "docs/images/publication-refinements.png",
+      "sha256": "acbe48734acb5991cd2699154b96bcffede12da54f3ad7363a7a58d8fdc776ff",
+      "pixels": [
+        880,
+        1280
+      ],
+      "native_pixels_modified": false
+    },
+    {
       "file": "docs/images/settings-dark.png",
-      "sha256": "ebdb46691ac89a7d72c4ffda5298ecd517241d8a4106ded89fb1c3a0e0f0b63c",
+      "sha256": "9a45826c0ef42d10688cf696fb44036462cdb951d80e4d80452d8fafa519985f",
       "pixels": [
         390,
         844
@@ -89,10 +98,19 @@
     },
     {
       "file": "docs/images/settings-light.png",
-      "sha256": "aaf5f985a07cb683accdbfe66620e641e9c5672efcfa5a0f2a5a7b6c67a34351",
+      "sha256": "75d32b58a5ea071d95bd62fe507c628f96459c906909ccf22f868ea785c72f12",
       "pixels": [
         390,
         844
+      ],
+      "native_pixels_modified": null
+    },
+    {
+      "file": "docs/images/settings-quiet-preview.png",
+      "sha256": "95f337a8bbc15fa36f2bd95245717975c88cd70f16f12ff35fe473d3acb45372",
+      "pixels": [
+        390,
+        3125
       ],
       "native_pixels_modified": null
     },
@@ -104,51 +122,74 @@
         228
       ],
       "native_pixels_modified": false
+    },
+    {
+      "file": "docs/images/dark.png",
+      "sha256": "3629d99a35f6628860e95c3ce8e358457e1a16514c2ff04c4a0136bc9a9eb7c3",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "fixture_capture": "native-4da4e29f/idle-24-dark.png",
+      "renderer_matches_final_pbw": true
     }
   ],
   "native_qa": {
-    "evidence": "docs/qa/0.6.0/native.json",
-    "candidate_sha256": "a9ca38227c505baeea5bb13f7c63cdcb23763b5c523658a4a92e79657a8d8703",
-    "candidate_captures": 40,
+    "evidence": "docs/qa/0.6.1/native.json",
+    "candidate_sha256": "4da4e29ff20f136198c206f9a7de98924027d27019858228f0fa2aa111f413ed",
+    "candidate_captures": 74,
     "preset_captures": 20,
-    "focused_checks": 19,
+    "focused_checks": 48,
     "final_captures": 5,
     "final_exact_rgb_comparisons": 5,
     "candidate_final_native_binary_and_resources_identical": true,
     "reviewed": true,
     "quiet_time_system_transition_verified": false,
-    "quiet_time_limitation": "The examined SDKOS appmenu containedWatchfaces; available QEMUprotocol providesnoQuietTime control. Actual OSQuietTime transition and physicalmotor remainunverified; purepolicytests and official SDKcall verified separately."
+    "quiet_time_limitation": "SDK QEMU system UI exposes no Quiet Time setting/control; native policy tests cover the input. Actual Quiet Time transition and physical motor remain unverified."
   },
   "settings_qa": {
-    "evidence": "docs/qa/0.6.0/settings.json",
+    "evidence": "docs/qa/0.6.1/settings.json",
+    "refinements_evidence": "docs/qa/0.6.1/settings-refinements.json",
+    "night_preview_evidence": "docs/qa/0.6.1/night-preview.json",
     "actual_clay": true,
     "fixture_bridge": true,
     "physical_phone": false,
     "native_canvas_identities": 20,
     "locale_width_appearance_layouts": 68,
     "contrast_scenarios": 69,
-    "text_control_contrast_checks": 5382,
-    "minimum_text_ratio": 5.82,
-    "minimum_toggle_thumb_outline_ratio": 3.927,
-    "page_errors": 0,
-    "external_requests": 0,
+    "text_control_contrast_checks": 5385,
+    "night_preview_locale_appearance_cases": 34,
+    "night_preview_text_checks": 2380,
     "colour_picker_text_checks": 128,
-    "colour_picker_evidence": "docs/qa/0.6.0/colour-picker.json"
+    "targeted_refinement_checks": 5,
+    "minimum_text_ratio": 5.82,
+    "page_errors": 0,
+    "external_requests": 0
   },
   "bundle_audit": {
-    "evidence": "docs/qa/0.6.0/bundle-audit.json",
+    "evidence": "docs/qa/0.6.1/bundle-audit.json",
     "result": "PASS",
     "message_keys": 41,
-    "old_34_key_numbers_preserved": true,
+    "old_41_key_numbers_preserved": true,
     "source_map_matches": true,
+    "bundled_notice_files": 7,
+    "native_previews_match_packaged_renderer": true,
     "native_resource_bytes": 246928,
-    "native_footprint_bytes": 65314,
-    "prestartup_heap_bytes": 65758
+    "native_footprint_bytes": 65398,
+    "prestartup_heap_bytes": 65674
+  },
+  "publication": {
+    "kit": "store/README.md",
+    "status": "held-plugin-preview",
+    "store_submission_allowed": false,
+    "rule_checked_on": "2026-11-01",
+    "rule_url": "https://developer.repebble.com/guides/plugins/preview/"
   },
   "runtime_limits": [
-    "Physical PT2 motor timing and strength, power use and live phone/provider delivery are unverified.",
+    "Physical PT2 motor timing/strength, power use and live phone/provider delivery are unverified.",
     "Actual OS Quiet Time transitions are not exposed by the SDK emulator; the decision policy is unit-tested.",
     "Prior heap and migration results remain historical and were reused without relabelling them as current runtime measurements."
   ],
-  "timeline": "Actual native unobstructed geometry only; no real OS event payload."
+  "timeline": "Actual native unobstructed geometry only; no real calendar event payload."
 }

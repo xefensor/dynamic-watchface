@@ -1,0 +1,359 @@
+{
+  "pass": true,
+  "cases": [
+    {
+      "language": "en",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "en",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "cs",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "cs",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "sk",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "sk",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "de",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "de",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "fr",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "fr",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "es",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "es",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "it",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "it",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "pt",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "pt",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "nl",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "nl",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "pl",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "pl",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "da",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "da",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "sv",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "sv",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "no",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "no",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "fi",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "fi",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "hu",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "hu",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "ro",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "ro",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    },
+    {
+      "language": "tr",
+      "width": 320,
+      "scheme": "light",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "language": "tr",
+      "width": 320,
+      "scheme": "dark",
+      "quietPreviewNativeIdentity": true,
+      "noOverflow": true,
+      "examined": 70,
+      "minimumRatio": 6.797,
+      "failures": []
+    }
+  ],
+  "actualQuietTimeOsTransition": false,
+  "pageErrors": [],
+  "nativePreviewRefresh": {
+    "pass": true,
+    "rawPresetPngHashesIdentical": true,
+    "version": "0.6.1"
+  },
+  "sourceSha256": {
+    "src/pkjs/index.js": "7e1927848c204ee537ae7aae43777f3e79f3f51a421add6f1a1a2f137b23bd5d",
+    "src/pkjs/config.js": "56f6362e3b13fc7f664cd99bc4703d87831267b505ec60dd30fd2c09c470ebe4",
+    "src/pkjs/settings-page.js": "39b19c917814a6b02f2d024a1871f2f2e12db5a39e0fcfa5c4a6d31bd81f59a5",
+    "src/pkjs/localization.js": "3183332babf68c309b1e77f0f40bf70400054e0a54a8c9af597c6de882aca757",
+    "src/pkjs/settings-preview.js": "d42e8c1ae763d392121c5772c609b6f01670d6acb5e91b6973effc6f5302d31b"
+  }
+}

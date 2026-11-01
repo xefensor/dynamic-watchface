@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.1
+
+- Clears fully redacted, malformed or newly filtered notifications immediately,
+  including queued replacements, through pinned Core 0.4.1.
+- Keeps closed colour-picker swatches out of keyboard navigation and restores
+  saved appearance settings after startup or a new watch session.
+- Clarifies that watchface banners and vibration are additional to PebbleOS
+  alerts; keeps both defaulted to Off and preserves existing choices.
+- Adds an independent day/Quiet Time palette preview in settings.
+- Protects warning visibility on every native palette background, preserves app
+  identity when notification icons are invisible, and pauses title continuation
+  underneath system windows. Hardens incoming boolean setting validation.
+- Includes third-party licenses and attribution in the standalone PBW; prepares
+  store copy, native screenshots, privacy/support documents and release checks.
+- Keeps the plugin-preview appstore restriction explicit. Store submission is
+  not enabled by preparing these materials.
+
 ## 0.6.0
 
 - Fixes settings colours and control contrast in phone light and dark appearances,

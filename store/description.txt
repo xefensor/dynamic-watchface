@@ -1,0 +1,11 @@
+Dynamic keeps the time and your two Pebble readings visible while making room for what is happening on your phone.
+
+The large rounded clock settles into a compact header when music is playing. Song titles stay readable at one fixed size, continuing through the remaining text once when needed. Artwork and artists keep a stable bottom position, with a simple fallback while a cover is missing.
+
+Choose your background, text and accent colours, share a colour code, or use a separate palette during the watch's Quiet Time. Follow Pebble's time format or choose 12-hour or 24-hour time. Settings support 17 languages and phone light/dark appearances.
+
+Optional watchface notification banners can show only the app, an app/sender summary, or message text. They default to Off. Optional additional vibration also defaults to Off; these features do not replace PebbleOS notifications. Native Timeline Peek keeps priority over the face's content.
+
+Dynamic targets Pebble Time 2. Live readings use Pebble's plugin system; Android is required for music and notification integration. The clock and date continue without the phone. Use Pebble's Music app for playback controls.
+
+This is a sideloaded plugin-preview build. Public store submission is on hold while Pebble's preview restriction applies.

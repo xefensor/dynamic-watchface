@@ -93,7 +93,7 @@ function requestContextSession(attempt) {
   });
 }
 Pebble.addEventListener('ready', function() {
-  retrySavedSettings();
+  resyncPresentation();
   complications.refresh(); context.refresh(true); requestContextSession(1);
 });
 var SYSTEM_CLOCK_KEY = 'dynamic-system-clock-v1';
@@ -113,7 +113,12 @@ Pebble.addEventListener('appmessage', function(event) {
   if (messageValue(event.payload || {}, 'REQUEST_COMPLICATIONS')) { complications.refresh(); }
   var requested = messageValue(event.payload || {}, 'REQUEST_CONTEXT');
   var token = Number(requested);
-  if (Number.isInteger(token) && token >= 2 && token <= 2147483647) { context.connectionChanged(true, token); }
+  if (Number.isInteger(token) && token >= 2 && token <= 2147483647) {
+    context.connectionChanged(true, token);
+    // A reset or another watch can reuse the same counter. Every marked
+    // baseline request may need recovery; ordinary refreshes use token 1.
+    resyncPresentation();
+  }
   else if (token === 1) { context.refresh(); }
 });
 Pebble.addEventListener('showConfiguration', function() {
@@ -168,7 +173,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.6.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.6.1. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }
@@ -273,6 +278,22 @@ function retrySavedSettings() {
   if (!Object.keys(payload).length) { return; }
   record.payload = payload; record.state = 'pending'; storeDelivery(record);
   deliverSettings(record, 1);
+}
+function resyncPresentation() {
+  // Phone settings survive watch resets and switching watches. Reapply only
+  // validated presentation values; private source controls never leave PKJS.
+  // A current pending save wins over older stored values. A fresh record also
+  // prevents an old watch/session's late ACK from marking this sync delivered.
+  var payload = watchSettings(savedSettings());
+  var previous = deliveryRecord();
+  if (previous && previous.state !== 'saved') {
+    var waiting = watchSettings(previous.payload || {});
+    Object.keys(waiting).forEach(function(key) { payload[key] = waiting[key]; });
+  }
+  if (!Object.keys(payload).length) { return; }
+  if (settingsRetry !== null) { clearTimeout(settingsRetry); settingsRetry = null; }
+  var record = {id:String(Date.now()) + '-' + (++deliverySequence), state:'pending', payload:payload};
+  storeDelivery(record); deliverSettings(record, 1);
 }
 Pebble.addEventListener('webviewclosed', function(event) {
   if (!event || !event.response) { return; }

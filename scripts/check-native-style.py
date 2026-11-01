@@ -23,6 +23,7 @@ import tarfile
 import unicodedata
 import uuid
 import zipfile
+from release_licenses import LICENSE_FILES, license_payloads
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,12 +43,13 @@ APP_MODULES = {"index.js", "config.js", "localization.js", "settings-page.js", "
 CORE_MODULES = {
     "index.js", "message-queue.js", "complications.js", "complication-data.js", "context.js",
 }
-CORE_SHA256 = "702529c71fafe790a6fb6cb03a26a5aadee9569f77d35e17998c1efbd4a3a46c"
-CORE_COMMIT = "6894a97347b1e1101650f4244038296ab475a24e"
-PBW_FILES = {
+CORE_SHA256 = "9bc0b432a40293a5551dc78991fd6817c523683a8f7a5d02f9bb96dfcfd6209c"
+CORE_COMMIT = "6a6fb32e5a52d146e60d32fd6ee1b92e67722ada"
+SDK_PBW_FILES = {
     "appinfo.json", "pebble-js-app.js", "pebble-js-app.js.map",
     "emery/pebble-app.bin", "emery/app_resources.pbpack", "emery/manifest.json",
 }
+PBW_FILES = SDK_PBW_FILES | set(LICENSE_FILES)
 LEGACY_ENDPOINTS = (
     "api.open-meteo.com", "api.openweathermap.org", "forecast.weather.gov",
 )
@@ -484,12 +486,12 @@ def audit_clock_outlines(root, binary, sources):
 
 def read_core(root, package):
     pin = json.loads((root / "vendor/CORE.json").read_text(encoding="utf-8"))
-    require(pin["package"] == "pebble-watchface-core" and pin["version"] == "0.4.0",
+    require(pin["package"] == "pebble-watchface-core" and pin["version"] == "0.4.1",
             "Review this auditor before changing the shared core release")
     require(pin["source_commit"] == CORE_COMMIT and pin["sha256"] == CORE_SHA256,
-            "Shared core provenance differs from the verified 0.4.0 release")
+            "Shared core provenance differs from the verified 0.4.1 release")
     name = pin["artifact"]
-    require(name == "pebble-watchface-core-0.4.0.tgz", "Unexpected core archive name")
+    require(name == "pebble-watchface-core-0.4.1.tgz", "Unexpected core archive name")
     require(package["dependencies"]["pebble-watchface-core"] == "file:vendor/" + name,
             "The app must use the committed, pinned core archive")
     raw = (root / "vendor" / name).read_bytes()
@@ -498,7 +500,7 @@ def read_core(root, package):
     require(pin["integrity"] == integrity, "Pinned core npm integrity differs")
     lock = json.loads((root / "package-lock.json").read_text(encoding="utf-8"))
     entry = lock["packages"]["node_modules/pebble-watchface-core"]
-    require(entry["version"] == "0.4.0" and entry["integrity"] == integrity,
+    require(entry["version"] == "0.4.1" and entry["integrity"] == integrity,
             "Lockfile differs from the committed core archive")
     with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as archive:
         members = archive.getmembers()
@@ -534,10 +536,24 @@ def read_core(root, package):
             "archiveSha256": CORE_SHA256, "installedAndSdkStagingMatch": True}, sources
 
 
+def audit_preview_identity(root, version, binary, resources):
+    source = (root / "src/pkjs/settings-preview.js").read_text(encoding="utf-8")
+    exported = re.search(r"module\.exports\s*=\s*(\{.*\})\s*;\s*$", source, re.S)
+    require(exported, "Native preview asset export is missing")
+    preview = json.loads(exported.group(1))
+    require(preview["version"] == version and len(preview["frames"]) == 20,
+            "Native preview assets belong to a different release")
+    for name, content in (("emery/pebble-app.bin", binary),
+                          ("emery/app_resources.pbpack", resources)):
+        require(preview["source"]["nativePayloadSha256"][name] == sha256(content),
+                "Native previews belong to a different renderer: " + name)
+    return {"samples": 20, "nativeBinaryAndResourcesMatch": True}
+
+
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.6.0", "Review this auditor for a different release version")
+    require(package["version"] == "0.6.1", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and
@@ -558,11 +574,14 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
     require(len(native_entries) == len(native_keys) and native_keys == keys,
             "Generated C keys are stale or duplicated")
     core, core_sources = read_core(root, package)
+    licenses = license_payloads(root)
     sdk_pbw = root / "build" / (package["name"] + ".pbw")
     with zipfile.ZipFile(pbw) as release, zipfile.ZipFile(sdk_pbw) as sdk:
         require(release.testzip() is None and sdk.testzip() is None, "Corrupt PBW archive")
-        require(len(release.namelist()) == len(set(release.namelist())) == 6 and
-                set(release.namelist()) == set(sdk.namelist()) == PBW_FILES,
+        require(len(release.namelist()) == len(set(release.namelist())) == len(PBW_FILES) and
+                set(release.namelist()) == PBW_FILES and
+                len(sdk.namelist()) == len(set(sdk.namelist())) == len(SDK_PBW_FILES) and
+                set(sdk.namelist()) == SDK_PBW_FILES,
                 "Unexpected PBW entry inventory")
         info = json.loads(release.read("appinfo.json"))
         original = json.loads(sdk.read("appinfo.json"))
@@ -587,6 +606,12 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         inventory = []
         for name in sorted(PBW_FILES):
             content = release.read(name)
+            if name in licenses:
+                require(content == licenses[name], "Packaged license differs from source: " + name)
+                inventory.append({"file": name, "bytes": len(content),
+                                  "sha256": sha256(content),
+                                  "sourceFile": LICENSE_FILES[name], "sourceByteIdentical": True})
+                continue
             require(name == "appinfo.json" or content == sdk.read(name),
                     "SDK payload changed while packaging: " + name)
             if name in ("pebble-js-app.js", "pebble-js-app.js.map"):
@@ -609,6 +634,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         active_js = release.read("pebble-js-app.js").decode("utf-8")
     require(len(source_map["sources"]) == len(source_map["sourcesContent"]),
             "Invalid source map")
+    preview_identity = audit_preview_identity(root, package["version"], binary, resources)
     require(len(source_map["sources"]) == len(set(source_map["sources"])),
             "Source map has duplicate modules")
     hosts, modules, xhr, bundled_keys = set(), set(), [], None
@@ -665,6 +691,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
                              "pbwMessageKeys": len(info["messageKeys"])},
         "manifestVersion": info["manifestVersion"], "usesPermissions": info["usesPermissions"],
         "nativePayloadMatchesSdk": True, "customResourceCount": resource_count,
+        "licenseFileCount": len(licenses), "licenseSourceIdentityVerified": True,
+        "nativePreviews": preview_identity,
         "bodyFonts": body_fonts, "bodyMetrics": body_metrics, "clockOutlines": clock_outlines,
         "javaScriptPayloadMatchesBuild": True,
         "sourceSystemFontKeys": font_keys, "nativeSystemFontKeys": linked_keys,

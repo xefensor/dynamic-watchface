@@ -10,7 +10,7 @@ const keys = Object.fromEntries(packageInfo.pebble.messageKeys.map((key,i) => [k
 function fixture(settings = {}, locales = {}) {
   let watchLanguage = locales.watch;
   let saved = JSON.stringify(settings);
-  const storage = {};
+  const storage = Object.assign({},locales.storage || {});
   let options, contextOptions, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
   const deferred=[];
   const contextRefreshes=[], connections=[];
@@ -406,6 +406,57 @@ test('an older settings acknowledgement cannot mark a newer save as delivered',(
   assert.equal(pending.payload[keys.TEXT_COLOR],456);
   f.deferred.shift().ok();
   assert.equal(JSON.parse(f.storage['dynamic-settings-delivery-v1']).state,'saved');
+});
+
+test('startup reapplies validated saved presentation without sending private source preferences',()=>{
+  for(const saved of [
+    {BACKGROUND_COLOR:0,TEXT_COLOR:0xFFFFFF,ACCENT_COLOR:0x55AAFF,CLOCK_FORMAT:12,
+      NIGHT_PALETTE:true,NIGHT_BACKGROUND_COLOR:0x005555,NOTIFICATION_VIBRATION:2,
+      SHOW_MUSIC:false,SHOW_NOTIFICATIONS:true,NOTIFICATION_PREVIEW:true,NOTIFICATION_APPS:'Private app choice'},
+    {[keys.BACKGROUND_COLOR]:0,[keys.TEXT_COLOR]:0xFFFFFF,[keys.NIGHT_PALETTE]:1,
+      [keys.NOTIFICATION_VIBRATION]:1,[keys.NOTIFICATION_APPS]:'Private app choice'}]) {
+    const f=fixture(saved);f.handlers.ready();
+    const presentation=f.deliveries[0];
+    assert.equal(presentation[keys.BACKGROUND_COLOR],0);assert.equal(presentation[keys.TEXT_COLOR],0xFFFFFF);
+    assert.equal(presentation[keys.NIGHT_PALETTE],1);
+    assert.ok([1,2].includes(presentation[keys.NOTIFICATION_VIBRATION]));
+    for(const name of ['SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS'])assert.equal(presentation[keys[name]],undefined);
+    assert.ok(!JSON.stringify(presentation).includes('Private'));
+    assert.equal(f.deliveries[1][keys.REQUEST_CONTEXT],1);
+    assert.deepEqual(f.settings(),saved,'presentation recovery does not rewrite phone preferences');
+    assert.equal(f.contextConfigured(),0,'recovery does not change private source controls');
+  }
+  const f=fixture({TEXT_COLOR:-1,ACCENT_COLOR:'bad',CLOCK_FORMAT:255,NOTIFICATION_VIBRATION:3,SHOW_MUSIC:true});
+  f.handlers.ready();assert.equal(f.deliveries.length,1);assert.equal(f.deliveries[0][keys.REQUEST_CONTEXT],1);
+});
+
+test('native baseline requests recover presentation even when a reset reuses a token',()=>{
+  const f=fixture({TEXT_COLOR:0x0055AA,NOTIFICATION_APP_ONLY:true});f.handlers.ready();
+  const initial=f.deliveries.length;
+  f.handlers.appmessage({payload:{REQUEST_CONTEXT:71}});
+  assert.equal(f.deliveries.length,initial+1);assert.equal(f.deliveries.at(-1)[keys.TEXT_COLOR],0x0055AA);
+  f.handlers.appmessage({payload:{[keys.REQUEST_CONTEXT]:71}});assert.equal(f.deliveries.length,initial+2);
+  f.handlers.appmessage({payload:{REQUEST_CONTEXT:1}});assert.equal(f.deliveries.length,initial+2);
+  f.handlers.appmessage({payload:{REQUEST_CONTEXT:72}});assert.equal(f.deliveries.length,initial+3);
+  assert.equal(f.contextOptions.getSettings().notificationAppOnly,true);assert.equal(f.contextConfigured(),0);
+});
+
+test('presentation recovery carries pending values forward and ignores late ACKs across a newer save',()=>{
+  const f=fixture();f.hold(true);
+  f.handlers.webviewclosed({response:JSON.stringify({BACKGROUND_COLOR:0xFFFFFF,TEXT_COLOR:123})});
+  const oldId=JSON.parse(f.storage['dynamic-settings-delivery-v1']).id;
+  f.handlers.appmessage({payload:{REQUEST_CONTEXT:81}});
+  const sync=JSON.parse(f.storage['dynamic-settings-delivery-v1']);assert.notEqual(sync.id,oldId);assert.equal(sync.payload[keys.TEXT_COLOR],123);
+  f.handlers.webviewclosed({response:JSON.stringify({BACKGROUND_COLOR:0xFFFFFF,TEXT_COLOR:456})});
+  const latest=JSON.parse(f.storage['dynamic-settings-delivery-v1']).id;
+  f.deferred.shift().ok();assert.equal(JSON.parse(f.storage['dynamic-settings-delivery-v1']).id,latest);
+  f.deferred.shift().ok();assert.equal(JSON.parse(f.storage['dynamic-settings-delivery-v1']).state,'pending');
+  f.deferred.shift().ok();assert.equal(JSON.parse(f.storage['dynamic-settings-delivery-v1']).state,'saved');
+  assert.deepEqual(f.deliveries.map(p=>p[keys.TEXT_COLOR]),[123,123,456]);
+  const pending={id:'prior-phone-runtime',state:'failed',payload:{[keys.TEXT_COLOR]:0x005500,[keys.ACCENT_COLOR]:-1}};
+  const restored=fixture({BACKGROUND_COLOR:0xFFFFFF,TEXT_COLOR:0},{storage:{'dynamic-settings-delivery-v1':JSON.stringify(pending)}});
+  restored.handlers.ready();assert.equal(restored.deliveries[0][keys.TEXT_COLOR],0x005500);
+  assert.equal(restored.deliveries[0][keys.BACKGROUND_COLOR],0xFFFFFF);assert.equal(restored.deliveries[0][keys.ACCENT_COLOR],undefined);
 });
 
 test('settings metadata keeps per-slot property and per-feature permission states distinct',()=>{

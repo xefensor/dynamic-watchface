@@ -1,0 +1,733 @@
+{
+  "pbw_sha256": "4da4e29ff20f136198c206f9a7de98924027d27019858228f0fa2aa111f413ed",
+  "native_payload_sha256": {
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "fcdd8f67b259881d06832c2093fc4587d380e365f47a7d0d810af35268aee525",
+    "emery/pebble-app.bin": "e69f1b6411523889d2ca4d6d37459736f9f9a5b736aa9849144dde16bb9ada99"
+  },
+  "phone_javascript_executed": false,
+  "fixture_encoder": "installed version-pinned production core v4",
+  "hmp_mapping_native_service_equality_verified_initial": true,
+  "checks": [
+    {
+      "name": "mapped-scanout-equals-native-screenshot",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "missing-transparent-share-exact-fallback",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "late-art-retains-artist",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": [
+        60,
+        176,
+        200,
+        216
+      ]
+    },
+    {
+      "name": "late-art-retains-title",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": [
+        0,
+        90,
+        200,
+        174
+      ]
+    },
+    {
+      "name": "pause-mark-inside-tile-only",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": [
+        60,
+        176,
+        200,
+        216
+      ]
+    },
+    {
+      "name": "pause-mark-visibly-different",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": [
+        10,
+        176,
+        50,
+        216
+      ]
+    },
+    {
+      "name": "title-continues-after-dwell",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": [
+        0,
+        90,
+        200,
+        176
+      ]
+    },
+    {
+      "name": "title-page-keeps-footer",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": [
+        0,
+        176,
+        200,
+        216
+      ]
+    },
+    {
+      "name": "late-art-does-not-reset-title-page",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": [
+        0,
+        90,
+        200,
+        176
+      ]
+    },
+    {
+      "name": "artist-update-does-not-reset-title-page",
+      "pass": true,
+      "comparison": "exact title ink RGB; artist glyph metrics may move baseline",
+      "box": [
+        0,
+        90,
+        200,
+        174
+      ],
+      "beforeInk": [
+        11,
+        7,
+        142,
+        77
+      ],
+      "afterInk": [
+        11,
+        8,
+        142,
+        78
+      ]
+    },
+    {
+      "name": "title-final-page-does-not-loop",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": [
+        0,
+        90,
+        200,
+        174
+      ]
+    },
+    {
+      "name": "title-final-page-is-complete-word-recording",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": [
+        0,
+        90,
+        200,
+        174
+      ]
+    },
+    {
+      "name": "summary-three-second-lease-restores-music",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "message-remains-after-three-seconds",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": null
+    },
+    {
+      "name": "message-eight-second-lease-restores-music",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "qemu-native-vibes-short-once-retry-and-foreign-session-silent",
+      "pass": true,
+      "transportRequests": [
+        {
+          "time": 51359.600297388,
+          "state": true
+        },
+        {
+          "time": 51359.620211985,
+          "state": false
+        },
+        {
+          "time": 51423.991365213,
+          "state": true
+        },
+        {
+          "time": 51424.240740881,
+          "state": false
+        }
+      ]
+    },
+    {
+      "name": "disabled-events-consumed-no-delayed-buzz",
+      "pass": true
+    },
+    {
+      "name": "qemu-native-double-pulse-once-per-burst",
+      "pass": true
+    },
+    {
+      "name": "fresh-context-query-rotates-session-with-no-haptic",
+      "pass": true
+    },
+    {
+      "name": "transparent-notification-image-matches-missing-icon",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "transparent-notification-monochrome-matches-missing-icon",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "transparent-banner-image-matches-missing-icon",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "transparent-banner-monochrome-matches-missing-icon",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-status-string-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-status-bytes-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-status-negative-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-status-two-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-status-width-0-ignored-or-rejected",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-status-width-3-ignored-or-rejected",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "valid-status-u8-changes-state",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": null
+    },
+    {
+      "name": "valid-status-u16-accepted",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "valid-status-i16-accepted",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "valid-status-i8-accepted",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "valid-status-u32-accepted",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "valid-status-i32-accepted",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-legacy-clock-string-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-legacy-clock-bytes-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-legacy-clock-negative-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "invalid-legacy-clock-two-ignored",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "valid-legacy-clock-u8-accepted",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": null
+    },
+    {
+      "name": "valid-legacy-clock-u16-accepted",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "retired-shadow-key-has-no-visual-side-effect",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "custom-palette-warning-is-visible",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": [
+        4,
+        44,
+        18,
+        57
+      ]
+    },
+    {
+      "name": "custom-palette-warning-primary-ink-at-least3to1",
+      "pass": true,
+      "background": "#AAAA55",
+      "primaryInkRgb": [
+        0,
+        0,
+        0
+      ],
+      "contrast": 8.590275113515066
+    },
+    {
+      "name": "system-notification-actually-covers-face",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": null
+    },
+    {
+      "name": "title-current-page-preserved-through-native-modal",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "returned-page-has-fresh-reading-dwell",
+      "pass": true,
+      "comparison": "exact native RGB equal",
+      "box": null
+    },
+    {
+      "name": "title-pagination-resumes-after-focus-return",
+      "pass": true,
+      "comparison": "exact native RGB different",
+      "box": null
+    }
+  ],
+  "quiet_time_system_transition_verified": false,
+  "quiet_time_limitation": "SDK QEMU system UI exposes no Quiet Time setting/control; native policy tests cover the input. Actual Quiet Time transition and physical motor remain unverified.",
+  "scope": "20 native presets, retained0.6 behavior and0.6.1 publication refinements; actual local OS notification/focus and malformed AppMessage fixtures. No phone/provider or physical-motor claims.",
+  "visual_review": {
+    "reviewed": true,
+    "preset_sheets": [
+      "previews-light.png",
+      "previews-dark.png"
+    ],
+    "affected_sheet": "publication-refinements.png",
+    "findings": "All preset and refinement states fit; app identity survives transparent icons, warning ink remains visible, title page preserved through actual covering OS notification and resumes afterward."
+  },
+  "captures": [
+    {
+      "name": "scanout-native-service",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028"
+    },
+    {
+      "name": "scanout-hmp",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028"
+    },
+    {
+      "name": "idle-24-light",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028"
+    },
+    {
+      "name": "music-24-light",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "notification-summary-24-light",
+      "sha256": "9f58fdc7d2884da85365d866d269bc26e337cc82000c6cc67f708fffabd5b4b0"
+    },
+    {
+      "name": "notification-24-light",
+      "sha256": "1a79003f9b9179b8f39cb7bd69c9ed44361b91ee380753fc4a8790b7f196af25"
+    },
+    {
+      "name": "timeline-24-light",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866"
+    },
+    {
+      "name": "idle-12-light",
+      "sha256": "6ef6de4fcb53194df1a1e27ce1bf110c2ae8145ac7acfab9530ad33f63da32ab"
+    },
+    {
+      "name": "music-12-light",
+      "sha256": "f282537259809cc774f08c633f5b0ba39247655e6863812fec9c215616fea579"
+    },
+    {
+      "name": "notification-summary-12-light",
+      "sha256": "52e44778bb8981c00d0e2ac80bbf1111e69caa4c405d9038e5ed7fbb25c00d70"
+    },
+    {
+      "name": "notification-12-light",
+      "sha256": "527885455554c9146705f3f6da35feaeac5cbaad4624e220f4a252ca5c485822"
+    },
+    {
+      "name": "timeline-12-light",
+      "sha256": "8d0bf1b1a58790245c87fa9ffb85e934a09d984056d249d6b1ebb0dfa0dfe27b"
+    },
+    {
+      "name": "idle-24-dark",
+      "sha256": "3629d99a35f6628860e95c3ce8e358457e1a16514c2ff04c4a0136bc9a9eb7c3"
+    },
+    {
+      "name": "music-24-dark",
+      "sha256": "757c3312eb10904b7c975840d117c31af871c03cd8af43b5a62c7aeb21cc465b"
+    },
+    {
+      "name": "notification-summary-24-dark",
+      "sha256": "4538d60a73a4443f0c1d3f58b669c370a4acb5a6d2b3d436867e211d2f03b57f"
+    },
+    {
+      "name": "notification-24-dark",
+      "sha256": "de8d4acaa5c95ba6995c1ea3ed3f160abf246abd0bf627934cb83f61a7df6936"
+    },
+    {
+      "name": "timeline-24-dark",
+      "sha256": "c99695856b563feef3c4249c88f1615e18469b2c61cb63510ab6593720186f63"
+    },
+    {
+      "name": "idle-12-dark",
+      "sha256": "46f8d15b4f186ae711670524b1f1b7c015cb5b8a72e5c44bef65774e7125b8fa"
+    },
+    {
+      "name": "music-12-dark",
+      "sha256": "ff0ccb728e3090a2393743e0ed70f3d87c9801d0f57046cba0b0e92989edb363"
+    },
+    {
+      "name": "notification-summary-12-dark",
+      "sha256": "8d98cc0fd3487ec71b2bc0f4e8da1d0fa6c729ef76987f1889addbc3bf802e9d"
+    },
+    {
+      "name": "notification-12-dark",
+      "sha256": "ebf9780571e2a37b74b17c35381cb13548083d87927843cf3747d9eeb9da0835"
+    },
+    {
+      "name": "timeline-12-dark",
+      "sha256": "6d9965451a126c408c74469232903f68f5061e4318583e7b367435ec59615c95"
+    },
+    {
+      "name": "fallback-missing",
+      "sha256": "b08b665ffb5d3f8415ca123d1229b8709c4fdcc996f7e448234c9801793479c2"
+    },
+    {
+      "name": "fallback-transparent",
+      "sha256": "b08b665ffb5d3f8415ca123d1229b8709c4fdcc996f7e448234c9801793479c2"
+    },
+    {
+      "name": "fallback-art-arrived",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "paused-mark",
+      "sha256": "d16332b5689169eb00e792de3e9bcf648a8d041d8ae5ba6d3fac6b928fddd760"
+    },
+    {
+      "name": "paused-grace-ended",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028"
+    },
+    {
+      "name": "title-page1",
+      "sha256": "edf3c82ec80a9ab3024b8d5f3bece2b267fe19f8f20f498122fdb0dc71cbb86f"
+    },
+    {
+      "name": "title-page2",
+      "sha256": "e9be121730658a3fbab08640d702164f910bd3c4bcc64936aaee34037c9fe636"
+    },
+    {
+      "name": "title-page2-late-art",
+      "sha256": "00cb08631c386b36f5b6a117b8fe67c8df610bacc05ad89078f80c5b22622997"
+    },
+    {
+      "name": "title-page2-artist-update",
+      "sha256": "853df753e0bf9eeb2d0985675bf0c3cf5e070c8e8c6e565e7b45a0c92d1f0019"
+    },
+    {
+      "name": "title-last-page",
+      "sha256": "489924d48424389d8438c254bdfd5458290032521ee1afddd3512c2297bc7a07"
+    },
+    {
+      "name": "title-last-page-held",
+      "sha256": "489924d48424389d8438c254bdfd5458290032521ee1afddd3512c2297bc7a07"
+    },
+    {
+      "name": "title-whole-word-reference",
+      "sha256": "489924d48424389d8438c254bdfd5458290032521ee1afddd3512c2297bc7a07"
+    },
+    {
+      "name": "lease-music",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "summary-3s-before",
+      "sha256": "9f58fdc7d2884da85365d866d269bc26e337cc82000c6cc67f708fffabd5b4b0"
+    },
+    {
+      "name": "summary-3s-ended",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "message-8s-still-visible",
+      "sha256": "1a79003f9b9179b8f39cb7bd69c9ed44361b91ee380753fc4a8790b7f196af25"
+    },
+    {
+      "name": "message-8s-ended",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "notification-app-only",
+      "sha256": "07f774aa91801e1b4f5d2a2ef7f261a716291b2105df954c95209231258c8eeb"
+    },
+    {
+      "name": "notice-missing-icon",
+      "sha256": "1c46c9059dda05dc261f6f9d4fd6f9164c0f9794912166aae25aba97870bad04"
+    },
+    {
+      "name": "notice-transparent-image",
+      "sha256": "1c46c9059dda05dc261f6f9d4fd6f9164c0f9794912166aae25aba97870bad04"
+    },
+    {
+      "name": "notice-transparent-icon",
+      "sha256": "1c46c9059dda05dc261f6f9d4fd6f9164c0f9794912166aae25aba97870bad04"
+    },
+    {
+      "name": "banner-missing-icon",
+      "sha256": "21519419dfe3fb388b69f48972543120eff1ddaf0fd8e713b7bd92c7718d9b10"
+    },
+    {
+      "name": "banner-transparent-image",
+      "sha256": "21519419dfe3fb388b69f48972543120eff1ddaf0fd8e713b7bd92c7718d9b10"
+    },
+    {
+      "name": "banner-transparent-icon",
+      "sha256": "21519419dfe3fb388b69f48972543120eff1ddaf0fd8e713b7bd92c7718d9b10"
+    },
+    {
+      "name": "booleans-status-on",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-ignored-string",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-ignored-bytes",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-ignored-negative",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-ignored-two",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-invalid-width-0",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-invalid-width-3",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-off-u8",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-status-valid-u16",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-valid-i16",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-status-valid-i8",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-status-valid-u32",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-status-valid-i32",
+      "sha256": "965d3c0c5029d871c3ef7efbbfdf0ff47ff81521ff44712c3166f4287c1f3378"
+    },
+    {
+      "name": "booleans-clock24",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-clock-ignored-string",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-clock-ignored-bytes",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-clock-ignored-negative",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-clock-ignored-two",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "booleans-clock12",
+      "sha256": "f282537259809cc774f08c633f5b0ba39247655e6863812fec9c215616fea579"
+    },
+    {
+      "name": "booleans-clock-restored",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "retired-shadow",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32"
+    },
+    {
+      "name": "custom-warning-clear",
+      "sha256": "55098392604cc3d10bf30133869e8b649e65197c2cd562d185d0db20065359c9"
+    },
+    {
+      "name": "custom-warning-guarded",
+      "sha256": "591b2e59c0bf57e57950a8e0837605bda58ee33e9e1fc261ba5d4534fcfc2bf9"
+    },
+    {
+      "name": "focus-title-before",
+      "sha256": "edf3c82ec80a9ab3024b8d5f3bece2b267fe19f8f20f498122fdb0dc71cbb86f"
+    },
+    {
+      "name": "focus-system-notification",
+      "sha256": "dc396dd5cc7b9f7bcfd91b8b64b64b4719b1aa17f87d2bf897beda85075df64e"
+    },
+    {
+      "name": "focus-title-returned",
+      "sha256": "edf3c82ec80a9ab3024b8d5f3bece2b267fe19f8f20f498122fdb0dc71cbb86f"
+    },
+    {
+      "name": "focus-title-fresh-dwell",
+      "sha256": "edf3c82ec80a9ab3024b8d5f3bece2b267fe19f8f20f498122fdb0dc71cbb86f"
+    },
+    {
+      "name": "focus-title-resumed",
+      "sha256": "e9be121730658a3fbab08640d702164f910bd3c4bcc64936aaee34037c9fe636"
+    }
+  ],
+  "final_smoke": {
+    "pbw_sha256": "1328f66c3dff4f80d8590b7adb2d2f4b0c509a196201bb8ffebf396ce1a0123f",
+    "checks": [
+      {
+        "state": "idle",
+        "pass": true,
+        "comparison": "exact native RGB",
+        "final_capture": "idle.png",
+        "candidate_reference": "idle-24-light.png"
+      },
+      {
+        "state": "music",
+        "pass": true,
+        "comparison": "exact native RGB",
+        "final_capture": "music.png",
+        "candidate_reference": "music-24-light.png"
+      },
+      {
+        "state": "notification-summary",
+        "pass": true,
+        "comparison": "exact native RGB",
+        "final_capture": "notification-summary.png",
+        "candidate_reference": "notification-summary-24-light.png"
+      },
+      {
+        "state": "notification",
+        "pass": true,
+        "comparison": "exact native RGB",
+        "final_capture": "notification.png",
+        "candidate_reference": "notification-24-light.png"
+      },
+      {
+        "state": "timeline",
+        "pass": true,
+        "comparison": "exact native RGB",
+        "final_capture": "timeline.png",
+        "candidate_reference": "timeline-24-light.png"
+      }
+    ]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "version": "0.6.1",
+  "pbw": {
+    "file": "Dynamic-0.6.1.pbw",
+    "sha256": "1328f66c3dff4f80d8590b7adb2d2f4b0c509a196201bb8ffebf396ce1a0123f"
+  },
+  "native_payload_sha256": {
+    "emery/pebble-app.bin": "e69f1b6411523889d2ca4d6d37459736f9f9a5b736aa9849144dde16bb9ada99",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+  },
+  "screenshots": [
+    {
+      "file": "emery_idle.png",
+      "source": "docs/images/normal.png",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028",
+      "width": 200,
+      "height": 228,
+      "native_pixels_modified": false
+    },
+    {
+      "file": "emery_music.png",
+      "source": "docs/images/music.png",
+      "sha256": "d8042214ec7aba704a942c7a6af848777976616b1d8a1cff794606cdbcbf6a32",
+      "width": 200,
+      "height": 228,
+      "native_pixels_modified": false
+    },
+    {
+      "file": "emery_notification_summary.png",
+      "source": "docs/images/notification-summary.png",
+      "sha256": "9f58fdc7d2884da85365d866d269bc26e337cc82000c6cc67f708fffabd5b4b0",
+      "width": 200,
+      "height": 228,
+      "native_pixels_modified": false
+    },
+    {
+      "file": "emery_notification.png",
+      "source": "docs/images/notification.png",
+      "sha256": "1a79003f9b9179b8f39cb7bd69c9ed44361b91ee380753fc4a8790b7f196af25",
+      "width": 200,
+      "height": 228,
+      "native_pixels_modified": false
+    },
+    {
+      "file": "emery_dark.png",
+      "source": "docs/images/dark.png",
+      "sha256": "3629d99a35f6628860e95c3ce8e358457e1a16514c2ff04c4a0136bc9a9eb7c3",
+      "width": 200,
+      "height": 228,
+      "native_pixels_modified": false
+    }
+  ],
+  "fixture_data": true,
+  "public_store_submission_allowed": false,
+  "status": "held-plugin-preview",
+  "provenance": "docs/asset-provenance.json"
+}

@@ -1,6 +1,6 @@
 # Design references and motion
 
-Dynamic 0.6.0 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.6.1 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -161,3 +161,12 @@ separate device checks. See
 Earlier releases used other presentations: 0.1 bundled Fira Sans Condensed,
 and 0.2 used system LECO/Gothic with information bands. Their archived release
 artifacts and historical validation remain available.
+
+## Release refinements
+
+Warning ink keeps its amber role only when it has at least 3:1 contrast against
+the quantized watch background; otherwise a visible black/white ink wins.
+Invisible notification artwork uses the generic icon and app-name fallback.
+Music title pages pause under covering system windows and resume the current
+page when the face is visible. These refinements preserve type sizes, the fixed
+artwork/artist footer, and the one-pass title sequence.

@@ -33,14 +33,14 @@ module.exports = [
     {type:'text',defaultValue:'Units come from Pebble and the selected plugin.'},
     {type:'text',defaultValue:'Music & notifications'},
     {type:'toggle',messageKey:'SHOW_MUSIC',defaultValue:true,label:'Show music while playing'},
-    {type:'text',id:'dynamic-notification-mode',defaultValue:'Notifications'},
+    {type:'text',id:'dynamic-notification-mode',defaultValue:'Watchface banners'},
     {type:'toggle',messageKey:'SHOW_NOTIFICATIONS',defaultValue:false,label:'New notifications'},
     {type:'toggle',messageKey:'NOTIFICATION_PREVIEW',defaultValue:false,label:'Include message text'},
     {type:'toggle',messageKey:'NOTIFICATION_APP_ONLY',defaultValue:false,label:'App name only'},
-    {type:'select',messageKey:'NOTIFICATION_VIBRATION',defaultValue:0,label:'Notification vibration',description:'One vibration per new notification burst. Respects Quiet Time and your app filter. Pebble may also vibrate for the same notification.',serializeValueAs:'integer',options:[
+    {type:'select',messageKey:'NOTIFICATION_VIBRATION',defaultValue:0,label:'Additional vibration',description:'One additional vibration per new notification burst, using your app filter. Respects Quiet Time. Turn this off if Pebble already vibrates for those notifications.',serializeValueAs:'integer',options:[
       {label:'Off',value:0},{label:'Short pulse',value:1},{label:'Double pulse',value:2}
     ]},
-    {type:'text',id:'dynamic-notification-help',defaultValue:'Allow notification access in Pebble. Only new notifications appear.'},
+    {type:'text',id:'dynamic-notification-help',defaultValue:'These banners add to Pebble’s system notifications. If both are enabled, you may see the same message twice. Allow notification access in Pebble; only new notifications appear.'},
     {type:'text',id:'dynamic-app-mode',defaultValue:'Notification apps'},
     {type:'input',messageKey:'NOTIFICATION_APPS',defaultValue:'',label:'Selected apps',description:'Use exact app names or Android package names, separated by commas. For example: Signal, org.thoughtcrime.securesms',attributes:{type:'text',maxlength:160,autocapitalize:'none',autocomplete:'off',spellcheck:'false'}}
   ]},
