@@ -114,7 +114,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.1.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.2.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   });
@@ -123,11 +123,11 @@ Pebble.addEventListener('showConfiguration', function() {
 
 function watchSettings(payload) {
   var result = {};
-  ['BACKGROUND_COLOR', 'TEXT_COLOR', 'TEXT_SHADOW', 'LARGE_TEXT',
+  ['BACKGROUND_COLOR', 'TEXT_COLOR', 'ACCENT_COLOR', 'LARGE_TEXT',
     'USE_12_HOUR', 'SHOW_STATUS'].forEach(function(name) {
     var value = messageValue(payload, name);
     if (value === undefined) { return; }
-    if (name === 'BACKGROUND_COLOR' || name === 'TEXT_COLOR') {
+    if (name === 'BACKGROUND_COLOR' || name === 'TEXT_COLOR' || name === 'ACCENT_COLOR') {
       if (typeof value !== 'number' || !isFinite(value) || Math.floor(value) !== value ||
           value < 0 || value > 0xFFFFFF) { return; }
     } else {

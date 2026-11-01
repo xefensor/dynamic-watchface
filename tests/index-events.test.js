@@ -125,9 +125,10 @@ test('obsolete weather/unit controls never reach the new complication-only watch
 
 test('boolean settings preserve explicit off and reject malformed values',()=>{
   const f=fixture();
-  f.handlers.webviewclosed({response:JSON.stringify({DEPTH_EFFECT:false,TEXT_SHADOW:true,LARGE_TEXT:'false',USE_12_HOUR:2,BACKGROUND_COLOR:-1,TEXT_COLOR:0x1000000})});
-  assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.TEXT_SHADOW)]);
-  assert.equal(f.deliveries[0][keys.DEPTH_EFFECT],undefined);assert.equal(f.deliveries[0][keys.TEXT_SHADOW],1);
+  f.handlers.webviewclosed({response:JSON.stringify({DEPTH_EFFECT:false,TEXT_SHADOW:true,LARGE_TEXT:'false',USE_12_HOUR:2,BACKGROUND_COLOR:-1,TEXT_COLOR:0x1000000,SHOW_STATUS:false})});
+  assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.SHOW_STATUS)]);
+  assert.equal(f.deliveries[0][keys.DEPTH_EFFECT],undefined);assert.equal(f.deliveries[0][keys.TEXT_SHADOW],undefined);
+  assert.equal(f.deliveries[0][keys.SHOW_STATUS],0);
 });
 
 test('cancelled or invalid settings do nothing, empty valid settings reconfigure only',()=>{
@@ -243,4 +244,44 @@ test('Dynamic uses the installed core API and its own complication cache namespa
   assert.equal(f.options.cacheKey,'dynamic-complications-v1');
   assert.doesNotMatch(source,/require\(['"]\.\/(?:complications|context|message-queue|complication-data)['"]\)/);
   assert.match(source,/require\('pebble-watchface-core'\)/);
+});
+
+
+test('accent colors preserve zero and valid named/numeric values',()=>{
+  for(const value of [0,0x55AAFF,0xFFFFFF])for(const field of ['ACCENT_COLOR',String(keys.ACCENT_COLOR)]) {
+    const f=fixture();
+    f.handlers.webviewclosed({response:JSON.stringify({[field]:{value}})});
+    assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.ACCENT_COLOR)]);
+    assert.equal(f.deliveries[0][keys.ACCENT_COLOR],value);
+    assert.equal(f.contextConfigured(),1);
+  }
+});
+
+test('invalid accent colors are omitted while valid page settings still deliver',()=>{
+  for(const value of [-1,0x1000000,1.5,null,'0x55AAFF',{},[]]) {
+    const f=fixture();
+    f.handlers.webviewclosed({response:JSON.stringify({ACCENT_COLOR:{value},TEXT_COLOR:123})});
+    assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.TEXT_COLOR)]);
+    assert.equal(f.deliveries[0][keys.ACCENT_COLOR],undefined);
+  }
+});
+
+test('existing colors and privacy choices remain untouched when opening the rebuilt face',()=>{
+  const saved={BACKGROUND_COLOR:0,TEXT_COLOR:0xFFFFFF,ACCENT_COLOR:0xFF5500,
+    SHOW_NOTIFICATIONS:false,NOTIFICATION_PREVIEW:false,TEXT_SHADOW:true};
+  const f=fixture(saved);f.handlers.ready();f.handlers.showConfiguration();
+  assert.deepEqual(f.settings(),saved);
+  assert.equal(named(f,'TEXT_SHADOW'),undefined);
+});
+
+test('the accent key is appended after the existing 31-key wire contract',()=>{
+  const legacy=['TEMPERATURE','REQUEST_WEATHER','BACKGROUND_COLOR','TEXT_COLOR','DEPTH_EFFECT',
+    'TEXT_SHADOW','LARGE_TEXT','USE_12_HOUR','USE_FAHRENHEIT','TEMPERATURE_FAHRENHEIT',
+    'WEATHER_UPDATED_AT','FORECAST_DATA','FOLLOW_PEBBLE_UNITS','WEATHER_LOCATION','WEATHER_CLEAR',
+    'SHOW_DAILY_RANGE','SHOW_RAIN_CHANCE','WEATHER_DETAILS','LAYOUT_STYLE','SHOW_WEATHER_ICON',
+    'WEATHER_CONDITION','COMPLICATION_DATA','REQUEST_COMPLICATIONS','CONTEXT_DATA','REQUEST_CONTEXT',
+    'SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS','SHOW_STATUS','PANEL_TRANSITIONS'];
+  assert.deepEqual(packageInfo.pebble.messageKeys.slice(0,31),legacy);
+  assert.equal(packageInfo.pebble.messageKeys.length,32);
+  assert.equal(keys.ACCENT_COLOR,10031);
 });

@@ -13,14 +13,21 @@ module.exports = [
       {
         "type": "color",
         "messageKey": "BACKGROUND_COLOR",
-        "defaultValue": "0x000000",
+        "defaultValue": "0xFFFFFF",
         "label": "Background color"
       },
       {
         "type": "color",
         "messageKey": "TEXT_COLOR",
-        "defaultValue": "0xFFFFFF",
+        "defaultValue": "0x000000",
         "label": "Text color"
+      },
+      {
+        "type": "color",
+        "messageKey": "ACCENT_COLOR",
+        "defaultValue": "0x55AAFF",
+        "label": "Accent color",
+        "description": "Sets the information panel color. Panel text adjusts for contrast; notifications use yellow."
       },
       {
         "type": "toggle",
@@ -33,13 +40,7 @@ module.exports = [
         "messageKey": "LARGE_TEXT",
         "defaultValue": false,
         "label": "Big text",
-        "description": "Enlarges the clock, date and both complications. Text fits automatically when Timeline Peek, music or notifications need space."
-      },
-      {
-        "type": "toggle",
-        "messageKey": "TEXT_SHADOW",
-        "defaultValue": false,
-        "label": "Text shadow"
+        "description": "Larger date, readings and messages, with bolder time digits."
       },
       {
         "type": "toggle",

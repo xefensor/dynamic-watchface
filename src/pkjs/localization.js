@@ -10,10 +10,9 @@ var MESSAGES = {
     "textColor": "Text color",
     "time12": "12-hour time",
     "largeText": "Big text",
-    "largeTextHelp": "Enlarges the clock, date and both complications. Text fits automatically when Timeline Peek, music or notifications need space.",
+    "largeTextHelp": "Larger date, readings and messages, with bolder time digits.",
     "showStatus": "Status indicators",
     "statusIndicatorsHelp": "Low watch or phone battery and lost connection.",
-    "shadow": "Text shadow",
     "complications": "Complications",
     "complicationsHelp": "Choose slots 1 and 2 in Pebble → Settings → Complications.",
     "adaptiveHelp": "Complications 1 and 2 sit side by side. Both shrink above music or notifications.",
@@ -36,7 +35,9 @@ var MESSAGES = {
     "contextReady": "Dynamic content: ready",
     "contextError": "Dynamic content: {error}",
     "stateOn": "On",
-    "stateOff": "Off"
+    "stateOff": "Off",
+    "accentColor": "Accent color",
+    "accentHelp": "Sets the information panel color. Panel text adjusts for contrast; notifications use yellow."
   },
   "cs": {
     "title": "Nastavení Dynamic",
@@ -45,10 +46,9 @@ var MESSAGES = {
     "textColor": "Barva textu",
     "time12": "12hodinový čas",
     "largeText": "Velký text",
-    "largeTextHelp": "Zvětší čas, datum a obě komplikace. Text se automaticky přizpůsobí, když Timeline Peek, hudba nebo oznámení potřebují místo.",
+    "largeTextHelp": "Větší datum, údaje a zprávy, s tučnějšími číslicemi času.",
     "showStatus": "Ukazatele stavu",
     "statusIndicatorsHelp": "Slabá baterie hodinek nebo telefonu a ztráta připojení.",
-    "shadow": "Stín textu",
     "complications": "Komplikace",
     "complicationsHelp": "Vyberte pozice 1 a 2 v Pebble → Nastavení → Komplikace.",
     "adaptiveHelp": "Komplikace 1 a 2 jsou vedle sebe. Obě se zmenší nad hudbou nebo oznámením.",
@@ -71,7 +71,9 @@ var MESSAGES = {
     "contextReady": "Dynamický obsah: připraveno",
     "contextError": "Dynamický obsah: {error}",
     "stateOn": "Zapnuto",
-    "stateOff": "Vypnuto"
+    "stateOff": "Vypnuto",
+    "accentColor": "Barva zvýraznění",
+    "accentHelp": "Barva informačního panelu. Text panelu se přizpůsobí kontrastu; oznámení používají žlutou."
   },
   "sk": {
     "title": "Nastavenia Dynamic",
@@ -80,10 +82,9 @@ var MESSAGES = {
     "textColor": "Farba textu",
     "time12": "12-hodinový čas",
     "largeText": "Veľký text",
-    "largeTextHelp": "Zväčší čas, dátum a obe komplikácie. Text sa automaticky prispôsobí, keď Timeline Peek, hudba alebo oznámenia potrebujú miesto.",
+    "largeTextHelp": "Väčší dátum, údaje a správy s tučnejšími číslicami času.",
     "showStatus": "Ukazovatele stavu",
     "statusIndicatorsHelp": "Slabá batéria hodiniek alebo telefónu a strata pripojenia.",
-    "shadow": "Tieň textu",
     "complications": "Komplikácie",
     "complicationsHelp": "Vyberte pozície 1 a 2 v Pebble → Nastavenia → Komplikácie.",
     "adaptiveHelp": "Komplikácie 1 a 2 sú vedľa seba. Obe sa zmenšia nad hudbou alebo oznámením.",
@@ -106,7 +107,9 @@ var MESSAGES = {
     "contextReady": "Dynamický obsah: pripravený",
     "contextError": "Dynamický obsah: {error}",
     "stateOn": "Zapnuté",
-    "stateOff": "Vypnuté"
+    "stateOff": "Vypnuté",
+    "accentColor": "Farba zvýraznenia",
+    "accentHelp": "Farba informačného panela. Text panela sa prispôsobí kontrastu; oznámenia používajú žltú."
   },
   "de": {
     "title": "Dynamic-Einstellungen",
@@ -115,10 +118,9 @@ var MESSAGES = {
     "textColor": "Textfarbe",
     "time12": "12-Stunden-Zeit",
     "largeText": "Großer Text",
-    "largeTextHelp": "Vergrößert Uhrzeit, Datum und beide Komplikationen. Der Text passt sich automatisch an, wenn Timeline Peek, Musik oder Mitteilungen Platz brauchen.",
+    "largeTextHelp": "Größeres Datum, größere Werte und Nachrichten sowie kräftigere Zeitziffern.",
     "showStatus": "Statusanzeigen",
     "statusIndicatorsHelp": "Niedriger Akku von Uhr oder Telefon und unterbrochene Verbindung.",
-    "shadow": "Textschatten",
     "complications": "Komplikationen",
     "complicationsHelp": "Wähle die Plätze 1 und 2 unter Pebble → Einstellungen → Komplikationen.",
     "adaptiveHelp": "Komplikationen 1 und 2 stehen nebeneinander. Über Musik oder Mitteilungen werden beide kleiner.",
@@ -141,7 +143,9 @@ var MESSAGES = {
     "contextReady": "Dynamische Inhalte: bereit",
     "contextError": "Dynamische Inhalte: {error}",
     "stateOn": "Ein",
-    "stateOff": "Aus"
+    "stateOff": "Aus",
+    "accentColor": "Akzentfarbe",
+    "accentHelp": "Farbe des Infobereichs. Die Textfarbe passt sich dem Kontrast an; Benachrichtigungen sind gelb."
   },
   "fr": {
     "title": "Réglages Dynamic",
@@ -150,10 +154,9 @@ var MESSAGES = {
     "textColor": "Couleur du texte",
     "time12": "Format 12 heures",
     "largeText": "Grand texte",
-    "largeTextHelp": "Agrandit l’heure, la date et les deux complications. Le texte s’adapte automatiquement pour laisser de la place à Timeline Peek, à la musique ou aux notifications.",
+    "largeTextHelp": "Date, valeurs et messages plus grands, avec des chiffres de l’heure plus épais.",
     "showStatus": "Indicateurs d’état",
     "statusIndicatorsHelp": "Batterie faible de la montre ou du téléphone et perte de connexion.",
-    "shadow": "Ombre du texte",
     "complications": "Complications",
     "complicationsHelp": "Choisissez les emplacements 1 et 2 dans Pebble → Réglages → Complications.",
     "adaptiveHelp": "Les complications 1 et 2 sont côte à côte. Elles rétrécissent au-dessus de la musique ou des notifications.",
@@ -176,7 +179,9 @@ var MESSAGES = {
     "contextReady": "Contenu dynamique : prêt",
     "contextError": "Contenu dynamique : {error}",
     "stateOn": "Activé",
-    "stateOff": "Désactivé"
+    "stateOff": "Désactivé",
+    "accentColor": "Couleur d’accentuation",
+    "accentHelp": "Couleur du panneau d’information. Le texte s’adapte au contraste ; les notifications sont jaunes."
   },
   "es": {
     "title": "Ajustes de Dynamic",
@@ -185,10 +190,9 @@ var MESSAGES = {
     "textColor": "Color del texto",
     "time12": "Formato de 12 horas",
     "largeText": "Texto grande",
-    "largeTextHelp": "Amplía la hora, la fecha y ambas complicaciones. El texto se ajusta automáticamente cuando Timeline Peek, la música o las notificaciones necesitan espacio.",
+    "largeTextHelp": "Fecha, valores y mensajes más grandes, con dígitos de la hora más gruesos.",
     "showStatus": "Indicadores de estado",
     "statusIndicatorsHelp": "Batería baja del reloj o teléfono y pérdida de conexión.",
-    "shadow": "Sombra del texto",
     "complications": "Complicaciones",
     "complicationsHelp": "Elige las posiciones 1 y 2 en Pebble → Ajustes → Complicaciones.",
     "adaptiveHelp": "Las complicaciones 1 y 2 están una junto a otra. Ambas se reducen sobre la música o las notificaciones.",
@@ -211,7 +215,9 @@ var MESSAGES = {
     "contextReady": "Contenido dinámico: listo",
     "contextError": "Contenido dinámico: {error}",
     "stateOn": "Activado",
-    "stateOff": "Desactivado"
+    "stateOff": "Desactivado",
+    "accentColor": "Color de acento",
+    "accentHelp": "Color del panel de información. El texto se adapta al contraste; las notificaciones usan amarillo."
   },
   "it": {
     "title": "Impostazioni Dynamic",
@@ -220,10 +226,9 @@ var MESSAGES = {
     "textColor": "Colore del testo",
     "time12": "Formato a 12 ore",
     "largeText": "Testo grande",
-    "largeTextHelp": "Ingrandisce ora, data ed entrambe le complicazioni. Il testo si adatta automaticamente quando Timeline Peek, musica o notifiche richiedono spazio.",
+    "largeTextHelp": "Data, valori e messaggi più grandi, con cifre dell’ora più marcate.",
     "showStatus": "Indicatori di stato",
     "statusIndicatorsHelp": "Batteria scarica di orologio o telefono e connessione persa.",
-    "shadow": "Ombra del testo",
     "complications": "Complicazioni",
     "complicationsHelp": "Scegli le posizioni 1 e 2 in Pebble → Impostazioni → Complicazioni.",
     "adaptiveHelp": "Le complicazioni 1 e 2 sono affiancate. Entrambe si riducono sopra musica o notifiche.",
@@ -246,7 +251,9 @@ var MESSAGES = {
     "contextReady": "Contenuti dinamici: pronti",
     "contextError": "Contenuti dinamici: {error}",
     "stateOn": "Attivato",
-    "stateOff": "Disattivato"
+    "stateOff": "Disattivato",
+    "accentColor": "Colore accento",
+    "accentHelp": "Colore del pannello informazioni. Il testo si adatta al contrasto; le notifiche sono gialle."
   },
   "pt": {
     "title": "Configurações do Dynamic",
@@ -255,10 +262,9 @@ var MESSAGES = {
     "textColor": "Cor do texto",
     "time12": "Formato de 12 horas",
     "largeText": "Texto grande",
-    "largeTextHelp": "Aumenta a hora, a data e ambas as complicações. O texto se ajusta automaticamente quando Timeline Peek, música ou notificações precisam de espaço.",
+    "largeTextHelp": "Data, valores e mensagens maiores, com dígitos da hora mais espessos.",
     "showStatus": "Indicadores de estado",
     "statusIndicatorsHelp": "Bateria fraca do relógio ou telefone e perda de conexão.",
-    "shadow": "Sombra do texto",
     "complications": "Complicações",
     "complicationsHelp": "Escolha as posições 1 e 2 em Pebble → Configurações → Complicações.",
     "adaptiveHelp": "As complicações 1 e 2 ficam lado a lado. Ambas diminuem acima da música ou das notificações.",
@@ -281,7 +287,9 @@ var MESSAGES = {
     "contextReady": "Conteúdo dinâmico: pronto",
     "contextError": "Conteúdo dinâmico: {error}",
     "stateOn": "Ativado",
-    "stateOff": "Desativado"
+    "stateOff": "Desativado",
+    "accentColor": "Cor de destaque",
+    "accentHelp": "Cor do painel de informações. O texto adapta-se ao contraste; as notificações usam amarelo."
   },
   "nl": {
     "title": "Dynamic-instellingen",
@@ -290,10 +298,9 @@ var MESSAGES = {
     "textColor": "Tekstkleur",
     "time12": "12-uursnotatie",
     "largeText": "Grote tekst",
-    "largeTextHelp": "Vergroot de tijd, datum en beide complicaties. De tekst past zich automatisch aan als Timeline Peek, muziek of meldingen ruimte nodig hebben.",
+    "largeTextHelp": "Grotere datum, waarden en berichten, met dikkere tijdcijfers.",
     "showStatus": "Statusindicatoren",
     "statusIndicatorsHelp": "Lage batterij van horloge of telefoon en verbroken verbinding.",
-    "shadow": "Tekstschaduw",
     "complications": "Complicaties",
     "complicationsHelp": "Kies posities 1 en 2 via Pebble → Instellingen → Complicaties.",
     "adaptiveHelp": "Complicaties 1 en 2 staan naast elkaar. Beide worden kleiner boven muziek of meldingen.",
@@ -316,7 +323,9 @@ var MESSAGES = {
     "contextReady": "Dynamische inhoud: gereed",
     "contextError": "Dynamische inhoud: {error}",
     "stateOn": "Aan",
-    "stateOff": "Uit"
+    "stateOff": "Uit",
+    "accentColor": "Accentkleur",
+    "accentHelp": "Kleur van het informatievlak. De tekst past zich aan voor contrast; meldingen zijn geel."
   },
   "pl": {
     "title": "Ustawienia Dynamic",
@@ -325,10 +334,9 @@ var MESSAGES = {
     "textColor": "Kolor tekstu",
     "time12": "Format 12-godzinny",
     "largeText": "Duży tekst",
-    "largeTextHelp": "Powiększa godzinę, datę i obie komplikacje. Tekst dopasowuje się automatycznie, gdy Timeline Peek, muzyka lub powiadomienia potrzebują miejsca.",
+    "largeTextHelp": "Większa data, wartości i wiadomości oraz grubsze cyfry godziny.",
     "showStatus": "Wskaźniki stanu",
     "statusIndicatorsHelp": "Słaba bateria zegarka lub telefonu i utrata połączenia.",
-    "shadow": "Cień tekstu",
     "complications": "Komplikacje",
     "complicationsHelp": "Wybierz pozycje 1 i 2 w Pebble → Ustawienia → Komplikacje.",
     "adaptiveHelp": "Komplikacje 1 i 2 są obok siebie. Obie zmniejszają się nad muzyką lub powiadomieniami.",
@@ -351,7 +359,9 @@ var MESSAGES = {
     "contextReady": "Treść dynamiczna: gotowa",
     "contextError": "Treść dynamiczna: {error}",
     "stateOn": "Wł.",
-    "stateOff": "Wył."
+    "stateOff": "Wył.",
+    "accentColor": "Kolor akcentu",
+    "accentHelp": "Kolor panelu informacji. Tekst dopasowuje się do kontrastu; powiadomienia są żółte."
   },
   "da": {
     "title": "Dynamic-indstillinger",
@@ -360,10 +370,9 @@ var MESSAGES = {
     "textColor": "Tekstfarve",
     "time12": "12-timersformat",
     "largeText": "Stor tekst",
-    "largeTextHelp": "Forstørrer klokkeslæt, dato og begge komplikationer. Teksten tilpasses automatisk, når Timeline Peek, musik eller notifikationer kræver plads.",
+    "largeTextHelp": "Større dato, værdier og beskeder samt kraftigere tidsangivelse.",
     "showStatus": "Statusindikatorer",
     "statusIndicatorsHelp": "Lavt batteri på ur eller telefon og mistet forbindelse.",
-    "shadow": "Tekstskygge",
     "complications": "Komplikationer",
     "complicationsHelp": "Vælg plads 1 og 2 i Pebble → Indstillinger → Komplikationer.",
     "adaptiveHelp": "Komplikation 1 og 2 står ved siden af hinanden. Begge bliver mindre over musik eller notifikationer.",
@@ -386,7 +395,9 @@ var MESSAGES = {
     "contextReady": "Dynamisk indhold: klar",
     "contextError": "Dynamisk indhold: {error}",
     "stateOn": "Til",
-    "stateOff": "Fra"
+    "stateOff": "Fra",
+    "accentColor": "Accentfarve",
+    "accentHelp": "Informationspanelets farve. Teksten tilpasses kontrasten; notifikationer er gule."
   },
   "sv": {
     "title": "Dynamic-inställningar",
@@ -395,10 +406,9 @@ var MESSAGES = {
     "textColor": "Textfärg",
     "time12": "12-timmarsformat",
     "largeText": "Stor text",
-    "largeTextHelp": "Förstorar tiden, datumet och båda komplikationerna. Texten anpassas automatiskt när Timeline Peek, musik eller aviseringar behöver plats.",
+    "largeTextHelp": "Större datum, värden och meddelanden samt kraftigare tidssiffror.",
     "showStatus": "Statusindikatorer",
     "statusIndicatorsHelp": "Lågt batteri i klocka eller telefon och förlorad anslutning.",
-    "shadow": "Textskugga",
     "complications": "Komplikationer",
     "complicationsHelp": "Välj plats 1 och 2 i Pebble → Inställningar → Komplikationer.",
     "adaptiveHelp": "Komplikation 1 och 2 ligger bredvid varandra. Båda krymper ovanför musik eller aviseringar.",
@@ -421,7 +431,9 @@ var MESSAGES = {
     "contextReady": "Dynamiskt innehåll: klart",
     "contextError": "Dynamiskt innehåll: {error}",
     "stateOn": "På",
-    "stateOff": "Av"
+    "stateOff": "Av",
+    "accentColor": "Accentfärg",
+    "accentHelp": "Informationspanelens färg. Texten anpassas för kontrast; aviseringar är gula."
   },
   "no": {
     "title": "Dynamic-innstillinger",
@@ -430,10 +442,9 @@ var MESSAGES = {
     "textColor": "Tekstfarge",
     "time12": "12-timersformat",
     "largeText": "Stor tekst",
-    "largeTextHelp": "Forstørrer klokkeslett, dato og begge komplikasjonene. Teksten tilpasses automatisk når Timeline Peek, musikk eller varsler trenger plass.",
+    "largeTextHelp": "Større dato, verdier og meldinger, med kraftigere klokkesifre.",
     "showStatus": "Statusindikatorer",
     "statusIndicatorsHelp": "Lavt batteri på klokke eller telefon og mistet forbindelse.",
-    "shadow": "Tekstskygge",
     "complications": "Komplikasjoner",
     "complicationsHelp": "Velg plass 1 og 2 i Pebble → Innstillinger → Komplikasjoner.",
     "adaptiveHelp": "Komplikasjon 1 og 2 står ved siden av hverandre. Begge krymper over musikk eller varsler.",
@@ -456,7 +467,9 @@ var MESSAGES = {
     "contextReady": "Dynamisk innhold: klart",
     "contextError": "Dynamisk innhold: {error}",
     "stateOn": "På",
-    "stateOff": "Av"
+    "stateOff": "Av",
+    "accentColor": "Aksentfarge",
+    "accentHelp": "Fargen på informasjonspanelet. Teksten tilpasses kontrasten; varsler er gule."
   },
   "fi": {
     "title": "Dynamic-asetukset",
@@ -465,10 +478,9 @@ var MESSAGES = {
     "textColor": "Tekstin väri",
     "time12": "12 tunnin kellonaika",
     "largeText": "Suuri teksti",
-    "largeTextHelp": "Suurentaa kellonajan, päivämäärän ja molemmat lisätiedot. Teksti mukautuu automaattisesti, kun Timeline Peek, musiikki tai ilmoitukset tarvitsevat tilaa.",
+    "largeTextHelp": "Suurempi päivämäärä, lukemat ja viestit sekä paksummat kellonajan numerot.",
     "showStatus": "Tilailmaisimet",
     "statusIndicatorsHelp": "Kellon tai puhelimen vähäinen akku ja katkennut yhteys.",
-    "shadow": "Tekstin varjo",
     "complications": "Kellon lisätiedot",
     "complicationsHelp": "Valitse paikat 1 ja 2 kohdasta Pebble → Asetukset → Lisätiedot.",
     "adaptiveHelp": "Lisätiedot 1 ja 2 ovat vierekkäin. Molemmat pienenevät musiikin tai ilmoitusten yläpuolelle.",
@@ -491,7 +503,9 @@ var MESSAGES = {
     "contextReady": "Muuttuva sisältö: valmis",
     "contextError": "Muuttuva sisältö: {error}",
     "stateOn": "Päällä",
-    "stateOff": "Pois"
+    "stateOff": "Pois",
+    "accentColor": "Korostusväri",
+    "accentHelp": "Tietopaneelin väri. Teksti mukautuu kontrastiin; ilmoitukset ovat keltaisia."
   },
   "hu": {
     "title": "Dynamic beállításai",
@@ -500,10 +514,9 @@ var MESSAGES = {
     "textColor": "Szövegszín",
     "time12": "12 órás időformátum",
     "largeText": "Nagy szöveg",
-    "largeTextHelp": "Nagyobbá teszi az időt, a dátumot és mindkét komplikációt. A szöveg automatikusan igazodik, ha a Timeline Peek, a zene vagy az értesítések helyet igényelnek.",
+    "largeTextHelp": "Nagyobb dátum, értékek és üzenetek, vastagabb időszámjegyekkel.",
     "showStatus": "Állapotjelzők",
     "statusIndicatorsHelp": "Az óra vagy telefon alacsony töltöttsége és megszakadt kapcsolat.",
-    "shadow": "Szövegárnyék",
     "complications": "Komplikációk",
     "complicationsHelp": "Válaszd az 1. és 2. helyet itt: Pebble → Beállítások → Komplikációk.",
     "adaptiveHelp": "Az 1. és 2. komplikáció egymás mellett látható. Mindkettő kisebb lesz a zene vagy értesítések felett.",
@@ -526,7 +539,9 @@ var MESSAGES = {
     "contextReady": "Változó tartalom: kész",
     "contextError": "Változó tartalom: {error}",
     "stateOn": "Be",
-    "stateOff": "Ki"
+    "stateOff": "Ki",
+    "accentColor": "Kiemelőszín",
+    "accentHelp": "Az információs panel színe. A szöveg a kontraszthoz igazodik; az értesítések sárgák."
   },
   "ro": {
     "title": "Setări Dynamic",
@@ -535,10 +550,9 @@ var MESSAGES = {
     "textColor": "Culoare text",
     "time12": "Format de 12 ore",
     "largeText": "Text mare",
-    "largeTextHelp": "Mărește ora, data și ambele complicații. Textul se adaptează automat când Timeline Peek, muzica sau notificările au nevoie de spațiu.",
+    "largeTextHelp": "Dată, valori și mesaje mai mari, cu cifrele orei mai îngroșate.",
     "showStatus": "Indicatori de stare",
     "statusIndicatorsHelp": "Baterie scăzută la ceas sau telefon și conexiune pierdută.",
-    "shadow": "Umbră text",
     "complications": "Complicații",
     "complicationsHelp": "Alege pozițiile 1 și 2 în Pebble → Setări → Complicații.",
     "adaptiveHelp": "Complicațiile 1 și 2 sunt alăturate. Ambele se micșorează deasupra muzicii sau notificărilor.",
@@ -561,7 +575,9 @@ var MESSAGES = {
     "contextReady": "Conținut dinamic: pregătit",
     "contextError": "Conținut dinamic: {error}",
     "stateOn": "Pornit",
-    "stateOff": "Oprit"
+    "stateOff": "Oprit",
+    "accentColor": "Culoare de accent",
+    "accentHelp": "Culoarea panoului informativ. Textul se adaptează pentru contrast; notificările sunt galbene."
   },
   "tr": {
     "title": "Dynamic Ayarları",
@@ -570,10 +586,9 @@ var MESSAGES = {
     "textColor": "Metin rengi",
     "time12": "12 saat biçimi",
     "largeText": "Büyük metin",
-    "largeTextHelp": "Saati, tarihi ve her iki komplikasyonu büyütür. Timeline Peek, müzik veya bildirimler yer istediğinde metin otomatik olarak sığdırılır.",
+    "largeTextHelp": "Daha büyük tarih, değerler ve mesajlar; daha kalın saat rakamları.",
     "showStatus": "Durum göstergeleri",
     "statusIndicatorsHelp": "Saat veya telefonun düşük pili ve kesilen bağlantı.",
-    "shadow": "Metin gölgesi",
     "complications": "Komplikasyonlar",
     "complicationsHelp": "Pebble → Ayarlar → Komplikasyonlar bölümünden 1 ve 2 yuvalarını seçin.",
     "adaptiveHelp": "1 ve 2. komplikasyon yan yana durur. İkisi de müzik veya bildirimlerin üstünde küçülür.",
@@ -596,7 +611,9 @@ var MESSAGES = {
     "contextReady": "Dinamik içerik: hazır",
     "contextError": "Dinamik içerik: {error}",
     "stateOn": "Açık",
-    "stateOff": "Kapalı"
+    "stateOff": "Kapalı",
+    "accentColor": "Vurgu rengi",
+    "accentHelp": "Bilgi panelinin rengi. Metin kontrasta göre ayarlanır; bildirimler sarıdır."
   }
 };
 var LANGUAGES = Object.keys(MESSAGES);

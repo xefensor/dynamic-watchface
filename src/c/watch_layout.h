@@ -13,43 +13,55 @@ typedef struct { WatchLayoutRect rect; uint8_t font_size; } WatchSlotGeometry;
 typedef struct {
   WatchLayoutRect date, time, minutes;
   WatchSlotGeometry slots[WATCH_LAYOUT_SLOT_COUNT];
-  WatchLayoutRect context;
+  WatchLayoutRect context, band;
   int16_t divider_x, divider_top, divider_bottom;
+  bool compact_header;
 } WatchLayoutGeometry;
 
 static inline int watch_layout_interpolate(int full, int peek, int height) {
   if (height >= 228) { return full; }
   if (height <= 171) { return peek; }
-  return peek + ((full - peek) * (height - 171) + 28) / 57;
+  const int distance = full - peek;
+  return peek + (distance * (height - 171) + (distance >= 0 ? 28 : -28)) / 57;
 }
 
-// Visible digit bounds, measured in the bundled bitmap fonts.
-static inline int watch_layout_clock_y(int font_size, int height, bool contextual) {
-  const struct { uint8_t size, top, bottom; } fonts[] = {
-    {38,11,39}, {44,13,46}, {64,20,66}, {72,21,74}, {76,23,78},
-    {80,24,82}, {84,25,86}, {88,27,90}, {92,27,94}, {96,29,98},
-    {100,30,102}, {104,32,107}, {108,33,111}
-  };
-  int top = 23, bottom = 78;
-  for (size_t i = 0; i < sizeof(fonts)/sizeof(fonts[0]); ++i) {
-    if (fonts[i].size == font_size) { top = fonts[i].top; bottom = fonts[i].bottom; break; }
-  }
-  const int center = contextual ? 56 : watch_layout_interpolate(108,74,height);
-  return center - (top + bottom) / 2;
-}
-
+// All positions are native 200px-wide PT2 coordinates. A dynamic panel yields
+// to the system Timeline Peek, while its compact clock remains stable.
 static inline WatchLayoutGeometry watch_layout_geometry(int style, int height,
                                                          bool large, bool contextual) {
-  WatchLayoutGeometry result = {0};
   (void)style;
-  const bool full_context = contextual && height >= 228;
-  const int row_y = full_context ? 68 : watch_layout_interpolate(152,112,height);
-  const int row_height = full_context ? 32 : watch_layout_interpolate(72,48,height);
-  const int font = full_context ? (large ? 32 : 28)
-      : watch_layout_interpolate(large ? 44 : 38,large ? 32 : 28,height);
-  result.slots[0] = (WatchSlotGeometry){{6,row_y,90,row_height},font};
-  result.slots[1] = (WatchSlotGeometry){{104,row_y,90,row_height},font};
-  if (full_context) { result.context = (WatchLayoutRect){6,106,188,116}; }
+  if (height < 171) { height = 171; }
+  if (height > 228) { height = 228; }
+  WatchLayoutGeometry result = {0};
+  result.compact_header = contextual;
+  result.date = (WatchLayoutRect){8,0,184,28};
+  result.time = (WatchLayoutRect){4,watch_layout_interpolate(48,30,height),192,78};
+  int row_y = watch_layout_interpolate(148,112,height);
+  int row_height = height - row_y;
+  int font = large ? 36 : 32;
+  if (contextual) {
+    result.time = (WatchLayoutRect){8,-3,84,36};
+    result.date = (WatchLayoutRect){98,5,94,22};
+    if (height >= 228) {
+      row_y = 34;
+      row_height = 36;
+      font = large ? 26 : 20;
+      result.context = (WatchLayoutRect){0,78,200,150};
+      result.band = result.context;
+    } else {
+      // Keep both readings side by side as the system takes the context area.
+      row_y = 34;
+      row_height = height - row_y;
+      result.band = (WatchLayoutRect){0,row_y,200,row_height};
+    }
+  } else {
+    result.band = (WatchLayoutRect){0,row_y,200,row_height};
+  }
+  result.slots[0] = (WatchSlotGeometry){{8,row_y,88,row_height},font};
+  result.slots[1] = (WatchSlotGeometry){{104,row_y,88,row_height},font};
+  result.divider_x = 100;
+  result.divider_top = row_y + (row_height > 36 ? 12 : 4);
+  result.divider_bottom = row_y + row_height - (row_height > 36 ? 12 : 4);
   return result;
 }
 
@@ -64,8 +76,28 @@ static inline bool watch_layout_pop_utf8(char *text) {
   return true;
 }
 
-// Split the already-formatted clock, preserving 12-hour leading-zero removal
-// and the two-digit minute field. Reject malformed input without partial text.
+// Copy whole UTF-8 characters for the compact localized weekday header.
+static inline void watch_layout_abbreviate(const char *source, char *result,
+                                            size_t capacity, size_t characters) {
+  if (capacity == 0) { return; }
+  size_t at = 0;
+  while (source != NULL && *source && characters) {
+    size_t bytes = 1;
+    while (source[bytes] && ((unsigned char)source[bytes] & 0xc0) == 0x80) { ++bytes; }
+    if (at + bytes >= capacity) { break; }
+    memcpy(result + at, source, bytes);
+    at += bytes;
+    source += bytes;
+    --characters;
+  }
+  result[at] = '\0';
+}
+
+static inline void watch_layout_copy_utf8(const char *source, char *result, size_t capacity) {
+  // The byte capacity also bounds the maximum number of complete characters.
+  watch_layout_abbreviate(source,result,capacity,capacity);
+}
+
 static inline bool watch_layout_split_time(const char *text,
                                            char hours[3], char minutes[3]) {
   if (hours == NULL || minutes == NULL) { return false; }
@@ -83,10 +115,9 @@ static inline bool watch_layout_split_time(const char *text,
     hour = hour * 10 + text[i] - '0';
   }
   if (hour > 23) { return false; }
-  for (size_t i = 0; i < colon; ++i) { hours[i] = text[i]; }
+  memcpy(hours, text, colon);
   hours[colon] = '\0';
-  minutes[0] = text[colon + 1];
-  minutes[1] = text[colon + 2];
+  memcpy(minutes, text + colon + 1, 2);
   minutes[2] = '\0';
   return true;
 }

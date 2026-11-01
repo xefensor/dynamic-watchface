@@ -4,7 +4,6 @@
 #include <pebble-watchface-core/pebble-watchface-core.h>
 #include "watch_layout.h"
 #include "reading_presentation.h"
-#include "context_text_metrics.h"
 
 #define PERSIST_KEY_BACKGROUND_COLOR 2
 #define PERSIST_KEY_TEXT_COLOR 3
@@ -15,15 +14,8 @@
 #define PERSIST_KEY_SHOW_STATUS 19
 #define PERSIST_KEY_COMPLICATION_FIRST 20
 #define PERSIST_KEY_CONTEXT_SESSION 61
-
+#define PERSIST_KEY_ACCENT_COLOR 70
 #define FULL_LAYOUT_HEIGHT 228
-#define TIMELINE_LAYOUT_HEIGHT 171
-#define COMPACT_FONT_ENTER_HEIGHT 205
-#define COMPACT_FONT_EXIT_HEIGHT 215
-#define TIMELINE_DATE_Y 25
-#define TIMELINE_TIME_Y 45
-#define LARGE_TIME_FONT_COUNT 8
-#define COMPLICATION_FONT_COUNT 7
 
 static Window *s_window;
 static Layer *s_window_layer;
@@ -33,23 +25,10 @@ static Layer *s_context_layer;
 static Layer *s_status_layer;
 static TextLayer *s_date_layer;
 static TextLayer *s_time_layer;
-static TextLayer *s_date_shadow_layer;
-static TextLayer *s_time_shadow_layer;
-static GFont s_date_font;
-static GFont s_time_font;
-static GFont s_compact_date_font;
-static GFont s_small_date_font;
-static GFont s_compact_time_font;
-static GFont s_large_date_font;
-static GFont s_large_time_fonts[LARGE_TIME_FONT_COUNT];
-static const uint8_t s_large_time_font_sizes[LARGE_TIME_FONT_COUNT] = {80,84,88,92,96,100,104,108};
-static GFont s_large_compact_time_font;
-static GFont s_complication_fonts[COMPLICATION_FONT_COUNT];
-static const uint8_t s_complication_font_sizes[COMPLICATION_FONT_COUNT] = {44, 38, 32, 28, 24, 20, 18};
 static GColor s_background_color;
 static GColor s_text_color;
-static bool s_compact_layout;
-static bool s_text_shadow_enabled;
+static GColor s_accent_color;
+static bool s_text_shadow_enabled; // Retained preference for upgrade compatibility.
 static bool s_large_text_enabled;
 static bool s_use_12_hour;
 static bool s_show_status;
@@ -68,6 +47,7 @@ static GPoint s_small_drop_points[] = {{0, -8}, {-5, 1}, {5, 1}};
 static const GPathInfo s_small_drop_info = {.num_points = 3, .points = s_small_drop_points};
 static AppTimer *s_startup_timer;
 static char s_date_buffer[40];
+static char s_compact_date_buffer[48];
 static char s_time_buffer[6];
 
 static const char *const s_english_days[] = {
@@ -159,77 +139,6 @@ static const char *const *prv_get_localized_days(void) {
   return s_english_days;
 }
 
-static void prv_set_text_pair_layout(TextLayer *shadow_layer,
-                                     TextLayer *text_layer, GRect frame,
-                                     GFont font, int shadow_offset) {
-  text_layer_set_font(shadow_layer, font);
-  text_layer_set_font(text_layer, font);
-
-  GRect shadow_frame = frame;
-  shadow_frame.origin.x += shadow_offset;
-  shadow_frame.origin.y += shadow_offset;
-  layer_set_frame(text_layer_get_layer(shadow_layer), shadow_frame);
-  layer_set_frame(text_layer_get_layer(text_layer), frame);
-}
-
-static GFont prv_get_large_time_font(int available_width, int maximum_size) {
-  // Use the largest prepared bitmap font that fits the current digits. This
-  // keeps both a wide time such as 00:00 and a narrow one such as 11:11 close
-  // to the PT2 display edges without ever cropping a glyph.
-  const GRect measurement_box = GRect(0, 0, 320, 130);
-
-  for (int i = LARGE_TIME_FONT_COUNT - 1; i >= 0; i--) {
-    if (s_large_time_font_sizes[i] > maximum_size) { continue; }
-    const GSize size = graphics_text_layout_get_content_size(
-        s_time_buffer, s_large_time_fonts[i], measurement_box,
-        GTextOverflowModeFill, GTextAlignmentCenter);
-    if (size.w <= available_width) {
-      return s_large_time_fonts[i];
-    }
-  }
-
-  // Wide digits can exceed the safe width even at 80px. The prepared 72px
-  // time font keeps the complete clock visible rather than ellipsizing it.
-  return s_large_compact_time_font;
-}
-
-static int prv_time_font_size(GFont font) {
-  for (unsigned i = 0; i < LARGE_TIME_FONT_COUNT; ++i) {
-    if (font == s_large_time_fonts[i]) { return s_large_time_font_sizes[i]; }
-  }
-  if (font == s_large_compact_time_font) { return 72; }
-  return font == s_compact_time_font ? 64 : 76;
-}
-
-static bool prv_date_fits(GFont font, int available_width) {
-  const GSize size = graphics_text_layout_get_content_size(
-      s_date_buffer, font, GRect(0, 0, 320, 60),
-      GTextOverflowModeFill, GTextAlignmentCenter);
-  return size.w <= available_width;
-}
-
-static GFont prv_get_date_font(GFont preferred, int available_width) {
-  if (prv_date_fits(preferred, available_width)) {
-    return preferred;
-  }
-  if (preferred == s_large_date_font &&
-      prv_date_fits(s_date_font, available_width)) {
-    return s_date_font;
-  }
-  if (preferred != s_compact_date_font &&
-      prv_date_fits(s_compact_date_font, available_width)) {
-    return s_compact_date_font;
-  }
-  if (prv_date_fits(s_small_date_font, available_width)) { return s_small_date_font; }
-  return s_complication_fonts[COMPLICATION_FONT_COUNT - 1];
-}
-
-static bool prv_text_fits(const char *text, GFont font, int width, int height) {
-  const GSize size = graphics_text_layout_get_content_size(
-      text, font, GRect(0, 0, 2048, 150), GTextOverflowModeFill, GTextAlignmentCenter);
-  return size.w <= width && size.h <= height;
-}
-
 static GRect prv_layout_rect(WatchLayoutRect rect) {
   return GRect(rect.x, rect.y, rect.width, rect.height);
 }
@@ -238,6 +147,75 @@ static WatchLayoutGeometry prv_current_geometry(void) {
   return watch_layout_geometry(WATCH_LAYOUT_CLASSIC,
       layer_get_unobstructed_bounds(s_window_layer).size.h, s_large_text_enabled,
       context_mode(&s_context, time(NULL)) != CONTEXT_NONE);
+}
+
+static GFont prv_gothic(int point, bool bold) {
+  if (point >= 28) { return fonts_get_system_font(bold ? FONT_KEY_GOTHIC_28_BOLD : FONT_KEY_GOTHIC_28); }
+  if (point >= 24) { return fonts_get_system_font(bold ? FONT_KEY_GOTHIC_24_BOLD : FONT_KEY_GOTHIC_24); }
+  if (point >= 18) { return fonts_get_system_font(bold ? FONT_KEY_GOTHIC_18_BOLD : FONT_KEY_GOTHIC_18); }
+  return fonts_get_system_font(bold ? FONT_KEY_GOTHIC_14_BOLD : FONT_KEY_GOTHIC_14);
+}
+
+static GFont prv_numeric(int point) {
+  if (point >= 36) { return fonts_get_system_font(FONT_KEY_LECO_36_BOLD_NUMBERS); }
+  if (point >= 32) { return fonts_get_system_font(FONT_KEY_LECO_32_BOLD_NUMBERS); }
+  if (point >= 26) { return fonts_get_system_font(FONT_KEY_LECO_26_BOLD_NUMBERS_AM_PM); }
+  return fonts_get_system_font(FONT_KEY_LECO_20_BOLD_NUMBERS);
+}
+
+static GSize prv_measure(const char *text, GFont font, int width) {
+  return graphics_text_layout_get_content_size(text, font, GRect(0,0,width,512),
+      GTextOverflowModeFill, GTextAlignmentLeft);
+}
+
+static bool prv_text_fits(const char *text, GFont font, int width, int height) {
+  const GSize size = prv_measure(text, font, 2048);
+  return size.w <= width && size.h <= height;
+}
+
+static GColor prv_contrast_ink(GColor color) {
+  const unsigned r = (color.argb >> 4) & 3;
+  const unsigned g = (color.argb >> 2) & 3;
+  const unsigned b = color.argb & 3;
+  return 299*r + 587*g + 114*b >= 1500 ? GColorBlack : GColorWhite;
+}
+
+static GColor prv_context_color(void) {
+  return context_mode(&s_context, time(NULL)) == CONTEXT_NOTIFICATION
+      ? GColorChromeYellow : s_accent_color;
+}
+
+static GColor prv_reading_ink(void) {
+  const WatchLayoutGeometry geometry = prv_current_geometry();
+  return geometry.context.width > 0 ? s_text_color : prv_contrast_ink(s_accent_color);
+}
+
+static GFont prv_fit_text(char *text, size_t capacity, int width, int height, int preferred) {
+  static const uint8_t points[] = {28,24,18,14};
+  for (unsigned i=0;i<sizeof(points);++i) {
+    if (points[i] <= preferred && prv_text_fits(text,prv_gothic(points[i],true),width,height)) {
+      return prv_gothic(points[i],true);
+    }
+  }
+  GFont font = prv_gothic(14,true);
+  char prefix[COMPLICATION_MAX_TEXT_BYTES + 1];
+  watch_layout_copy_utf8(text,prefix,sizeof(prefix));
+  while (!prv_text_fits(text,font,width,height) && watch_layout_pop_utf8(prefix)) {
+    snprintf(text,capacity,"%s…",prefix);
+  }
+  return font;
+}
+
+static void prv_ellipsize_text(char *text, size_t capacity, GFont font,
+                                int width, int height) {
+  if (prv_text_fits(text,font,width,height)) { return; }
+  char prefix[COMPLICATION_MAX_TEXT_BYTES+1];
+  watch_layout_copy_utf8(text,prefix,sizeof(prefix));
+  while (watch_layout_pop_utf8(prefix)) {
+    snprintf(text,capacity,"%s…",prefix);
+    if (prv_text_fits(text,font,width,height)) { return; }
+  }
+  snprintf(text,capacity,"…");
 }
 
 static int prv_storage_size(void *context, uint32_t key) {
@@ -287,23 +265,6 @@ static bool prv_slot_text(const ComplicationSlot *slot, char *text, size_t capac
   return false;
 }
 
-static GFont prv_fit_complication(char *text, size_t capacity, int width, int height, int preferred) {
-  for (unsigned i = 0; i < COMPLICATION_FONT_COUNT; ++i) {
-    if (s_complication_font_sizes[i] <= preferred &&
-        prv_text_fits(text, s_complication_fonts[i], width, height)) { return s_complication_fonts[i]; }
-  }
-  const GFont smallest = s_complication_fonts[COMPLICATION_FONT_COUNT - 1];
-  if (!prv_text_fits(text, smallest, width, height)) {
-    char prefix[COMPLICATION_MAX_TEXT_BYTES + 1];
-    snprintf(prefix, sizeof(prefix), "%s", text);
-    do {
-      watch_layout_pop_utf8(prefix);
-      snprintf(text, capacity, "%s…", prefix);
-    } while (prefix[0] && !prv_text_fits(text, smallest, width, height));
-  }
-  return smallest;
-}
-
 typedef struct {
   int width, height, x, y, source_x, source_y, source_width, source_height;
 } BitmapLayout;
@@ -342,21 +303,20 @@ static int prv_bitmap_visible_bottom(const ComplicationSlot *slot, int size, boo
 }
 
 static void prv_draw_bitmap(GContext *ctx, const ComplicationSlot *slot,
-                            int x, int y, int size, bool shadow, bool cover) {
-  const BitmapLayout layout = prv_bitmap_layout(slot, size, cover);
+                            int x, int y, int size, GColor foreground, bool cover) {
+  const BitmapLayout layout = prv_bitmap_layout(slot,size,cover);
   x += layout.x;
   y += layout.y;
-  for (int row = 0; row < layout.height; ++row) {
-    for (int column = 0; column < layout.width; ++column) {
-      const uint8_t source = prv_bitmap_pixel(slot, &layout, column, row);
+  for (int row=0;row<layout.height;++row) {
+    for (int column=0;column<layout.width;++column) {
+      const uint8_t source = prv_bitmap_pixel(slot,&layout,column,row);
       if (!(source & 0xc0)) { continue; }
-      GColor8 color = {.argb = source};
-      if (shadow) { color = GColorBlack; }
-      else if (!(slot->flags & COMPLICATION_FLAG_IMAGE)) {
-        color.argb = (s_text_color.argb & 0x3f) | (source & 0xc0);
+      GColor8 color = {.argb=source};
+      if (!(slot->flags & COMPLICATION_FLAG_IMAGE)) {
+        color.argb = (foreground.argb & 0x3f) | (source & 0xc0);
       }
-      graphics_context_set_fill_color(ctx, color);
-      graphics_fill_rect(ctx, GRect(x + column, y + row, 1, 1), 0, GCornerNone);
+      graphics_context_set_fill_color(ctx,color);
+      graphics_fill_rect(ctx,GRect(x+column,y+row,1,1),0,GCornerNone);
     }
   }
 }
@@ -372,61 +332,49 @@ static void prv_draw_droplet(GContext *ctx, int x, int y, GColor color, bool sma
   }
 }
 
-static void prv_draw_number_text(GContext *ctx, const char *text, GFont font,
-                                 GRect rect, GColor color) {
-  graphics_context_set_text_color(ctx, color);
-  graphics_draw_text(ctx, text, font, rect, GTextOverflowModeFill, GTextAlignmentLeft, NULL);
-}
-
-static GFont prv_complication_font_at_most(int size) {
-  for (unsigned i = 0; i < COMPLICATION_FONT_COUNT; ++i) {
-    if (s_complication_font_sizes[i] <= size) { return s_complication_fonts[i]; }
-  }
-  return s_complication_fonts[COMPLICATION_FONT_COUNT - 1];
+static void prv_draw_text(GContext *ctx, const char *text, GFont font,
+                           GRect frame, GColor ink, GTextAlignment alignment,
+                           GTextOverflowMode overflow) {
+  graphics_context_set_text_color(ctx,ink);
+  graphics_draw_text(ctx,text,font,frame,overflow,alignment,NULL);
 }
 
 static bool prv_draw_number_reading(GContext *ctx, const ComplicationSlot *slot,
                                     const ReadingParts *parts, GRect bounds,
-                                    int preferred, bool bitmap) {
+                                    int preferred, bool bitmap, GColor ink) {
   const bool droplet = slot->display_kind == COMPLICATION_DISPLAY_PRECIPITATION &&
       reading_is_probability(parts);
-  for (unsigned i = 0; i < COMPLICATION_FONT_COUNT; ++i) {
-    if (s_complication_font_sizes[i] > preferred) { continue; }
-    const bool small_droplet = droplet && s_complication_font_sizes[i] < 32;
-    const int icon_width = droplet ? (small_droplet ? 14 : 18) : bitmap ? 16 : 0;
-    const int icon_gap = icon_width ? 5 : 0;
-    const int droplet_height = small_droplet ? 18 : 22;
-    const GFont font = s_complication_fonts[i];
-    const int unit_size = s_complication_font_sizes[i] >= 44 ? 24
-        : s_complication_font_sizes[i] >= 32 ? 20 : 18;
-    const GFont unit_font = prv_complication_font_at_most(unit_size);
-    const GSize unit = parts->unit[0] ? graphics_text_layout_get_content_size(parts->unit,
-        unit_font, GRect(0, 0, 2048, 100), GTextOverflowModeFill, GTextAlignmentLeft) : GSize(0, 0);
-    const GSize number = graphics_text_layout_get_content_size(parts->number, font,
-        GRect(0, 0, 2048, 100), GTextOverflowModeFill, GTextAlignmentLeft);
+  // LECO is a numeric subset. Its ASCII minus gives a dependable display for
+  // the typographic U+2212 minus supplied by some weather providers.
+  char number_text[READING_PART_BYTES];
+  reading_native_number(parts->number,number_text,sizeof(number_text));
+  static const uint8_t points[] = {36,32,26,20};
+  for (unsigned i=0;i<sizeof(points);++i) {
+    if (points[i]>preferred) { continue; }
+    const bool small = points[i]<32;
+    const int icon = droplet ? (small ? 14 : 18) : bitmap ? 16 : 0;
+    const int gap = icon ? 4 : 0;
+    GFont font = prv_numeric(points[i]);
+    GFont unit_font = prv_gothic(points[i]>=32 ? 18 : 14,true);
+    const GSize number = prv_measure(number_text,font,2048);
+    const GSize unit = parts->unit[0] ? prv_measure(parts->unit,unit_font,2048) : GSize(0,0);
     const int unit_gap = unit.w ? 2 : 0;
-    const int width = icon_width + icon_gap + number.w + unit_gap + unit.w + 2;
-    if (width > bounds.size.w || number.h > bounds.size.h || unit.h > bounds.size.h) { continue; }
-    const int x = (bounds.size.w - width) / 2;
-    const int y = (bounds.size.h - number.h) / 2;
-    for (unsigned shadow = s_text_shadow_enabled ? 1 : 0; ; --shadow) {
-      const int offset = shadow ? 1 : 0;
-      const GColor color = shadow ? GColorBlack : s_text_color;
-      if (droplet) {
-        prv_draw_droplet(ctx, x + offset, (bounds.size.h - droplet_height) / 2 + offset,
-                         color, small_droplet);
-      } else if (bitmap && (!shadow || !(slot->flags & COMPLICATION_FLAG_IMAGE))) {
-        prv_draw_bitmap(ctx, slot, x + offset, (bounds.size.h - 16) / 2 + offset, 16, shadow, false);
-      }
-      const int text_x = x + icon_width + icon_gap + offset;
-      prv_draw_number_text(ctx, parts->number, font, GRect(text_x, y + offset,
-          number.w + 2, bounds.size.h), color);
-      if (unit.w) {
-        const int unit_y = y + number.h - unit.h - (number.h > unit.h ? 2 : 0) + offset;
-        prv_draw_number_text(ctx, parts->unit, unit_font,
-            GRect(text_x + number.w + unit_gap, unit_y, unit.w + 2, bounds.size.h), color);
-      }
-      if (!shadow) { break; }
+    const int width = icon+gap+number.w+unit_gap+unit.w;
+    if (width>bounds.size.w || number.h>bounds.size.h || unit.h>bounds.size.h) { continue; }
+    const int x = (bounds.size.w-width)/2;
+    const int y = (bounds.size.h-number.h)/2;
+    if (droplet) {
+      prv_draw_droplet(ctx,x,(bounds.size.h-(small ? 18 : 22))/2,ink,small);
+    } else if (bitmap) {
+      prv_draw_bitmap(ctx,slot,x,(bounds.size.h-16)/2,16,ink,false);
+    }
+    const int text_x = x+icon+gap;
+    prv_draw_text(ctx,number_text,font,GRect(text_x,y,number.w+2,bounds.size.h-y),
+        ink,GTextAlignmentLeft,GTextOverflowModeFill);
+    if (unit.w) {
+      const int unit_y = y+number.h-unit.h-2;
+      prv_draw_text(ctx,parts->unit,unit_font,GRect(text_x+number.w+unit_gap,unit_y,
+          unit.w+2,bounds.size.h-unit_y),ink,GTextAlignmentLeft,GTextOverflowModeFill);
     }
     return true;
   }
@@ -435,51 +383,34 @@ static bool prv_draw_number_reading(GContext *ctx, const ComplicationSlot *slot,
 
 static void prv_draw_complication(Layer *layer, GContext *ctx) {
   const unsigned index = *(uint8_t *)layer_get_data(layer);
-  if (!s_has_complications || index >= COMPLICATION_SLOT_COUNT) { return; }
+  if (!s_has_complications || index>=COMPLICATION_SLOT_COUNT) { return; }
   const ComplicationSlot *slot = &s_complications.slots[index];
   if (!complication_is_selected(slot)) { return; }
   const GRect bounds = layer_get_bounds(layer);
-  const bool fresh = complication_is_fresh(slot, time(NULL));
-  bool bitmap = fresh && (slot->flags & COMPLICATION_FLAG_BITMAP);
-  char text[COMPLICATION_MAX_TEXT_BYTES + 5];
-  bool has_text = prv_slot_text(slot, text, sizeof(text));
-  if (!has_text && !bitmap) { snprintf(text, sizeof(text), "--"); has_text = true; }
-  const int bitmap_size = bitmap ? (has_text ? 16 : 24) : 0;
-  const int gap = bitmap && has_text ? 4 : 0;
-  const WatchLayoutGeometry geometry = prv_current_geometry();
-  const int preferred = geometry.slots[index].font_size;
+  const bool fresh = complication_is_fresh(slot,time(NULL));
+  const bool bitmap = fresh && (slot->flags & COMPLICATION_FLAG_BITMAP);
+  char text[COMPLICATION_MAX_TEXT_BYTES+5];
+  bool has_text = prv_slot_text(slot,text,sizeof(text));
+  if (!has_text && !bitmap) { snprintf(text,sizeof(text),"--"); has_text=true; }
+  const int preferred = prv_current_geometry().slots[index].font_size;
+  const GColor ink = prv_reading_ink();
   ReadingParts parts;
   if (fresh && has_text && !(slot->flags & COMPLICATION_FLAG_TIMESTAMP) &&
-      reading_parts(text, &parts) &&
-      prv_draw_number_reading(ctx, slot, &parts, bounds, preferred, bitmap)) { return; }
-  GFont font = s_complication_fonts[COMPLICATION_FONT_COUNT - 1];
-  GSize text_size = GSize(0, 0);
+      reading_parts(text,&parts) &&
+      prv_draw_number_reading(ctx,slot,&parts,bounds,preferred,bitmap,ink)) { return; }
+  const int image = bitmap ? (has_text ? 16 : 28) : 0;
+  const int gap = bitmap && has_text ? 4 : 0;
+  GSize size = GSize(0,0);
+  GFont font = prv_gothic(14,true);
   if (has_text) {
-    font = prv_fit_complication(text, sizeof(text), bounds.size.w - bitmap_size - gap - 2,
-                                bounds.size.h, preferred);
-    text_size = graphics_text_layout_get_content_size(text, font, GRect(0, 0, 2048, 100),
-        GTextOverflowModeFill, GTextAlignmentCenter);
+    font = prv_fit_text(text,sizeof(text),bounds.size.w-image-gap-2,bounds.size.h,preferred);
+    size = prv_measure(text,font,2048);
   }
-  const int text_width = has_text ? text_size.w + 2 : 0;
-  const int group_width = bitmap_size + gap + text_width;
-  const int x = (bounds.size.w - group_width) / 2;
-  if (bitmap) {
-    const int y = (bounds.size.h - bitmap_size) / 2;
-    if (s_text_shadow_enabled && !(slot->flags & COMPLICATION_FLAG_IMAGE)) {
-      prv_draw_bitmap(ctx, slot, x + 1, y + 1, bitmap_size, true, false);
-    }
-    prv_draw_bitmap(ctx, slot, x, y, bitmap_size, false, false);
-  }
+  const int x = (bounds.size.w-image-gap-size.w)/2;
+  if (bitmap) { prv_draw_bitmap(ctx,slot,x,(bounds.size.h-image)/2,image,ink,false); }
   if (has_text) {
-    const GRect frame = GRect(x + bitmap_size + gap, (bounds.size.h - text_size.h) / 2,
-                              text_width, bounds.size.h);
-    if (s_text_shadow_enabled) {
-      graphics_context_set_text_color(ctx, GColorBlack);
-      graphics_draw_text(ctx, text, font, GRect(frame.origin.x + 1, frame.origin.y + 1,
-          frame.size.w, frame.size.h), GTextOverflowModeFill, GTextAlignmentCenter, NULL);
-    }
-    graphics_context_set_text_color(ctx, s_text_color);
-    graphics_draw_text(ctx, text, font, frame, GTextOverflowModeFill, GTextAlignmentCenter, NULL);
+    prv_draw_text(ctx,text,font,GRect(x+image+gap,(bounds.size.h-size.h)/2,
+        size.w+2,bounds.size.h),ink,GTextAlignmentLeft,GTextOverflowModeFill);
   }
 }
 
@@ -494,153 +425,69 @@ static int prv_status_right_reserve(void) {
   return s_show_status && !s_phone_connected ? 12 : 0;
 }
 
-typedef struct {
-  char text[COMPLICATION_MAX_TEXT_BYTES + 5];
-  GFont font;
-  GRect frame;
-  int ink_bottom;
-} PreparedContextText;
-
-static PreparedContextText prv_prepare_context_text(const ComplicationSlot *slot,
-                                                     GRect rect, int preferred) {
-  PreparedContextText result = {.frame = rect};
-  if (!context_slot_fresh(slot, time(NULL)) || !(slot->flags & COMPLICATION_FLAG_TEXT)) {
-    return result;
-  }
-  snprintf(result.text, sizeof(result.text), "%s", slot->text);
-  result.font = prv_fit_complication(result.text, sizeof(result.text),
-      rect.size.w - 2, rect.size.h, preferred);
-  const GSize size = graphics_text_layout_get_content_size(result.text, result.font,
-      GRect(0, 0, 2048, 100), GTextOverflowModeFill, GTextAlignmentLeft);
-  result.frame.origin.y += (rect.size.h - size.h) / 2;
-  int font_size = 18;
-  for (unsigned i = 0; i < COMPLICATION_FONT_COUNT; ++i) {
-    if (result.font == s_complication_fonts[i]) { font_size = s_complication_font_sizes[i]; break; }
-  }
-  const int bottom = context_text_ink_bottom(result.text, font_size);
-  result.ink_bottom = bottom ? result.frame.origin.y + bottom : 0;
-  return result;
-}
-
-static void prv_draw_context_text(GContext *ctx, const PreparedContextText *text) {
-  if (text->font == NULL || !text->text[0]) { return; }
-  const GRect rect = text->frame;
-  if (s_text_shadow_enabled) {
-    graphics_context_set_text_color(ctx, GColorBlack);
-    graphics_draw_text(ctx, text->text, text->font, GRect(rect.origin.x + 1, rect.origin.y + 1,
-        rect.size.w, rect.size.h), GTextOverflowModeFill, GTextAlignmentLeft, NULL);
-  }
-  graphics_context_set_text_color(ctx, s_text_color);
-  graphics_draw_text(ctx, text->text, text->font, rect,
-      GTextOverflowModeFill, GTextAlignmentLeft, NULL);
-}
-
-typedef struct {
-  GFont font;
-  int nominal_height;
-  int draw_height;
-} PreparedContextTitle;
-
-// A title owns the full width. Fit readable text into at most two lines;
-// retain a descender reserve while using nominal height for the following row.
-static PreparedContextTitle prv_prepare_context_title(const ComplicationSlot *slot,
-                                                       int width, int height, int preferred) {
-  PreparedContextTitle result = {0};
-  if (!context_slot_fresh(slot, time(NULL)) || !(slot->flags & COMPLICATION_FLAG_TEXT)) {
-    return result;
-  }
-  result.font = s_complication_fonts[4]; // 24px readability floor.
-  int selected_size = 24;
-  for (unsigned i = 0; i < COMPLICATION_FONT_COUNT; ++i) {
-    const int point = s_complication_font_sizes[i];
-    if (point > preferred || point < 24) { continue; }
-    const GSize size = graphics_text_layout_get_content_size(slot->text,
-        s_complication_fonts[i], GRect(0, 0, width - 2, 512),
-        GTextOverflowModeFill, GTextAlignmentLeft);
-    if (size.h <= point * 2 && size.h + (point + 2) / 3 <= height) {
-      result.font = s_complication_fonts[i]; selected_size = point; break;
-    }
-  }
-  const GSize measured = graphics_text_layout_get_content_size(slot->text, result.font,
-      GRect(0, 0, width - 2, 512), GTextOverflowModeFill, GTextAlignmentLeft);
-  result.nominal_height = measured.h < selected_size * 2 ? measured.h : selected_size * 2;
-  result.draw_height = result.nominal_height + (selected_size + 2) / 3;
-  if (result.draw_height > height) { result.draw_height = height; }
-  return result;
-}
-
-static void prv_draw_context_title(GContext *ctx, const ComplicationSlot *slot,
-                                    GRect rect, const PreparedContextTitle *text) {
-  if (text->font == NULL) { return; }
-  rect.size.h = text->draw_height;
-  if (s_text_shadow_enabled) {
-    graphics_context_set_text_color(ctx, GColorBlack);
-    graphics_draw_text(ctx, slot->text, text->font, GRect(rect.origin.x + 1, rect.origin.y + 1,
-        rect.size.w, rect.size.h), GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, NULL);
-  }
-  graphics_context_set_text_color(ctx, s_text_color);
-  graphics_draw_text(ctx, slot->text, text->font, rect,
-      GTextOverflowModeTrailingEllipsis, GTextAlignmentLeft, NULL);
-}
-
+// The panel follows native Weather/Workout typography: a full-width headline
+// and a separate source row, with no application-owned fonts or ink tables.
 static void prv_draw_context(Layer *layer, GContext *ctx) {
-  const ContextMode mode = context_mode(&s_context, time(NULL));
-  if (mode == CONTEXT_NONE) { return; }
-  const unsigned first = mode == CONTEXT_NOTIFICATION ? 2 : 0;
+  const ContextMode mode = context_mode(&s_context,time(NULL));
+  if (mode==CONTEXT_NONE) { return; }
+  const unsigned first = mode==CONTEXT_NOTIFICATION ? 2 : 0;
   const ComplicationSlot *title = &s_context.slots[first];
-  const ComplicationSlot *subtitle = &s_context.slots[first + 1];
+  const ComplicationSlot *subtitle = &s_context.slots[first+1];
   const GRect bounds = layer_get_bounds(layer);
-  const bool has_subtitle = context_slot_fresh(subtitle, time(NULL)) &&
+  const GColor ink = prv_contrast_ink(prv_context_color());
+  const bool has_subtitle = context_slot_fresh(subtitle,time(NULL)) &&
       (subtitle->flags & COMPLICATION_FLAG_TEXT) && subtitle->text_length;
-  const bool bitmap = (title->flags & COMPLICATION_FLAG_BITMAP) != 0;
-  const int artwork = s_large_text_enabled ? 32 : 28;
-  const int inset = bitmap ? artwork + 8 : 0;
-  const int footer_height = 42;
-  if (mode == CONTEXT_MUSIC) {
-    // Let the song title span two full-width lines; album art shares the
-    // separate artist row instead of stealing width from the title.
-    const PreparedContextTitle headline = prv_prepare_context_title(title, bounds.size.w,
-        has_subtitle ? bounds.size.h - footer_height - 2 : bounds.size.h,
-        s_large_text_enabled ? 44 : 38);
-    prv_draw_context_title(ctx, title, GRect(0, 0, bounds.size.w, headline.draw_height), &headline);
+  const bool bitmap = (title->flags & COMPLICATION_FLAG_BITMAP)!=0;
+  const int inset = 8;
+  const int width = bounds.size.w-inset*2;
+  const int artwork = s_large_text_enabled ? 40 : 32;
+  if (mode==CONTEXT_MUSIC) {
+    const int footer_height = has_subtitle ? artwork+12 : 0;
+    const int title_height = bounds.size.h-16-footer_height;
+    prv_draw_text(ctx,title->text,prv_gothic(28,true),
+        GRect(inset,3,width,title_height),ink,GTextAlignmentLeft,GTextOverflowModeTrailingEllipsis);
     if (has_subtitle) {
-      const int footer_y = bounds.size.h - footer_height;
-      PreparedContextText artist = prv_prepare_context_text(subtitle,
-          GRect(inset, footer_y, bounds.size.w - inset, footer_height),
-          s_large_text_enabled ? 28 : 24);
-      if (artist.ink_bottom > bounds.size.h) {
-        artist.frame.origin.y -= artist.ink_bottom - bounds.size.h;
-        artist.ink_bottom = bounds.size.h;
-      }
-      const int bottom = artist.ink_bottom;
+      const int row_y = bounds.size.h-8-artwork;
+      const int text_x = inset+(bitmap ? artwork+8 : 0);
+      char text[COMPLICATION_MAX_TEXT_BYTES+5];
+      snprintf(text,sizeof(text),"%s",subtitle->text);
+      GFont font = prv_gothic(s_large_text_enabled ? 28 : 24,true);
+      prv_ellipsize_text(text,sizeof(text),font,bounds.size.w-text_x-inset-2,artwork);
+      GSize measured = prv_measure(text,font,2048);
+      // Native text frames include baseline leading. Anchor both the image
+      // and the artist frame to the same lower row rather than centering art
+      // against the title's two-line box.
+      const int text_y = row_y+artwork-measured.h;
       if (bitmap) {
-        const bool cover = (title->flags & COMPLICATION_FLAG_IMAGE) != 0;
-        const int visible = prv_bitmap_visible_bottom(title, artwork, cover);
-        if (visible) { prv_draw_bitmap(ctx, title, 0, bottom - visible, artwork, false, cover); }
+        const bool cover = (title->flags & COMPLICATION_FLAG_IMAGE)!=0;
+        const int visible = prv_bitmap_visible_bottom(title,artwork,cover);
+        if (visible) { prv_draw_bitmap(ctx,title,inset,row_y+artwork-visible,artwork,ink,cover); }
       }
-      prv_draw_context_text(ctx, &artist);
+      prv_draw_text(ctx,text,font,GRect(text_x,text_y,bounds.size.w-text_x-inset,
+          measured.h+4),ink,GTextAlignmentLeft,GTextOverflowModeTrailingEllipsis);
+    } else if (bitmap) {
+      prv_draw_bitmap(ctx,title,inset,bounds.size.h-artwork-8,artwork,ink,
+          (title->flags & COMPLICATION_FLAG_IMAGE)!=0);
     }
   } else {
-    // The application/title is a compact heading; the message gets the full
-    // lower width, including room for two readable lines when preview is on.
-    const int heading_height = has_subtitle ? 40 : bounds.size.h;
-    PreparedContextText heading = prv_prepare_context_text(title,
-        GRect(inset, 0, bounds.size.w - inset, heading_height),
-        s_large_text_enabled ? 28 : 24);
-    if (heading.ink_bottom > heading_height) {
-      heading.frame.origin.y -= heading.ink_bottom - heading_height;
-      heading.ink_bottom = heading_height;
-    }
+    const int heading_height = artwork+8;
+    const int text_x = inset+(bitmap ? artwork+8 : 0);
+    char heading[COMPLICATION_MAX_TEXT_BYTES+5];
+    snprintf(heading,sizeof(heading),"%s",title->text);
+    GFont font = prv_gothic(s_large_text_enabled ? 28 : 24,true);
+    prv_ellipsize_text(heading,sizeof(heading),font,bounds.size.w-text_x-inset-2,artwork);
+    const GSize measured = prv_measure(heading,font,2048);
+    const int bottom = 8+artwork;
     if (bitmap) {
-      const int bottom = heading.ink_bottom;
-      const int visible = prv_bitmap_visible_bottom(title, artwork, false);
-      if (visible) { prv_draw_bitmap(ctx, title, 0, bottom - visible, artwork, false, false); }
+      const int visible = prv_bitmap_visible_bottom(title,artwork,false);
+      if (visible) { prv_draw_bitmap(ctx,title,inset,bottom-visible,artwork,ink,false); }
     }
-    prv_draw_context_text(ctx, &heading);
+    prv_draw_text(ctx,heading,font,GRect(text_x,bottom-measured.h,
+        bounds.size.w-text_x-inset,measured.h+4),ink,GTextAlignmentLeft,GTextOverflowModeTrailingEllipsis);
     if (has_subtitle) {
-      const PreparedContextTitle body = prv_prepare_context_title(subtitle,
-          bounds.size.w, bounds.size.h - 44, s_large_text_enabled ? 32 : 28);
-      prv_draw_context_title(ctx, subtitle, GRect(0, 44, bounds.size.w, body.draw_height), &body);
+      prv_draw_text(ctx,subtitle->text,prv_gothic(28,true),
+          GRect(inset,heading_height+4,width,bounds.size.h-heading_height-10),
+          ink,GTextAlignmentLeft,GTextOverflowModeTrailingEllipsis);
     }
   }
 }
@@ -652,8 +499,8 @@ static void prv_draw_status(Layer *layer, GContext *ctx) {
   const WatchLayoutGeometry geometry = prv_current_geometry();
   const int y = geometry.slots[0].rect.y + (geometry.slots[0].rect.height - 10) / 2;
   int x = geometry.slots[0].rect.x;
-  graphics_context_set_stroke_color(ctx, s_text_color);
-  graphics_context_set_fill_color(ctx, s_text_color);
+  graphics_context_set_stroke_color(ctx, prv_reading_ink());
+  graphics_context_set_fill_color(ctx, prv_reading_ink());
   graphics_context_set_stroke_width(ctx, 1);
   if (s_battery.charge_percent <= 10 && !s_battery.is_charging) {
     graphics_draw_rect(ctx, GRect(x, y + 2, 9, 6));
@@ -696,98 +543,85 @@ static void prv_context_expired(void *context) {
 }
 
 static void prv_draw_background(Layer *layer, GContext *ctx) {
-  graphics_context_set_fill_color(ctx, s_background_color);
-  graphics_fill_rect(ctx, layer_get_bounds(layer), 0, GCornerNone);
+  graphics_context_set_fill_color(ctx,s_background_color);
+  graphics_fill_rect(ctx,layer_get_bounds(layer),0,GCornerNone);
+  const WatchLayoutGeometry geometry = prv_current_geometry();
+  graphics_context_set_fill_color(ctx,geometry.context.width>0 ? prv_context_color() : s_accent_color);
+  graphics_fill_rect(ctx,prv_layout_rect(geometry.band),0,GCornerNone);
+  if (!geometry.compact_header) {
+    graphics_context_set_fill_color(ctx,s_accent_color);
+    graphics_fill_rect(ctx,GRect(0,28,200,2),0,GCornerNone);
+  }
+  const GColor divider = geometry.context.width>0 ? s_text_color : prv_contrast_ink(s_accent_color);
+  graphics_context_set_stroke_color(ctx,divider);
+  graphics_context_set_stroke_width(ctx,1);
+  graphics_draw_line(ctx,GPoint(geometry.divider_x,geometry.divider_top),
+      GPoint(geometry.divider_x,geometry.divider_bottom));
+}
+
+static GFont prv_clock_font(const WatchLayoutGeometry *geometry) {
+  if (geometry->compact_header) { return prv_numeric(26); }
+  GFont font = fonts_get_system_font(s_large_text_enabled
+      ? FONT_KEY_LECO_60_BOLD_NUMBERS_AM_PM : FONT_KEY_LECO_60_NUMBERS_AM_PM);
+  if (prv_text_fits(s_time_buffer,font,geometry->time.width,geometry->time.height)) { return font; }
+  font = fonts_get_system_font(FONT_KEY_LECO_42_NUMBERS);
+  if (prv_text_fits(s_time_buffer,font,geometry->time.width,geometry->time.height)) { return font; }
+  return fonts_get_system_font(FONT_KEY_LECO_38_BOLD_NUMBERS);
 }
 
 static void prv_apply_unobstructed_layout(void) {
-  if (s_window_layer == NULL || s_date_layer == NULL || s_time_layer == NULL) { return; }
-  const GRect root_bounds = layer_get_bounds(s_window_layer);
-  const int visible_height = layer_get_unobstructed_bounds(s_window_layer).size.h;
-  const bool has_context = context_mode(&s_context, time(NULL)) != CONTEXT_NONE;
-  if (!s_compact_layout && visible_height <= COMPACT_FONT_ENTER_HEIGHT) { s_compact_layout = true; }
-  else if (s_compact_layout && visible_height >= COMPACT_FONT_EXIT_HEIGHT) { s_compact_layout = false; }
-  const bool compact_header = has_context || visible_height < FULL_LAYOUT_HEIGHT;
-  const int date_x = 6;
-  const int date_width = root_bounds.size.w - date_x * 2;
-  const int time_x = 4;
-  const int time_width = root_bounds.size.w - time_x * 2;
-  const GFont preferred_date = compact_header
-      ? (s_large_text_enabled ? s_compact_date_font : s_small_date_font)
-      : (s_large_text_enabled ? s_large_date_font : s_date_font);
-  const GFont date_font = prv_get_date_font(preferred_date,
-      date_width - (s_text_shadow_enabled ? 2 : 0));
-  const bool full_context = has_context && visible_height >= FULL_LAYOUT_HEIGHT;
-  const GFont time_font = full_context
-      ? (s_large_text_enabled ? s_complication_fonts[0] : s_complication_fonts[1])
-      : s_compact_layout
-          ? (s_large_text_enabled ? s_large_compact_time_font : s_compact_time_font)
-          : prv_get_large_time_font(time_width - (s_text_shadow_enabled ? 6 : 4),
-              s_large_text_enabled ? 108 : 92);
-  const int time_size = full_context ? (s_large_text_enabled ? 44 : 38)
-      : prv_time_font_size(time_font);
-  const int date_y = compact_header ? 4
-      : (s_large_text_enabled ? 2 : 4);
-  prv_set_text_pair_layout(s_date_shadow_layer, s_date_layer,
-      GRect(date_x, date_y, date_width, compact_header ? 32 : 46), date_font, 1);
-  prv_set_text_pair_layout(s_time_shadow_layer, s_time_layer,
-      GRect(time_x, watch_layout_clock_y(time_size, visible_height, full_context),
-          time_width, full_context ? 60 : 122), time_font, 1);
-  text_layer_set_text(s_date_layer, s_date_buffer);
-  text_layer_set_text(s_date_shadow_layer, s_date_buffer);
-  text_layer_set_text(s_time_layer, s_time_buffer);
-  text_layer_set_text(s_time_shadow_layer, s_time_buffer);
+  if (s_window_layer==NULL || s_date_layer==NULL || s_time_layer==NULL) { return; }
   const WatchLayoutGeometry geometry = prv_current_geometry();
-  const bool contextual = geometry.context.width > 0 && context_mode(&s_context, time(NULL)) != CONTEXT_NONE;
-  for (unsigned i = 0; i < COMPLICATION_SLOT_COUNT; ++i) {
+  const char *date = geometry.compact_header ? s_compact_date_buffer : s_date_buffer;
+  GFont date_font = prv_gothic(geometry.compact_header ? 14 : s_large_text_enabled ? 24 : 18,true);
+  if (!prv_text_fits(date,date_font,geometry.date.width,geometry.date.height)) {
+    date_font = prv_gothic(geometry.compact_header ? 14 : 18,true);
+  }
+  if (!prv_text_fits(date,date_font,geometry.date.width,geometry.date.height)) { date_font=prv_gothic(14,true); }
+  text_layer_set_font(s_date_layer,date_font);
+  text_layer_set_text(s_date_layer,date);
+  text_layer_set_text_alignment(s_date_layer,geometry.compact_header ? GTextAlignmentRight : GTextAlignmentCenter);
+  layer_set_frame(text_layer_get_layer(s_date_layer),prv_layout_rect(geometry.date));
+  text_layer_set_font(s_time_layer,prv_clock_font(&geometry));
+  text_layer_set_text(s_time_layer,s_time_buffer);
+  text_layer_set_text_alignment(s_time_layer,geometry.compact_header ? GTextAlignmentLeft : GTextAlignmentCenter);
+  layer_set_frame(text_layer_get_layer(s_time_layer),prv_layout_rect(geometry.time));
+  for (unsigned i=0;i<COMPLICATION_SLOT_COUNT;++i) {
     const bool visible = s_has_complications && complication_is_selected(&s_complications.slots[i]) &&
-        geometry.slots[i].rect.width > 0;
+        geometry.slots[i].rect.width>0;
     WatchLayoutRect rect = geometry.slots[i].rect;
-    if (rect.width > 0 && i == 0 && s_show_status) {
+    if (rect.width>0 && i==0 && s_show_status) {
       const int reserve = prv_status_left_reserve();
       rect.x += reserve;
       rect.width -= reserve;
-      if (geometry.slots[1].rect.width == 0) { rect.width -= prv_status_right_reserve(); }
-    } else if (rect.width > 0 && i == 1 && s_show_status) {
+    } else if (rect.width>0 && i==1 && s_show_status) {
       rect.width -= prv_status_right_reserve();
     }
-    layer_set_frame(s_complication_layers[i], prv_layout_rect(rect));
-    layer_set_hidden(s_complication_layers[i], !visible);
+    layer_set_frame(s_complication_layers[i],prv_layout_rect(rect));
+    layer_set_hidden(s_complication_layers[i],!visible);
     layer_mark_dirty(s_complication_layers[i]);
   }
-  if (s_context_layer != NULL) {
-    layer_set_frame(s_context_layer, prv_layout_rect(geometry.context));
-    layer_set_hidden(s_context_layer, !contextual);
-    layer_mark_dirty(s_context_layer);
-  }
-  if (s_status_layer != NULL) { layer_mark_dirty(s_status_layer); }
+  layer_set_frame(s_context_layer,prv_layout_rect(geometry.context));
+  layer_set_hidden(s_context_layer,geometry.context.width==0);
+  layer_mark_dirty(s_context_layer);
+  layer_mark_dirty(s_status_layer);
   layer_mark_dirty(s_background_layer);
 }
 
 static void prv_update_clock(void) {
   const time_t now = time(NULL);
-  struct tm *current_time = localtime(&now);
-  const char *const *localized_days = prv_get_localized_days();
-
-  strftime(s_time_buffer, sizeof(s_time_buffer),
-           s_use_12_hour ? "%I:%M" : "%H:%M", current_time);
-  if (s_use_12_hour && s_time_buffer[0] == '0') {
-    memmove(s_time_buffer, s_time_buffer + 1, strlen(s_time_buffer));
-  }
-  snprintf(s_date_buffer, sizeof(s_date_buffer), "%s · %d.%d.",
-           localized_days[current_time->tm_wday], current_time->tm_mday,
-           current_time->tm_mon + 1);
-
-  text_layer_set_text(s_time_layer, s_time_buffer);
-  text_layer_set_text(s_date_layer, s_date_buffer);
-  text_layer_set_text(s_time_shadow_layer, s_time_buffer);
-  text_layer_set_text(s_date_shadow_layer, s_date_buffer);
-
-  // Re-evaluate every minute: extra-large time follows the current digits and
-  // long localized weekday names can select the compact date font.
+  struct tm *current = localtime(&now);
+  if (current==NULL) { return; }
+  const char *day = prv_get_localized_days()[current->tm_wday];
+  strftime(s_time_buffer,sizeof(s_time_buffer),s_use_12_hour ? "%I:%M" : "%H:%M",current);
+  if (s_use_12_hour && s_time_buffer[0]=='0') { memmove(s_time_buffer,s_time_buffer+1,strlen(s_time_buffer)); }
+  snprintf(s_date_buffer,sizeof(s_date_buffer),"%s · %d.%d.",day,current->tm_mday,current->tm_mon+1);
+  char abbreviated[16];
+  watch_layout_abbreviate(day,abbreviated,sizeof(abbreviated),3);
+  snprintf(s_compact_date_buffer,sizeof(s_compact_date_buffer),"%s %d.%d.",abbreviated,
+      current->tm_mday,current->tm_mon+1);
   prv_apply_unobstructed_layout();
 }
-
 
 static void prv_request_complications(void) {
   DictionaryIterator *iterator;
@@ -846,19 +680,14 @@ static void prv_unobstructed_area_change(AnimationProgress progress, void *conte
 static void prv_unobstructed_area_did_change(void *context) { prv_apply_unobstructed_layout(); }
 
 static void prv_apply_colors(void) {
-  if (s_window != NULL) { window_set_background_color(s_window, s_background_color); }
-  if (s_date_layer != NULL) { text_layer_set_text_color(s_date_layer, s_text_color); }
-  if (s_time_layer != NULL) { text_layer_set_text_color(s_time_layer, s_text_color); }
+  if (s_window!=NULL) { window_set_background_color(s_window,s_background_color); }
+  if (s_date_layer!=NULL) { text_layer_set_text_color(s_date_layer,s_text_color); }
+  if (s_time_layer!=NULL) { text_layer_set_text_color(s_time_layer,s_text_color); }
   prv_apply_unobstructed_layout();
 }
 
 static void prv_apply_effects(void) {
-  if (s_date_shadow_layer != NULL) {
-    layer_set_hidden(text_layer_get_layer(s_date_shadow_layer), !s_text_shadow_enabled);
-  }
-  if (s_time_shadow_layer != NULL) {
-    layer_set_hidden(text_layer_get_layer(s_time_shadow_layer), !s_text_shadow_enabled);
-  }
+  // Legacy TEXT_SHADOW is accepted, but native typography is always crisp.
   prv_apply_unobstructed_layout();
 }
 
@@ -876,6 +705,24 @@ static uint32_t prv_context_request_value(const Tuple *marker) {
     value = marker->value->uint32;
   }
   return value <= CONTEXT_MAX_SESSION_TOKEN ? value : 0;
+}
+
+static bool prv_color_value(const Tuple *tuple, uint32_t *result) {
+  if (tuple==NULL || (tuple->type!=TUPLE_INT && tuple->type!=TUPLE_UINT)) { return false; }
+  uint32_t value;
+  if (tuple->length==1) {
+    if (tuple->type==TUPLE_INT && tuple->value->int8<0) { return false; }
+    value=tuple->value->uint8;
+  } else if (tuple->length==2) {
+    if (tuple->type==TUPLE_INT && tuple->value->int16<0) { return false; }
+    value=tuple->value->uint16;
+  } else if (tuple->length==4) {
+    if (tuple->type==TUPLE_INT && tuple->value->int32<0) { return false; }
+    value=tuple->value->uint32;
+  } else { return false; }
+  if (value>0xffffff) { return false; }
+  *result=value;
+  return true;
 }
 
 static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
@@ -904,6 +751,7 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   }
   Tuple *background = dict_find(iterator, MESSAGE_KEY_BACKGROUND_COLOR);
   Tuple *text = dict_find(iterator, MESSAGE_KEY_TEXT_COLOR);
+  Tuple *accent = dict_find(iterator, MESSAGE_KEY_ACCENT_COLOR);
   Tuple *shadow = dict_find(iterator, MESSAGE_KEY_TEXT_SHADOW);
   Tuple *large = dict_find(iterator, MESSAGE_KEY_LARGE_TEXT);
   Tuple *twelve = dict_find(iterator, MESSAGE_KEY_USE_12_HOUR);
@@ -915,6 +763,11 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   if (text != NULL) {
     s_text_color = GColorFromHEX(text->value->int32);
     persist_write_int(PERSIST_KEY_TEXT_COLOR, text->value->int32);
+  }
+  uint32_t accent_value;
+  if (prv_color_value(accent,&accent_value)) {
+    s_accent_color = GColorFromHEX(accent_value);
+    persist_write_int(PERSIST_KEY_ACCENT_COLOR,(int32_t)accent_value);
   }
   if (shadow != NULL) {
     s_text_shadow_enabled = shadow->value->int32 != 0;
@@ -949,113 +802,65 @@ static void prv_outbox_sent(DictionaryIterator *iterator, void *context) {
 }
 
 static void prv_configure_text_layer(TextLayer *layer, GFont font) {
-  text_layer_set_background_color(layer, GColorClear);
-  text_layer_set_text_color(layer, s_text_color);
-  text_layer_set_text_alignment(layer, GTextAlignmentCenter);
-  text_layer_set_overflow_mode(layer, GTextOverflowModeFill);
-  text_layer_set_font(layer, font);
+  text_layer_set_background_color(layer,GColorClear);
+  text_layer_set_text_color(layer,s_text_color);
+  text_layer_set_text_alignment(layer,GTextAlignmentCenter);
+  text_layer_set_overflow_mode(layer,GTextOverflowModeFill);
+  text_layer_set_font(layer,font);
 }
-
-static void prv_configure_shadow_layer(TextLayer *layer, GFont font) {
-  text_layer_set_background_color(layer, GColorClear);
-  text_layer_set_text_color(layer, GColorBlack);
-  text_layer_set_text_alignment(layer, GTextAlignmentCenter);
-  text_layer_set_overflow_mode(layer, GTextOverflowModeFill);
-  text_layer_set_font(layer, font);
-}
-
 
 static void prv_window_load(Window *window) {
   s_window_layer = window_get_root_layer(window);
   const GRect bounds = layer_get_bounds(s_window_layer);
   s_background_layer = layer_create(bounds);
-  layer_set_update_proc(s_background_layer, prv_draw_background);
-  layer_add_child(s_window_layer, s_background_layer);
-  s_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_24));
-  s_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_76));
-  s_compact_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_22));
-  s_small_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_20));
-  s_compact_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_64));
-  s_large_date_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_28));
-  s_large_time_fonts[0] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_80));
-  s_large_time_fonts[1] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_84));
-  s_large_time_fonts[2] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_88));
-  s_large_time_fonts[3] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_92));
-  s_large_time_fonts[4] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_96));
-  s_large_time_fonts[5] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_100));
-  s_large_time_fonts[6] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_104));
-  s_large_time_fonts[7] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_108));
-  s_large_compact_time_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_72));
-  s_complication_fonts[0] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_COMPLICATION_44));
-  s_complication_fonts[1] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_COMPLICATION_38));
-  s_complication_fonts[2] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_COMPLICATION_32));
-  s_complication_fonts[3] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_COMPLICATION_28));
-  s_complication_fonts[4] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_COMPLICATION_24));
-  s_complication_fonts[5] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_COMPLICATION_20));
-  s_complication_fonts[6] = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FIRA_SANS_CONDENSED_BOLD_COMPLICATION_18));
+  layer_set_update_proc(s_background_layer,prv_draw_background);
+  layer_add_child(s_window_layer,s_background_layer);
   s_drop_path = gpath_create(&s_drop_info);
   s_small_drop_path = gpath_create(&s_small_drop_info);
-  s_date_shadow_layer = text_layer_create(GRect(9, 29, bounds.size.w - 16, 38));
-  prv_configure_shadow_layer(s_date_shadow_layer, s_date_font);
-  layer_add_child(s_window_layer, text_layer_get_layer(s_date_shadow_layer));
-  s_time_shadow_layer = text_layer_create(GRect(2, 54, bounds.size.w, 102));
-  prv_configure_shadow_layer(s_time_shadow_layer, s_time_font);
-  layer_add_child(s_window_layer, text_layer_get_layer(s_time_shadow_layer));
-  s_date_layer = text_layer_create(GRect(8, 28, bounds.size.w - 16, 38));
-  prv_configure_text_layer(s_date_layer, s_date_font);
-  layer_add_child(s_window_layer, text_layer_get_layer(s_date_layer));
-  s_time_layer = text_layer_create(GRect(0, 52, bounds.size.w, 102));
-  prv_configure_text_layer(s_time_layer, s_time_font);
-  layer_add_child(s_window_layer, text_layer_get_layer(s_time_layer));
-  for (unsigned i = 0; i < COMPLICATION_SLOT_COUNT; ++i) {
-    s_complication_layers[i] = layer_create_with_data(GRect(0, 0, 0, 0), sizeof(uint8_t));
+  s_date_layer = text_layer_create(GRect(8,0,184,28));
+  prv_configure_text_layer(s_date_layer,prv_gothic(18,true));
+  layer_add_child(s_window_layer,text_layer_get_layer(s_date_layer));
+  s_time_layer = text_layer_create(GRect(4,48,192,78));
+  prv_configure_text_layer(s_time_layer,fonts_get_system_font(FONT_KEY_LECO_60_NUMBERS_AM_PM));
+  layer_add_child(s_window_layer,text_layer_get_layer(s_time_layer));
+  for (unsigned i=0;i<COMPLICATION_SLOT_COUNT;++i) {
+    s_complication_layers[i] = layer_create_with_data(GRect(0,0,0,0),sizeof(uint8_t));
     *(uint8_t *)layer_get_data(s_complication_layers[i]) = i;
-    layer_set_update_proc(s_complication_layers[i], prv_draw_complication);
-    layer_add_child(s_window_layer, s_complication_layers[i]);
+    layer_set_update_proc(s_complication_layers[i],prv_draw_complication);
+    layer_add_child(s_window_layer,s_complication_layers[i]);
   }
-  s_context_layer = layer_create(GRect(18, 164, 164, 43));
-  layer_set_update_proc(s_context_layer, prv_draw_context);
-  layer_add_child(s_window_layer, s_context_layer);
+  s_context_layer = layer_create(GRect(0,78,200,150));
+  layer_set_update_proc(s_context_layer,prv_draw_context);
+  layer_add_child(s_window_layer,s_context_layer);
   s_status_layer = layer_create(bounds);
-  layer_set_update_proc(s_status_layer, prv_draw_status);
-  layer_add_child(s_window_layer, s_status_layer);
+  layer_set_update_proc(s_status_layer,prv_draw_status);
+  layer_add_child(s_window_layer,s_status_layer);
   prv_update_clock();
-  prv_apply_effects();
   UnobstructedAreaHandlers handlers = {
-    .will_change = prv_unobstructed_area_will_change,
-    .change = prv_unobstructed_area_change,
-    .did_change = prv_unobstructed_area_did_change,
+    .will_change=prv_unobstructed_area_will_change,
+    .change=prv_unobstructed_area_change,
+    .did_change=prv_unobstructed_area_did_change
   };
-  unobstructed_area_service_subscribe(handlers, NULL);
+  unobstructed_area_service_subscribe(handlers,NULL);
 }
 
 static void prv_window_unload(Window *window) {
   unobstructed_area_service_unsubscribe();
   layer_destroy(s_status_layer);
   layer_destroy(s_context_layer);
-  for (unsigned i = 0; i < COMPLICATION_SLOT_COUNT; ++i) { layer_destroy(s_complication_layers[i]); }
+  for (unsigned i=0;i<COMPLICATION_SLOT_COUNT;++i) { layer_destroy(s_complication_layers[i]); }
   text_layer_destroy(s_date_layer);
   text_layer_destroy(s_time_layer);
-  text_layer_destroy(s_date_shadow_layer);
-  text_layer_destroy(s_time_shadow_layer);
-  fonts_unload_custom_font(s_date_font);
-  fonts_unload_custom_font(s_time_font);
-  fonts_unload_custom_font(s_compact_date_font);
-  fonts_unload_custom_font(s_small_date_font);
-  fonts_unload_custom_font(s_compact_time_font);
-  fonts_unload_custom_font(s_large_date_font);
-  fonts_unload_custom_font(s_large_compact_time_font);
-  if (s_drop_path != NULL) { gpath_destroy(s_drop_path); s_drop_path = NULL; }
-  if (s_small_drop_path != NULL) { gpath_destroy(s_small_drop_path); s_small_drop_path = NULL; }
-  for (unsigned i = 0; i < LARGE_TIME_FONT_COUNT; ++i) { fonts_unload_custom_font(s_large_time_fonts[i]); }
-  for (unsigned i = 0; i < COMPLICATION_FONT_COUNT; ++i) { fonts_unload_custom_font(s_complication_fonts[i]); }
+  if (s_drop_path!=NULL) { gpath_destroy(s_drop_path); s_drop_path=NULL; }
+  if (s_small_drop_path!=NULL) { gpath_destroy(s_small_drop_path); s_small_drop_path=NULL; }
   layer_destroy(s_background_layer);
-  s_window_layer = NULL;
+  s_window_layer=NULL;
 }
 
 static void prv_init(void) {
-  s_background_color = GColorBlack;
-  s_text_color = GColorWhite;
+  s_background_color = GColorWhite;
+  s_text_color = GColorBlack;
+  s_accent_color = GColorFromHEX(0x55AAFF);
   s_text_shadow_enabled = false;
   s_large_text_enabled = false;
   s_use_12_hour = false;
@@ -1074,6 +879,10 @@ static void prv_init(void) {
     s_background_color = GColorFromHEX(persist_read_int(PERSIST_KEY_BACKGROUND_COLOR));
   }
   if (persist_exists(PERSIST_KEY_TEXT_COLOR)) { s_text_color = GColorFromHEX(persist_read_int(PERSIST_KEY_TEXT_COLOR)); }
+  if (persist_exists(PERSIST_KEY_ACCENT_COLOR)) {
+    const int32_t accent = persist_read_int(PERSIST_KEY_ACCENT_COLOR);
+    if (accent>=0 && accent<=0xffffff) { s_accent_color=GColorFromHEX(accent); }
+  }
   if (persist_exists(PERSIST_KEY_TEXT_SHADOW)) { s_text_shadow_enabled = persist_read_bool(PERSIST_KEY_TEXT_SHADOW); }
   if (persist_exists(PERSIST_KEY_LARGE_TEXT)) { s_large_text_enabled = persist_read_bool(PERSIST_KEY_LARGE_TEXT); }
   if (persist_exists(PERSIST_KEY_USE_12_HOUR)) { s_use_12_hour = persist_read_bool(PERSIST_KEY_USE_12_HOUR); }

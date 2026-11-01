@@ -51,6 +51,19 @@ static inline bool reading_parts(const char *text, ReadingParts *result) {
   return true;
 }
 
+// System LECO fonts are intentionally a numeric subset. Normalize only the
+// rendered sign; the shared complication value and unit remain untouched.
+static inline void reading_native_number(const char *source, char *result, size_t capacity) {
+  if (capacity == 0) { return; }
+  size_t at = 0;
+  if (capacity > 1 && strncmp(source,"−",3)==0) {
+    result[at++]='-';
+    source += 3;
+  }
+  while (*source && at+1<capacity) { result[at++]=*source++; }
+  result[at]='\0';
+}
+
 static inline bool reading_is_probability(const ReadingParts *value) {
   if (value == NULL || strcmp(value->unit, "%") != 0 || value->number[0] == '-') { return false; }
   size_t at = value->number[0] == '+' ? 1 : 0;

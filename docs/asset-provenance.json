@@ -1,14 +1,14 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "pbw": {
-    "file": "Dynamic-0.1.0.pbw",
-    "sha256": "e7719433e2cc2f5e4025888190078164eabbed82abf61dba927fab7f1439e91a"
+    "file": "Dynamic-0.2.0.pbw",
+    "sha256": "afb2c9ba0cfd2882668c5581e44571459b4f3d16d8acd4ede121c8708804daac"
   },
   "native_payload_sha256": {
-    "emery/pebble-app.bin": "d041950361c75fd26a6620f31a6e1de169c3350df134f3e0c76519813ae8a21c",
-    "emery/app_resources.pbpack": "b52b3456e45f5bdeb4e97ecec2ddf188953f6cdade42aa33feaf58070433e803",
-    "emery/manifest.json": "db138928a295232cc2ce8f165966b016dc99f6ae3cc58e4c3e4201448da1ab7e",
-    "appinfo.json": "2563be96f48cbcd69bf53e5f03a73cf8bcb6d010e3888aba74c71effcf4695a8"
+    "appinfo.json": "0190e66cb9128f2f035b73c186c7d7a543a74d501d1cd01bb46466c5925d5646",
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "5cfa67bdf382d7491a2d20ecf64cd1178867476ef8ac607b9483a3849b048ce8",
+    "emery/pebble-app.bin": "73d9f9a3a844358b68213ca3866852efa589ef372c932fd89b1199a1bc382b93"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -26,66 +26,154 @@
   "images": [
     {
       "file": "docs/images/layout-states.png",
-      "sha256": "423f5f996233a4d35b71d37aaf2804a8bd1cbc52f3aa8d1a7506166995bda7b9",
+      "sha256": "6a76ffaeecdb729bf6e712a459b85a7d7313293d1574e26a84b43169664260fd",
       "pixels": [
         880,
-        300
+        282
       ],
-      "provenance": "Native Emery fixture capture, or labeled composite of native captures; not live phone data"
+      "provenance": "Exact 0.2.0 native Emery payload with idle phone JavaScript and production-packed fixtures; not live phone data. Labels, if present, lie outside the native frame.",
+      "fixture_captures": [
+        "normal-idle.png",
+        "normal-music.png",
+        "normal-notice.png",
+        "normal-music-peek.png"
+      ],
+      "native_frame_pixels_modified": false
     },
     {
       "file": "docs/images/music.png",
-      "sha256": "634283482b0f88ce12a6c707b01e894cfdb99dcdc822699be0d00f8282eaccdf",
+      "sha256": "b580c6f15493098e8c0f190105fbb4ebb17328a6c3f466cf8a5bc226b7eb4efd",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery fixture capture, or labeled composite of native captures; not live phone data"
+      "provenance": "Exact 0.2.0 native Emery payload with idle phone JavaScript and production-packed fixtures; not live phone data. Labels, if present, lie outside the native frame.",
+      "fixture_capture": "normal-music.png",
+      "native_pixels_modified": false
     },
     {
       "file": "docs/images/normal.png",
-      "sha256": "d08112c212f2993faa2dacfe61a25a20cf3311093fd10aa0b0197b65ab0b4289",
+      "sha256": "286de800738a9f8f28228be424e5462f6c6019e34a9e7cc811bc6bd053342461",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery fixture capture, or labeled composite of native captures; not live phone data"
+      "provenance": "Exact 0.2.0 native Emery payload with idle phone JavaScript and production-packed fixtures; not live phone data. Labels, if present, lie outside the native frame.",
+      "fixture_capture": "normal-idle.png",
+      "native_pixels_modified": false
     },
     {
       "file": "docs/images/notification.png",
-      "sha256": "8665a0c3e4a8176cfcf832e951240e5111f63a2d05280fbfa9d88e328fbc1e51",
+      "sha256": "fb5aef72f4c5792a8302bbe5a57956adf8212bba08b285247264870bbc46bb56",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery fixture capture, or labeled composite of native captures; not live phone data"
+      "provenance": "Exact 0.2.0 native Emery payload with idle phone JavaScript and production-packed fixtures; not live phone data. Labels, if present, lie outside the native frame.",
+      "fixture_capture": "normal-notice.png",
+      "native_pixels_modified": false
     },
     {
       "file": "docs/images/settings-dark.png",
-      "sha256": "a32265105c792dde77e1b07f61a8a2cabef1938eb572dbcf4c4b30310c7b4fcc",
+      "sha256": "2189faaa7e2cdbde68d4fed086868357cc39393e58f9487bedb19a3c1d900015",
       "pixels": [
         390,
-        1608
+        1634
       ],
       "provenance": "Actual Clay form with fixture bridge in Chromium; not a phone screenshot"
     },
     {
       "file": "docs/images/settings-light.png",
-      "sha256": "308c5ae90fa06e1148f6ebe4d61040a0df341552c36b68ece5f9194c6a9ffed2",
+      "sha256": "2c16cd23077c1e2e025f82c6150fee411bcbf8cb2f2b5f7d5d6dc831c0e422d4",
       "pixels": [
         390,
-        1590
+        1615
       ],
       "provenance": "Actual Clay form with fixture bridge in Chromium; not a phone screenshot"
     },
     {
       "file": "docs/images/timeline-peek.png",
-      "sha256": "10e1f72e40348a162865bdfc04879a4641601b2c129b9567ef19e93ef2dc0848",
+      "sha256": "83e71d9bac9105622708a681f8ca47d4c6908d9d2afe0d234ba74c9d45403f16",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery fixture capture, or labeled composite of native captures; not live phone data"
+      "provenance": "Exact 0.2.0 native Emery payload with idle phone JavaScript and production-packed fixtures; not live phone data. Labels, if present, lie outside the native frame.",
+      "fixture_capture": "normal-music-peek.png",
+      "native_pixels_modified": false
     }
-  ]
+  ],
+  "system_fonts": {
+    "provider": "PebbleOS firmware and installed language packs",
+    "sdk": "4.33.1",
+    "custom_resource_entries": 0,
+    "verified_system_font_keys": [
+      "GOTHIC_14",
+      "GOTHIC_14_BOLD",
+      "GOTHIC_18",
+      "GOTHIC_18_BOLD",
+      "GOTHIC_24",
+      "GOTHIC_24_BOLD",
+      "GOTHIC_28",
+      "GOTHIC_28_BOLD",
+      "LECO_20_BOLD_NUMBERS",
+      "LECO_26_BOLD_NUMBERS_AM_PM",
+      "LECO_32_BOLD_NUMBERS",
+      "LECO_36_BOLD_NUMBERS",
+      "LECO_38_BOLD_NUMBERS",
+      "LECO_42_NUMBERS",
+      "LECO_60_BOLD_NUMBERS_AM_PM",
+      "LECO_60_NUMBERS_AM_PM"
+    ],
+    "scope": "References checked against SDK catalog and linked binary; no embedded glyph corpus"
+  },
+  "design_reference": {
+    "repository": "https://github.com/coredevices/PebbleOS",
+    "commit": "7bf58aca187860b122d7ef4f7dba287d24aa887f",
+    "sources": [
+      "fw/apps/system/weather",
+      "fw/apps/system/workout"
+    ],
+    "reference_images_redistributed": false
+  },
+  "native_qa": {
+    "pbw_sha256": "afb2c9ba0cfd2882668c5581e44571459b4f3d16d8acd4ede121c8708804daac",
+    "rendering_cases": 50,
+    "native_lifecycle_checks": 3,
+    "matrix_captures": 60,
+    "source_artwork_pixel_checks": 17920,
+    "source_language_content_fixtures": 17,
+    "native_language_content_samples": [
+      "cs",
+      "hu",
+      "ro",
+      "tr"
+    ],
+    "native_locale_date_injection": false,
+    "physical_phone_tested": false,
+    "actual_timeline_event_text_verified": false,
+    "continuous_animation_added": false,
+    "native_font_scope": "Stock firmware font pixels checked in captures; no custom PFO corpus.",
+    "supplemental_low_battery_capture": {
+      "watch_battery_at_launch": 5,
+      "phone_battery_fixture": 15,
+      "both_badges_rendered": true,
+      "watch_battery_change_callback_verified": false
+    }
+  },
+  "settings_qa": {
+    "actual_clay_browser_cases": 68,
+    "languages": 17,
+    "widths": [
+      320,
+      390
+    ],
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "page_errors": 0,
+    "clipped_or_overflowing_controls": 0,
+    "physical_phone_tested": false
+  }
 }

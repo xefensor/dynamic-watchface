@@ -65,16 +65,31 @@ test('translation preserves preference identifiers, defaults and schema while cl
 test('borderless settings expose only applicable controls and preserve privacy defaults',()=>{
   const all=items(config);
   const find=key=>all.find(item=>item.messageKey===key);
-  assert.equal(find('BACKGROUND_COLOR').defaultValue,'0x000000');
-  assert.equal(find('TEXT_COLOR').defaultValue,'0xFFFFFF');
-  assert.equal(find('TEXT_SHADOW').defaultValue,false);
+  assert.equal(find('BACKGROUND_COLOR').defaultValue,'0xFFFFFF');
+  assert.equal(find('TEXT_COLOR').defaultValue,'0x000000');
+  assert.equal(find('ACCENT_COLOR').defaultValue,'0x55AAFF');
+  assert.equal(find('TEXT_SHADOW'),undefined);
   assert.equal(find('SHOW_MUSIC').defaultValue,true);
   assert.equal(find('SHOW_NOTIFICATIONS').defaultValue,false);
   assert.equal(find('NOTIFICATION_PREVIEW').defaultValue,false);
-  for(const key of ['DEPTH_EFFECT','PANEL_TRANSITIONS','LAYOUT_STYLE','WEATHER_LOCATION','FOLLOW_PEBBLE_UNITS','USE_FAHRENHEIT']){
+  for(const key of ['DEPTH_EFFECT','TEXT_SHADOW','PANEL_TRANSITIONS','LAYOUT_STYLE','WEATHER_LOCATION','FOLLOW_PEBBLE_UNITS','USE_FAHRENHEIT']){
     assert.equal(find(key),undefined,key);
   }
   assert.ok(visible(config).some(value=>value.includes('slots 1 and 2')));
   assert.ok(visible(config).some(value=>value.includes('Timeline Peek')));
   assert.doesNotMatch(visible(config).join('\n'),/Halftone|halftone|dot transition|dithered|Optical effects/);
+});
+
+
+test('native-style panel help and Big text descriptions are translated without stale shadow controls',()=>{
+  for(const language of languages) {
+    const all=items(localization.translateConfig(config,language));
+    const accent=all.find(item=>item.messageKey==='ACCENT_COLOR');
+    const big=all.find(item=>item.messageKey==='LARGE_TEXT');
+    assert.equal(accent.label,localization.t('accentColor',language));
+    assert.equal(accent.description,localization.t('accentHelp',language));
+    assert.equal(big.description,localization.t('largeTextHelp',language));
+    assert.equal(all.find(item=>item.messageKey==='TEXT_SHADOW'),undefined);
+    assert.equal(localization.t('shadow',language),'shadow');
+  }
 });

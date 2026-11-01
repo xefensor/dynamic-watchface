@@ -6,8 +6,8 @@ module.exports = function() {
   var style = document.createElement('style');
   style.id = 'dynamic-settings-style';
   style.textContent = [
-    ':root{color-scheme:light;--page:#f4f3f0;--card:#fff;--ink:#22211f;--muted:#68645f;--line:#e8e5df;--accent:#145ca3;--field:#f4f3f0;--track:#d7d3cc}',
-    '@media(prefers-color-scheme:dark){:root{color-scheme:dark;--page:#151514;--card:#222220;--ink:#f5f3ef;--muted:#b7b1a8;--line:#3b3935;--accent:#77bbff;--field:#30302c;--track:#5b5851}}',
+    ':root{color-scheme:light;--page:#f4f5f7;--card:#fff;--ink:#101216;--muted:#5a6068;--line:#dde1e6;--accent:#145ca3;--field:#f4f5f7;--track:#cad0d6}',
+    '@media(prefers-color-scheme:dark){:root{color-scheme:dark;--page:#141618;--card:#212529;--ink:#f6f8fa;--muted:#b8c0c9;--line:#3c444d;--accent:#77bbff;--field:#2a3037;--track:#565f6a}}',
     'html{font-size:16px!important;height:auto;background:var(--page)}',
     'body{box-sizing:border-box;height:auto;max-width:512px;margin:0 auto;padding:20px 16px 28px;background:var(--page);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
     '*,*:before,*:after{box-sizing:border-box}',
