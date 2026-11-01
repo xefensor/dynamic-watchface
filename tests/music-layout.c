@@ -51,7 +51,7 @@ int main(void) {
   MusicLines lines;
   music_wrap("Justice, Tame Impala",20,130,2,true,measure,NULL,&lines);
   assert(lines.complete && lines.count == 2);
-  assert(strcmp(lines.text[0],"Justice") == 0 && strcmp(lines.text[1],"Tame Impala") == 0);
+  assert(strcmp(lines.text[0],"Justice,") == 0 && strcmp(lines.text[1],"Tame Impala") == 0);
   music_wrap("One Two Three",20,75,3,false,measure,NULL,&lines);
   assert(lines.complete && lines.count == 3 && strcmp(lines.text[2],"Three") == 0);
   music_wrap("ABCDEFGHIJKL",20,40,3,false,measure,NULL,&lines);
@@ -91,5 +91,21 @@ int main(void) {
   assert(short_song.title_bottom == long_song.title_bottom && long_song.cover_top == short_song.cover_top);
   music_layout_build("Genesis","Justice, Tame Impala",true,true,measure,NULL,&big);
   assert(big.artist_point == 20 && big.artist.count == 2);
+  // The source remains one scalar string, even when a band name contains
+  // punctuation that offers a useful line break.
+  music_wrap("Earth, Wind & Fire",20,110,2,true,measure,NULL,&lines);
+  assert(lines.complete&&strcmp(lines.text[0],"Earth,")==0&&strcmp(lines.text[1],"Wind & Fire")==0);
+  char long_text[COMPLICATION_MAX_TEXT_BYTES+1];
+  memset(long_text,'W',sizeof(long_text)-1);long_text[sizeof(long_text)-1]='\0';
+  music_wrap(long_text,26,180,3,false,measure,NULL,&lines);
+  assert(!lines.complete&&lines.count==3&&strstr(lines.text[2],"…"));
+  for(int large=0;large<=1;++large) {
+    MusicLayout banner;
+    music_layout_build_at(long_text,"Justice, Tame Impala",true,large,120,measure,NULL,&banner);
+    check(&banner,true);
+    assert(banner.title_top>=120&&banner.cover_top==176&&banner.artist.count==2);
+    const int last=banner.artist.count-1;
+    assert(banner.artist_baseline[last]+body_text_descent(banner.artist.text[last],banner.artist_point)==216);
+  }
   return 0;
 }

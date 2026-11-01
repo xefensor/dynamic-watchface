@@ -1,6 +1,6 @@
 # Design references and motion
 
-Dynamic 0.3.2 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.4.0 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -50,7 +50,8 @@ positions. The Complication Face demo selects slots by data shape.
   keeping both horizontal readings. Music's artwork and up to two artist
   lines stay anchored to the bottom; a full-width title grows upward through
   up to three lines with an 8px gap above the footer. Notifications keep their
-  source heading and optional large body.
+  source heading and optional bounded body. Summary banners retain the music
+  footer and briefly reduce the title area instead of taking over the whole face.
 - **Motion explains the change:** the clock and readings move together as
   context enters or leaves. In the active layout, fresh track and notice
   updates move inside the context area while the surrounding layout stays
@@ -59,8 +60,9 @@ positions. The Complication Face demo selects slots by data shape.
   The Animations setting disables Dynamic's local transitions.
 
 The face renders source-provided data and recognized semantic symbols. Its
-current gauge represents source-identified rain probability from 0–100%.
-Other percentages remain ordinary readings. A temperature can use a source
+gauges use a validated provider-supplied range, with source-identified rain
+probability retaining its 0–100% presentation. Arbitrary percentages never acquire
+an invented range. A temperature can use a source
 image or a thermometer symbol. Source artwork retains the limitations of the
 image actually received.
 

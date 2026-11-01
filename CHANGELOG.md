@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.0
+
+- Makes short notifications proportional to their content, retaining the fixed
+  music footer while giving message previews a bounded reading area.
+- Preserves provider labels for neutral numbers, ranges and times, with safe
+  UTF-8 ellipses for long labels.
+- Preserves two horizontal readings with semantic labels, clearer missing-data
+  states and a consistent reading accent, including rain gauges.
+- Rebuilds settings around native sample previews, themes, left/right source
+  summaries, individual feature health and conditional privacy/app controls.
+- Adds Follow Pebble / 12-hour / 24-hour time, preserving existing explicit
+  choices, and acknowledged settings delivery with reconnect recovery.
+- Translates the complete settings experience into 17 languages.
+- Adopts Core 0.2.0: 128-byte UTF-8 text, requested 40px artwork, typed reading
+  metadata and replacement of obsolete waiting source snapshots.
+- Caps notification bursts at eight seconds without replaying historical
+  notifications. Private context stays transient and clears on disconnect.
+- Keeps the UUID and existing message-key numbers; appends CLOCK_FORMAT.
+
 ## 0.3.2
 
 - Stacks the weekday and date in the compact music/notification header,

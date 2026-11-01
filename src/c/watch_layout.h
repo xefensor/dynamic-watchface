@@ -7,6 +7,15 @@
 
 #define WATCH_LAYOUT_SLOT_COUNT 5
 
+enum { WATCH_CLOCK_FOLLOW=0, WATCH_CLOCK_12=12, WATCH_CLOCK_24=24 };
+static inline uint8_t watch_clock_format(int stored,int legacy) {
+  if(stored==WATCH_CLOCK_FOLLOW||stored==WATCH_CLOCK_12||stored==WATCH_CLOCK_24)return (uint8_t)stored;
+  return legacy<0?WATCH_CLOCK_FOLLOW:legacy?WATCH_CLOCK_12:WATCH_CLOCK_24;
+}
+static inline bool watch_clock_uses_12(unsigned format,bool system_24) {
+  return format==WATCH_CLOCK_12||(format==WATCH_CLOCK_FOLLOW&&!system_24);
+}
+
 typedef struct {
   float clock_x, clock_y, clock_size, date_x, date_y;
   float row_y, icon_x, icon_y, icon_radius, icon_size;
@@ -45,13 +54,25 @@ static inline WatchPose watch_pose_idle(bool large) {
 
 static inline WatchPose watch_pose_context(bool large, bool notice) {
   return (WatchPose){58,43,large ? 42 : 40,158,24,
-    68,-25,-2,10,14,12,6,large ? 22 : 20,12,22,0,
+    68,large ? -36 : -25,-2,large ? 6 : 10,large ? 10 : 14,
+    large ? 8 : 12,4,large ? 22 : 20,12,large ? 21 : 18,1,
     1,notice ? 0 : 1,notice ? 1 : 0,0};
 }
 
 static inline WatchPose watch_pose_peek(bool large) {
   return (WatchPose){100,89,large ? 68 : 66,100,23,
-    135,-25,-2,11,16,12,6,large ? 26 : 24,13,22,0,0,0,0,1};
+    135,large ? -36 : -25,-2,large ? 7 : 11,large ? 10 : 16,
+    large ? 8 : 12,6,large ? 26 : 24,13,22,1,0,0,0,1};
+}
+
+static inline WatchPose watch_pose_summary(bool large) {
+  WatchPose pose=watch_pose_peek(large);
+  pose.peek=0;pose.notice=1;
+  return pose;
+}
+
+static inline float watch_context_visibility(WatchPose pose) {
+  return watch_clamp(pose.music+pose.notice);
 }
 
 // Horizontal separation and number fitting precede vertical convergence.

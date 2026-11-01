@@ -1,6 +1,87 @@
 # Dynamic validation
 
-## 0.3.2 bottom-anchored music and compact date
+## 0.4.0 settings, richer readings and proportional notifications
+
+Dynamic 0.4.0 adopts the pinned Core 0.2.0 package while retaining its UUID,
+existing message-key numbers, two horizontal reading slots and fixed music
+footer. CLOCK_FORMAT is appended after the existing keys. Settings add native
+sample previews, per-source health, conditional notification controls and
+acknowledged delivery with reconnect recovery.
+
+- **59 JavaScript tests and six strict C99 suites pass.** The saved Dynamic
+  results cover settings acknowledgement ordering and retries, clock-format
+  choices, source health and privacy, all 17 settings languages, native preview
+  integrity, notification presentation, reading semantics, text/raster assets
+  and the music/watch layouts.
+- **Core 0.2.0 passes 103 JavaScript tests and three native suites.** Coverage
+  includes legacy and v3 packet decoding, UTF-8 metadata limits, typed reading
+  metadata, larger artwork, cache/freshness rules, transient private context,
+  reconnect baselines and replacement of obsolete waiting source snapshots.
+  The committed core source is
+  `e5510d4998973d5bd339eb9c771594313f6764a3`; the pinned archive SHA-256 is
+  `1525575a2e8e17201fb3625c48a9752553f54ab34ac7b72a7ab455cb36949c3e`.
+- **68 settings interaction cases pass**, including all 17 languages. The
+  final actual Clay checks verify all **40 native sample presets** against
+  their canvas RGBA output, five clock-preference migration cases, conditional
+  controls, comma-only filter rejection and the save round trip. English,
+  Czech and German final pages have no page errors or external requests.
+  English/light and Czech/dark at 390×844 have no overflow and retain a visible
+  fixed Save control. These checks use a fixture source bridge, not a physical
+  phone.
+- Upgrades from the released 0.3.2 PBW preserve both legacy explicit clock
+  choices: legacy 0 migrates to 24-hour, and legacy 1 to 12-hour. Each migrated
+  render matches the corresponding explicit choice. Selecting Follow Pebble
+  overrides the legacy preference and remains effective after relaunch.
+- The saved pre-label-fix matrix covers **35 rendering cases, 68 native stills
+  and 11 motion paths**, plus two animation opt-out runs. It includes normal
+  and Big text, long/Cyrillic/Greek music, missing artwork, sparse/stale and
+  typed readings, light/dark pages, notifications and native Timeline Peek.
+  Lifecycle checks retain the exact music footer beneath a summary and
+  restore the exact prior music image after notification expiry. These saved
+  results are reused for unaffected behavior; they are not described as a
+  rerun against the final binary.
+- That matrix used PBW
+  `3cb33a351e2471367b8dbda6f90cf84bb55146d7c447f640997be67ddcc71f4e`.
+  Its visual approval was superseded specifically because neutral NUMBER
+  providers labelled `Progress` and `Charge` displayed the fallback `VALUE`.
+  Final provider-label checks against the rebuilt PBW are recorded below.
+
+- **34 final-PBW native captures and 16 exact RGB comparisons pass.** Six
+  typed/untyped neutral-label comparisons prove `Progress` and `Charge` remain
+  distinct in idle, music and Timeline Peek at both text sizes. Czech and
+  wide Latin labels end cleanly at their measured ellipsis; range and timestamp
+  readings preserve `Today` and `Sunset`. All five focused contact sheets were
+  visually reviewed. Ten unaffected state/size captures match the saved matrix
+  pixel for pixel, including music, summary/body notices and Timeline Peek.
+- All six native suites were rerun after the provider-label fix. The final
+  package audit passes SDK/source/native identity, all 34 message keys, UUID,
+  permission manifest, pinned core and the original font/resource tables.
+  Settings and core JavaScript are unchanged, so their saved passing results
+  are reused. Native sample previews retain their original capture hashes;
+  the later label fix leaves their known-semantic example content unchanged.
+- Reinspection of the saved dense motion sheets found partially drawn headers
+  in early QEMU framebuffer captures of two notice transitions. Their settled
+  native screenshots are correct. These asynchronous captures do not establish
+  whether any corresponding flash occurs on hardware; no hardware motion or
+  frame-rate claim is made.
+
+- SDK 4.33.1 reports **246,928 resource bytes**, a **61,798-byte static RAM
+  footprint** and **69,274 bytes available heap before the startup allocation**.
+  The existing runtime heap check succeeded with approximately 30.7 kB used.
+  Larger transient buffers use a single startup allocation; the label fix
+  does not add per-frame heap allocation.
+- Native fixtures use the production pinned core encoder and native
+  AppMessage. Phone JavaScript is tested separately and is not executed by
+  these emulator fixture runs. The SDK firmware locale is English; Greek and
+  Cyrillic provider text comes from literal fixtures. Live plugin/media and
+  notification callbacks, actual Timeline event text, physical PT2 behavior
+  and hardware animation FPS/power remain untested.
+
+Rebuilt PBW SHA-256:
+
+`b83feab5e9ceef828632a95dd9ac25d45e29a6b3bdb392a8e309fc3a5b581946`
+
+## Historical 0.3.2 bottom-anchored music and compact date
 
 Music uses a measured native layout with a fixed visible bottom at y216.
 A 40px artwork target and up to two artist lines share that bottom; up to

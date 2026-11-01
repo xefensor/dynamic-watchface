@@ -10,7 +10,9 @@ const keys = Object.fromEntries(packageInfo.pebble.messageKeys.map((key,i) => [k
 function fixture(settings = {}, locales = {}) {
   let watchLanguage = locales.watch;
   let saved = JSON.stringify(settings);
-  let options, contextOptions, clay, fail = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
+  const storage = {};
+  let options, contextOptions, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
+  const deferred=[];
   const contextRefreshes=[], connections=[];
   const handlers = {}, deliveries = [], urls = [], timers = [];
   const status = {available:true,configured:0,ready:0,error:'',slots:[]};
@@ -20,6 +22,7 @@ function fixture(settings = {}, locales = {}) {
       if (name === 'message_keys') return keys;
       if (name === './config') return require('../src/pkjs/config');
       if (name === './settings-page') return require('../src/pkjs/settings-page');
+      if (name === './settings-preview') return require('../src/pkjs/settings-preview');
       if (name === './localization') return require('../src/pkjs/localization');
       if (name === '@rebble/clay') return function(config,_custom,opts) {
         assert.equal(opts.autoHandleEvents,false);
@@ -52,22 +55,24 @@ function fixture(settings = {}, locales = {}) {
     Pebble: {
       getActiveWatchInfo:()=> {if(locales.throwWatchInfo)throw Error('Disconnected');return {language:watchLanguage};},
       addEventListener:(event,fn)=> {handlers[event]=fn;},
-      sendAppMessage:(payload,ok,error)=> {deliveries.push(payload);if(fail){if(error)error();}else if(ok)ok();},
+      sendAppMessage:(payload,ok,error)=> {deliveries.push(payload);if(hold){deferred.push({ok,error});}else if(fail){if(error)error();}else if(ok)ok();},
       openURL:url=>urls.push(url)
     },
     navigator:{language:locales.phone || 'en-US'},
-    localStorage:{getItem:()=>saved,setItem:(_key,value)=>{saved=value;}},
+    localStorage:{getItem:key=>key==='clay-settings'?saved:storage[key] || null,
+      setItem:(key,value)=>{if(key==='clay-settings')saved=value;else storage[key]=value;}},
     setTimeout:(fn,delay)=>{const id=++timerId;timers.push({fn,delay,id});return id;},
     clearTimeout:id=>{const at=timers.findIndex(timer=>timer.id===id);if(at>=0)timers.splice(at,1);},
     console:{log:()=>{}}
   });
   return {handlers,deliveries,urls,status,contextStatus,clay,options,contextOptions,timers,contextRefreshes,connections,
     refreshes:()=>refreshed,configured:()=>configured,settings:()=>JSON.parse(saved),
-    contextConfigured:()=>contextConfigured,
-    fail:value=>{fail=value;},watchLanguage:value=>{watchLanguage=value;}};
+    contextConfigured:()=>contextConfigured,storage,
+    fail:value=>{fail=value;},hold:value=>{hold=value;},deferred,watchLanguage:value=>{watchLanguage=value;}};
 }
-const item=(f,id)=>f.clay.config.flatMap(section=>section.items || []).find(x=>x.id===id);
-const named=(f,key)=>f.clay.config.flatMap(section=>section.items || []).find(x=>x.messageKey===key);
+const allItems=f=>f.clay.config.flatMap(section=>[section].concat(section.items || []));
+const item=(f,id)=>allItems(f).find(x=>x.id===id);
+const named=(f,key)=>allItems(f).find(x=>x.messageKey===key);
 
 test('ready and named/numeric complication requests refresh the generic coordinator',()=>{
   const f=fixture();f.handlers.ready();
@@ -282,9 +287,10 @@ test('new appearance keys extend the original wire contract without renumbering 
     'WEATHER_CONDITION','COMPLICATION_DATA','REQUEST_COMPLICATIONS','CONTEXT_DATA','REQUEST_CONTEXT',
     'SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS','SHOW_STATUS','PANEL_TRANSITIONS'];
   assert.deepEqual(packageInfo.pebble.messageKeys.slice(0,31),legacy);
-  assert.equal(packageInfo.pebble.messageKeys.length,33);
+  assert.equal(packageInfo.pebble.messageKeys.length,34);
   assert.equal(keys.ACCENT_COLOR,10031);
   assert.equal(keys.ANIMATIONS,10032);
+  assert.equal(keys.CLOCK_FORMAT,10033);
 });
 
 test('animations deliver explicit on and off through named and numeric settings',()=>{
@@ -324,4 +330,75 @@ test('missing or malformed saved animation choices retain the enabled new-instal
     assert.equal(named(f,'ANIMATIONS').defaultValue,true);
     assert.deepEqual(f.settings(),saved);
   }
+});
+
+test('clock format follows Pebble for new installs and preserves legacy explicit choices',()=>{
+  for(const [saved,wanted] of [[{},0],[{USE_12_HOUR:true},12],[{USE_12_HOUR:false},24],
+    [{[keys.USE_12_HOUR]:0},24],[{CLOCK_FORMAT:0,USE_12_HOUR:true},0],
+    [{CLOCK_FORMAT:12},12],[{[keys.CLOCK_FORMAT]:24},24]]) {
+    const f=fixture(saved);f.handlers.showConfiguration();
+    assert.equal(named(f,'CLOCK_FORMAT').defaultValue,wanted);
+    assert.equal(f.options.getSettings().clockFormat,wanted);
+    assert.deepEqual(f.settings(),saved);
+  }
+});
+
+test('clock format accepts only the three supported numeric choices',()=>{
+  for(const value of [0,12,24]) {
+    const f=fixture();f.handlers.webviewclosed({response:JSON.stringify({CLOCK_FORMAT:{value}})});
+    assert.equal(f.deliveries[0][keys.CLOCK_FORMAT],value);
+  }
+  for(const value of [-1,1,13,12.5,null,'12',true,{},[]]) {
+    const f=fixture();f.handlers.webviewclosed({response:JSON.stringify({CLOCK_FORMAT:{value},TEXT_COLOR:123})});
+    assert.deepEqual(Object.keys(f.deliveries[0]),[String(keys.TEXT_COLOR)]);
+  }
+});
+
+test('failed settings remain pending for reconnect and clear only after watch acknowledgement',()=>{
+  const f=fixture();f.fail(true);
+  f.handlers.webviewclosed({response:JSON.stringify({TEXT_COLOR:123})});
+  while(f.timers.length)f.timers.shift().fn();
+  let record=JSON.parse(f.storage['dynamic-settings-delivery-v1']);
+  assert.equal(record.state,'failed');assert.equal(record.payload[keys.TEXT_COLOR],123);
+  f.fail(false);f.handlers.appmessage({payload:{REQUEST_COMPLICATIONS:1}});
+  record=JSON.parse(f.storage['dynamic-settings-delivery-v1']);
+  assert.equal(record.state,'saved');assert.equal(record.payload,undefined);
+  assert.equal(f.deliveries.length,4);
+});
+
+test('an older settings acknowledgement cannot mark a newer save as delivered',()=>{
+  const f=fixture();f.hold(true);
+  f.handlers.webviewclosed({response:JSON.stringify({TEXT_COLOR:123})});
+  f.handlers.webviewclosed({response:JSON.stringify({TEXT_COLOR:456})});
+  const latest=JSON.parse(f.storage['dynamic-settings-delivery-v1']).id;
+  f.deferred.shift().ok();
+  const pending=JSON.parse(f.storage['dynamic-settings-delivery-v1']);
+  assert.equal(pending.id,latest);assert.equal(pending.state,'pending');
+  assert.equal(pending.payload[keys.TEXT_COLOR],456);
+  f.deferred.shift().ok();
+  assert.equal(JSON.parse(f.storage['dynamic-settings-delivery-v1']).state,'saved');
+});
+
+test('settings metadata keeps per-slot property and per-feature permission states distinct',()=>{
+  const f=fixture({SHOW_NOTIFICATIONS:true});
+  f.status.slots=[{slot:1,category:'weather',item:'location',property:'temperature',text:'5°C',status:'ready'},
+    {slot:2,category:'weather',item:'location',property:'precipitation',status:'denied',message:'Allow location <access>'}];
+  f.contextStatus.sourceStates={music:{state:'idle',message:''},notifications:{state:'denied',message:'PERMISSION_DENIED'},phone:{state:'ready',message:''}};
+  f.handlers.showConfiguration();
+  const encoded=item(f,'dynamic-settings-data').defaultValue;
+  const data=JSON.parse(encoded.replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&'));
+  assert.equal(data.slots[0].property,'temperature');assert.equal(data.slots[0].value,'5°C');
+  assert.equal(data.slots[1].status,'denied');assert.equal(data.sources.music.state,'idle');
+  assert.equal(data.sources.notifications.state,'denied');assert.equal(data.sources.phone.state,'ready');
+  assert.doesNotMatch(encoded,/<access>/);
+});
+
+test('private selected readings never enter settings examples or provider error diagnostics',()=>{
+  const f=fixture();Object.assign(f.status,{configured:2,ready:0,error:'PLUGIN_UNAVAILABLE'});
+  f.status.slots=[{slot:1,category:'music',item:'track',property:'title',label:'Private artist',text:'Private song',status:'unavailable',error:'PLUGIN_UNAVAILABLE',message:'Private provider detail'},
+    {slot:2,category:'notifications',item:'notification',property:'body',label:'Private sender',text:'Private message',status:'ready'}];
+  f.handlers.showConfiguration();
+  const visible=JSON.stringify(f.clay.config);
+  assert.doesNotMatch(visible,/Private artist|Private song|Private provider detail|Private sender|Private message/);
+  assert.match(visible,/PLUGIN_UNAVAILABLE/);
 });

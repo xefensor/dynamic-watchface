@@ -4,8 +4,9 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include "complication_data.h"
 
-#define READING_PART_BYTES 49
+#define READING_PART_BYTES (COMPLICATION_MAX_TEXT_BYTES + 1)
 
 typedef struct {
   char number[READING_PART_BYTES];

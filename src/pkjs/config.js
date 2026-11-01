@@ -1,148 +1,56 @@
+'use strict';
+
+// Clay retains the established preference keys. Page-only choices translate to
+// these fields, so notification privacy remains compatible with earlier builds.
 module.exports = [
-  {
-    "type": "heading",
-    "defaultValue": "Dynamic Settings"
-  },
-  {
-    "type": "section",
-    "items": [
-      {
-        "type": "heading",
-        "defaultValue": "Appearance"
-      },
-      {
-        "type": "color",
-        "messageKey": "BACKGROUND_COLOR",
-        "defaultValue": "0xFFFFFF",
-        "label": "Background color"
-      },
-      {
-        "type": "color",
-        "messageKey": "TEXT_COLOR",
-        "defaultValue": "0x000000",
-        "label": "Text color"
-      },
-      {
-        "type": "color",
-        "messageKey": "ACCENT_COLOR",
-        "defaultValue": "0x55AAFF",
-        "label": "Accent color",
-        "description": "Color for reading symbols. Rain gauges and notification symbols use yellow."
-      },
-      {
-        "type": "toggle",
-        "messageKey": "USE_12_HOUR",
-        "defaultValue": false,
-        "label": "12-hour time"
-      },
-      {
-        "type": "toggle",
-        "messageKey": "LARGE_TEXT",
-        "defaultValue": false,
-        "label": "Big text",
-        "description": "Larger date, readings and messages. The clock fits the available width."
-      },
-      {
-        "type": "toggle",
-        "messageKey": "ANIMATIONS",
-        "defaultValue": true,
-        "label": "Animations",
-        "description": "Short transitions when music or notifications change."
-      },
-      {
-        "type": "toggle",
-        "messageKey": "SHOW_STATUS",
-        "defaultValue": true,
-        "label": "Status indicators",
-        "description": "Low watch or phone battery and lost connection."
-      }
-    ]
-  },
-  {
-    "type": "section",
-    "items": [
-      {
-        "type": "heading",
-        "defaultValue": "Complications"
-      },
-      {
-        "type": "text",
-        "defaultValue": "Choose slots 1 and 2 in Pebble → Settings → Complications."
-      },
-      {
-        "type": "text",
-        "defaultValue": "Complications 1 and 2 sit side by side. Both shrink above music or notifications."
-      },
-      {
-        "type": "text",
-        "defaultValue": "Units come from Pebble and the selected plugin."
-      }
-    ]
-  },
-  {
-    "type": "section",
-    "items": [
-      {
-        "type": "heading",
-        "defaultValue": "Dynamic content"
-      },
-      {
-        "type": "toggle",
-        "messageKey": "SHOW_MUSIC",
-        "defaultValue": true,
-        "label": "Show music while playing"
-      },
-      {
-        "type": "toggle",
-        "messageKey": "SHOW_NOTIFICATIONS",
-        "defaultValue": false,
-        "label": "New notifications",
-        "description": "Allow notification access in Pebble. Only new notifications appear."
-      },
-      {
-        "type": "toggle",
-        "messageKey": "NOTIFICATION_PREVIEW",
-        "defaultValue": false,
-        "label": "Include message text"
-      },
-      {
-        "type": "input",
-        "messageKey": "NOTIFICATION_APPS",
-        "defaultValue": "",
-        "label": "Apps to show",
-        "description": "Separate app names with commas. Empty means all allowed apps.",
-        "attributes": {
-          "type": "text",
-          "maxlength": 160
-        }
-      }
-    ]
-  },
-  {
-    "type": "section",
-    "items": [
-      {
-        "type": "heading",
-        "defaultValue": "Status & help"
-      },
-      {
-        "type": "text",
-        "id": "complications-status",
-        "defaultValue": "Complications: waiting for Pebble"
-      },
-      {
-        "type": "text",
-        "id": "context-status",
-        "defaultValue": "Dynamic content: waiting for Pebble"
-      },
-      {
-        "type": "text",
-        "defaultValue": "Timeline Peek keeps the clock and complications 1 and 2. Its event panel takes priority over music and notifications."
-      }
-    ]
-  },
-  {
-    "type": "submit",
-    "defaultValue": "Save settings"
-  }
+  {type:'heading',defaultValue:'Dynamic Settings'},
+  {type:'section',items:[
+    {type:'heading',defaultValue:'Sample preview'},
+    {type:'text',id:'dynamic-preview',defaultValue:'Example screens, not live data.'}
+  ]},
+  {type:'section',items:[
+    {type:'heading',defaultValue:'Display'},
+    {type:'text',id:'dynamic-theme',defaultValue:'Theme'},
+    {type:'color',messageKey:'BACKGROUND_COLOR',defaultValue:'0xFFFFFF',label:'Background color',layout:'COLOR',sunlight:false},
+    {type:'color',messageKey:'TEXT_COLOR',defaultValue:'0x000000',label:'Text color',layout:'COLOR',sunlight:false},
+    {type:'color',messageKey:'ACCENT_COLOR',defaultValue:'0x55AAFF',label:'Accent color',description:'Color for reading symbols and rain gauges.',layout:'COLOR',sunlight:false},
+    {type:'text',id:'dynamic-contrast',defaultValue:''},
+    {type:'select',messageKey:'CLOCK_FORMAT',defaultValue:0,label:'Time format',serializeValueAs:'integer',options:[
+      {label:'Follow Pebble',value:0},{label:'12-hour time',value:12},{label:'24-hour time',value:24}
+    ]},
+    {type:'toggle',messageKey:'LARGE_TEXT',defaultValue:false,label:'Larger text',description:'Larger date, readings and messages. The clock fits the available width.'},
+    {type:'toggle',messageKey:'ANIMATIONS',defaultValue:true,label:'Animations',description:'Short transitions when music or notifications change.'},
+    {type:'toggle',messageKey:'SHOW_STATUS',defaultValue:true,label:'Status indicators',description:'Low watch or phone battery and lost connection.'},
+    {type:'text',defaultValue:'Language follows your watch.'}
+  ]},
+  {type:'section',items:[
+    {type:'heading',defaultValue:'Your two readings'},
+    {type:'text',id:'dynamic-readings',defaultValue:'Complications 1 and 2 sit side by side. Both shrink above music or notifications.'},
+    {type:'text',defaultValue:'Choose slots 1 and 2 in Pebble → Settings → Complications.'},
+    {type:'text',defaultValue:'Units come from Pebble and the selected plugin.'}
+  ]},
+  {type:'section',items:[
+    {type:'heading',defaultValue:'Music & notifications'},
+    {type:'toggle',messageKey:'SHOW_MUSIC',defaultValue:true,label:'Show music while playing'},
+    {type:'text',id:'dynamic-notification-mode',defaultValue:'Notifications'},
+    {type:'toggle',messageKey:'SHOW_NOTIFICATIONS',defaultValue:false,label:'New notifications'},
+    {type:'toggle',messageKey:'NOTIFICATION_PREVIEW',defaultValue:false,label:'Include message text'},
+    {type:'text',id:'dynamic-notification-help',defaultValue:'Allow notification access in Pebble. Only new notifications appear.'},
+    {type:'text',id:'dynamic-app-mode',defaultValue:'Notification apps'},
+    {type:'input',messageKey:'NOTIFICATION_APPS',defaultValue:'',label:'Selected apps',description:'Use exact app names or Android package names, separated by commas. For example: Signal, org.thoughtcrime.securesms',attributes:{type:'text',maxlength:160,autocapitalize:'none',autocomplete:'off',spellcheck:'false'}}
+  ]},
+  {type:'section',items:[
+    {type:'heading',defaultValue:'Help & connection'},
+    {type:'text',id:'dynamic-save-status',defaultValue:'Changes apply after you save.'},
+    {type:'text',defaultValue:'Status when settings opened. Reopen settings to refresh.'},
+    {type:'text',id:'dynamic-source-status',defaultValue:'Dynamic content: waiting for Pebble'},
+    {type:'text',id:'complications-status',defaultValue:'Complications: waiting for Pebble'},
+    {type:'text',id:'context-status',defaultValue:'Dynamic content: waiting for Pebble'},
+    {type:'text',defaultValue:'Timeline Peek keeps the clock and complications 1 and 2. Its event panel takes priority over music and notifications.'}
+  ]},
+  {type:'submit',defaultValue:'Save settings'},
+  // Transport components have no preference keys and are never submitted.
+  {type:'text',id:'dynamic-settings-data',defaultValue:'{}'},
+  {type:'text',id:'dynamic-settings-strings',defaultValue:'{}'},
+  {type:'text',id:'dynamic-preview-assets',defaultValue:'{}'}
 ];

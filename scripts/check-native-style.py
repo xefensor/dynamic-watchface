@@ -38,12 +38,12 @@ LEGACY_KEYS = (
     "SHOW_NOTIFICATIONS", "NOTIFICATION_PREVIEW", "NOTIFICATION_APPS",
     "SHOW_STATUS", "PANEL_TRANSITIONS", "ACCENT_COLOR",
 )
-APP_MODULES = {"index.js", "config.js", "localization.js", "settings-page.js"}
+APP_MODULES = {"index.js", "config.js", "localization.js", "settings-page.js", "settings-preview.js"}
 CORE_MODULES = {
     "index.js", "message-queue.js", "complications.js", "complication-data.js", "context.js",
 }
-CORE_SHA256 = "b53a21ccc039ce32843d5242f11b3c99d277c68420c40f59bab56040c45c8e33"
-CORE_COMMIT = "d8ffdd11bd8e594378503e13d0a0d3cb46f5d897"
+CORE_SHA256 = "1525575a2e8e17201fb3625c48a9752553f54ab34ac7b72a7ab455cb36949c3e"
+CORE_COMMIT = "e5510d4998973d5bd339eb9c771594313f6764a3"
 PBW_FILES = {
     "appinfo.json", "pebble-js-app.js", "pebble-js-app.js.map",
     "emery/pebble-app.bin", "emery/app_resources.pbpack", "emery/manifest.json",
@@ -484,12 +484,12 @@ def audit_clock_outlines(root, binary, sources):
 
 def read_core(root, package):
     pin = json.loads((root / "vendor/CORE.json").read_text(encoding="utf-8"))
-    require(pin["package"] == "pebble-watchface-core" and pin["version"] == "0.1.0",
+    require(pin["package"] == "pebble-watchface-core" and pin["version"] == "0.2.0",
             "Review this auditor before changing the shared core release")
     require(pin["source_commit"] == CORE_COMMIT and pin["sha256"] == CORE_SHA256,
-            "Shared core provenance differs from the verified 0.1.0 release")
+            "Shared core provenance differs from the verified 0.2.0 release")
     name = pin["artifact"]
-    require(name == "pebble-watchface-core-0.1.0.tgz", "Unexpected core archive name")
+    require(name == "pebble-watchface-core-0.2.0.tgz", "Unexpected core archive name")
     require(package["dependencies"]["pebble-watchface-core"] == "file:vendor/" + name,
             "The app must use the committed, pinned core archive")
     raw = (root / "vendor" / name).read_bytes()
@@ -498,7 +498,7 @@ def read_core(root, package):
     require(pin["integrity"] == integrity, "Pinned core npm integrity differs")
     lock = json.loads((root / "package-lock.json").read_text(encoding="utf-8"))
     entry = lock["packages"]["node_modules/pebble-watchface-core"]
-    require(entry["version"] == "0.1.0" and entry["integrity"] == integrity,
+    require(entry["version"] == "0.2.0" and entry["integrity"] == integrity,
             "Lockfile differs from the committed core archive")
     with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as archive:
         members = archive.getmembers()
@@ -537,7 +537,7 @@ def read_core(root, package):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.3.2", "Review this auditor for a different release version")
+    require(package["version"] == "0.4.0", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and
@@ -546,8 +546,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
     media = settings["resources"].get("media", [])
     require(media and all(item.get("type") == "font" for item in media),
             "Only the declared custom body fonts are expected")
-    require(tuple(settings["messageKeys"]) == LEGACY_KEYS + ("ANIMATIONS",),
-            "Preserve the first 32 keys and append only ANIMATIONS")
+    require(tuple(settings["messageKeys"]) == LEGACY_KEYS + ("ANIMATIONS", "CLOCK_FORMAT"),
+            "Preserve the first 32 keys and append ANIMATIONS and CLOCK_FORMAT")
     keys = {name: 10000 + index for index, name in enumerate(settings["messageKeys"])}
     generated = json.loads((root / "build/js/message_keys.json").read_text())
     require(generated == keys, "Generated JavaScript keys are stale")

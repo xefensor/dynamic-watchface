@@ -10,7 +10,8 @@ function items(value) {
   return [value].concat(Object.values(value).flatMap(items));
 }
 function visible(value) {
-  return items(value).flatMap(item=>[
+  const hidden=['dynamic-settings-data','dynamic-settings-strings','dynamic-preview-assets','dynamic-contrast'];
+  return items(value).filter(item=>!hidden.includes(item.id)).flatMap(item=>[
     item.label,item.description,
     ['text','heading','submit'].includes(item.type)?item.defaultValue:undefined
   ]).filter(value=>typeof value==='string');
@@ -35,7 +36,7 @@ for(const language of languages)test(language+' translates every active control 
   assert.ok(english.length>25);
   translated.forEach((value,index)=>{
     assert.ok(value.length>0,english[index]);
-    const sharedWord=language==='fr'&&['Complications','Animations'].includes(english[index]);
+    const sharedWord=language==='fr'&&['Complications','Animations','Notifications'].includes(english[index]);
     if(language!=='en'&&!sharedWord)assert.notEqual(value,english[index],english[index]);
     assert.doesNotMatch(value,/Halftone|halftone/);
   });
@@ -53,7 +54,7 @@ test('translation preserves preference identifiers, defaults and schema while cl
   assert.equal(raw.length,local.length);
   raw.forEach((item,index)=>{
     assert.notEqual(item,local[index]);
-    for(const key of ['messageKey','id','type'])assert.equal(item[key],local[index][key]);
+    for(const key of ['messageKey','id','type','value','serializeValueAs'])assert.equal(item[key],local[index][key]);
     if(item.messageKey)assert.equal(item.defaultValue,local[index].defaultValue);
   });
   assert.equal(JSON.stringify(config),before);
@@ -61,6 +62,89 @@ test('translation preserves preference identifiers, defaults and schema while cl
   assert.equal(localization.t('constructor','cs'),'constructor');
   assert.equal(localization.t('untranslated future string','cs'),'untranslated future string');
   assert.equal(localization.t('Background color','cs'),'Barva pozadí');
+});
+test('custom settings strings resolve all supported locales and return isolated dictionaries',()=>{
+  const english=localization.settingsStrings('en');
+  const keys=Object.keys(english);
+  for(const language of languages){
+    const strings=localization.settingsStrings(language);
+    assert.deepEqual(Object.keys(strings),keys);
+    for(const key of keys){
+      assert.equal(strings[key],localization.t(key,language));
+      assert.ok(strings[key].length>0,key);
+    }
+    strings.title='Changed by a settings page';
+    assert.equal(localization.settingsStrings(language).title,localization.t('title',language));
+  }
+  assert.deepEqual(localization.settingsStrings('unknown'),english);
+  assert.deepEqual(localization.settingsStrings('NB_no.UTF-8'),localization.settingsStrings('no'));
+});
+test('translation preserves provider values and API identifiers in settings metadata',()=>{
+  const metadata={slots:[{category:'weather',item:'location',property:'temperature',label:'My place',
+    value:'High',unit:'°C',provider:'Weather Service',observationAgeSec:120}],
+    sources:{music:{state:'playing',message:'PLUGIN_UNAVAILABLE'}}};
+  const input=[{type:'text',id:'dynamic-settings-data',defaultValue:JSON.stringify(metadata)}];
+  for(const language of languages){
+    assert.deepEqual(localization.translateConfig(input,language),input);
+  }
+});
+test('all custom controls, source states and save outcomes have complete translations',()=>{
+  const keys=['samplePreview','sampleHelp','previewIdle','previewMusic','previewNotification','previewTimeline',
+    'display','theme','themeLight','themeDark','themeCustom','timeFormat','followPebble','time24','largerText',
+    'accentHelp','languageHelp','twoReadings','leftReading','rightReading','musicNotifications','notifications',
+    'notificationSummary','notificationAppsMode','allApps','selectedApps','appFilterHelp','appFilterRequired',
+    'helpConnection','snapshotHelp','permissionHelp','pluginHelp','connectionHelp','technicalDetails','musicSource','notificationsSource','phoneSource',
+    'sourceEmpty','sourceLoading','sourceReady','sourceUnavailable','sourceDenied','sourceUnsupported',
+    'sourceDisabled','sourcePlaying','sourcePaused','sourceIdle','sourceOff','sourceWaiting','sourcePermission',
+    'saveSaved','savePending','saveFailed','saveNone','saveSending','contrastHelp','previewSettingsNote','previewCustomHelp','previewTimelineHelp','noExample',
+    'receivedAge','observedAge','readingTemperature','readingFeelsLike','readingHigh','readingLow','readingCondition',
+    'readingHumidity','readingRain','readingUv','readingBattery','readingTitle','readingArtist','readingName'];
+  for(const language of languages){
+    const strings=localization.settingsStrings(language);
+    for(const key of keys){
+      assert.equal(typeof strings[key],'string',language+': '+key);
+      assert.notEqual(strings[key],key,language+': '+key);
+      assert.ok(strings[key].length>0,language+': '+key);
+      const sharedWord=language==='fr'&&['previewNotification','notifications','notificationsSource'].includes(key)||
+        ['cs','sk'].includes(language)&&key==='readingUv'||
+        language==='de'&&key==='readingName'||
+        ['sv','no','ro'].includes(language)&&key==='readingArtist';
+      if(language!=='en'&&!sharedWord)assert.notEqual(strings[key],localization.t(key,'en'),language+': '+key);
+      assert.equal(localization.t(localization.t(key,'en'),language),strings[key],language+': literal '+key);
+    }
+    assert.equal(strings.musicSource,strings.previewMusic);
+    assert.equal(strings.notificationsSource,strings.notifications);
+    assert.equal(strings.sourceOff,strings.stateOff);
+    assert.equal(strings.sourcePermission,strings.sourceDenied);
+    assert.match(strings.appFilterHelp,/Signal, org\.thoughtcrime\.securesms/);
+    assert.match(strings.previewSettingsNote,/64/);
+    assert.match(strings.previewTimelineHelp,/Pebble Timeline/);
+    assert.equal(localization.t('Color for reading symbols. Rain gauges and notification symbols use yellow.',language),strings.accentHelp);
+    assert.equal(localization.t('12-hour time',language),strings.time12);
+    assert.equal(localization.t('Settings delivered to watch.',language),strings.saveSaved);
+    assert.equal(localization.t('Waiting for watch.',language),strings.savePending);
+    assert.equal(localization.t('Could not reach watch. Reconnect and save again.',language),strings.saveFailed);
+    for(const key of ['receivedAge','observedAge']){
+      assert.match(strings[key],/\{age\}/,language+': '+key);
+      for(const age of [0,1,42]){
+        const translated=localization.t(key,language,{age});
+        assert.equal(translated,strings[key].replace('{age}',String(age)));
+        assert.doesNotMatch(translated,/\{age\}/);
+      }
+    }
+  }
+  assert.equal(localization.t('accentHelp','en'),'Color for reading symbols and rain gauges.');
+  assert.equal(localization.t('previewCustomHelp','en'),'Custom colors are approximate. The layout uses native watch rendering.');
+  assert.equal(localization.t('previewTimelineHelp','en'),'The lower panel is reserved for Pebble Timeline.');
+  assert.equal(localization.t('sourcePaused','en'),'Paused');
+  assert.equal(localization.t('permissionHelp','en'),'Allow access in Pebble, then reopen settings.');
+  assert.equal(localization.t('pluginHelp','en'),'Check that the matching plugin is enabled in Pebble.');
+  assert.equal(localization.t('connectionHelp','en'),'Connect your phone and watch, then reopen settings.');
+  assert.equal(localization.t('saveSaved','en'),'Watch settings delivered.');
+  assert.equal(localization.t('savePending','en'),'Saved on phone; waiting for watch.');
+  assert.equal(localization.t('saveFailed','en'),'Saved on phone. Reconnect and save again to update the watch.');
+  assert.equal(localization.t('receivedAge','en'),'Received {age} min ago');
+  assert.equal(localization.t('observedAge','en'),'Observed {age} min ago');
 });
 test('borderless settings expose only applicable controls and preserve privacy defaults',()=>{
   const all=items(config);
@@ -73,6 +157,15 @@ test('borderless settings expose only applicable controls and preserve privacy d
   assert.equal(find('SHOW_MUSIC').defaultValue,true);
   assert.equal(find('SHOW_NOTIFICATIONS').defaultValue,false);
   assert.equal(find('NOTIFICATION_PREVIEW').defaultValue,false);
+  assert.equal(find('USE_12_HOUR'),undefined);
+  assert.equal(find('CLOCK_FORMAT').defaultValue,0);
+  assert.equal(find('CLOCK_FORMAT').serializeValueAs,'integer');
+  assert.deepEqual(find('CLOCK_FORMAT').options.map(option=>option.value),[0,12,24]);
+  for(const id of ['dynamic-settings-data','dynamic-settings-strings','dynamic-preview-assets']){
+    const transport=all.find(item=>item.id===id);
+    assert.equal(transport.messageKey,undefined);
+    assert.equal(transport.defaultValue,'{}');
+  }
   for(const key of ['DEPTH_EFFECT','TEXT_SHADOW','PANEL_TRANSITIONS','LAYOUT_STYLE','WEATHER_LOCATION','FOLLOW_PEBBLE_UNITS','USE_FAHRENHEIT']){
     assert.equal(find(key),undefined,key);
   }
@@ -90,6 +183,7 @@ test('chunky-motion appearance controls are translated without stale panel or sh
     const motion=all.find(item=>item.messageKey==='ANIMATIONS');
     assert.equal(accent.label,localization.t('accentColor',language));
     assert.equal(accent.description,localization.t('accentHelp',language));
+    assert.equal(big.label,localization.t('largerText',language));
     assert.equal(big.description,localization.t('largeTextHelp',language));
     assert.equal(motion.label,localization.t('animations',language));
     assert.equal(motion.description,localization.t('animationsHelp',language));

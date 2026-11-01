@@ -1,9 +1,10 @@
 #pragma once
 
 #include "watch_layout.h"
+#include "complication_data.h"
 
-// The core transports at most48 UTF-8 bytes; reserve room for an ellipsis.
-#define MUSIC_TEXT_BYTES 53
+// Leave room for a whole UTF-8 ellipsis beyond the core's bounded source text.
+#define MUSIC_TEXT_BYTES (COMPLICATION_MAX_TEXT_BYTES + 5)
 #define MUSIC_MAX_LINES 3
 #define MUSIC_BOTTOM 216
 #define MUSIC_TOP 86
@@ -46,14 +47,14 @@ static void music_ellipsis(char *text, int point, int width,
   }
 }
 
-// Prefer a comma as the line separator when both complete artist groups fit.
-// Only that separator and surrounding whitespace are replaced by the break.
+// A comma can be a useful break in the supplied scalar artist string. Keep
+// its punctuation: a band name containing a comma is not an artist array.
 static bool music_comma_lines(const char *source, int point, int width,
                                 MusicMeasure measure, void *context, MusicLines *out) {
   for (size_t at = 0; source[at]; ++at) {
-    if (source[at] != ',' || at >= MUSIC_TEXT_BYTES) continue;
+    if (source[at] != ',' || at + 1 >= MUSIC_TEXT_BYTES) continue;
     char first[MUSIC_TEXT_BYTES], second[MUSIC_TEXT_BYTES];
-    memcpy(first, source, at); first[at] = '\0'; music_trim(first);
+    memcpy(first, source, at + 1); first[at + 1] = '\0'; music_trim(first);
     const char *tail = source + at + 1;
     while (music_space(*tail)) ++tail;
     watch_layout_copy_utf8(tail, second, sizeof(second)); music_trim(second);
@@ -149,8 +150,8 @@ static void music_position(MusicLayout *out, bool art, MusicMeasure measure, voi
     out->artist_baseline[i] += MUSIC_BOTTOM - artist_height;
 }
 
-static void music_layout_build(const char *title, const char *artist, bool art, bool large,
-                                 MusicMeasure measure, void *context, MusicLayout *out) {
+static void music_layout_build_at(const char *title, const char *artist, bool art, bool large,
+                                    int top, MusicMeasure measure, void *context, MusicLayout *out) {
   memset(out, 0, sizeof(*out));
   out->artist_point = large ? 24 : 20;
   const int artist_width = art ? 130 : 180;
@@ -170,7 +171,7 @@ static void music_layout_build(const char *title, const char *artist, bool art, 
     out->title_point = points[i];
     music_wrap(title, out->title_point, 180, 3, false, measure, context, &out->title);
     music_position(out, art, measure, context);
-    if (out->title_top >= MUSIC_TOP) {
+    if (out->title_top >= top) {
       if (!first_fit) first_fit = out->title_point;
       if (out->title.complete) return;
     }
@@ -185,6 +186,11 @@ static void music_layout_build(const char *title, const char *artist, bool art, 
   for (int lines = 2; lines >= 1; --lines) {
     music_wrap(title, 24, 180, lines, false, measure, context, &out->title);
     music_position(out, art, measure, context);
-    if (out->title_top >= MUSIC_TOP) return;
+    if (out->title_top >= top) return;
   }
+}
+
+static inline void music_layout_build(const char *title, const char *artist, bool art, bool large,
+                                        MusicMeasure measure, void *context, MusicLayout *out) {
+  music_layout_build_at(title,artist,art,large,MUSIC_TOP,measure,context,out);
 }

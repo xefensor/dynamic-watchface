@@ -1,9 +1,8 @@
 # Dynamic and the shared core
 
-Dynamic 0.3.2 uses Pebble Watchface Core 0.1.0, the same pinned engine release
-used by Halftone 1.9.0 rc.6. This redesign changes Dynamic's presentation; it
-keeps the data engine, UUID and existing source/cache contract. Each PBW embeds
-its own library code and has its own identity and saved settings.
+Dynamic 0.4.0 pins Pebble Watchface Core 0.2.0. Halftone retains its own
+0.1.0 pin until independently upgraded. Each PBW embeds its library and keeps
+its UUID, settings and permission manifest. The core is not a background app.
 
 ## Boundary
 
@@ -19,7 +18,7 @@ its own library code and has its own identity and saved settings.
 The core imposes no coordinates, dot border or font family. Native callbacks
 forward events to its state object; Dynamic renders the current snapshots.
 Phone coordinators receive generated keys, storage, settings and clocks
-explicitly. Halftone's renderer is unchanged by Dynamic's 0.3.2 changes.
+explicitly. Halftone's renderer and installed engine remain unchanged by this release.
 
 ## Native-style presentation
 
@@ -41,8 +40,9 @@ are checked separately.
 
 New installs use white/black page colors and a Picton Blue accent. Saved page,
 text and accent colors are retained. Both light and dark pages share one
-canvas. The chosen accent colors reading symbols; recognized rain-probability
-gauges and notification symbols use yellow. Generic readings retain their
+canvas. The chosen accent colors reading symbols and recognized rain-probability
+gauges; notification symbols retain their attention colour and tiny status
+warnings use foreground ink for legibility. Generic readings retain their
 supplied text, units and images. A percentage becomes a 0–100% gauge only when
 the provider identifies it as precipitation probability. Temperatures use
 source images when available or a semantic thermometer symbol.
@@ -50,8 +50,10 @@ source images when available or a semantic thermometer symbol.
 The idle view gives the weekday/date and rounded clock a hero area, followed
 by two horizontal readings. Active context contracts the clock, stacks the
 weekday/date and moves the readings together above the title/body area.
-Idle and Peek keep the date on one line. A notice uses its source heading/icon
-and optional body. Within the active layout, fresh tracks or notices slide
+Idle and Peek keep the date on one line. A heading-only notice uses a compact source banner; with music present it
+reduces title space while retaining the fixed artist/artwork footer. A message
+preview uses a bounded panel. Summary-only notices without music preserve
+more space for the clock and readings. Within the active layout, fresh tracks or notices slide
 inside that context area while the surrounding clock/readings retain their
 positions.
 
@@ -72,8 +74,9 @@ clock and both readings above Pebble's event panel.
 
 The old `TEXT_SHADOW` message/persistent setting remains a compatibility input
 without a visible effect. `ACCENT_COLOR` retains its 0.2 number, and
-`ANIMATIONS` is appended after the existing 32 keys. These are appearance
-settings; the core data packet and dependency remain unchanged.
+`ANIMATIONS` retains its existing number and `CLOCK_FORMAT` is appended.
+CLOCK_FORMAT uses 0 (follow Pebble), 12 or 24. The native migration preserves
+legacy explicit USE_12_HOUR choices. Unset new installations follow the watch.
 
 The build audit checks the packaged SDK payload, pinned core, declared font
 resources and generated clock assets. Native captures check text fitting,
@@ -113,3 +116,49 @@ RAM until the bounded slide ends. These snapshots are never persisted or
 logged. Expiry, invalidation, disconnect and privacy clearing take priority
 over an outgoing animation, so cleared context is not kept visible merely to
 complete a transition.
+
+## Core 0.2 contract
+
+The core preserves provider-formatted text and units alongside optional semantic
+kind, source kind, raw numeric value, range, unit and short label. Version 3
+extends record text to 128 UTF-8 bytes and imagery to 40×40/4bpp, while strictly
+decoding legacy versions 1/2. The maximum packet is 5,186 bytes; Dynamic reserves
+a 6,144-byte native inbox. Unknown fields, invalid numeric/UTF-8/bitmap data and
+CRC mismatches fail closed.
+
+Eight 256-byte persistence keys remain sufficient because cache compaction drops
+image payloads while retaining scalar data, metadata and original receipt/expiry.
+Live snapshots retain images. A cached-origin marker identifies native cache
+restores only; it is not the weather station's measurement timestamp.
+
+The shared queue replaces obsolete pending snapshots in their own source channel.
+Settings keep FIFO ordering. Coordinators treat SUPERSEDED as terminal, never as
+a source failure or a successful transport acknowledgement. Context snapshots
+retain their matching reconnect boundary/session token.
+
+Music/phone confirmation remains bounded to 120 seconds and paused music to five
+seconds. Notification bursts have an eight-second maximum; updates do not renew
+the original interruption. Baseline, app filtering and session privacy remain.
+Music, notification text and artwork are never persisted.
+
+## Settings ownership
+
+The Clay page groups sample preview, Display, two source summaries, Music &
+notifications and Help. Dependent notification fields are conditional. Source
+health is a snapshot at open, with human-readable recovery and collapsed raw
+errors. All 17 supported locales cover new controls. Preview assets are native
+rendered samples for idle, music, summary/body notifications and Timeline,
+each with two text sizes, two clock formats and Light/Dark presets;
+Custom recolouring is explicitly approximate and preserves artwork/system areas.
+
+Only validated appearance/time preferences reach the watch. Phone-only privacy
+changes configure context immediately. A separate nonprivate delivery record
+stores the latest pending appearance packet, bounded retries and watch ACK;
+reconnection retries the latest pending save. An old ACK cannot mark a newer save
+as delivered. The next configuration visit reports the delivery state.
+
+The SDK load image remains below its 16-bit virtual-size limit by allocating one
+23,552-byte NativeState at startup for core state, transition snapshots and
+fixed raster buffers. Initialization failure exits before subscribing services;
+teardown cancels callbacks and frees the block. Rendering allocates no per-frame
+state buffers. SDK load usage and runtime allocation are reported separately.

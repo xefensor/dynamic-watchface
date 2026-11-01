@@ -1,106 +1,108 @@
 {
-  "version": "0.3.2",
+  "version": "0.4.0",
   "pbw": {
-    "file": "Dynamic-0.3.2.pbw",
-    "sha256": "41ba35aab4ccf6c49f8416ad6cf3206fe29cfc58e956261edcb14507075b4cb8"
+    "file": "Dynamic-0.4.0.pbw",
+    "sha256": "b83feab5e9ceef828632a95dd9ac25d45e29a6b3bdb392a8e309fc3a5b581946"
   },
   "native_payload_sha256": {
-    "appinfo.json": "c91e3e996b8a4c23224fab50ac47ddaed547fbc9f66024dbc94a62a63d756dd0",
-    "emery/pebble-app.bin": "4681302d80ef430f4a3b0ce0d9e5b0a06d923e8a46b012f196cb8326936ecaf0",
+    "appinfo.json": "d3b98705b7e229c5585b7e690dfb7e17962d3163d6ec16468edbaa6dfc9ad242",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "859bf8f18a1929181212c2c490fbc679f6f84fbb6b926b6bbbe885f4c35368b2"
+    "emery/manifest.json": "10634f3fe283047c56bdce14ef4a83bfa0dd08764cc77fa982870dc90dc5c095",
+    "emery/pebble-app.bin": "0735401b8d683baa5b9ed04616d04d8deaceea7a2f017442915d951ab5f77fe1"
   },
   "core": {
     "package": "pebble-watchface-core",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "repository": "https://github.com/xefensor/pebble-watchface-core",
-    "artifact": "pebble-watchface-core-0.1.0.tgz",
-    "sha256": "b53a21ccc039ce32843d5242f11b3c99d277c68420c40f59bab56040c45c8e33",
-    "integrity": "sha512-MhkuY707OYJn9m5Hzu9ZGwnnsPisqVbH5YzyzkSshtig6Y1Orz8IEl7QZTpa9vc2QZD9WAXKeR8TAcJyqSYU+w==",
+    "artifact": "pebble-watchface-core-0.2.0.tgz",
+    "sha256": "1525575a2e8e17201fb3625c48a9752553f54ab34ac7b72a7ab455cb36949c3e",
+    "integrity": "sha512-qy2dDS8fWsUaY7mRSaZ58RjwW+QhoBpJuVH1ROXx5+piydrpOSYmn5+SXwyeyHcIVXvabWASyRDaoyqOk1BAAw==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "d8ffdd11bd8e594378503e13d0a0d3cb46f5d897"
+    "source_commit": "e5510d4998973d5bd339eb9c771594313f6764a3"
   },
   "images": [
     {
       "file": "docs/images/layout-states.png",
-      "sha256": "396397e6a7d024ffdcac90bc3747a35cdcb0994e5d4336f60f334603734977b8",
+      "sha256": "a189f306636b5b66b1f620d515f6b428cd436055b53b9baf8bef27a9e159b58f",
       "pixels": [
         880,
         282
       ],
       "fixture_captures": [
-        "matrix-41ba35aa/captures/normal-idle.png",
-        "matrix-41ba35aa/captures/normal-flower.png",
-        "matrix-41ba35aa/notice-supplement/captures/normal-notice.png",
-        "matrix-41ba35aa/captures/normal-peek.png"
+        "provider-labels-b83feab5/captures/normal-idle-unchanged.png",
+        "provider-labels-b83feab5/captures/normal-music-typed-labels.png",
+        "provider-labels-b83feab5/captures/normal-notice-body-unchanged.png",
+        "provider-labels-b83feab5/captures/normal-timeline-unchanged.png"
       ],
       "native_frame_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
-    },
-    {
-      "file": "docs/images/music.png",
-      "sha256": "eb7a2b372ae87ff3d634fc7e161e0051fa2192aa97ce7e2b0113db407739bc9d",
-      "pixels": [
-        200,
-        228
-      ],
-      "fixture_capture": "matrix-41ba35aa/captures/normal-flower.png",
-      "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
+      "provenance": "Composite of the four final-PBW native frames; labels and margins outside the unchanged native pixels."
     },
     {
       "file": "docs/images/normal.png",
-      "sha256": "11e35dd3f7c424fccf6fe6aad979f04d8bda09e244f1b14f824289bc982c94a0",
+      "sha256": "6b0c89507b40b92fe3d5e6b3fdb3a1cee390de12db8f000cca798d09a934c93d",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "matrix-41ba35aa/captures/normal-idle.png",
+      "fixture_capture": "provider-labels-b83feab5/captures/normal-idle-unchanged.png",
       "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
+      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
+    },
+    {
+      "file": "docs/images/music.png",
+      "sha256": "39b883004252cb334df5347038e816969e295777bb8d4dc5199b97e9f2f0b5aa",
+      "pixels": [
+        200,
+        228
+      ],
+      "fixture_capture": "provider-labels-b83feab5/captures/normal-music-typed-labels.png",
+      "native_pixels_modified": false,
+      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
     },
     {
       "file": "docs/images/notification.png",
-      "sha256": "12df6eefb4c8d84e7729ae06d956725ecbc583f2a8f10e7dd201880f19f0ff1d",
+      "sha256": "59c477850a4288cabec92d6f49ea653db4867442d15c29a0625afc79c8bf057a",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "matrix-41ba35aa/notice-supplement/captures/normal-notice.png",
+      "fixture_capture": "provider-labels-b83feab5/captures/normal-notice-body-unchanged.png",
       "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
-    },
-    {
-      "file": "docs/images/settings-dark.png",
-      "sha256": "a8d49c14b60a0defb085669d2b1faecd1f290e4acac6029763667c38a75bdcbf",
-      "pixels": [
-        390,
-        1754
-      ],
-      "provenance": "Actual 0.3.2 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
-    },
-    {
-      "file": "docs/images/settings-light.png",
-      "sha256": "9bc689454f0e749ea0072f905864f31d6a89f9b123778e5b962db174f5a549d7",
-      "pixels": [
-        390,
-        1735
-      ],
-      "provenance": "Actual 0.3.2 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
+      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
     },
     {
       "file": "docs/images/timeline-peek.png",
-      "sha256": "f38f546fb2d025e852fe419c58c724521f7f8b087410c8cba3f51219ab004be8",
+      "sha256": "dbe01964b6ac1ca94934698dcc34de0223e93f23d214e174b5d695dc971788ef",
       "pixels": [
         200,
         228
       ],
-      "fixture_capture": "matrix-41ba35aa/captures/normal-peek.png",
+      "fixture_capture": "provider-labels-b83feab5/captures/normal-timeline-unchanged.png",
       "native_pixels_modified": false,
-      "provenance": "Direct native Screenshot-service frames from the tested 0.3.2 PBW with production-codec synthetic fixtures. Composite labels are outside native frames; native RGB pixels are unchanged."
+      "provenance": "Exact final 0.4.0 PBW native Screenshot service with production-core synthetic fixture data; no live phone runtime."
+    },
+    {
+      "file": "docs/images/settings-light.png",
+      "sha256": "44fd247f74266f2740b8eaadb707e815877d9515edcbd81ea8748409a7d23f3b",
+      "pixels": [
+        390,
+        844
+      ],
+      "fixture_capture": "../dynamic040-settings/settings-en-light-390x844.png",
+      "provenance": "Saved actual Clay browser capture of unchanged final settings source, fixture bridge, not a physical phone."
+    },
+    {
+      "file": "docs/images/settings-dark.png",
+      "sha256": "ebbd2c812d3464083d8362c382ec9fce0dd2b4fe36129aeb8e94329b7b9ce89c",
+      "pixels": [
+        390,
+        844
+      ],
+      "fixture_capture": "../dynamic040-settings/settings-cs-dark-390x844.png",
+      "provenance": "Saved actual Clay browser capture of unchanged final settings source, fixture bridge, not a physical phone."
     }
   ],
   "design_reference": {
@@ -113,197 +115,41 @@
     "reference_images_redistributed": false
   },
   "native_qa": {
-    "release_pbw_sha256": "41ba35aab4ccf6c49f8416ad6cf3206fe29cfc58e956261edcb14507075b4cb8",
+    "release_pbw_sha256": "b83feab5e9ceef828632a95dd9ac25d45e29a6b3bdb392a8e309fc3a5b581946",
     "exact_release_pbw_tested": true,
-    "rendering_cases": 50,
-    "effective_native_still_captures": 68,
-    "raw_matrix_stills_including_superseded": 73,
-    "initial_preview_stills": 2,
-    "root_visual_approval": {
-      "all9_contact_sheets": true,
-      "corrected_notice_supplement": true,
-      "all6_requested_wide_date_and_track_filmstrips": true
+    "final_focused_captures": 34,
+    "final_exact_rgb_comparisons": 16,
+    "final_visual_review": {
+      "status": "PASS",
+      "scope": "All five final provider-label contact sheets reviewed. Distinct neutral provider labels, UTF-8 ellipses, range/time labels and both text sizes in idle/music/Timeline; no label overlap or clipping."
     },
-    "motion_paths": 15,
-    "motion_summary": {
-      "track-short-long": {
-        "distinct_geometry_poses": 7,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true,
-        "clock_date_and_both_readings_pixel_constant": true,
-        "every_frame_visible_cover_bottom_216": true
-      },
-      "track-long-short": {
-        "distinct_geometry_poses": 7,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true,
-        "clock_date_and_both_readings_pixel_constant": true,
-        "every_frame_visible_cover_bottom_216": true
-      },
-      "idle-music": {
-        "distinct_geometry_poses": 2,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "music-notice": {
-        "distinct_geometry_poses": 4,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "notice-music": {
-        "distinct_geometry_poses": 3,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "music-peek": {
-        "distinct_geometry_poses": 6,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "peek-music": {
-        "distinct_geometry_poses": 4,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "music-idle": {
-        "distinct_geometry_poses": 12,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "artist-clear": {
-        "distinct_geometry_poses": 2,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "notice-body-clear": {
-        "distinct_geometry_poses": 1,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "private-clear-mid-track": {
-        "distinct_geometry_poses": 5,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "normal-wide-idle-music": {
-        "distinct_geometry_poses": 12,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "normal-wide-peek-music": {
-        "distinct_geometry_poses": 4,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "big-wide-idle-music": {
-        "distinct_geometry_poses": 12,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      },
-      "big-wide-peek-music": {
-        "distinct_geometry_poses": 4,
-        "final_5_frames_stable": true,
-        "final_equals_native_screenshot": true
-      }
+    "reused_matrix": {
+      "pbw_sha256": "3cb33a351e2471367b8dbda6f90cf84bb55146d7c447f640997be67ddcc71f4e",
+      "rendering_cases": 35,
+      "native_stills": 68,
+      "motion_paths": 11,
+      "scope": "Unaffected behavior reused. Original neutral NUMBER fallback issue superseded by final focused captures; ten unaffected final states pixel-identical."
     },
-    "privacy_checks": [
-      {
-        "name": "artist-clear",
-        "pass": true,
-        "old_framebuffer_indices_before_first_redraw": [
-          0
-        ],
-        "private_region_blank_in_every_subsequent_pose": true,
-        "checked_region": [
-          60,
-          195,
-          192,
-          228
-        ],
-        "no_zero_latency_physical_display_claim": true
-      },
-      {
-        "name": "notice-body-clear",
-        "pass": true,
-        "old_framebuffer_indices_before_first_redraw": [],
-        "private_region_blank_in_every_subsequent_pose": true,
-        "checked_region": [
-          0,
-          126,
-          200,
-          228
-        ],
-        "no_zero_latency_physical_display_claim": true
-      },
-      {
-        "name": "private-clear-mid-track",
-        "pass": true,
-        "old_framebuffer_indices_before_first_redraw": [
-          0
-        ],
-        "private_region_blank_in_every_subsequent_pose": true,
-        "checked_region": [
-          80,
-          175,
-          110,
-          228
-        ],
-        "no_zero_latency_physical_display_claim": true
-      }
-    ],
-    "animations_off_checks": 2,
-    "animation_optout": {
-      "off": {
-        "distinct_geometry_poses": 2,
-        "final_5_frames_stable": true
-      },
-      "off-after-relaunch": {
-        "distinct_geometry_poses": 2,
-        "final_5_frames_stable": true
-      }
-    },
-    "lifecycle_checks": [
-      {
-        "name": "notice_expiry_restores_exact_music",
-        "pass": true
-      }
-    ],
-    "footer_bottom_px": 216,
-    "primary_opaque_title_metadata_gap_px": 8,
-    "minimum_music_title_ink_top_px": 86,
-    "harness_correction": "Original positive notice fixtures had120s music leases; core correctly rejected them. Corrected12s notice stills/3motions replace those cases here; original report and raw captures preserved.",
+    "phone_javascript_executed": false,
     "physical_phone_tested": false,
     "actual_timeline_event_text_verified": false,
-    "phone_javascript_executed_in_native_captures": false,
-    "sdk": "4.33.1",
-    "emulated_firmware": "4.33.2",
-    "os_locale": "English SDK firmware",
-    "motion_capture_method": "Exact native2-bit palette recovery from white clock/background; all observed channels checked. Removes emulator backlight scaling only; native stills unchanged.",
-    "motion_timing_is_not_hardware_fps": true,
-    "limitations": [
-      "English SDK firmware locale; Czech date/labels not injected.",
-      "Native Screenshot service stills are unchanged RGB200×228; motion HMP palette recovery only removes QEMU backlight scaling.",
-      "No phone JavaScript/RAF runtime or live plugin/music/notification callbacks executed. Production core codec fixtures were injected through real native AppMessage.",
-      "No physical watch/phone pairing, hardware FPS or power measurements.",
-      "Native SDK Peek system card is empty; actual Timeline event text not verified.",
-      "Artist-clear/mid-track privacy clear can first capture one previous framebuffer before next redraw; all subsequent poses clear."
-    ]
+    "synthetic_bluetooth_disconnect_verified": false,
+    "final_manifest": "provider-labels-b83feab5/manifest.json"
   },
   "settings_qa": {
-    "current_actual_clay_browser_cases": 2,
-    "languages": [
-      "en",
-      "cs"
-    ],
-    "width": 390,
-    "modes": [
-      "light",
-      "dark"
-    ],
+    "interaction_cases": 68,
+    "languages": 17,
+    "native_preview_presets": 40,
+    "native_canvas_rgba_identities": 40,
+    "clock_migration_cases": 5,
     "page_errors": 0,
-    "overflow": false,
+    "external_requests": [],
+    "viewport": [
+      390,
+      844
+    ],
     "physical_phone_tested": false,
-    "prior_0_3_0_matrix_cases": 68
+    "saved_results_reused": true
   },
   "fonts": {
     "source_manifest": "resources/fonts/font-provenance.json",
@@ -598,7 +444,221 @@
     "firmware_fallback_font_keys": [
       "GOTHIC_14_BOLD",
       "GOTHIC_24_BOLD"
-    ]
+    ],
+    "packaged_body_glyph_audit": {
+      "fontCount": 8,
+      "fonts": [
+        {
+          "name": "FONT_BODY_11",
+          "resourceId": 1,
+          "pixelSize": 11,
+          "bytes": 16052,
+          "sha256": "80e7c4e762bd7cf596484ab38e3746067b4f1645ca33c1e4d1e4a633429cf441",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 3,
+            "height": 8,
+            "left": 1,
+            "top": 3,
+            "advance": 4,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_14",
+          "resourceId": 2,
+          "pixelSize": 14,
+          "bytes": 18824,
+          "sha256": "da95d55e3e497141d114936e05d5a7c766413f04b450650cd3bc5c28cc5fa0b7",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 4,
+            "height": 10,
+            "left": 1,
+            "top": 4,
+            "advance": 5,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_16",
+          "resourceId": 3,
+          "pixelSize": 16,
+          "bytes": 20844,
+          "sha256": "31851269c422c7191deb59d2fb4545d8404a40c2173071c8dd5b4bd0d7ac023e",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 4,
+            "height": 11,
+            "left": 1,
+            "top": 5,
+            "advance": 6,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_20",
+          "resourceId": 4,
+          "pixelSize": 20,
+          "bytes": 26148,
+          "sha256": "46dab7aa0b7561c1fedc2ab7bf42c373fa8e1208bc72ce8783524ebe872f89ea",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 6,
+            "height": 14,
+            "left": 1,
+            "top": 6,
+            "advance": 8,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_24",
+          "resourceId": 5,
+          "pixelSize": 24,
+          "bytes": 33072,
+          "sha256": "1cf3bfdfeedcad17485d2ce5ececef2620ab876b26bfce80a3f567f560029f96",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 7,
+            "height": 17,
+            "left": 1,
+            "top": 7,
+            "advance": 9,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_26",
+          "resourceId": 6,
+          "pixelSize": 26,
+          "bytes": 37088,
+          "sha256": "30f77c6c6c299b3c6fe9725117446f46c516b303322e0f775c74f106bad37b8f",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 8,
+            "height": 18,
+            "left": 1,
+            "top": 8,
+            "advance": 10,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_28",
+          "resourceId": 7,
+          "pixelSize": 28,
+          "bytes": 40848,
+          "sha256": "122ab2faea4dd055d1f7aeb1bfbf9039b26f8bb2285a1159017fa31798e6723b",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 9,
+            "height": 20,
+            "left": 1,
+            "top": 8,
+            "advance": 11,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_32",
+          "resourceId": 8,
+          "pixelSize": 32,
+          "bytes": 49944,
+          "sha256": "1f982067b36a6a7bd344835ae2c4ecce1cb6e9b343c334cadbd06dd8c4e9f4de",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 9,
+            "height": 23,
+            "left": 2,
+            "top": 9,
+            "advance": 13,
+            "hasInk": true
+          }
+        }
+      ],
+      "languages": 17,
+      "localizedWeekdays": 119,
+      "requiredGlyphChecks": 1176,
+      "directGlyphInkChecks": 4312,
+      "regressionCorpora": {
+        "cyrillicMusicAndNames": [
+          "Колесом / Kolesom",
+          "Молчат Дома",
+          "Україна",
+          "БЕЛАРУСЬ",
+          "Жыве",
+          "Четверг"
+        ],
+        "greekMusicAndNames": [
+          "Σήμερα",
+          "Ελληνικά",
+          "Άλμπουμ"
+        ],
+        "latinExtendedAdditional": [
+          "Tiếng Việt",
+          "Ứng dụng"
+        ]
+      },
+      "allFallbacksVisible": true,
+      "scope": "Exact packaged lookup/bitmap coverage and source repertoire; not a visual layout or arbitrary-Unicode guarantee."
+    }
   },
   "raster": {
     "implementation": "src/c/font_raster.h",
@@ -630,5 +690,16 @@
     "compact_weekday_baseline_px": 19,
     "compact_numeric_date_baseline_px": 40,
     "idle_and_peek_date_inline": true
+  },
+  "validation": {
+    "dynamic_js_tests": 59,
+    "dynamic_native_suites": 6,
+    "core_js_tests": 103,
+    "core_native_suites": 3,
+    "native_suites_rechecked_after_label_fix": true,
+    "build_audit": "PASS",
+    "resources_bytes": 246928,
+    "static_ram_footprint_bytes": 61798,
+    "heap_before_startup_allocation_bytes": 69274
   }
 }
