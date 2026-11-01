@@ -17,6 +17,7 @@ typedef struct {
   char text[MUSIC_MAX_LINES][MUSIC_TEXT_BYTES];
   int count;
   bool complete;
+  size_t consumed;
 } MusicLines;
 typedef struct {
   MusicLines title, artist;
@@ -76,20 +77,25 @@ static void music_wrap(const char *source, int point, int width, int max_lines,
                          bool comma, MusicMeasure measure, void *context, MusicLines *out) {
   memset(out, 0, sizeof(*out)); out->complete = true;
   if (!source || !measure || max_lines < 1 || width < 1) return;
+  const char *start=source;
   if (max_lines > MUSIC_MAX_LINES) max_lines = MUSIC_MAX_LINES;
   while (music_space(*source)) ++source;
   if (!*source) return;
   if (comma && max_lines == 2 && measure(context, source, point).width > width &&
-      music_comma_lines(source, point, width, measure, context, out)) return;
+      music_comma_lines(source, point, width, measure, context, out)) {
+    out->consumed=strlen(start);return;
+  }
   while (*source && out->count < max_lines) {
     char *line = out->text[out->count++];
     if (measure(context, source, point).width <= width && !strchr(source, '\n')) {
-      watch_layout_copy_utf8(source, line, MUSIC_TEXT_BYTES); music_trim(line); return;
+      watch_layout_copy_utf8(source, line, MUSIC_TEXT_BYTES); music_trim(line);
+      out->consumed=strlen(start);return;
     }
     if (out->count == max_lines) {
       watch_layout_copy_utf8(source, line, MUSIC_TEXT_BYTES);
       for (size_t i = 0; line[i]; ++i) if (line[i] == '\n' || line[i] == '\r') line[i] = ' ';
       music_ellipsis(line, point, width, measure, context);
+      out->consumed=(size_t)(source-start)+strlen(line)-3;
       out->complete = false; return;
     }
     size_t at = 0, fit = 0, space = 0;
@@ -115,6 +121,7 @@ static void music_wrap(const char *source, int point, int width, int max_lines,
     }
     source += take;
     while (music_space(*source)) ++source;
+    out->consumed=(size_t)(source-start);
   }
 }
 
@@ -152,6 +159,23 @@ static void music_position(MusicLayout *out, bool art, MusicMeasure measure, voi
     out->artist_baseline[i] += MUSIC_BOTTOM - artist_height;
 }
 
+// A continuation page starts with the whole unfinished word when the current
+// last line offers a break. Long unbroken words still advance by UTF-8 glyphs.
+static void music_title_boundary(const char *source,MusicLines *lines) {
+  if(lines->complete||!lines->count||!source[lines->consumed]||
+      music_space(source[lines->consumed]))return;
+  char *line=lines->text[lines->count-1];
+  const size_t length=strlen(line);
+  if(length<3)return;
+  const size_t end=length-3;
+  size_t at=end;
+  while(at&&!music_space(line[at-1]))--at;
+  if(!at)return;
+  lines->consumed-=end-at;
+  while(at&&music_space(line[at-1]))--at;
+  memcpy(line+at,"…",4);
+}
+
 static void music_layout_build_at(const char *title, const char *artist, bool art,
                                     int top, MusicMeasure measure, void *context, MusicLayout *out) {
   memset(out, 0, sizeof(*out));
@@ -163,6 +187,7 @@ static void music_layout_build_at(const char *title, const char *artist, bool ar
   // A notification banner reduces the available line count at the same size.
   for (int lines = MUSIC_MAX_LINES; lines >= 1; --lines) {
     music_wrap(title, out->title_point, 180, lines, false, measure, context, &out->title);
+    music_title_boundary(title,&out->title);
     music_position(out, art, measure, context);
     if (out->title_top >= top) return;
   }

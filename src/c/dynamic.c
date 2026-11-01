@@ -10,6 +10,7 @@
 #include "music_layout.h"
 #include "native_reading.h"
 #include "context_presentation.h"
+#include "context_effects.h"
 
 #define PERSIST_KEY_BACKGROUND_COLOR 2
 #define PERSIST_KEY_TEXT_COLOR 3
@@ -23,6 +24,11 @@
 #define PERSIST_KEY_ACCENT_COLOR 70
 #define PERSIST_KEY_ANIMATIONS 71
 #define PERSIST_KEY_CLOCK_FORMAT 72
+#define PERSIST_KEY_VIBRATION 73
+#define PERSIST_KEY_NIGHT_ENABLED 74
+#define PERSIST_KEY_NIGHT_BACKGROUND 75
+#define PERSIST_KEY_NIGHT_TEXT 76
+#define PERSIST_KEY_NIGHT_ACCENT 77
 #define NATIVE_INBOX_BYTES 6144
 #define FULL_LAYOUT_HEIGHT 228
 #define MOTION_FRAME_MS 50
@@ -31,6 +37,10 @@
 static Window *s_window;
 static Layer *s_window_layer, *s_background_layer, *s_context_layer;
 static GColor s_background_color, s_text_color, s_accent_color;
+static GColor s_day_colors[3],s_night_colors[3];
+static bool s_night_enabled,s_music_paused;
+static uint8_t s_vibration;
+static uint32_t s_seen_burst;
 static bool s_text_shadow_enabled, s_use_12_hour;
 static uint8_t s_clock_format;
 static bool s_show_status, s_animations_enabled;
@@ -47,6 +57,9 @@ typedef struct {
   FontRasterContour clock_raster_contours[CLOCK_GLYPH_MAX_CONTOURS];
   int32_t clock_intersections[CLOCK_GLYPH_MAX_POINTS];
   uint8_t clock_coverage[200];
+  char music_identity[COMPLICATION_MAX_TEXT_BYTES+1];
+  uint16_t music_offset,music_next;
+  bool music_visible;
 } NativeState;
 static NativeState *s_native;
 #define s_core (s_native->core)
@@ -62,8 +75,8 @@ static NativeState *s_native;
 #define s_complications s_core.complications
 #define s_has_complications s_core.has_complications
 #define s_phone_connected s_core.phone_connected
-static AppTimer *s_context_timer, *s_startup_timer, *s_motion_timer;
-static char s_date_buffer[48], s_compact_date_buffer[48], s_time_buffer[6];
+static AppTimer *s_context_timer, *s_startup_timer, *s_motion_timer,*s_title_timer;
+static char s_compact_date_buffer[48], s_time_buffer[6];
 static char s_weekday_buffer[16], s_numeric_date_buffer[16];
 static const uint8_t s_body_points[] = {11,14,16,20,24,26,28,32};
 #define BODY_FONT_COUNT (sizeof(s_body_points)/sizeof(s_body_points[0]))
@@ -86,65 +99,70 @@ static void prv_send_clock_format(void);
 static void prv_schedule_context_expiry(void);
 static void prv_context_expired(void *context);
 static MusicTextMetrics prv_music_measure(void *context,const char *text,int point);
+static void prv_music_reset(void);
+static void prv_music_continue(void *context);
+static void prv_apply_colors(void);
 
 
+// The face displays three-character day names. Keep only that exact visible
+// prefix, rather than storing unused full names in the constrained load image.
 static const char *const s_english_days[] = {
-  "SUNDAY",
-  "MONDAY",
-  "TUESDAY",
-  "WEDNESDAY",
-  "THURSDAY",
-  "FRIDAY",
-  "SATURDAY"
+  "SUN",
+  "MON",
+  "TUE",
+  "WED",
+  "THU",
+  "FRI",
+  "SAT"
 };
 
 static const char *const s_czech_days[] = {
-  "NEDĚLE", "PONDĚLÍ", "ÚTERÝ", "STŘEDA", "ČTVRTEK", "PÁTEK", "SOBOTA"
+  "NED", "PON", "ÚTE", "STŘ", "ČTV", "PÁT", "SOB"
 };
 static const char *const s_slovak_days[] = {
-  "NEDEĽA", "PONDELOK", "UTOROK", "STREDA", "ŠTVRTOK", "PIATOK", "SOBOTA"
+  "NED", "PON", "UTO", "STR", "ŠTV", "PIA", "SOB"
 };
 static const char *const s_german_days[] = {
-  "SONNTAG", "MONTAG", "DIENSTAG", "MITTWOCH", "DONNERSTAG", "FREITAG", "SAMSTAG"
+  "SON", "MON", "DIE", "MIT", "DON", "FRE", "SAM"
 };
 static const char *const s_french_days[] = {
-  "DIMANCHE", "LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI"
+  "DIM", "LUN", "MAR", "MER", "JEU", "VEN", "SAM"
 };
 static const char *const s_spanish_days[] = {
-  "DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO"
+  "DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"
 };
 static const char *const s_italian_days[] = {
-  "DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ", "SABATO"
+  "DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"
 };
 static const char *const s_portuguese_days[] = {
-  "DOMINGO", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SÁBADO"
+  "DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"
 };
 static const char *const s_dutch_days[] = {
-  "ZONDAG", "MAANDAG", "DINSDAG", "WOENSDAG", "DONDERDAG", "VRIJDAG", "ZATERDAG"
+  "ZON", "MAA", "DIN", "WOE", "DON", "VRI", "ZAT"
 };
 static const char *const s_polish_days[] = {
-  "NIEDZIELA", "PONIEDZIAŁEK", "WTOREK", "ŚRODA", "CZWARTEK", "PIĄTEK", "SOBOTA"
+  "NIE", "PON", "WTO", "ŚRO", "CZW", "PIĄ", "SOB"
 };
 static const char *const s_danish_days[] = {
-  "SØNDAG", "MANDAG", "TIRSDAG", "ONSDAG", "TORSDAG", "FREDAG", "LØRDAG"
+  "SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"
 };
 static const char *const s_swedish_days[] = {
-  "SÖNDAG", "MÅNDAG", "TISDAG", "ONSDAG", "TORSDAG", "FREDAG", "LÖRDAG"
+  "SÖN", "MÅN", "TIS", "ONS", "TOR", "FRE", "LÖR"
 };
 static const char *const s_norwegian_days[] = {
-  "SØNDAG", "MANDAG", "TIRSDAG", "ONSDAG", "TORSDAG", "FREDAG", "LØRDAG"
+  "SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"
 };
 static const char *const s_finnish_days[] = {
-  "SUNNUNTAI", "MAANANTAI", "TIISTAI", "KESKIVIIKKO", "TORSTAI", "PERJANTAI", "LAUANTAI"
+  "SUN", "MAA", "TII", "KES", "TOR", "PER", "LAU"
 };
 static const char *const s_hungarian_days[] = {
-  "VASÁRNAP", "HÉTFŐ", "KEDD", "SZERDA", "CSÜTÖRTÖK", "PÉNTEK", "SZOMBAT"
+  "VAS", "HÉT", "KED", "SZE", "CSÜ", "PÉN", "SZO"
 };
 static const char *const s_romanian_days[] = {
-  "DUMINICĂ", "LUNI", "MARȚI", "MIERCURI", "JOI", "VINERI", "SÂMBĂTĂ"
+  "DUM", "LUN", "MAR", "MIE", "JOI", "VIN", "SÂM"
 };
 static const char *const s_turkish_days[] = {
-  "PAZAR", "PAZARTESİ", "SALI", "ÇARŞAMBA", "PERŞEMBE", "CUMA", "CUMARTESİ"
+  "PAZ", "PAZ", "SAL", "ÇAR", "PER", "CUM", "CUM"
 };
 
 static bool prv_locale_is(const char *locale, const char *language) {
@@ -475,6 +493,7 @@ static void prv_private_clear(void) {
   memset(&s_context_from,0,sizeof(s_context_from));
   memset(&s_context_to,0,sizeof(s_context_to));
   s_slide_active=false;s_slide_amount=1;s_banner_slide=false;
+  s_music_paused=false;prv_music_reset();
 }
 static void prv_motion_frame(void *context) {
   (void)context;s_motion_timer=NULL;
@@ -521,6 +540,17 @@ static void prv_apply_unobstructed_layout(void) {
     s_slide_amount=s_slide_active ? 0 : 1;s_slide_started=prv_millis();
     if(!s_slide_active) memset(&s_context_from,0,sizeof(s_context_from));
   } else render_context_capture(&s_context_to,&next); // A lease confirmation does not replay motion.
+  const ComplicationSlot *music=render_context_music(&s_context_to,false);
+  if(!music||!context_slot_fresh(music,time(NULL)))prv_music_reset();
+  else if(strcmp(s_native->music_identity,music->text)!=0) {
+    prv_music_reset();watch_layout_copy_utf8(music->text,s_native->music_identity,
+        sizeof(s_native->music_identity));
+  }
+  s_native->music_visible=next.mode==CONTEXT_MUSIC&&
+      layer_get_unobstructed_bounds(s_window_layer).size.h>=228;
+  if(!s_native->music_visible&&s_title_timer) {
+    app_timer_cancel(s_title_timer);s_title_timer=NULL;
+  }
   const WatchPose target=prv_full_pose();
   if(!s_pose_ready) {s_pose=s_pose_from=s_pose_target=target;s_pose_ready=true;}
   else if(memcmp(&target,&s_pose_target,sizeof(target))!=0) {
@@ -812,6 +842,25 @@ static MusicTextMetrics prv_music_measure(void *context,const char *text,int poi
       body_text_descent(text,point)};
 }
 static int prv_music_top(void) { return 92; }
+static void prv_music_reset(void) {
+  if(s_title_timer){app_timer_cancel(s_title_timer);s_title_timer=NULL;}
+  s_native->music_identity[0]='\0';s_native->music_offset=s_native->music_next=0;
+  s_native->music_visible=false;
+}
+static void prv_music_continue(void *context) {
+  (void)context;s_title_timer=NULL;
+  if(!s_native->music_visible||!s_native->music_next)return;
+  s_native->music_offset=s_native->music_next;s_native->music_next=0;
+  prv_sync_layers();
+}
+static void prv_music_tile(GContext *ctx,int x,int y) {
+  const GColor ink=prv_accent_color();
+  graphics_context_set_stroke_color(ctx,ink);graphics_context_set_stroke_width(ctx,2);
+  graphics_draw_round_rect(ctx,GRect(x,y,40,40),4);
+  graphics_draw_line(ctx,GPoint(x+24,y+10),GPoint(x+24,y+27));
+  graphics_draw_line(ctx,GPoint(x+24,y+10),GPoint(x+31,y+8));
+  graphics_context_set_fill_color(ctx,ink);graphics_fill_circle(ctx,GPoint(x+20,y+28),4);
+}
 static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const ComplicationSlot *artist,
                             int x,int y,int top) {
   if(!title||!context_slot_fresh(title,time(NULL)))return;
@@ -820,14 +869,32 @@ static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const Com
   const bool bitmap=(title->flags&COMPLICATION_FLAG_BITMAP)!=0;
   const bool cover=(title->flags&COMPLICATION_FLAG_IMAGE)!=0;
   const int visible=bitmap?prv_bitmap_visible_bottom(title,40,cover):0;
+  const bool active=s_native->music_visible&&strcmp(title->text,s_native->music_identity)==0;
+  const size_t offset=active?s_native->music_offset:0;
   MusicLayout layout;
-  music_layout_build_at(title->text,has_artist?artist->text:"",visible>0,
+  music_layout_build_at(title->text+offset,has_artist?artist->text:"",true,
       top,prv_music_measure,NULL,&layout);
+  if(active&&!layout.title.complete&&layout.title.consumed) {
+    size_t next=offset+layout.title.consumed;
+    while(music_space(title->text[next]))++next;
+    if(title->text[next]) {
+      s_native->music_next=(uint16_t)next;
+      if(!s_title_timer)s_title_timer=app_timer_register(3000,prv_music_continue,NULL);
+    }
+  }
   for(int i=0;i<layout.title.count;++i)
     prv_text(ctx,layout.title.text[i],layout.title_point,x+10,y+layout.title_baseline[i],
         180,s_text_color,GTextAlignmentLeft);
   if(visible)prv_draw_bitmap(ctx,title,x+10,y+MUSIC_BOTTOM-visible,40,s_text_color,cover);
-  const int left=visible?60:10;
+  else prv_music_tile(ctx,x+10,y+MUSIC_BOTTOM-40);
+  if(s_music_paused) {
+    graphics_context_set_fill_color(ctx,s_background_color);
+    graphics_fill_rect(ctx,GRect(x+34,y+MUSIC_BOTTOM-15,16,15),2,GCornersAll);
+    graphics_context_set_fill_color(ctx,s_text_color);
+    graphics_fill_rect(ctx,GRect(x+37,y+MUSIC_BOTTOM-12,3,9),0,GCornerNone);
+    graphics_fill_rect(ctx,GRect(x+43,y+MUSIC_BOTTOM-12,3,9),0,GCornerNone);
+  }
+  const int left=60;
   for(int i=0;i<layout.artist.count;++i)
     prv_text(ctx,layout.artist.text[i],layout.artist_point,x+left,y+layout.artist_baseline[i],
         190-left,prv_muted_text(1),GTextAlignmentLeft);
@@ -941,7 +1008,6 @@ static void prv_update_clock(void) {
   const char *day=prv_get_localized_days()[current->tm_wday];
   strftime(s_time_buffer,sizeof(s_time_buffer),s_use_12_hour?"%I:%M":"%H:%M",current);
   if(s_use_12_hour&&s_time_buffer[0]=='0')memmove(s_time_buffer,s_time_buffer+1,strlen(s_time_buffer));
-  snprintf(s_date_buffer,sizeof(s_date_buffer),"%s · %d.%d.",day,current->tm_mday,current->tm_mon+1);
   watch_layout_abbreviate(day,s_weekday_buffer,sizeof(s_weekday_buffer),3);
   snprintf(s_numeric_date_buffer,sizeof(s_numeric_date_buffer),"%d.%d.",current->tm_mday,current->tm_mon+1);
   snprintf(s_compact_date_buffer,sizeof(s_compact_date_buffer),"%s · %s",s_weekday_buffer,s_numeric_date_buffer);
@@ -986,6 +1052,7 @@ static void prv_startup_request(void *context) {
 static void prv_phone_connection_changed(bool connected) {
   if (!wfc_connection_changed(&s_core, connected)) { return; }
   prv_private_clear();
+  s_seen_burst=0;
   s_private_rebaseline=false;
   prv_schedule_context_expiry();
   prv_apply_unobstructed_layout();
@@ -1004,6 +1071,7 @@ static void prv_battery_changed(BatteryChargeState charge) {
 static void prv_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   const bool request_due = wfc_tick(&s_core, time(NULL));
   prv_update_clock();
+  prv_apply_colors();
   // One request on the freshness transition; denied/unavailable slots do not
   // cause a polling loop. Provider refresh policies belong to the phone host.
   if (request_due) {
@@ -1017,6 +1085,7 @@ static void prv_unobstructed_area_will_change(GRect final_area,void *context) {
   (void)context;s_peek_transition=true;
   const int current_height=layer_get_unobstructed_bounds(s_window_layer).size.h;
   prv_cancel_motion();
+  prv_music_reset();
   if(final_area.size.h>=current_height) s_pose=s_pose_target=prv_full_pose();
   prv_sync_layers();
 }
@@ -1024,9 +1093,11 @@ static void prv_unobstructed_area_change(AnimationProgress progress,void *contex
   (void)progress;(void)context;prv_sync_layers();
 }
 static void prv_unobstructed_area_did_change(void *context) {
-  (void)context;s_peek_transition=false;s_pose=s_pose_target=prv_full_pose();prv_sync_layers();
+  (void)context;s_peek_transition=false;s_pose=s_pose_target=prv_full_pose();prv_apply_unobstructed_layout();
 }
 static void prv_apply_colors(void) {
+  const GColor *palette=s_night_enabled&&quiet_time_is_active()?s_night_colors:s_day_colors;
+  s_background_color=palette[0];s_text_color=palette[1];s_accent_color=palette[2];
   if(s_window)window_set_background_color(s_window,s_background_color);
   prv_sync_layers();
 }
@@ -1071,8 +1142,10 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   const uint32_t marker_value = prv_context_request_value(dict_find(iterator, MESSAGE_KEY_REQUEST_CONTEXT));
   if (context_data == NULL && marker_value == 1) {
     // PKJS may become ready after the first native request was acknowledged.
-    // Answer its query with the current epoch; querying never advances it.
+    // A new phone process starts a fresh event sequence and native session.
     wfc_context_query(&s_core);
+    persist_write_int(PERSIST_KEY_CONTEXT_SESSION,(int32_t)s_core.session_token);
+    s_seen_burst=0;
     prv_private_clear();s_private_rebaseline=true;
     if (s_startup_timer != NULL) { app_timer_cancel(s_startup_timer); }
     s_startup_timer = app_timer_register(100, prv_startup_request, NULL);
@@ -1083,6 +1156,17 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
         bytes ? context_data->length : 0, marker_value);
     if(accepted && marker_value==s_core.session_token)s_private_rebaseline=false;
     if(!accepted)prv_private_clear();
+    ContextEffects effects;
+    const Tuple *state=dict_find(iterator,MESSAGE_KEY_CONTEXT_STATE);
+    const bool valid=accepted&&state&&state->type==TUPLE_BYTE_ARRAY&&
+        context_effects_read(state->value->data,state->length,&effects)&&
+        effects.session==s_core.session_token;
+    s_music_paused=valid&&effects.paused&&context_slot_fresh(&s_context.slots[0],time(NULL));
+    if(valid&&!s_core.context_awaiting_baseline&&!s_private_rebaseline&&
+        context_slot_fresh(&s_context.slots[2],time(NULL))&&
+        context_effects_alert(effects.burst,&s_seen_burst,s_vibration,quiet_time_is_active())) {
+      if(s_vibration==1)vibes_short_pulse();else vibes_double_pulse();
+    }
     prv_schedule_context_expiry();
   }
   Tuple *data = dict_find(iterator, MESSAGE_KEY_COMPLICATION_DATA);
@@ -1102,11 +1186,11 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   Tuple *show_status = dict_find(iterator, MESSAGE_KEY_SHOW_STATUS);
   Tuple *animations = dict_find(iterator, MESSAGE_KEY_ANIMATIONS);
   uint32_t rgb;
-  if(prv_color_value(background,&rgb)){s_background_color=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_BACKGROUND_COLOR,(int32_t)rgb);}
-  if(prv_color_value(text,&rgb)){s_text_color=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_TEXT_COLOR,(int32_t)rgb);}
+  if(prv_color_value(background,&rgb)){s_day_colors[0]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_BACKGROUND_COLOR,(int32_t)rgb);}
+  if(prv_color_value(text,&rgb)){s_day_colors[1]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_TEXT_COLOR,(int32_t)rgb);}
   uint32_t accent_value;
   if (prv_color_value(accent,&accent_value)) {
-    s_accent_color = GColorFromHEX(accent_value);
+    s_day_colors[2] = GColorFromHEX(accent_value);
     persist_write_int(PERSIST_KEY_ACCENT_COLOR,(int32_t)accent_value);
   }
   if (shadow != NULL) {
@@ -1131,6 +1215,16 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   }
   uint32_t flag;
   if(prv_color_value(animations,&flag)&&flag<=1){s_animations_enabled=flag!=0;persist_write_bool(PERSIST_KEY_ANIMATIONS,s_animations_enabled);}
+  if(prv_color_value(dict_find(iterator,MESSAGE_KEY_NOTIFICATION_VIBRATION),&flag)&&flag<=2) {
+    s_vibration=(uint8_t)flag;persist_write_int(PERSIST_KEY_VIBRATION,(int32_t)flag);
+  }
+  if(prv_color_value(dict_find(iterator,MESSAGE_KEY_NIGHT_PALETTE),&flag)&&flag<=1) {
+    s_night_enabled=flag!=0;persist_write_bool(PERSIST_KEY_NIGHT_ENABLED,s_night_enabled);
+  }
+  const uint32_t night_keys[]={MESSAGE_KEY_NIGHT_BACKGROUND_COLOR,MESSAGE_KEY_NIGHT_TEXT_COLOR,MESSAGE_KEY_NIGHT_ACCENT_COLOR};
+  for(unsigned i=0;i<3;++i)if(prv_color_value(dict_find(iterator,night_keys[i]),&rgb)) {
+    s_night_colors[i]=GColorFromHEX(rgb);persist_write_int(PERSIST_KEY_NIGHT_BACKGROUND+i,(int32_t)rgb);
+  }
   prv_update_clock();
   prv_apply_colors();
   prv_apply_effects();
@@ -1199,6 +1293,17 @@ static bool prv_init(void) {
     const int32_t color=persist_read_int(PERSIST_KEY_ACCENT_COLOR);
     if(color>=0&&color<=0xffffff)s_accent_color=GColorFromHEX(color);
   }
+  s_day_colors[0]=s_background_color;s_day_colors[1]=s_text_color;s_day_colors[2]=s_accent_color;
+  s_night_colors[0]=GColorBlack;s_night_colors[1]=GColorWhite;s_night_colors[2]=GColorFromHEX(0x55AAFF);
+  for(unsigned i=0;i<3;++i)if(persist_exists(PERSIST_KEY_NIGHT_BACKGROUND+i)) {
+    const int32_t color=persist_read_int(PERSIST_KEY_NIGHT_BACKGROUND+i);
+    if(color>=0&&color<=0xffffff)s_night_colors[i]=GColorFromHEX(color);
+  }
+  if(persist_exists(PERSIST_KEY_NIGHT_ENABLED))s_night_enabled=persist_read_bool(PERSIST_KEY_NIGHT_ENABLED);
+  if(persist_exists(PERSIST_KEY_VIBRATION)) {
+    const int32_t preference=persist_read_int(PERSIST_KEY_VIBRATION);
+    if(preference>=0&&preference<=2)s_vibration=(uint8_t)preference;
+  }
   if(persist_exists(PERSIST_KEY_TEXT_SHADOW))s_text_shadow_enabled=persist_read_bool(PERSIST_KEY_TEXT_SHADOW);
   // Retire the old size preference; legacy live packets are also ignored.
   persist_delete(PERSIST_KEY_LARGE_TEXT);
@@ -1207,6 +1312,7 @@ static bool prv_init(void) {
   if(persist_exists(PERSIST_KEY_SHOW_STATUS))s_show_status=persist_read_bool(PERSIST_KEY_SHOW_STATUS);
   if(persist_exists(PERSIST_KEY_ANIMATIONS))s_animations_enabled=persist_read_bool(PERSIST_KEY_ANIMATIONS);
   persist_delete(PERSIST_KEY_LAYOUT_STYLE);wfc_load_cache(&s_core,time(NULL));
+  prv_apply_colors();
   s_window=window_create();
   if(!s_window){memset(s_native,0,sizeof(*s_native));free(s_native);s_native=NULL;return false;}
   window_set_background_color(s_window,s_background_color);

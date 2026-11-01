@@ -63,6 +63,20 @@ int main(void) {
          strcmp(lines.text[1],"ÉÍÓÚ") == 0 && strcmp(lines.text[2],"ČŘŽÁ") == 0);
   music_wrap("ČŘŽÁÉÍÓÚČŘŽÁ",20,20,2,false,measure,NULL,&lines);
   assert(!lines.complete && strcmp(lines.text[0],"ČŘ") == 0 && strcmp(lines.text[1],"Ž…") == 0);
+  assert(lines.consumed==strlen("ČŘŽ"));
+  music_wrap("ČŘŽÁÉÍÓÚČŘŽÁ"+lines.consumed,20,20,2,false,measure,NULL,&lines);
+  assert(strcmp(lines.text[0],"ÁÉ")==0); // continuation never splits UTF-8
+  const char *continued="Extended Recording";
+  music_wrap(continued,24,180,1,false,measure,NULL,&lines);
+  assert(strcmp(lines.text[0],"Extended Recor…")==0);
+  music_title_boundary(continued,&lines);
+  assert(strcmp(lines.text[0],"Extended…")==0);
+  assert(strcmp(continued+lines.consumed,"Recording")==0);
+  continued="Příběhy Čtvrteční";
+  music_wrap(continued,24,180,1,false,measure,NULL,&lines);
+  music_title_boundary(continued,&lines);
+  assert(strcmp(lines.text[0],"Příběhy…")==0);
+  assert(strcmp(continued+lines.consumed,"Čtvrteční")==0);
   music_wrap("First\nSecond\nThird",20,180,3,false,measure,NULL,&lines);
   assert(lines.complete && lines.count == 3 && strcmp(lines.text[1],"Second") == 0);
   music_wrap("  \t\n",20,180,3,false,measure,NULL,&lines);
@@ -98,6 +112,12 @@ int main(void) {
   memset(long_text,'W',sizeof(long_text)-1);long_text[sizeof(long_text)-1]='\0';
   music_wrap(long_text,26,180,3,false,measure,NULL,&lines);
   assert(!lines.complete&&lines.count==3&&strstr(lines.text[2],"…"));
+  size_t at=0;unsigned pages=0;
+  do {
+    music_wrap(long_text+at,24,180,3,false,measure,NULL,&lines);
+    assert(lines.consumed>0);at+=lines.consumed;++pages;
+  } while(!lines.complete);
+  assert(at==strlen(long_text)&&pages>1&&pages<10);
   {
     MusicLayout banner;
     music_layout_build_at(long_text,"Justice, Tame Impala",true,116,measure,NULL,&banner);

@@ -1,0 +1,17 @@
+{
+  "pass": true,
+  "cases": [
+    {
+      "scheme": "light",
+      "examined": 64,
+      "minimumRatio": 5.82,
+      "failures": []
+    },
+    {
+      "scheme": "dark",
+      "examined": 64,
+      "minimumRatio": 6.797,
+      "failures": []
+    }
+  ]
+}

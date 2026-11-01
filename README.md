@@ -2,16 +2,16 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.5.0 uses Fredoka clock outlines and Roboto Condensed text to
+Peek. Version 0.6.0 uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
 It uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
-0.3.0, an updated version of the data engine used by
+0.4.0, an updated version of the data engine used by
 [Halftone](https://github.com/xefensor/halftone-watchface).
 
-Install [Dynamic-0.5.0.pbw](dist/Dynamic-0.5.0.pbw); the
-[source archive](dist/Dynamic-0.5.0-source.zip) is included. Dynamic has its own UUID,
+Install [Dynamic-0.6.0.pbw](dist/Dynamic-0.6.0.pbw); the
+[source archive](dist/Dynamic-0.6.0-source.zip) is included. Dynamic has its own UUID,
 `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, so it can be installed alongside Halftone.
 This is an early sideloaded build for the Pebble plugin preview. Public-store
 submission remains on hold while Pebble's preview restriction applies.
@@ -33,7 +33,11 @@ reading symbols, recognized rain-probability gauges and ordinary notification
 symbols. Amber identifies low-battery/connection warnings. Secondary text and
 artist text use quieter ink, falling back to foreground ink when muting would
 lose contrast. Accent graphics also have a visibility fallback after Pebble's
-palette rounding. The same composition works with a dark page.
+palette rounding. The same composition works with a dark page. An optional
+Quiet Time palette
+uses separately chosen background, text and accent colours while the watch's
+Quiet Time is active, then restores the daytime palette. Changes follow the watch at the next minute refresh. It follows the watch,
+not a separate phone schedule.
 
 The clock keeps the same Fredoka shapes while it scales and moves.
 Temperature and percent units share that rounded style, with small muted
@@ -77,9 +81,13 @@ One unified layout gives every installation the same readable hierarchy:
 The idle date uses 20px text and reading labels use 14px. Idle reading values
 and labels sit 4px and 6px closer to their symbols, respectively. Music titles stay at
 24px and artist text at 20px for every track. Titles wrap through up to three
-lines, artists through up to two, then end in an ellipsis; track changes never
-select a smaller font. The 40px artwork and artist text retain their bottom
-anchor at y216. The 24px title size preserves three measured native lines above
+lines per page. A long received title continues through its remaining pages
+once, then holds the final page; it never loops or selects a smaller font.
+Artists use up to two lines, then an ellipsis. The 40px artwork tile and artist
+text retain their bottom anchor at y216. Missing or transparent artwork uses a
+simple fallback tile, keeping the artist in the same position while covers
+arrive. A small pause mark appears during the five-second paused-music grace.
+The 24px title size preserves three measured native lines above
 the footer; 26px cannot reliably fit that space.
 
 With notification previews disabled, a brief app/title banner reduces the
@@ -100,7 +108,8 @@ own transitions; the layout still follows native Timeline Peek.
 Notification sender/title and app identity remain separate. The sender is the
 primary heading; the app icon normally supplies context. Without an app icon,
 a quieter app-name line appears above the sender. Long app names do not shrink
-the sender. Message previews remain bounded, and privacy clearing takes
+the sender. App-only privacy shows the app name/icon and hides both sender and
+message text. Message previews remain bounded, and privacy clearing takes
 priority over completing an outgoing animation.
 
 ## Set up
@@ -119,16 +128,20 @@ priority over completing an outgoing animation.
    Returning to Custom restores that session's custom palette. Follow Pebble
    examples use the last OS format reported by the watch; an unknown format is
    explicitly labelled as an illustrative example. The read-only format query
-   never changes the watchface's clock preference.
+   never changes the watchface's clock preference. Optionally choose a Quiet
+   Time palette. A colour preset code such as `DYN1-FFFFFF-000000-55AAFF` shares
+   only background, text and accent colours; importing it changes no content,
+   privacy, app-filter or vibration preference.
 5. In **Content**, check the shared reading summaries and adjacent recovery
-   help, then choose music and notifications Off / App summary / Message
-   preview. A summary can include a sender or notification title. Viewing a
-   sample does not enable that feature; a nearby note identifies disabled
-   examples.
+   help, then choose music and notification visibility. A normal summary can
+   include a sender or notification title; App-only hides the sender and body.
+   Message previews are optional. Viewing a sample does not enable that feature;
+   a nearby note identifies disabled examples.
 6. For selected notification apps, add exact app names or Android package names
    as individual entries. Entries can be removed and replaced; matching ignores
    case. They are not an installed-app picker and do not verify that the named
-   app exists on the phone.
+   app exists on the phone. Optional notification vibration is Off, Short or
+   Double. It uses the same app filter and respects the watch's Quiet Time.
 7. The fixed Save area distinguishes unsaved edits from the last delivery.
    Save stores appearance settings on the phone and sends them to the watch.
    Undelivered settings retry automatically after reconnection. **Connection &
@@ -136,11 +149,14 @@ priority over completing an outgoing animation.
 8. Allow the selected sources' permissions in Pebble. Music uses `ReadMusic`.
 
 Music, animations and compact status indicators default to on. Notification
-summaries and message previews default to off. Enable them explicitly if
-wanted, and use the app-name filter to limit which notifications appear.
+summaries, message previews and notification vibration default to off. Enable
+them explicitly if wanted, and use the app-name filter to limit which
+notifications appear.
 Notification controls appear only when relevant. Startup and reconnect establish
 a fresh baseline so accumulated notifications are not replayed. Native sample
 previews are illustrative, not live data; custom recolouring is labelled approximate.
+The settings page uses readable phone light/dark colours independently of the
+watch palette, including its controls and selected values.
 
 Dynamic follows the selected sources' formatted values and units. Weather
 comes through Pebble's chosen plugin; this face has no separate HTTP weather
@@ -148,26 +164,37 @@ client, provider override or local temperature conversion.
 
 ## Dynamic content
 
-Notification bursts last at most eight seconds and ongoing updates do not
-keep extending the interruption. Rapid replacements are coalesced to preserve
+A notification burst lasts at most three seconds for an app/summary banner,
+or eight seconds when it contains a message preview. An earlier source expiry
+can shorten it. The first notice sets the burst's deadline; ongoing updates,
+including a body or icon arriving later, do not extend the interruption. Rapid
+replacements are coalesced to preserve
 a 900ms stable reading interval; privacy/body removal and invalidation clear
-immediately rather than waiting for that interval. Paused music releases its panel after a
-five-second grace period. Music and phone battery need confirmation at least
-every two minutes, with a one-minute phone-side refresh. Expiry, disconnection
+immediately rather than waiting for that interval. Paused music releases its
+panel after a
+five-second grace period, with a pause mark while it remains visible. Music and
+phone battery need confirmation at least every two minutes, with a one-minute phone-side refresh. Expiry, disconnection
 and privacy changes clear transient content. Music and notification text is
 not persisted or logged. The renderer keeps only the temporary RAM snapshots
 needed for a bounded transition; clearing private or expired data takes
 priority over showing an outgoing animation.
 
+Optional notification vibration occurs once per new allowed burst. Baseline
+history, reconnects, retries, artwork and redraws do not trigger it. Quiet Time
+suppresses it without saving a delayed vibration for later. The source does
+not report whether Pebble's native notification already vibrated, so enabling
+Dynamic's vibration can add a second alert to the system's own.
+
 The two selected complication readings can remain cached for up to two hours
 from confirmed receipt, capped by an earlier source expiry. Reloading a cache
 does not make it fresh again. Receipt time is not the provider's observation
-time. Core 0.3 preserves precise public identity even when a reading expires,
+time. Core 0.4 preserves precise public identity even when a reading expires,
 while stale/private value payloads are omitted. Clock and date continue
 without the phone.
 
-Music title and artist each retain up to 128 UTF-8 bytes before layout. Artwork
-is optional; the core requests the displayed 40px target, with actual detail
+Music title and artist each retain up to 128 UTF-8 bytes before layout. Title
+continuation can show only those received bytes, not text omitted by the source.
+Artwork is optional; the core requests the displayed 40px target, with actual detail
 depending on the source. Obsolete waiting source snapshots are replaced by the
 latest update; settings retain ordered delivery. Music is an information
 panel: use Pebble's Music app for play/pause and track controls. The current
@@ -200,7 +227,7 @@ npm ci
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.5.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.6.0.pbw
 python3 scripts/package-source.py
 ```
 
@@ -212,7 +239,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.5.0.pbw
+pebble install --emulator emery dist/Dynamic-0.6.0.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -234,11 +261,11 @@ remaining limitations.
 
 ## Shared core
 
-Dynamic now pins Core 0.3.0. Halftone continues to bundle 0.1.0 until an
+Dynamic now pins Core 0.4.0. Halftone continues to bundle 0.1.0 until an
 independently checked upgrade; installing Dynamic does not change Halftone.
 
 
-`vendor/pebble-watchface-core-0.3.0.tgz` is a committed, version-pinned Pebble
+`vendor/pebble-watchface-core-0.4.0.tgz` is a committed, version-pinned Pebble
 package. `package-lock.json` records its integrity and `vendor/CORE.json`
 records upstream/version/checksum provenance. `npm ci` installs this archive;
 users install only Dynamic's PBW, not a separate core app.

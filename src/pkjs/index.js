@@ -80,6 +80,7 @@ var context = createContext({
     return {showMusic:enabledSetting('SHOW_MUSIC', true),
       showNotifications:enabledSetting('SHOW_NOTIFICATIONS', false),
       notificationPreview:enabledSetting('NOTIFICATION_PREVIEW', false),
+      notificationAppOnly:enabledSetting('NOTIFICATION_APP_ONLY', false),
       notificationApps:typeof apps === 'string' ? apps : '',
       showStatus:enabledSetting('SHOW_STATUS', true)};
   }
@@ -140,6 +141,7 @@ Pebble.addEventListener('showConfiguration', function() {
       }
       if (item.messageKey === 'NOTIFICATION_APPS' && typeof previous === 'string') { item.defaultValue = previous; }
       if (item.messageKey === 'CLOCK_FORMAT') { item.defaultValue = clockFormat(saved); }
+      if (item.messageKey === 'NOTIFICATION_VIBRATION' && [0,1,2].indexOf(previous) >= 0) { item.defaultValue = previous; }
       if (item.id === 'dynamic-settings-data') { item.defaultValue = escapeHtml(JSON.stringify(metadata)); return; }
       if (item.id === 'dynamic-preview-assets') {
         var assets = Object.assign({}, previewAssets, {systemFormat:systemClockFormat()});
@@ -166,7 +168,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.5.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.6.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }
@@ -177,12 +179,15 @@ Pebble.addEventListener('showConfiguration', function() {
 function watchSettings(payload) {
   var result = {};
   ['BACKGROUND_COLOR', 'TEXT_COLOR', 'ACCENT_COLOR',
-    'USE_12_HOUR', 'CLOCK_FORMAT', 'SHOW_STATUS', 'ANIMATIONS'].forEach(function(name) {
+    'USE_12_HOUR', 'CLOCK_FORMAT', 'SHOW_STATUS', 'ANIMATIONS', 'NOTIFICATION_VIBRATION',
+    'NIGHT_PALETTE', 'NIGHT_BACKGROUND_COLOR', 'NIGHT_TEXT_COLOR', 'NIGHT_ACCENT_COLOR'].forEach(function(name) {
     var value = messageValue(payload, name);
     if (value === undefined) { return; }
-    if (name === 'BACKGROUND_COLOR' || name === 'TEXT_COLOR' || name === 'ACCENT_COLOR') {
+    if (/_COLOR$/.test(name)) {
       if (typeof value !== 'number' || !isFinite(value) || Math.floor(value) !== value ||
           value < 0 || value > 0xFFFFFF) { return; }
+    } else if (name === 'NOTIFICATION_VIBRATION') {
+      if (value !== 0 && value !== 1 && value !== 2) { return; }
     } else if (name === 'CLOCK_FORMAT') {
       if (value !== 0 && value !== 12 && value !== 24) { return; }
     } else {

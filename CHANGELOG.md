@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.6.0
+
+- Fixes settings colours and control contrast in phone light and dark appearances,
+  independently of the watch palette. Updates all 17 supported locales.
+- Adds App-only notification privacy and optional Off / Short / Double vibration.
+  Vibration defaults to Off, uses the existing app filter, respects watch Quiet
+  Time and fires once per new burst rather than on history, retries or artwork.
+- Gives summary banners a three-second deadline and actual message previews up
+  to eight seconds. Replacements never extend the first notice's deadline.
+- Continues long received song titles through fixed-size pages once without
+  looping or shrinking type. Keeps a 40px fallback cover tile and stable artist
+  position when artwork is missing, transparent or late; marks paused music
+  during its existing five-second grace.
+- Adds an optional palette following watch Quiet Time and restores daytime
+  colours afterward. Shares/imports only the three main palette colours with
+  a validated DYN1 colour code.
+- Pins Core 0.4.0. Keeps v4 reading packets, UUID, existing key numbers and the
+  unified layout; appends settings and transient context-state keys.
+
 ## 0.5.0
 
 - Preserves precise Temperature / Feels like / High / Low / Forecast / Phone

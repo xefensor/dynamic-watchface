@@ -9,9 +9,27 @@ module.exports = function() {
   style.textContent = [
     ':root{color-scheme:light;--page:#f4f5f7;--card:#fff;--ink:#101216;--muted:#5a6068;--line:#dde1e6;--accent:#145ca3;--field:#f4f5f7;--track:#cad0d6}',
     '@media(prefers-color-scheme:dark){:root{color-scheme:dark;--page:#141618;--card:#212529;--ink:#f6f8fa;--muted:#b8c0c9;--line:#3c444d;--accent:#77bbff;--field:#2a3037;--track:#565f6a}}',
-    'html{font-size:16px!important;height:auto;background:var(--page)}',
+    'html{font-size:16px!important;height:auto;background:var(--page)!important;color:var(--ink)!important}',
     'body{box-sizing:border-box;height:auto;max-width:512px;margin:0 auto;padding:20px 16px 140px;padding-bottom:calc(140px + env(safe-area-inset-bottom));background:var(--page);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
     '*,*:before,*:after{box-sizing:border-box}',
+    // Clay adds component styles after this hook. Scope colour rules to the
+    // form so late defaults cannot reintroduce white inputs or orange text.
+    'body{background:var(--page)!important;color:var(--ink)!important}',
+    '#main-form{color:var(--ink);font:inherit}',
+    '#main-form .section{background:var(--card);color:var(--ink)}',
+    '#main-form label,#main-form .label,#main-form .component-select .value{color:var(--ink);font-family:inherit}',
+    '#main-form strong{color:var(--ink);font-family:inherit}',
+    '#main-form .description,#main-form .component-text p{color:var(--muted)}',
+    '#main-form input,#main-form select,#main-form option{color:var(--ink);background-color:var(--field);font-family:inherit}',
+    '#main-form input::placeholder{color:var(--muted);opacity:1}',
+    '#main-form .component-select .value{background:var(--field)}',
+    '#main-form .component-toggle input{background:none}',
+    '#main-form .component-toggle .graphic .marker{background:#fff;border:1px solid #59636f}',
+    '#main-form .component-toggle input:checked+.graphic .marker{background:#fff;border-color:#fff}',
+    '#main-form .component-color .picker-wrap .picker{background:var(--card);color:var(--ink)}',
+    '#main-form .dynamic-save-state p{color:var(--muted)}',
+    '#main-form .dynamic-warning p{color:#934300}',
+    '@media(prefers-color-scheme:dark){#main-form .dynamic-warning p{color:#ffbd77}}',
     '#main-form>.component-heading:first-child{padding:0 2px 20px}',
     '.component-heading h1,.component-heading h2,.component-heading h3,.component-heading h4{margin:0;color:var(--ink);font:700 17px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:none;letter-spacing:0}',
     '#main-form>.component-heading:first-child h1,#main-form>.component-heading:first-child h2,#main-form>.component-heading:first-child h4{font-size:28px;letter-spacing:-.6px}',
@@ -57,6 +75,12 @@ module.exports = function() {
     '.dynamic-save-state{padding:0 0 7px!important;margin:0;color:var(--muted);font-size:12px;line-height:1.3}',
     '.dynamic-save-state p{margin:0;font-size:12px;line-height:1.3}',
     '.dynamic-save-state:after{display:none!important}',
+    '.dynamic-palette-code label{display:block;margin-bottom:7px}',
+    '.dynamic-palette-code input{display:block;width:100%;min-height:44px;padding:10px;border:1px solid var(--line);border-radius:8px;font:15px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace}',
+    '.dynamic-palette-actions{display:flex;gap:8px;margin-top:9px}',
+    '.dynamic-palette-actions button{flex:1;min-width:0;width:auto;margin:0;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;box-shadow:none;background:var(--field);color:var(--ink);font:600 14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:none;letter-spacing:0}',
+    '#main-form .dynamic-palette-code input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}',
+    '.dynamic-palette-code p{margin:7px 0 0!important}',
     '.dynamic-app-filter label{display:block;min-height:0;margin-bottom:7px}',
     '.dynamic-app-entry{display:flex;gap:7px;align-items:stretch}',
     '.dynamic-app-entry input{flex:1;min-width:0;width:0;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:inherit;font-size:15px}',
@@ -178,6 +202,8 @@ module.exports = function() {
       color('BACKGROUND_COLOR') === 0 && color('TEXT_COLOR') === 0xFFFFFF ? 'dark' : 'custom';
     var customPalette = {background:bg.get(),foreground:fg.get()};
     var previousTheme = initialTheme;
+    var paletteInput, paletteStatus;
+    var night = field('NIGHT_PALETTE');
     var theme = choice('dynamic-theme',t('theme'),[['light',t('themeLight')],['dark',t('themeDark')],['custom',t('themeCustom')]],initialTheme);
     function updateColors() {
       show(bg,theme.value === 'custom'); show(fg,theme.value === 'custom');
@@ -193,11 +219,12 @@ module.exports = function() {
         var front=(foreground>>shift)&255,back=(background>>shift)&255;
         return result | (Math.floor((2*(front/85)+(back/85)+1)/3)*85 << shift);
       },0);
-      var low = ratio(background,foreground) < 4.5;
-      var adjusted = ratio(background,secondary) < 4.5 || ratio(background,color('ACCENT_COLOR')) < 2;
+      var low = ratio(background,foreground) < 4.5 || night.get() && ratio(color('NIGHT_BACKGROUND_COLOR'),color('NIGHT_TEXT_COLOR')) < 4.5;
+      var adjusted = ratio(background,secondary) < 4.5 || ratio(background,color('ACCENT_COLOR')) < 2 ||
+        night.get() && ratio(color('NIGHT_BACKGROUND_COLOR'),color('NIGHT_ACCENT_COLOR')) < 2;
       if (contrast) { contrast.className += contrast.className.indexOf('dynamic-warning') < 0 ? ' dynamic-warning' : '';
         contrast.hidden = !low && !adjusted; clear(contrast); contrast.appendChild(make('p',t(low ? 'contrastHelp' : 'accentContrastHelp'))); }
-      renderPreview();
+      updatePaletteCode(); renderPreview();
     }
     if (theme) { theme.addEventListener('change',function() {
       if (previousTheme === 'custom') { customPalette = {background:bg.get(),foreground:fg.get()}; }
@@ -213,10 +240,59 @@ module.exports = function() {
       updateColors();
     }); } });
 
-    var notification = field('SHOW_NOTIFICATIONS'), preview = field('NOTIFICATION_PREVIEW'), apps = field('NOTIFICATION_APPS');
+    function paletteCode() {
+      return 'DYN1-' + ['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR'].map(function(key) { return css(color(key)).slice(1).toUpperCase(); }).join('-');
+    }
+    function updatePaletteCode() {
+      if (paletteInput) { paletteInput.value = paletteCode(); paletteInput.setCustomValidity(''); }
+      if (paletteStatus) { paletteStatus.textContent = ''; }
+    }
+    var paletteHost = node(item('dynamic-palette-code'));
+    if (paletteHost) {
+      clear(paletteHost); paletteHost.className += ' dynamic-palette-code';
+      var paletteLabel = make('label',t('paletteCode')); paletteLabel.setAttribute('for','dynamic-palette-input'); paletteHost.appendChild(paletteLabel);
+      paletteInput = make('input'); paletteInput.id = 'dynamic-palette-input'; paletteInput.type = 'text'; paletteInput.maxLength = 32;
+      paletteInput.autocomplete = 'off'; paletteInput.spellcheck = false; paletteInput.setAttribute('autocapitalize','characters');
+      paletteInput.setAttribute('aria-label',t('paletteInput')); paletteInput.setAttribute('aria-describedby','dynamic-palette-help dynamic-palette-status');
+      paletteHost.appendChild(paletteInput);
+      var paletteActions = make('div',null,'dynamic-palette-actions');
+      var copyPalette = make('button',t('paletteCopy')), applyPalette = make('button',t('paletteApply'));
+      copyPalette.type = applyPalette.type = 'button'; copyPalette.id = 'dynamic-palette-copy'; applyPalette.id = 'dynamic-palette-apply';
+      paletteActions.appendChild(copyPalette); paletteActions.appendChild(applyPalette); paletteHost.appendChild(paletteActions);
+      var paletteHelp = make('p',t('paletteCodeHelp'),'description'); paletteHelp.id = 'dynamic-palette-help'; paletteHost.appendChild(paletteHelp);
+      paletteStatus = make('p','','description'); paletteStatus.id = 'dynamic-palette-status'; paletteStatus.setAttribute('role','status'); paletteStatus.setAttribute('aria-live','polite'); paletteHost.appendChild(paletteStatus);
+      paletteInput.addEventListener('input',function() { paletteInput.setCustomValidity(''); paletteStatus.textContent = ''; });
+      applyPalette.addEventListener('click',function() {
+        var match = /^DYN1-([0-9A-F]{6})-([0-9A-F]{6})-([0-9A-F]{6})$/i.exec(paletteInput.value.trim());
+        if (!match) { paletteStatus.textContent = t('paletteInvalid'); paletteInput.focus(); return; }
+        themeChanging = true;
+        [bg,fg,accent].forEach(function(value,index) { value.set(nativeColor(parseInt(match[index+1],16))); });
+        theme.value = previousTheme = 'custom'; customPalette = {background:bg.get(),foreground:fg.get()};
+        themeChanging = false; updateColors(); updateDirty(); paletteStatus.textContent = t('paletteApplied');
+      });
+      copyPalette.addEventListener('click',function() {
+        updatePaletteCode(); paletteInput.focus(); paletteInput.select();
+        if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          navigator.clipboard.writeText(paletteInput.value).then(function() { paletteStatus.textContent = t('paletteCopied'); },function() { paletteStatus.textContent = t('paletteSelectCopy'); });
+        } else {
+          var copied = false; try { copied = document.execCommand('copy'); } catch (ignored) {}
+          paletteStatus.textContent = t(copied ? 'paletteCopied' : 'paletteSelectCopy');
+        }
+      });
+      updatePaletteCode();
+    }
+    function updateNight() {
+      ['NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].forEach(function(key) { show(field(key),!!night.get()); });
+      updateColors(); updateDirty();
+    }
+    night.on('change',updateNight);
+    ['NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].forEach(function(key) { field(key).on('change',updateColors); });
+    updateNight();
+
+    var notification = field('SHOW_NOTIFICATIONS'), preview = field('NOTIFICATION_PREVIEW'), appOnly = field('NOTIFICATION_APP_ONLY'), vibration = field('NOTIFICATION_VIBRATION'), apps = field('NOTIFICATION_APPS');
     var noticeMode = choice('dynamic-notification-mode',t('notifications'),[
-      ['off',t('stateOff')],['summary',t('notificationSummary')],['preview',t('notificationPreview')]
-    ],notification.get() ? preview.get() ? 'preview' : 'summary' : 'off');
+      ['off',t('stateOff')],['app',t('notificationAppOnly')],['summary',t('notificationSummary')],['preview',t('notificationPreview')]
+    ],notification.get() ? appOnly.get() ? 'app' : preview.get() ? 'preview' : 'summary' : 'off');
     var appMode = choice('dynamic-app-mode',t('notificationAppsMode'),[
       ['all',t('allApps')],['selected',t('selectedApps')]
     ],String(apps.get() || '').trim() ? 'selected' : 'all');
@@ -239,7 +315,7 @@ module.exports = function() {
     var canonicalInput = apps.$manipulatorTarget && apps.$manipulatorTarget[0];
     if (canonicalInput) { canonicalInput.required = false; canonicalInput.setCustomValidity(''); }
     var appNode = node(apps); appNode.parentNode.insertBefore(appHost,appNode);
-    show(notification,false); show(preview,false); show(apps,false);
+    show(notification,false); show(preview,false); show(appOnly,false); show(apps,false);
     function appValidity(message) {
       var enabled = noticeMode.value !== 'off' && appMode.value === 'selected';
       appEntry.required = enabled && !entries.length;
@@ -276,11 +352,17 @@ module.exports = function() {
     appEntry.addEventListener('input',function() { appValidity(draftAppError()); updateDirty(); });
     function updateNotifications() {
       var enabled = noticeMode.value !== 'off';
-      notification.set(enabled); preview.set(noticeMode.value === 'preview');
+      notification.set(enabled);
+      if (enabled) {
+        appOnly.set(noticeMode.value === 'app');
+        if (noticeMode.value !== 'app') { preview.set(noticeMode.value === 'preview'); }
+      }
+      show(vibration,enabled);
       show(item('dynamic-notification-help'),enabled);
       var privacy = node(item('dynamic-notification-help'));
       if (privacy) { clear(privacy); privacy.appendChild(make('p',t('notificationsHelp')));
         if (noticeMode.value === 'summary') { privacy.appendChild(make('p',t('notificationSummaryHelp'))); }
+        if (noticeMode.value === 'app') { privacy.appendChild(make('p',t('notificationAppOnlyHelp'))); }
       }
       show(item('dynamic-app-mode'),enabled); appHost.hidden = !enabled || appMode.value !== 'selected';
       appValidity(draftAppError()); renderPreview(); updateDirty();
@@ -331,7 +413,7 @@ module.exports = function() {
       submitHost.insertBefore(saveStatus,submitHost.firstChild);
     }
     function signature() {
-      return JSON.stringify(['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS'].map(function(key) { return field(key).get(); }).concat([noticeMode.value !== 'off' && appMode.value === 'selected' ? appEntry.value.trim() : '']));
+      return JSON.stringify(['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APP_ONLY','NOTIFICATION_VIBRATION','NOTIFICATION_APPS','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].map(function(key) { return field(key).get(); }).concat([noticeMode.value !== 'off' && appMode.value === 'selected' ? appEntry.value.trim() : '']));
     }
     updateDirty = function() {
       if (!initialSnapshot) { return; }
@@ -401,7 +483,7 @@ module.exports = function() {
       previewCaption.textContent = t(exactTheme ? 'previewSettingsNote' : 'previewCustomHelp');
       timelineCaption.hidden = previewState !== 'timeline';
       disabledCaption.hidden = !(previewState === 'music' && !field('SHOW_MUSIC').get() ||
-        previewState === 'notification' && noticeMode.value !== 'preview' || previewState === 'notification-summary' && noticeMode.value === 'off');
+        previewState === 'notification' && noticeMode.value !== 'preview' || previewState === 'notification-summary' && (noticeMode.value === 'off' || noticeMode.value === 'app'));
       formatCaption.hidden = Number(field('CLOCK_FORMAT').get()) !== 0 || Number(assets.systemFormat) === 12 || Number(assets.systemFormat) === 24;
       ctx.fillStyle = css(background); ctx.fillRect(0,0,200,228);
       if (!frame) { previewCaption.textContent = t('noExample'); return; }
@@ -443,7 +525,7 @@ module.exports = function() {
     field('SHOW_MUSIC').on('change',renderPreview);
     updateNotifications(); updateColors();
     initialSnapshot = signature();
-    ['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS'].forEach(function(key) { field(key).on('input change',updateDirty); });
+    ['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APP_ONLY','NOTIFICATION_VIBRATION','NOTIFICATION_APPS','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].forEach(function(key) { field(key).on('input change',updateDirty); });
     updateDirty();
     var form = document.getElementById('main-form');
     if (form) {

@@ -1,7 +1,7 @@
 {
   "name": "dynamic-watchface",
   "author": "Xef",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "scripts": {
     "test": "python3 scripts/verify-core.py && node --test tests/*.test.js && python3 scripts/test-native.py",
     "test:js": "node --test tests/*.test.js",
@@ -16,7 +16,7 @@
   "private": true,
   "dependencies": {
     "@rebble/clay": "^1.0.0",
-    "pebble-watchface-core": "file:vendor/pebble-watchface-core-0.3.0.tgz"
+    "pebble-watchface-core": "file:vendor/pebble-watchface-core-0.4.0.tgz"
   },
   "pebble": {
     "displayName": "Dynamic",
@@ -69,7 +69,14 @@
       "PANEL_TRANSITIONS",
       "ACCENT_COLOR",
       "ANIMATIONS",
-      "CLOCK_FORMAT"
+      "CLOCK_FORMAT",
+      "NOTIFICATION_VIBRATION",
+      "NIGHT_PALETTE",
+      "NIGHT_BACKGROUND_COLOR",
+      "NIGHT_TEXT_COLOR",
+      "NIGHT_ACCENT_COLOR",
+      "NOTIFICATION_APP_ONLY",
+      "CONTEXT_STATE"
     ],
     "resources": {
       "media": [

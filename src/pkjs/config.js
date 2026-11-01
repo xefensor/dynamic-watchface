@@ -12,6 +12,11 @@ module.exports = [
     {type:'color',messageKey:'TEXT_COLOR',defaultValue:'0x000000',label:'Text color',layout:'COLOR',sunlight:false},
     {type:'color',messageKey:'ACCENT_COLOR',defaultValue:'0x55AAFF',label:'Accent color',description:'Color for reading symbols and rain gauges.',layout:'COLOR',sunlight:false},
     {type:'text',id:'dynamic-contrast',defaultValue:''},
+    {type:'text',id:'dynamic-palette-code',defaultValue:'Share colours'},
+    {type:'toggle',messageKey:'NIGHT_PALETTE',defaultValue:false,label:'Quiet Time colours',description:'Use these watch colours while Pebble Quiet Time is active.'},
+    {type:'color',messageKey:'NIGHT_BACKGROUND_COLOR',defaultValue:'0x000000',label:'Quiet Time background',layout:'COLOR',sunlight:false},
+    {type:'color',messageKey:'NIGHT_TEXT_COLOR',defaultValue:'0xFFFFFF',label:'Quiet Time text',layout:'COLOR',sunlight:false},
+    {type:'color',messageKey:'NIGHT_ACCENT_COLOR',defaultValue:'0x55AAFF',label:'Quiet Time accent',layout:'COLOR',sunlight:false},
     {type:'select',messageKey:'CLOCK_FORMAT',defaultValue:0,label:'Time format',serializeValueAs:'integer',options:[
       {label:'Follow Pebble',value:0},{label:'12-hour time',value:12},{label:'24-hour time',value:24}
     ]},
@@ -31,6 +36,10 @@ module.exports = [
     {type:'text',id:'dynamic-notification-mode',defaultValue:'Notifications'},
     {type:'toggle',messageKey:'SHOW_NOTIFICATIONS',defaultValue:false,label:'New notifications'},
     {type:'toggle',messageKey:'NOTIFICATION_PREVIEW',defaultValue:false,label:'Include message text'},
+    {type:'toggle',messageKey:'NOTIFICATION_APP_ONLY',defaultValue:false,label:'App name only'},
+    {type:'select',messageKey:'NOTIFICATION_VIBRATION',defaultValue:0,label:'Notification vibration',description:'One vibration per new notification burst. Respects Quiet Time and your app filter. Pebble may also vibrate for the same notification.',serializeValueAs:'integer',options:[
+      {label:'Off',value:0},{label:'Short pulse',value:1},{label:'Double pulse',value:2}
+    ]},
     {type:'text',id:'dynamic-notification-help',defaultValue:'Allow notification access in Pebble. Only new notifications appear.'},
     {type:'text',id:'dynamic-app-mode',defaultValue:'Notification apps'},
     {type:'input',messageKey:'NOTIFICATION_APPS',defaultValue:'',label:'Selected apps',description:'Use exact app names or Android package names, separated by commas. For example: Signal, org.thoughtcrime.securesms',attributes:{type:'text',maxlength:160,autocapitalize:'none',autocomplete:'off',spellcheck:'false'}}

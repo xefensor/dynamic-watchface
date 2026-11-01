@@ -1,6 +1,6 @@
 # Design references and motion
 
-Dynamic 0.5.0 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.6.0 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -71,11 +71,15 @@ source. Context contracts the clock to 42px while retaining 22px values and
 readable 14px symbols. Timeline Peek uses 26px values and 16px symbols.
 
 Music titles use a fixed 24px size and artists a fixed 20px size. Track length
-changes wrapping through up to three title lines and two artist lines, then
-ellipsis; it never changes the type size. Native ink measurements showed
+changes wrapping through up to three title lines per page and two artist lines.
+A long received title continues through its remaining pages once, then holds;
+it never loops or changes the type size. Native ink measurements showed
 that 26px cannot reliably fit three title lines above the footer, so 24px
 preserves both readability and the fixed bottom composition. Artwork stays
-40px and shares y216 with the bottom of the artist text. The former Larger
+40px and shares y216 with the bottom of the artist text. A simple fallback tile
+holds that space when artwork is absent or transparent, so late covers cannot
+move the artist. A pause mark makes the five-second paused-music grace explicit.
+The former Larger
 text mode is retired, including existing saved choices, and sample previews
 have no size selector.
 
@@ -89,6 +93,15 @@ Notification sender/title and app identity are separate. The sender is primary,
 with an app icon as context, or a quieter app-name line when its icon is absent.
 Long app names do not reduce sender text size. A banner preserves the music
 footer while its available title lines adjust to the bounded notice heading.
+App-only privacy shows app identity while omitting sender and body. Summary
+bursts get at most three seconds and actual message previews eight; later
+updates never extend the first notice's deadline. Optional Short / Double
+vibration defaults to Off, uses the same app filter and respects watch Quiet
+Time. It announces a new burst once, not each replacement or redraw.
+
+An optional Quiet Time palette follows the watch's own state and restores the
+daytime colours afterward. Both palettes retain the same contrast fallbacks and
+geometry; the change does not create another text or layout mode.
 
 The settings page follows the same principles: one page with Appearance,
 Content and Connection & help. Safe layout/colour samples are independent of
@@ -96,7 +109,10 @@ privacy settings. The Save area describes draft versus last delivery, theme
 exploration is reversible, source ownership/recovery is explicit and app filters
 are visible individual entries. Read-only OS clock-style queries support
 Follow Pebble examples without changing the watchface override; unknown format
-is labelled rather than implied.
+is labelled rather than implied. The page uses its own explicit phone light/dark
+colours, including controls, independently of chosen watch colours. Sharing a
+validated three-colour preset changes only the main palette; privacy and alert
+choices are never included.
 
 The face renders source-provided data and recognized semantic symbols. Its
 gauges use a validated provider-supplied range, with source-identified rain

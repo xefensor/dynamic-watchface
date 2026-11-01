@@ -228,12 +228,12 @@ test('settings delivery failure is bounded instead of retrying forever',()=>{
 test('context source defaults and saved named/numeric settings preserve explicit opt-outs',()=>{
   const defaults=fixture();
   assert.deepEqual(JSON.parse(JSON.stringify(defaults.contextOptions.getSettings())),
-    {showMusic:true,showNotifications:false,notificationPreview:false,notificationApps:'',showStatus:true});
+    {showMusic:true,showNotifications:false,notificationPreview:false,notificationAppOnly:false,notificationApps:'',showStatus:true});
   for(const settings of [{SHOW_MUSIC:false,SHOW_NOTIFICATIONS:true,NOTIFICATION_PREVIEW:true,NOTIFICATION_APPS:'Signal, WhatsApp',SHOW_STATUS:false},
     {[keys.SHOW_MUSIC]:0,[keys.SHOW_NOTIFICATIONS]:1,[keys.NOTIFICATION_PREVIEW]:1,[keys.NOTIFICATION_APPS]:'Signal, WhatsApp',[keys.SHOW_STATUS]:0}]) {
     const f=fixture(settings);
     assert.deepEqual(JSON.parse(JSON.stringify(f.contextOptions.getSettings())),
-      {showMusic:false,showNotifications:true,notificationPreview:true,notificationApps:'Signal, WhatsApp',showStatus:false});
+      {showMusic:false,showNotifications:true,notificationPreview:true,notificationAppOnly:false,notificationApps:'Signal, WhatsApp',showStatus:false});
   }
 });
 
@@ -316,7 +316,7 @@ test('new appearance keys extend the original wire contract without renumbering 
     'WEATHER_CONDITION','COMPLICATION_DATA','REQUEST_COMPLICATIONS','CONTEXT_DATA','REQUEST_CONTEXT',
     'SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS','SHOW_STATUS','PANEL_TRANSITIONS'];
   assert.deepEqual(packageInfo.pebble.messageKeys.slice(0,31),legacy);
-  assert.equal(packageInfo.pebble.messageKeys.length,34);
+  assert.equal(packageInfo.pebble.messageKeys.length,41);
   assert.equal(keys.ACCENT_COLOR,10031);
   assert.equal(keys.ANIMATIONS,10032);
   assert.equal(keys.CLOCK_FORMAT,10033);
@@ -461,4 +461,47 @@ test('settings group appearance, content and recovery in one three-section page'
   const sections=f.clay.config.filter(x=>x.type==='section');
   assert.equal(sections.length,3);
   assert.deepEqual(sections.map(x=>x.items[0].defaultValue),['Appearance','Content','Connection & help']);
+});
+
+
+test('new night palette and haptic controls deliver validated native preferences only',()=>{
+  for(const name of ['NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'])for(const field of [name,String(keys[name])]) {
+    for(const value of [0,0x55AAFF,0xFFFFFF]) {
+      const f=fixture();f.handlers.webviewclosed({response:JSON.stringify({[field]:{value}})});
+      assert.equal(f.deliveries[0][keys[name]],value);
+    }
+    for(const value of [-1,0x1000000,1.5,null,'0xFFFFFF',{},[]]) {
+      const f=fixture();f.handlers.webviewclosed({response:JSON.stringify({[field]:{value},TEXT_COLOR:123})});
+      assert.equal(f.deliveries[0][keys[name]],undefined);
+    }
+  }
+  for(const value of [false,0,true,1]) {
+    const f=fixture();f.handlers.webviewclosed({response:JSON.stringify({NIGHT_PALETTE:{value}})});
+    assert.equal(f.deliveries[0][keys.NIGHT_PALETTE],Number(value));
+  }
+  for(const value of [0,1,2]) {
+    const f=fixture();f.handlers.webviewclosed({response:JSON.stringify({NOTIFICATION_VIBRATION:{value}})});
+    assert.equal(f.deliveries[0][keys.NOTIFICATION_VIBRATION],value);
+  }
+  for(const value of [-1,3,0.5,null,'1',{},[]]) {
+    const f=fixture();f.handlers.webviewclosed({response:JSON.stringify({NOTIFICATION_VIBRATION:{value},TEXT_COLOR:123})});
+    assert.equal(f.deliveries[0][keys.NOTIFICATION_VIBRATION],undefined);
+  }
+});
+
+test('app-only is a phone privacy preference and saved native choices survive opening settings',()=>{
+  for(const name of ['NOTIFICATION_APP_ONLY',String(keys.NOTIFICATION_APP_ONLY)]) {
+    const saved={[name]:true,NOTIFICATION_PREVIEW:true,NOTIFICATION_VIBRATION:2,NIGHT_PALETTE:true,NIGHT_BACKGROUND_COLOR:0x005555};
+    const f=fixture(saved);f.handlers.showConfiguration();
+    assert.equal(f.contextOptions.getSettings().notificationAppOnly,true);
+    assert.equal(f.contextOptions.getSettings().notificationPreview,true);
+    assert.equal(named(f,'NOTIFICATION_VIBRATION').defaultValue,2);
+    assert.equal(named(f,'NIGHT_PALETTE').defaultValue,true);
+    assert.equal(named(f,'NIGHT_BACKGROUND_COLOR').defaultValue,0x005555);
+    assert.deepEqual(f.settings(),saved);
+    f.handlers.webviewclosed({response:JSON.stringify({[name]:true,TEXT_COLOR:123})});
+    assert.equal(f.deliveries[0][keys.NOTIFICATION_APP_ONLY],undefined);
+    assert.equal(f.contextOptions.getSettings().notificationAppOnly,true);
+  }
+  assert.deepEqual(packageInfo.pebble.messageKeys.slice(34),['NOTIFICATION_VIBRATION','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR','NOTIFICATION_APP_ONLY','CONTEXT_STATE']);
 });

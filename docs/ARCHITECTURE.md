@@ -1,6 +1,6 @@
 # Dynamic and the shared core
 
-Dynamic 0.5.0 pins Pebble Watchface Core 0.3.0. Halftone retains its own
+Dynamic 0.6.0 pins Pebble Watchface Core 0.4.0. Halftone retains its own
 0.1.0 pin until independently upgraded. Each PBW embeds its library and keeps
 its UUID, settings and permission manifest. The core is not a background app.
 
@@ -56,7 +56,10 @@ images retain their supplied colours. Muted labels and quieter artists use
 foreground ink when their quantized secondary colour would fall below 4.5:1
 contrast. Accent graphics require 2:1 against the background, falling back to
 foreground or contrasting ink. Settings warn about low primary contrast;
-these fallbacks do not silently replace the user's saved palette.
+these fallbacks do not silently replace the user's saved palette. The optional
+Quiet Time palette keeps separate persisted colours. Effective rendering follows
+`quiet_time_is_active()` locally and returns to the daytime palette afterward;
+no phone timer or schedule is inferred.
 
 A percentage becomes a rain gauge only when source semantics identify
 precipitation probability. Numeric precipitation amounts retain their units
@@ -66,18 +69,24 @@ provider text/units/images and meaningful provider labels.
 ## Music and notification motion
 
 Music remains anchored from the bottom. The 40px artwork and up to two artist
-lines share visible bottom y216. Metadata reserves at least 40px when present.
-The title ends 8px above it and grows upward through up to three lines. With
-neither artwork nor artist, the title can extend to y216. Titles stay 24px and
-artists 20px across tracks; measured ink selects line count, wrapping and a
-final ellipsis, not a per-track font size.
+lines share visible bottom y216. The footer always reserves its 40px cover tile,
+using a simple fallback when received artwork is absent or transparent. Artist
+position does not change when artwork arrives. The title ends 8px above the
+footer and grows upward through up to three lines per page. Titles stay 24px
+and artists 20px across tracks. A long received title advances through its
+remaining fixed-size pages once and holds the final page; it never loops.
+Artwork or artist corrections preserve continuation progress. Context/privacy
+boundaries prevent obsolete title pages from appearing. A small pause mark
+identifies the existing five-second grace before paused music yields its panel.
 
 Notification title text and app label are separate fields. The sender/title
 keeps the primary heading; an app icon normally supplies context. If no app
 icon is available, a quieter app-name line sits above it. Long app labels do
 not shrink the sender. A summary banner reduces song-title space and retains
 its footer; an extra app-name line may reduce available title lines further.
-A message preview uses a bounded body panel.
+A message preview uses a bounded body panel. App-only mode instead places the
+app name in the heading and omits sender, message body and duplicate app label;
+a missing app name may fall back to package identity, never sender text.
 
 Content identity and image refreshes have different motion rules. New primary
 song title text defines a new track because the current source supplies no
@@ -85,7 +94,10 @@ track identifier. A track change slides its content; late artwork or artist
 metadata repaints in place. A notification burst enters once and subsequent
 heading/body/icon changes stay in place. Lease-only refreshes already avoid
 replaying motion. Core coalescing provides a 900ms stable reading interval
-inside the eight-second notification maximum. Removing private content,
+inside the first notice's deadline: at most three seconds for a summary/app-only
+banner or eight seconds for an actual nonempty message preview. An earlier
+source expiry can shorten either; later body/icon arrival cannot extend it.
+Removing private content,
 invalidating a source or clearing permissions bypasses that interval.
 
 Animations stop when settled. The ANIMATIONS preference disables Dynamic's
@@ -99,8 +111,10 @@ always take priority over completing it.
 
 The retired Larger text choice is neither loaded nor saved; live LARGE_TEXT
 inputs have no visual effect. Its wire-key number remains reserved. Legacy
-TEXT_SHADOW is also a compatibility input without a visible effect. All 34
-message-key bindings and Dynamic's UUID remain unchanged.
+TEXT_SHADOW is also a compatibility input without a visible effect. Existing
+message-key numbers and Dynamic's UUID remain unchanged. Keys 34–40 append
+notification vibration, Quiet Time palette enable/colours, app-only privacy and
+transient context state.
 
 CLOCK_FORMAT preferences remain 0 (Follow Pebble), 12 or 24. Legacy explicit
 USE_12_HOUR choices still migrate. CLOCK_FORMAT=255 is a read-only query, not
@@ -112,14 +126,14 @@ style, or labels its illustrative format when none has been received.
 
 ## Pinned dependency and v4 data contract
 
-The committed dependency is file:vendor/pebble-watchface-core-0.3.0.tgz.
+The committed dependency is file:vendor/pebble-watchface-core-0.4.0.tgz.
 package-lock.json and vendor/CORE.json record version/integrity/provenance.
-The source commit is e5d99b5033c6aa461023ec0674a1802deb5c0a04 and archive SHA-256
-is c352cd062c062b3888941194aad571c3a9046ffcc271485267cc2f711443e7a1.
+The exact source commit and archive SHA-256 are recorded in `vendor/CORE.json`
+and the build-specific validation record.
 Updating the core repository alone does not update installed PBWs. Each
 consumer adopts and validates a versioned archive independently.
 
-Core 0.3 preserves provider-formatted text and units, semantic/source kind,
+Core 0.4 preserves provider-formatted text and units, semantic/source kind,
 raw numeric value/range, short label and precise detail/forecast/observation
 metadata. V4 has five fixed records with a 56-byte header per record. Byte25
 carries detail, byte26 the forecast qualifier, byte27 remains reserved, and
@@ -145,8 +159,22 @@ context snapshot carries music title/art, artist, notification sender/icon,
 notification body and low phone battery. Its notification record label carries
 app identity separately from sender text. Music/phone confirmation is bounded
 to 120 seconds and paused music has a five-second grace period. Notification
-bursts have an eight-second maximum; updates do not renew it. Reconnect and
-startup establish a baseline so old notification shade contents do not replay.
+summary/app-only bursts last at most three seconds and actual message previews
+up to eight seconds; updates do not renew the first notice's deadline. Reconnect
+and startup establish a baseline so old notification shade contents do not replay.
+
+An optional `CONTEXT_STATE` tuple accompanies the same queued context snapshot:
+exactly nine bytes with little-endian uint32 session token, uint32 burst counter
+and a flags byte whose bit0 indicates retained paused music. Boundary/history
+packets carry event0. A new independent allowed burst increments the counter;
+coalesced text/icon updates retain it. Rebaselining within a native session does
+not reuse event identities. This side tuple leaves the v4 record format intact.
+Native accepts presentation state only with the matching session and accepted
+context snapshot. Vibration additionally requires an open notification gate and
+fresh notice; repeated or older burst identities cannot buzz again. The native
+Off / Short / Double preference defaults to Off, and Quiet Time suppresses a
+burst without deferring it. The source supplies no native already-alerted flag,
+so this cannot deduplicate the OS's own notification vibration.
 
 The shared queue replaces obsolete waiting snapshots within each source
 channel; settings remain FIFO. SUPERSEDED is terminal, not a source failure or
@@ -168,6 +196,13 @@ beside the affected summary. Notification choices explain app/sender visibility.
 Selected app filters are removable entries, matched by exact case-insensitive
 name/package; they are not validated against installed apps. All new strings
 and controls cover the existing 17 supported locales.
+
+The phone page has explicit light/dark foreground, background and form-control
+colours independent of watch palettes. This includes native selected values and
+options, avoiding mixed inherited Clay colours. A `DYN1-FFFFFF-000000-55AAFF`
+preset contains only background, text and accent. Import validates all three
+before changing the main palette; it cannot alter privacy, filters, haptics or
+other settings.
 
 The fixed Save area distinguishes unsaved edits from last-delivery state.
 It does not claim a new draft has reached the watch merely because a previous

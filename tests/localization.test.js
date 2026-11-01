@@ -227,3 +227,33 @@ test('the full UX pass has explicit translations and keeps privacy and save mean
   assert.match(localization.t('notificationSummaryHelp','en'),/sender.*not the message body/);
   assert.equal(localization.t('helpConnection','en'),'Connection & help');
 });
+
+test('app-only privacy, quiet alerts and colour sharing are explicit in every locale',()=>{
+  const keys=['notificationAppOnly','notificationAppOnlyHelp','notificationVibration',
+    'vibrationOff','vibrationShort','vibrationDouble','vibrationHelp','nightPalette',
+    'nightPaletteHelp','nightBackground','nightText','nightAccent','paletteCode',
+    'paletteCodeHelp','paletteCopy','paletteApply','paletteCopied','paletteSelectCopy',
+    'paletteInvalid','paletteApplied','paletteInput'];
+  for(const language of languages){
+    const strings=localization.settingsStrings(language);
+    for(const key of keys){
+      assert.equal(typeof strings[key],'string',language+': '+key);
+      assert.ok(strings[key].trim(),language+': '+key);
+      assert.notEqual(strings[key],key,language+': '+key);
+      if(language!=='en')assert.notEqual(strings[key],localization.t(key,'en'),language+': '+key);
+      assert.equal(localization.t(localization.t(key,'en'),language),strings[key],language+': literal '+key);
+    }
+    assert.equal(strings.vibrationOff,strings.stateOff,language+': consistent off state');
+    assert.match(strings.vibrationHelp,/Quiet Time/,language+': watch quiet mode');
+    assert.match(strings.vibrationHelp,/Pebble/,language+': possible native vibration');
+    assert.match(strings.nightPaletteHelp,/Pebble.*Quiet Time|Quiet Time.*Pebble/,language+': watch palette trigger');
+    assert.match(strings.paletteInvalid,/DYN1-FFFFFF-000000-55AAFF/,language+': valid code example');
+    assert.notEqual(strings.notificationAppOnly,strings.notificationSummary,language+': privacy modes');
+    assert.notEqual(strings.paletteCopy,strings.paletteApply,language+': separate copy and import actions');
+    assert.notEqual(strings.nightBackground,strings.background,language+': separate night and day colours');
+  }
+  assert.match(localization.t('notificationAppOnlyHelp','en'),/without sender or message text/);
+  assert.match(localization.t('vibrationHelp','en'),/One vibration per new notification burst/);
+  assert.match(localization.t('paletteCodeHelp','en'),/only background, text and accent colours/);
+  assert.match(localization.t('paletteApplied','en'),/Save to send/);
+});

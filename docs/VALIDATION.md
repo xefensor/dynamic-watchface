@@ -1,6 +1,73 @@
 # Dynamic validation
 
-## 0.5.0 meaning, calmer updates and settings clarity
+## 0.6.0 notification attention and readable settings
+
+Dynamic 0.6.0 pins Core 0.4.0. The protocol stays v4; seven appended AppMessage
+keys add preferences and an ephemeral context sidecar while all previous 34 key
+numbers, the UUID and permission contract remain unchanged.
+
+- All **68 Dynamic JavaScript tests and seven strict native C suites pass**.
+  Core passes **122 JavaScript tests and three strict native C suites**. All
+  three Core C suites also pass AddressSanitizer and UndefinedBehaviorSanitizer;
+  LeakSanitizer is disabled because this environment blocks its process inspection.
+- Summary/app-only notifications receive a three-second budget; actual message
+  text receives up to eight seconds. A burst retains its initial deadline.
+  App-only packets contain no sender/body. Pause state lasts only for the
+  existing five-second grace. Tests cover baseline history, app filtering,
+  expiry, redaction, atomic queued metadata and reconnect/restart boundaries.
+- Explicit phone bootstrap rotates the native context session and requires a
+  fresh notification baseline. Old event metadata and late request ACKs cannot
+  open the new notification gate. Burst IDs are consumed even when vibration
+  is Off or Quiet Time is active; those events cannot become delayed alerts.
+- **40 native captures and 19 focused checks pass**, including missing/transparent
+  artwork, late art/artist updates, pause expiry, one-pass whole-word title
+  continuation, three/eight-second notification expiry and app-only rendering.
+  QEMU reports exactly one Short or Double pattern per fresh burst; retries,
+  foreign sessions, consumed disabled events and a fresh bootstrap remain silent.
+  **20 native preset captures** cover five states × 12/24-hour time × light/dark.
+  They are embedded in the actual Clay page and all 20 canvases match exactly.
+  Five further captures from the final PBW match the reviewed presets pixel for
+  pixel. The candidate and final native binary/resources are byte-identical.
+- **68 actual Clay layouts, 69 contrast scenarios and 5,382 text/control checks pass** across
+  all 17 languages, 320/390px widths and light/dark appearances. The minimum
+  text contrast is **5.82:1**; toggle thumb/outline contrast is at least 3.927:1.
+  Another 128 text checks pass with the colour picker open.
+  No page errors or external requests occur. Tests cover visible select values,
+  inputs, descriptions, technical details, low-contrast watch-colour warnings,
+  valid/invalid colour-code import, privacy isolation, app-only mode, vibration
+  visibility/default, Quiet Time fields and the real Clay Save payload.
+- Fixed 24px titles continue through the remaining received text once and hold
+  the final page. The artist stays 20px; the artwork slot stays 40px and footer
+  bottom stays at y216. Missing/transparent artwork uses the same fallback.
+  Artist line-count corrections may change title spacing slightly; they do not
+  restart pagination. Native focused evidence is recorded in asset-provenance.json.
+- The final SDK/package/source audit passes, including all 41 message keys,
+  source-map identity, pinned core archive, fonts and generated clock geometry.
+  Resources remain **246,928 bytes**. Native footprint is **65,314 bytes**, with
+  **65,758 bytes** available for heap before startup. The previous successful
+  heap check remains historical below; it has not been repeated or relabelled
+  as a new runtime allocation measurement.
+
+Final PBW SHA-256:
+
+`26a62a9c6209ebb65fd5f129685204d267d19d6dc0490c6837a77598c3b271bf`
+
+Core source commit: `6894a97347b1e1101650f4244038296ab475a24e`.
+Core archive SHA-256:
+`702529c71fafe790a6fb6cb03a26a5aadee9569f77d35e17998c1efbd4a3a46c`.
+
+The SDK emulator exposes no Quiet Time setting. Actual OS palette transitions
+and Quiet Time suppression are therefore unverified; native decision tests
+cover the active/inactive input and the production code queries the SDK API.
+
+Physical PT2 vibration strength/timing, power use, live phone/provider delivery
+and native Timeline event text remain untested. QEMU pulse requests do not
+measure a physical motor. The notification source does not report whether the
+system already vibrated, so Dynamic does not claim to prevent duplicate native
+system alerts. Earlier heap, migration and rendering checks below retain their
+original release scope.
+
+## Historical 0.5.0 meaning, calmer updates and settings clarity
 
 The full UX pass keeps Dynamic's unified typography, chunky clock, two reading
 homes and fixed music footer. It adopts Core 0.3.0 for precise reading identity,
