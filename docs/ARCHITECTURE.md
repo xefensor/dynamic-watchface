@@ -243,3 +243,15 @@ The release PBW adds deterministic readable license entries while retaining each
 SDK native/resource/JavaScript payload byte for byte. Store metadata and images
 are prepared separately and validated against the final PBW/provenance. Preparing
 a kit does not submit the app or remove Pebble's plugin-preview restriction.
+
+## GitHub distribution boundary
+
+The [release workflow](GITHUB-RELEASES.md) is distribution automation. It runs
+portable checks and validates committed versioned files, then publishes those
+exact bytes with checksums. It does not build another native renderer, repin
+Core, regenerate source archives or submit a Pebble store listing.
+
+The v0.6.1 tag/source archive remain at their original tested artifact commit.
+Later main-branch documentation and automation updates do not rewrite published
+files. A new runtime/package version gets a new prepared artifact commit;
+existing published tags/assets are verified rather than replaced.

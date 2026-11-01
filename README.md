@@ -6,15 +6,27 @@ Peek. Version 0.6.1 uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
-It uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
-0.4.1, an updated version of the data engine used by
-[Halftone](https://github.com/xefensor/halftone-watchface).
+## Download
 
-Install [Dynamic-0.6.1.pbw](dist/Dynamic-0.6.1.pbw); the
-[source archive](dist/Dynamic-0.6.1-source.zip) is included. Dynamic has its own UUID,
-`cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, so it can be installed alongside Halftone.
-This is an early sideloaded build for the Pebble plugin preview. Public-store
-submission remains on hold while Pebble's preview restriction applies.
+The current release is [**v0.6.1 — GitHub prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1).
+
+| File | Use |
+| --- | --- |
+| [Dynamic-0.6.1.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.6.1/Dynamic-0.6.1.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
+| [Dynamic-0.6.1-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.6.1/Dynamic-0.6.1-source.zip) | The checked source snapshot and pinned dependencies |
+| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.6.1/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+
+[All releases](https://github.com/xefensor/dynamic-watchface/releases) ·
+[Changes](CHANGELOG.md) · [Release automation](docs/GITHUB-RELEASES.md)
+
+This is a sideloaded build for the Pebble plugin preview. The GitHub release
+is public; Pebble appstore submission remains held while its preview
+restriction applies. Physical vibration, actual OS Quiet Time transitions
+and live phone/provider delivery remain unverified; see [validation](docs/VALIDATION.md).
+
+Dynamic uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
+0.4.1. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
+alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Before installing
 
@@ -125,7 +137,7 @@ priority over completing an outgoing animation.
 
 [Settings preview: light](docs/images/settings-light.png) · [dark](docs/images/settings-dark.png)
 
-1. Enable the Pebble app's plugin preview if your version requires it.
+1. Enable the Pebble app's plugin preview.
 2. Configure slots 1–2 in the phone app's **Complications** settings. These are
    shared Pebble choices and can affect other faces using those slots. Dynamic
    retains their left/right positions and the selected provider's units.
@@ -149,8 +161,9 @@ priority over completing an outgoing animation.
 6. For selected notification apps, add exact app names or Android package names
    as individual entries. Entries can be removed and replaced; matching ignores
    case. They are not an installed-app picker and do not verify that the named
-   app exists on the phone. Optional notification vibration is Off, Short or
-   Double. It uses the same app filter and respects the watch's Quiet Time.
+   app exists on the phone. **Additional vibration** is Off, Short or Double.
+   It uses the same app filter and respects the watch's Quiet Time. PebbleOS
+   alerts remain independent, so enabling it can produce a second vibration.
 7. The fixed Save area distinguishes unsaved edits from the last delivery.
    Save stores appearance settings on the phone and sends them to the watch.
    Undelivered settings retry automatically after reconnection. **Connection &
@@ -237,7 +250,7 @@ Python packages pinned in
 installed in your build environment.
 
 ```sh
-npm ci
+npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
@@ -273,11 +286,23 @@ fixtures; live phone/plugin delivery and hardware behavior need device checks.
 See [the build-specific validation record](docs/VALIDATION.md) for checks and
 remaining limitations.
 
+## Releases and maintenance
+
+GitHub Actions runs portable checks and validates the committed packages before
+publishing a new packaged version from `main`. It uploads exact allowlisted
+files and checksums, then verifies them before making the release public. The
+workflow does not rebuild the PBW with a different SDK or submit it to Pebble.
+
+Published tags and assets stay frozen. The v0.6.1 tag identifies the tested
+artifact commit; later documentation and release-automation updates live on
+`main`. A documentation-only update does not require repacking that release.
+Prepare new artifacts under a new version when runtime/package contents change.
+See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.md).
+
 ## Shared core
 
 Dynamic now pins Core 0.4.1. Halftone continues to bundle 0.1.0 until an
 independently checked upgrade; installing Dynamic does not change Halftone.
-
 
 `vendor/pebble-watchface-core-0.4.1.tgz` is a committed, version-pinned Pebble
 package. `package-lock.json` records its integrity and `vendor/CORE.json`
@@ -298,9 +323,11 @@ that license. Commercial use requires separate permission. This is
 source-available software rather than an OSI-approved open-source license.
 
 Fredoka and Roboto Condensed use the SIL Open Font License 1.1. Their copyright
-notices and licenses accompany the source fonts and are included in every
-release PBW alongside Clay's MIT license and the core/Dynamic notices:
+notices and licenses accompany the source fonts. The 0.6.1 PBW includes those
+texts, Clay and bundled-helper notices, and Core/Dynamic attribution:
+
 [Fredoka](resources/fonts/OFL-Fredoka.txt) and
-[Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). Earlier releases
+[Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). See
+[all third-party notices](THIRD-PARTY-NOTICES.md). Earlier releases
 remain in `dist/`, including 0.3.1. The 0.1 source archive preserves its Fira
 Sans Condensed files and font license, while 0.2 uses PebbleOS system fonts.

@@ -1,9 +1,10 @@
 # Dynamic publication kit
 
-**Status: prepared for review; public store submission is held.** Pebble's
+**Status: GitHub prerelease published; Pebble appstore submission is held.** Pebble's
 [plugin-preview guide](https://developer.repebble.com/guides/plugins/preview/)
-currently says not to publish apps that use plugins to the store. This kit does
-not submit or upload anything. Recheck that rule before a public submission.
+currently says not to publish apps that use plugins to the store. The [v0.6.1 GitHub release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)
+provides the checked sideloaded PBW/source download. This kit does not submit or
+upload anything to the Pebble appstore. Recheck that rule before a public submission.
 
 `listing.json` is the local publication record, not an official Pebble CLI
 schema. It contains the product identity, supported platform, URLs, plain-text
@@ -45,3 +46,12 @@ has allowed public submission.
    Review the [validation record](../docs/VALIDATION.md),
    [privacy statement](../PRIVACY.md), [support information](../SUPPORT.md) and
    [third-party notices](../THIRD-PARTY-NOTICES.md).
+
+## Frozen release and current documentation
+
+The v0.6.1 package and asset manifest identify the original checked release.
+Later documentation-only changes on `main` do not rewrite those published
+packages, hashes or tags. Regenerate the kit/source snapshot while preparing a
+new version, not to replace an existing public release. The separate
+[GitHub release workflow](../docs/GITHUB-RELEASES.md) publishes verified packages
+and does not remove the Pebble appstore hold.

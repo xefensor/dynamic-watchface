@@ -1,5 +1,19 @@
 # Dynamic validation
 
+## GitHub distribution after 0.6.1
+
+[GitHub v0.6.1](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)
+is published as a prerelease from the original tested artifact commit. Its PBW
+and source ZIP bytes/hashes remain those recorded below. Later main-branch
+documentation and release-automation updates are separate from that snapshot.
+
+The release helper passes 18 targeted tests. Live GitHub checks/publication and
+identical-version reruns passed; the published asset IDs, sizes, creation times
+and hashes stayed unchanged. Source archives reject generated/private working
+folders and embedded PBW binaries. These are distribution checks, not additional
+watch-render, live-provider or physical-device results. See the
+[release guide](GITHUB-RELEASES.md) for triggers, validation and retry behaviour.
+
 ## 0.6.1 publication refinement candidate
 
 The prepared release remains a **sideloaded plugin preview**. Its local store kit

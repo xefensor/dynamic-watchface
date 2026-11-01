@@ -6,6 +6,16 @@ you expected and the steps that reproduce the problem. For a missing reading,
 include the selected plugin and the state shown in **Connection & help**.
 Keep private notification text out of reports and screenshots.
 
+## Downloads and verification
+
+Use the current [v0.6.1 GitHub prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)
+or browse [all releases](https://github.com/xefensor/dynamic-watchface/releases).
+Download the PBW and `SHA256SUMS.txt`; the source ZIP is for building or inspecting
+the checked snapshot. Verify the files you downloaded with
+`sha256sum --ignore-missing -c SHA256SUMS.txt`, or download both PBW and source
+and use `sha256sum -c SHA256SUMS.txt`. Existing release files remain unchanged
+across documentation updates.
+
 ## Setup
 
 Dynamic targets Pebble Time 2 (`emery`). Music and notification integration use

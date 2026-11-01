@@ -1,17 +1,94 @@
 # GitHub releases
 
-Versioned packages are published on [Dynamic's Releases page](https://github.com/xefensor/dynamic-watchface/releases). GitHub Actions publishes the exact committed, validated packages and checksums; it does not rebuild them in a different SDK environment.
+The current [v0.6.1 prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)
+is live with the checked PBW, source ZIP and flat `SHA256SUMS.txt`.
+[All versions](https://github.com/xefensor/dynamic-watchface/releases) remain
+available on the repository's Releases page.
 
-The initial version is **v0.6.1**, tagged at the already-tested artifact commit `cae7b28ca29bb1ae8e6e65fbc5e38ec8d6bd2018`. Adding release automation does not change the frozen package/source archive or its checksums. The new automation files live on `main` and will be included in future source snapshots.
+GitHub distribution is separate from Pebble appstore submission. Dynamic is
+still a plugin-preview build; the appstore hold and remaining physical-device
+checks are recorded in [validation](VALIDATION.md) and the
+[publication kit](../store/README.md).
 
-## Publishing the next version
+## What is published
 
-1. Bump the package version and update release notes. Prepare and validate the versioned artifacts using the repository's existing packaging steps.
-2. Refresh the checksum file, then commit the version, artifacts and notes to `main`. The **GitHub release** workflow checks the packages and portable tests before publishing.
-3. Keep `.github/release.json` aligned with the exact filenames. Its bootstrap applies only to the initial version above; later versions use their own artifact commit.
+| Asset | Purpose |
+| --- | --- |
+| `Dynamic-VERSION.pbw` | The already-built, checked watchface |
+| `Dynamic-VERSION-source.zip` | Its prepared source snapshot and pinned dependency archives |
+| `SHA256SUMS.txt` | SHA-256 checksums using download basenames |
 
-Each release includes selected current assets and a flat `SHA256SUMS.txt` for downloaded files. Historical files are not uploaded by a broad glob. Published assets and existing tags are never overwritten. A rerun verifies an identical existing release; conflicting bytes, stale packages or a different existing tag target cause failure and require a new version.
+The `.github/release.json` configuration selects exact current filenames.
+The workflow never uploads a broad `dist/*` glob or rebuilds a PBW with another
+SDK. Release notes come from the matching version section in `CHANGELOG.md`.
 
-The workflow can also be rerun from **Actions → GitHub release → Run workflow**. It uses GitHub's built-in token with repository-content write access only in the publication job. No personal access token or external scheduler is required.
+The initial v0.6.1 tag points to the tested artifact commit
+`cae7b28ca29bb1ae8e6e65fbc5e38ec8d6bd2018`. The bootstrap entry preserves that
+identity. Automation and later documentation live on `main`; they do not change
+the already-published source ZIP, PBW, checksums or tag. Future source snapshots
+include the automation files when the next version is prepared.
 
-Dynamic remains a **GitHub prerelease** while it depends on the plugin preview. This workflow does not submit it to the Pebble appstore or change the store hold.
+## Prepare the next version
+
+1. Bump `package.json`, its lockfile metadata and the strict release auditor's
+   version expectations. Update `CHANGELOG.md` and any affected product docs.
+   A Core upgrade is a separate deliberate change to the versioned archive,
+   lockfile and `vendor/CORE.json`; publishing Core does not upgrade Dynamic.
+2. Run the portable checks, build with the intended SDK, then package and audit
+   the PBW. Follow [AGENTS.md](../AGENTS.md) for the full order, native size
+   constraint, license packaging, preview capture and store-kit provenance.
+3. Finish source/docs for this unpublished snapshot, prepare its source archive
+   and update `dist/SHA256SUMS.txt`. Source ZIPs exclude generated `build/`,
+   dependency, Git and `.pebble/` folders, and contain no PBW binary. Runtime
+   and build inputs must match the selected release commit.
+4. Commit the version, checked artifacts, checksums and notes locally. Then
+   check the committed release inputs without publishing:
+
+   ```sh
+   python3 scripts/github-release.py prepare --output /tmp/dynamic-release
+   ```
+
+   `prepare` reads committed `HEAD`, not uncommitted working files. When using
+   a GitHub connector to create/publish the commit directly, CI checks that
+   pushed commit; fetch/check it out first if also running `prepare` locally.
+5. Push the checked commit to `main`. The **GitHub release** workflow runs on
+   matching package/artifact/config or automation changes. Ordinary
+   README/docs-only changes do not create a new release.
+
+Keep the bootstrap entry for the initial version unchanged. A later version
+uses its own artifact commit. Keep `prerelease: true` while Dynamic is distributed
+as a preview; changing store eligibility is an explicit product/platform review.
+RC/beta identifiers are also required to stay prereleases.
+
+## Checks and permissions
+
+The workflow first runs `npm ci --ignore-scripts`, `npm test`, the release
+helper's Python tests, and artifact preparation with read-only repository
+access. The separate publishing job receives only the repository-content write
+permission needed for tags/releases. Official checkout/setup actions are pinned
+to reviewed commits. It uses GitHub's built-in token; no personal access token
+or external scheduler is required.
+
+The helper checks the selected version, package identity, archive integrity,
+source/runtime inputs, PBW JavaScript/source-map pairing and checksums. It does
+not replace the SDK build, native visual review or live device/provider checks.
+The compiled packages are the committed artifacts reviewed before publication.
+
+Local release-helper regressions run with:
+
+```sh
+python3 -m unittest discover -s tests -p test_github_release.py
+```
+
+## Retries and frozen releases
+
+Use **Actions → GitHub release → Run workflow** on `main` to verify or retry the
+current packaged version. Publishing creates a draft, uploads the exact assets,
+verifies their server-side hashes, then makes the release public. A compatible
+interrupted draft can resume. Per-version publication jobs are serialized.
+
+An identical published release is verified and left unchanged. Conflicting tag
+targets, changed/missing published assets or the wrong prerelease flag cause
+failure; the workflow does not move tags or replace published files. Use a new
+version for changed package bytes. Documentation-only updates belong on `main`
+and do not require repacking an existing public version.
