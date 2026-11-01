@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.1
+
+- Expands body-font coverage for Greek, Cyrillic and Latin Extended Additional
+  characters in source-provided text.
+- Makes the missing-character glyph visible when text falls outside bundled
+  font coverage.
+- Uses Fredoka outlines for temperature and percent units, with muted
+  11px reading labels.
+- Smooths the clock, numeric readings and units with fractional pixel
+  coverage while preserving their contour weight.
+- Keeps the 0.3.0 layout geometry, bounded motion, data sources and settings.
+
 ## 0.3.0
 
 - Adds a chunky Fredoka clock whose shapes scale and move together as the

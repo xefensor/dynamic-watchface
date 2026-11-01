@@ -1,6 +1,6 @@
 # Dynamic and the shared core
 
-Dynamic 0.3.0 uses Pebble Watchface Core 0.1.0, the same pinned engine release
+Dynamic 0.3.1 uses Pebble Watchface Core 0.1.0, the same pinned engine release
 used by Halftone 1.9.0 rc.6. This redesign changes Dynamic's presentation; it
 keeps the data engine, UUID and existing source/cache contract. Each PBW embeds
 its own library code and has its own identity and saved settings.
@@ -19,7 +19,7 @@ its own library code and has its own identity and saved settings.
 The core imposes no coordinates, dot border or font family. Native callbacks
 forward events to its state object; Dynamic renders the current snapshots.
 Phone coordinators receive generated keys, storage, settings and clocks
-explicitly. Halftone's renderer is unchanged by Dynamic's 0.3 design.
+explicitly. Halftone's renderer is unchanged by Dynamic's 0.3.1 changes.
 
 ## Native-style presentation
 
@@ -27,6 +27,17 @@ The clock uses generated outlines from Fredoka. Keeping one set of shapes
 allows the clock to scale and move continuously between its idle and compact
 positions. Roboto Condensed resources provide the body text. Font sources,
 licenses and generation provenance belong to this repository.
+
+The 0.3.1 type correction keeps that geometry. Temperature and percent units
+use Fredoka outlines with the reading numbers, and reading labels use muted
+11px text. Body assets add Greek, Cyrillic and Latin Extended Additional
+coverage and a visible missing-character glyph for unsupported text.
+
+Fredoka clock, number and unit rendering uses 4×4 fractional pixel coverage.
+Edge pixels blend the chosen foreground and background without adding stroke
+weight. Reusable bounded row buffers support this rendering without
+per-frame heap allocation. Font-source geometry and native raster appearance
+are checked separately.
 
 New installs use white/black page colors and a Picton Blue accent. Saved page,
 text and accent colors are retained. Both light and dark pages share one
@@ -57,7 +68,7 @@ settings; the core data packet and dependency remain unchanged.
 The build audit checks the packaged SDK payload, pinned core, declared font
 resources and generated clock assets. Native captures check text fitting,
 glyph appearance, colors, images and motion. Validation from earlier versions
-remains historical rather than being relabeled for 0.3. See
+remains historical rather than being relabeled for 0.3.1. See
 [the design references](NATIVE-STYLE.md) and the
 [build-specific validation record](VALIDATION.md).
 

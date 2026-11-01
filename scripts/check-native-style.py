@@ -20,6 +20,7 @@ import struct
 import subprocess
 import sys
 import tarfile
+import unicodedata
 import uuid
 import zipfile
 
@@ -51,6 +52,15 @@ LEGACY_ENDPOINTS = (
     "api.open-meteo.com", "api.openweathermap.org", "forecast.weather.gov",
 )
 RESOURCE_TABLE_BYTES = 256 * 16
+BODY_SIZES = (11, 14, 16, 20, 24, 26, 28, 32)
+CLOCK_CHARACTERS = "0123456789:.-+,/%°CF"
+BODY_TEXT_CORPORA = {
+    "cyrillicMusicAndNames": (
+        "Колесом / Kolesom", "Молчат Дома", "Україна", "БЕЛАРУСЬ", "Жыве", "Четверг",
+    ),
+    "greekMusicAndNames": ("Σήμερα", "Ελληνικά", "Άλμπουμ"),
+    "latinExtendedAdditional": ("Tiếng Việt", "Ứng dụng"),
+}
 
 
 def require(condition, message):
@@ -222,9 +232,9 @@ def source_matches(mapped, source, label):
 
 def audit_body_fonts(root, media, resources, sources):
     names = [item["name"] for item in media]
-    sizes = (14, 16, 20, 24, 26, 28, 32)
+    sizes = BODY_SIZES
     require(names == ["FONT_BODY_" + str(size) for size in sizes],
-            "Expected the reviewed seven body font sizes in order")
+            "Expected the reviewed eight body font sizes in order")
     definitions = re.findall(
         r"#define\s+RESOURCE_ID_(\w+)\s+(\d+)",
         (root / "build/emery/src/resource_ids.auto.h").read_text())
@@ -240,6 +250,9 @@ def audit_body_fonts(root, media, resources, sources):
     require(len(words) == 17 * 7, "Unexpected localized weekday count")
     required = {ord(char) for char in "".join(words) +
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ·.°%:/+-…−"}
+    corpus_points = {ord(char) for texts in BODY_TEXT_CORPORA.values()
+                     for text in texts for char in text}
+    required |= corpus_points
     provenance = json.loads((root / "resources/fonts/font-provenance.json").read_text())
     require(provenance.get("schemaVersion") == 1, "Review the changed font provenance schema")
     expected_definitions = provenance["bodyResources"]["definitions"]
@@ -253,6 +266,7 @@ def audit_body_fonts(root, media, resources, sources):
             "Body font license differs from reviewed provenance")
     samples = {sample["point"]: sample for sample in
                provenance["bodyResources"]["standaloneSdkPfoSamples"]}
+    require(set(samples) == set(sizes), "SDK bitmap font samples have unexpected sizes")
     records = []
     source_files = set()
     for item, size in zip(media, sizes):
@@ -267,8 +281,14 @@ def audit_body_fonts(root, media, resources, sources):
                 "Body font source differs from reviewed provenance")
         source_files.add(relative)
         available = font_codepoints(raw)
+        coverage = provenance["bodyCoverage"]
+        require(coverage["codepointCount"] == len(available) and
+                coverage["codepoints"] == sorted(available),
+                "Body source cmap differs from the reviewed coverage inventory")
         pattern = re.compile(item["characterRegex"])
         expected = {point for point in available if pattern.fullmatch(chr(point))}
+        require(expected == available and all(32 <= point <= 0xffff for point in available),
+                "Body regex truncates the reviewed complete BMP source repertoire")
         require(required <= expected, "Body regex/source omits required localized glyphs: " +
                 item["name"] + " " + " ".join("U+%04X" % point for point in sorted(required - expected)))
         entry = resources[ids[item["name"]]]
@@ -280,7 +300,21 @@ def audit_body_fonts(root, media, resources, sources):
         actual = set(font["metrics"])
         require(actual == expected | {font["wildcard"]},
                 "Compiled glyph repertoire differs from selected source/regex: " + item["name"])
-        for point in required:
+        require(font["wildcard"] == 0x25af and font["lookupEntries"] == len(actual) and
+                samples[size]["lookupCodepoints"] == len(actual),
+                "Compiled body font fallback/lookup inventory differs")
+        fallback = font["metrics"][font["wildcard"]]
+        require(fallback["advance"] > 0 and fallback["hasInk"],
+                "Missing body glyphs would silently disappear: " + item["name"])
+        # Cover every source letter in these restored blocks, including letters
+        # outside the concrete title/name regression corpus. Combining marks may
+        # legitimately have zero advance and are not included in this check.
+        restored_letters = {point for point in available
+                            if unicodedata.category(chr(point)).startswith("L") and
+                            (0x0370 <= point <= 0x052f or 0x1c80 <= point <= 0x1c8f or
+                             0x1e00 <= point <= 0x1fff or 0xa640 <= point <= 0xa69f)}
+        ink_checks = required | restored_letters
+        for point in ink_checks:
             metric = font["metrics"][point]
             require(metric["advance"] > 0 and (chr(point).isspace() or metric["hasInk"]),
                     "Required localized body glyph is empty: " + item["name"] + " U+%04X" % point)
@@ -292,11 +326,17 @@ def audit_body_fonts(root, media, resources, sources):
                         "sourceFile": relative, "sourceSha256": sha256(raw),
                         "selectedSourceCodepoints": len(expected),
                         "packagedCodepointsIncludingFallback": len(actual),
-                        "requiredLocalizedGlyphChecks": len(required)})
+                        "requiredLocalizedGlyphChecks": len(required),
+                        "restoredBlockLetterChecks": len(restored_letters),
+                        "directGlyphInkChecks": len(ink_checks),
+                        "fallback": {"codepoint": font["wildcard"], **fallback}})
     require(len(source_files) == 1, "Expected one reviewed Roboto Condensed source font")
     return {"fontCount": len(records), "fonts": records,
             "languages": len(arrays), "localizedWeekdays": len(words),
             "requiredGlyphChecks": len(required) * len(records),
+            "directGlyphInkChecks": sum(record["directGlyphInkChecks"] for record in records),
+            "regressionCorpora": BODY_TEXT_CORPORA,
+            "allFallbacksVisible": True,
             "scope": "Exact packaged lookup/bitmap coverage and source repertoire; not a visual layout or arbitrary-Unicode guarantee."}
 
 
@@ -306,13 +346,23 @@ def audit_body_metrics(root, resources, binary, sources):
             "The renderer does not use the generated body baseline metrics")
     sizes = [int(size) for size in re.search(
         r"body_metric_points\[BODY_METRIC_POINT_COUNT\] = \{([\d,]+)\}", header).group(1).split(",")]
-    require(sizes == [14, 16, 20, 24, 26, 28, 32], "Body metric sizes changed")
+    require(sizes == list(BODY_SIZES), "Body metric sizes changed")
     points = [int(point, 16) for point in re.findall(
         r"0x([0-9a-f]+)", header.split("body_metric_codepoints[BODY_METRIC_COUNT] = {", 1)[1].split("};", 1)[0])]
     rows = [list(map(int, row.split(","))) for row in re.findall(
         r"\{([\d,-]+)\}", header.split("body_metric_descents[BODY_METRIC_COUNT][BODY_METRIC_POINT_COUNT] = {", 1)[1].split("};", 1)[0])]
-    require(len(points) == len(rows) == 397 and points == sorted(set(points)) and
+    provenance = json.loads((root / "resources/fonts/font-provenance.json").read_text())
+    record = provenance["generatedBodyMetrics"]
+    require(len(points) == len(rows) == record["metricCodepointCountIncludingWildcard"] and
+            record["fontCodepointCount"] == len(points) - 1 and points == sorted(set(points)) and
             all(len(row) == len(sizes) for row in rows), "Body metric lookup shape changed")
+    fallback = re.search(r"#define BODY_METRIC_WILDCARD_INDEX (\d+)\b", header)
+    require(fallback and int(fallback.group(1)) < len(points) and
+            points[int(fallback.group(1))] == 0x25af,
+            "Body metric fallback index does not select the SDK wildcard")
+    index_function = header.split("static inline size_t body_metric_index(", 1)[1].split("\n}", 1)[0]
+    require(index_function.rstrip().endswith("return BODY_METRIC_WILDCARD_INDEX;"),
+            "Missing body glyphs do not use the explicit wildcard metrics")
     checks = 0
     for column, size in enumerate(sizes):
         font = read_pfo(resources[column + 1]["data"])
@@ -328,15 +378,17 @@ def audit_body_metrics(root, resources, binary, sources):
     raw_rows = bytes(value & 0xff for row in rows for value in row)
     require(binary.count(raw_points) == 1 and binary.count(raw_rows) == 1,
             "Native binary does not contain the exact body codepoint/descent tables")
-    provenance = json.loads((root / "resources/fonts/font-provenance.json").read_text())
-    record = provenance["generatedBodyMetrics"]
     require(record["header"] == "src/c/generated_body_metrics.h" and
             record["sha256"] == sha256(header.encode()) and record["pointSizes"] == sizes,
             "Body metric header differs from reviewed provenance")
     require(record["fontSha256"] == provenance["bodyFont"]["sha256"],
             "Body metric source font provenance differs")
+    embedded_sha = re.search(r'#define BODY_FONT_SOURCE_SHA256 "([0-9a-f]{64})"', header)
+    require(embedded_sha and embedded_sha.group(1) == record["fontSha256"],
+            "Body metric header has stale source-font provenance")
     return {"header": record["header"], "headerSha256": record["sha256"],
             "codepoints": len(points), "sizes": sizes, "packagedGlyphDescentChecks": checks,
+            "wildcardIndex": int(fallback.group(1)), "wildcardCodepoint": 0x25af,
             "nativeMetricTablesMatch": True,
             "scope": "Every committed descent matches the exact packaged PFO bitmap metrics, including fallback; visible text alignment remains a native rendering check."}
 
@@ -352,8 +404,8 @@ def audit_clock_outlines(root, binary, sources):
     require(checked.returncode == 0, "Clock outline regeneration failed: " +
             (checked.stderr or checked.stdout).strip())
     info = json.loads(checked.stdout)
-    require(info.get("result") == "PASS" and info["characters"] == "0123456789:.-+,/%" and
-            info["glyphCount"] == 17, "Unexpected generated clock repertoire")
+    require(info.get("result") == "PASS" and info["characters"] == CLOCK_CHARACTERS and
+            info["glyphCount"] == len(CLOCK_CHARACTERS), "Unexpected generated clock repertoire")
     require(info["maximumContourPoints"] <= 256 and
             info["maximumCurveFlatnessPxAt80"] <= 0.2,
             "Clock outline polygon bounds or flatness changed")
@@ -391,18 +443,23 @@ def audit_clock_outlines(root, binary, sources):
     require(binary.count(packed_contours) == 1,
             "Native binary does not contain the exact generated contour/holes table")
     glyph_text = header.split("clock_glyphs[CLOCK_GLYPH_COUNT] = {", 1)[1].split("};", 1)[0]
-    glyphs = [(code, *map(int, values.split(","))) for code, values in
-              re.findall(r"\{'(.)',([\d,-]+)\}", glyph_text)]
+    glyphs = [(literal if literal else chr(int(codepoint, 16)), *map(int, values.split(",")))
+              for literal, codepoint, values in
+              re.findall(r"\{(?:'(.)'|0x([0-9a-f]+)),([\d,-]+)\}", glyph_text)]
     require("".join(row[0] for row in glyphs) == info["characters"],
             "Generated glyph order differs")
-    # ClockGlyph's Arm ABI layout includes one padding byte after its ASCII code.
-    packed_glyphs = b"".join(struct.pack("<cxHHHhhhh", row[0].encode(), *row[1:]) for row in glyphs)
+    require(re.search(r"typedef struct\s*\{\s*uint32_t code;", header),
+            "Clock glyph codepoint is not the reviewed 32-bit Unicode field")
+    # Arm EABI: uint32 code, three uint16 metrics, four int16 bounds,
+    # followed by two bytes of padding to the structure's four-byte alignment.
+    packed_glyphs = b"".join(struct.pack("<IHHHhhhh2x", ord(row[0]), *row[1:]) for row in glyphs)
     require(binary.count(packed_glyphs) == 1,
             "Native binary does not contain the exact generated glyph metrics table")
     holes = {code: sum(hole for _at, _count, hole in contours[first:first + count])
              for code, _advance, first, count, *_bounds in glyphs}
     require({code: holes[code] for code in "0689"} == {"0": 1, "6": 1, "8": 2, "9": 1},
             "Clock counter/hole structure changed; review native appearance")
+    require(holes["°"] == 1, "Clock temperature degree symbol lost its visible counter")
     license_text = (root / "resources/fonts/OFL-Fredoka.txt").read_text(encoding="utf-8")
     require("SIL OPEN FONT LICENSE Version 1.1" in license_text and
             "Fredoka Project Authors" in license_text,
@@ -411,6 +468,7 @@ def audit_clock_outlines(root, binary, sources):
             "header": "src/c/generated_clock_glyphs.h", "headerSha256": sha256(header.encode()),
             "regenerationExact": True, "nativePointContourGlyphTablesMatch": True,
             "selectedDigitHoleCounts": {code: holes[code] for code in "0689"},
+            "degreeSymbolHoleCount": holes["°"],
             "scope": "Source geometry, polygon bounds and exact linked tables; native screenshots verify rasterized appearance."}
 
 
@@ -469,7 +527,7 @@ def read_core(root, package):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.3.0", "Review this auditor for a different release version")
+    require(package["version"] == "0.3.1", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and

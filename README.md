@@ -2,7 +2,7 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.3.0 uses Fredoka clock outlines and Roboto Condensed text to
+Peek. Version 0.3.1 uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
@@ -10,8 +10,8 @@ It uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-cor
 0.1.0, the same data engine used by
 [Halftone](https://github.com/xefensor/halftone-watchface).
 
-Install [Dynamic-0.3.0.pbw](dist/Dynamic-0.3.0.pbw); the
-[source archive](dist/Dynamic-0.3.0-source.zip) is included. Dynamic has its own UUID,
+Install [Dynamic-0.3.1.pbw](dist/Dynamic-0.3.1.pbw); the
+[source archive](dist/Dynamic-0.3.1-source.zip) is included. Dynamic has its own UUID,
 `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, so it can be installed alongside Halftone.
 This is an early sideloaded build for the Pebble plugin preview. Public-store
 submission remains on hold while Pebble's preview restriction applies.
@@ -32,11 +32,12 @@ text and accent colors are retained when upgrading. The chosen accent colors
 reading symbols. Recognized rain-probability gauges and notification symbols
 use yellow. The same composition works with a dark page.
 
-The clock keeps the same Fredoka shapes while it scales and moves. Body text
-uses bundled Roboto Condensed. Both come with their SIL Open Font Licenses.
-The date stays plain, and the layout shares one canvas without a dot border
-or text shadows. See [the design notes](docs/NATIVE-STYLE.md) for the reference
-sources and decisions.
+The clock keeps the same Fredoka shapes while it scales and moves.
+Temperature and percent units share that rounded style, with small muted
+reading labels. Body text uses bundled Roboto Condensed. Both fonts come
+with their SIL Open Font Licenses. The date stays plain, and the layout
+shares one canvas without a dot border or text shadows. See
+[the design notes](docs/NATIVE-STYLE.md) for the reference sources and decisions.
 
 The first two global complication choices keep their left/right positions,
 including when one is empty. Selected readings without a usable value show
@@ -107,10 +108,12 @@ Weekdays and phone settings support English, Czech, Slovak, German, French,
 Spanish, Italian, Portuguese, Dutch, Polish, Danish, Swedish, Norwegian,
 Finnish, Hungarian, Romanian and Turkish. The watch language is preferred,
 then the phone language for settings, with English as fallback. Provider text,
-names and units remain as supplied. Bundled body-font coverage includes the
-Latin characters used by these languages. Other provider text depends on
-available glyphs and Pebble's fallback behavior. Language support and font
-coverage are distinct from physical verification of every device/language.
+names and units remain as supplied. Bundled body fonts include Greek,
+Cyrillic and Latin Extended Additional coverage alongside the Latin characters
+used by these translations. Characters outside bundled coverage use a visible
+missing-character glyph. The UI translations remain the languages listed
+above. Language support and font coverage are distinct from physical
+verification of every device/language.
 
 ## Build and install
 
@@ -125,7 +128,7 @@ npm ci
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.3.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.3.1.pbw
 python3 scripts/package-source.py
 ```
 
@@ -137,7 +140,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.3.0.pbw
+pebble install --emulator emery dist/Dynamic-0.3.1.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -180,6 +183,6 @@ source-available software rather than an OSI-approved open-source license.
 Fredoka and Roboto Condensed use the SIL Open Font License 1.1. Their copyright
 notices and licenses accompany the source fonts:
 [Fredoka](resources/fonts/OFL-Fredoka.txt) and
-[Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). The historical 0.1
-and 0.2 artifacts remain in `dist/`; the 0.1 source archive preserves its Fira
+[Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). Earlier releases
+remain in `dist/`, including 0.3.0. The 0.1 source archive preserves its Fira
 Sans Condensed files and font license, while 0.2 uses PebbleOS system fonts.

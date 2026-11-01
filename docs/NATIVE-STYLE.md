@@ -1,6 +1,6 @@
 # Design references and motion
 
-Dynamic 0.3 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.3.1 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -42,7 +42,7 @@ positions. The Complication Face demo selects slots by data shape.
 
 - **One recognizable clock:** Fredoka outlines give the time its rounded
   character. The same shapes scale and move between the large idle clock and
-  compact contextual clock.
+  compact contextual clock. Temperature and percent units share that style.
 - **One canvas:** Roboto Condensed text, two horizontal readings and small
   symbols share the page. Accent colors identify meaningful graphics and
   status; the date remains plain.
@@ -82,6 +82,17 @@ faces use several different type systems. Font sources and SIL Open Font
 Licenses accompany Dynamic's generated clock-outline and body-baseline assets.
 The optional regeneration tools are pinned in
 [`scripts/requirements-font-assets.txt`](../scripts/requirements-font-assets.txt).
+
+Version 0.3.1 keeps the layout geometry while correcting its type details:
+Fredoka temperature/percent units and muted 11px reading labels. The body font
+adds Greek, Cyrillic and Latin Extended Additional coverage for provider text.
+Unsupported characters use a visible missing-character glyph.
+
+The native Fredoka renderer uses 4×4 fractional pixel coverage, preserving the
+contour geometry and weight while smoothing its edges. It reuses bounded row
+buffers without per-frame heap allocation. Source-outline and advance checks
+establish the font geometry; native captures separately check the resulting
+raster and layout.
 
 Release validation separately checks the C build, font/outline assets and
 native captures. Physical-phone delivery and hardware battery life require

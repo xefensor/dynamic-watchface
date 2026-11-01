@@ -18,7 +18,7 @@ import freetype
 ROOT = Path(__file__).resolve().parents[1]
 FONT = ROOT / "resources/fonts/RobotoCondensed-Bold.ttf"
 HEADER = ROOT / "src/c/generated_body_metrics.h"
-POINTS = (14, 16, 20, 24, 26, 28, 32)
+POINTS = (11, 14, 16, 20, 24, 26, 28, 32)
 WILDCARD = 0x25AF
 
 
@@ -46,6 +46,7 @@ def build():
         "#pragma once", "", "#include <stddef.h>", "#include <stdint.h>", "",
         "#define BODY_METRIC_COUNT " + str(len(codepoints)),
         "#define BODY_METRIC_POINT_COUNT " + str(len(POINTS)),
+        "#define BODY_METRIC_WILDCARD_INDEX " + str(codepoints.index(WILDCARD)),
         '#define BODY_FONT_SOURCE_SHA256 "' + sha + '"',
         "static const uint8_t body_metric_points[BODY_METRIC_POINT_COUNT] = {" +
         ",".join(map(str, POINTS)) + "};",
@@ -81,7 +82,7 @@ def build():
         "    else { high = middle; }",
         "  }",
         "  if (low < BODY_METRIC_COUNT && body_metric_codepoints[low] == codepoint) { return low; }",
-        "  return BODY_METRIC_COUNT - 1; // U+25AF wildcard is the last stored codepoint.",
+        "  return BODY_METRIC_WILDCARD_INDEX;",
         "}", "",
         "// Maximum visible ink below the baseline. Point is the exact resource size.",
         "static inline int body_text_descent(const char *utf8, int point) {",
@@ -98,11 +99,12 @@ def build():
         "  return maximum;",
         "}", "",
     ])
-    assert codepoints[-1] == WILDCARD
     return "\n".join(lines), {
         "fontSha256": sha,
         "fontCodepointCount": len(indices) - 1,
         "metricCodepointCountIncludingWildcard": len(codepoints),
+        "wildcardCodepoint": WILDCARD,
+        "wildcardIndex": codepoints.index(WILDCARD),
         "pointSizes": list(POINTS),
         "freeTypeVersion": list(freetype.version()),
         "loadMode": "FT_LOAD_RENDER | FT_LOAD_MONOCHROME | FT_LOAD_TARGET_MONO",

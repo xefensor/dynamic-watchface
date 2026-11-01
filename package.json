@@ -1,7 +1,7 @@
 {
   "name": "dynamic-watchface",
   "author": "Xef",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "scripts": {
     "test": "python3 scripts/verify-core.py && node --test tests/*.test.js && python3 scripts/test-native.py",
     "test:js": "node --test tests/*.test.js",
@@ -74,52 +74,59 @@
       "media": [
         {
           "type": "font",
+          "name": "FONT_BODY_11",
+          "file": "fonts/RobotoCondensed-Bold.ttf",
+          "extended": true,
+          "characterRegex": "[\\u0020-\\uFFFF]"
+        },
+        {
+          "type": "font",
           "name": "FONT_BODY_14",
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
-          "characterRegex": "[\\u0020-\\u024F\\u0300-\\u036F\\u2000-\\u206F\\u20A0-\\u20CF\\u2190-\\u21FF\\u2212]"
+          "characterRegex": "[\\u0020-\\uFFFF]"
         },
         {
           "type": "font",
           "name": "FONT_BODY_16",
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
-          "characterRegex": "[\\u0020-\\u024F\\u0300-\\u036F\\u2000-\\u206F\\u20A0-\\u20CF\\u2190-\\u21FF\\u2212]"
+          "characterRegex": "[\\u0020-\\uFFFF]"
         },
         {
           "type": "font",
           "name": "FONT_BODY_20",
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
-          "characterRegex": "[\\u0020-\\u024F\\u0300-\\u036F\\u2000-\\u206F\\u20A0-\\u20CF\\u2190-\\u21FF\\u2212]"
+          "characterRegex": "[\\u0020-\\uFFFF]"
         },
         {
           "type": "font",
           "name": "FONT_BODY_24",
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
-          "characterRegex": "[\\u0020-\\u024F\\u0300-\\u036F\\u2000-\\u206F\\u20A0-\\u20CF\\u2190-\\u21FF\\u2212]"
+          "characterRegex": "[\\u0020-\\uFFFF]"
         },
         {
           "type": "font",
           "name": "FONT_BODY_26",
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
-          "characterRegex": "[\\u0020-\\u024F\\u0300-\\u036F\\u2000-\\u206F\\u20A0-\\u20CF\\u2190-\\u21FF\\u2212]"
+          "characterRegex": "[\\u0020-\\uFFFF]"
         },
         {
           "type": "font",
           "name": "FONT_BODY_28",
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
-          "characterRegex": "[\\u0020-\\u024F\\u0300-\\u036F\\u2000-\\u206F\\u20A0-\\u20CF\\u2190-\\u21FF\\u2212]"
+          "characterRegex": "[\\u0020-\\uFFFF]"
         },
         {
           "type": "font",
           "name": "FONT_BODY_32",
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
-          "characterRegex": "[\\u0020-\\u024F\\u0300-\\u036F\\u2000-\\u206F\\u20A0-\\u20CF\\u2190-\\u21FF\\u2212]"
+          "characterRegex": "[\\u0020-\\uFFFF]"
         }
       ]
     }

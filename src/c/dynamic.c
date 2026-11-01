@@ -6,6 +6,7 @@
 #include "reading_presentation.h"
 #include "generated_clock_glyphs.h"
 #include "generated_body_metrics.h"
+#include "font_raster.h"
 
 #define PERSIST_KEY_BACKGROUND_COLOR 2
 #define PERSIST_KEY_TEXT_COLOR 3
@@ -35,14 +36,19 @@ static WatchfaceCore s_core;
 #define s_phone_connected s_core.phone_connected
 static AppTimer *s_context_timer, *s_startup_timer, *s_motion_timer;
 static char s_date_buffer[48], s_compact_date_buffer[48], s_time_buffer[6];
-static GFont s_body_fonts[7];
-static bool s_body_loaded[7];
-static const uint8_t s_body_points[7] = {14,16,20,24,26,28,32};
-static const uint32_t s_body_resources[7] = {RESOURCE_ID_FONT_BODY_14,
+static const uint8_t s_body_points[] = {11,14,16,20,24,26,28,32};
+#define BODY_FONT_COUNT (sizeof(s_body_points)/sizeof(s_body_points[0]))
+static GFont s_body_fonts[BODY_FONT_COUNT];
+static bool s_body_loaded[BODY_FONT_COUNT];
+static const uint32_t s_body_resources[BODY_FONT_COUNT] = {RESOURCE_ID_FONT_BODY_11,RESOURCE_ID_FONT_BODY_14,
   RESOURCE_ID_FONT_BODY_16,RESOURCE_ID_FONT_BODY_20,RESOURCE_ID_FONT_BODY_24,
   RESOURCE_ID_FONT_BODY_26,RESOURCE_ID_FONT_BODY_28,RESOURCE_ID_FONT_BODY_32};
 static GPoint s_clock_path_points[CLOCK_CONTOUR_MAX_POINTS];
 static GPath s_clock_path = {.points=s_clock_path_points};
+static FontRasterPoint s_clock_raster_points[CLOCK_GLYPH_MAX_POINTS];
+static FontRasterContour s_clock_raster_contours[CLOCK_GLYPH_MAX_CONTOURS];
+static int32_t s_clock_intersections[CLOCK_GLYPH_MAX_POINTS];
+static uint8_t s_clock_coverage[200];
 static WatchPose s_pose, s_pose_from, s_pose_target;
 static bool s_pose_ready, s_layout_active, s_slide_active, s_peek_transition;
 static uint32_t s_layout_started, s_slide_started, s_slide_duration;
@@ -258,12 +264,12 @@ static void prv_draw_bitmap(GContext *ctx, const ComplicationSlot *slot,
 
 static int prv_round(float number) { return (int)(number < 0 ? number-0.5f : number+0.5f); }
 static int prv_point(int preferred) {
-  for(int i=6;i>=0;--i) if(s_body_points[i]<=preferred) return s_body_points[i];
-  return 14;
+  for(size_t i=BODY_FONT_COUNT;i>0;--i) if(s_body_points[i-1]<=preferred) return s_body_points[i-1];
+  return s_body_points[0];
 }
 static GFont prv_body(int point) {
   point=prv_point(point);
-  for(unsigned i=0;i<7;++i) if(s_body_points[i]==point) return s_body_fonts[i];
+  for(size_t i=0;i<BODY_FONT_COUNT;++i) if(s_body_points[i]==point) return s_body_fonts[i];
   return s_body_fonts[0];
 }
 static GSize prv_measure(const char *text,int point) {
@@ -295,14 +301,24 @@ static GColor prv_contrast_ink(GColor color) {
   const unsigned r=(color.argb>>4)&3,g=(color.argb>>2)&3,b=color.argb&3;
   return 299*r+587*g+114*b>=1500 ? GColorBlack : GColorWhite;
 }
-static const ClockGlyph *prv_clock_glyph(char code) {
+static GColor prv_muted_text(float alpha) {
+  const unsigned fr=(s_text_color.argb>>4)&3,fg=(s_text_color.argb>>2)&3,fb=s_text_color.argb&3;
+  const unsigned br=(s_background_color.argb>>4)&3,bg=(s_background_color.argb>>2)&3,bb=s_background_color.argb&3;
+  alpha=watch_clamp(alpha);
+  const unsigned r=prv_round(watch_lerp(br,(2*fr+br+1)/3,alpha));
+  const unsigned g=prv_round(watch_lerp(bg,(2*fg+bg+1)/3,alpha));
+  const unsigned b=prv_round(watch_lerp(bb,(2*fb+bb+1)/3,alpha));
+  return (GColor){.argb=0xc0|(r<<4)|(g<<2)|b};
+}
+static const ClockGlyph *prv_clock_glyph(uint32_t code) {
   for(unsigned i=0;i<CLOCK_GLYPH_COUNT;++i) if(clock_glyphs[i].code==code) return &clock_glyphs[i];
   return NULL;
 }
 static float prv_vector_width(const char *text,float point) {
   unsigned advance=0;
-  for(;*text;++text) {
-    const ClockGlyph *glyph=prv_clock_glyph(*text);
+  const unsigned char *cursor=(const unsigned char *)text;
+  while(*cursor) {
+    const ClockGlyph *glyph=prv_clock_glyph(body_metric_next_codepoint(&cursor));
     if(glyph==NULL) return -1;
     advance+=glyph->advance;
   }
@@ -336,11 +352,8 @@ static unsigned prv_pixel_polygon(unsigned count) {
   }
   return out;
 }
-static void prv_vector(GContext *ctx,const char *text,float x,float baseline,float point,GColor color) {
-  const float scale=point/CLOCK_FONT_UNITS_PER_EM;
-  for(;*text;++text) {
-    const ClockGlyph *glyph=prv_clock_glyph(*text);
-    if(glyph==NULL) return;
+static void prv_gpath_glyph(GContext *ctx,const ClockGlyph *glyph,float x,float baseline,
+                            float scale,GColor color) {
     for(unsigned i=0;i<glyph->contour_count;++i) {
       const ClockContour *contour=&clock_contours[glyph->first_contour+i];
       for(unsigned j=0;j<contour->point_count;++j) {
@@ -352,6 +365,59 @@ static void prv_vector(GContext *ctx,const char *text,float x,float baseline,flo
       graphics_context_set_fill_color(ctx,contour->hole ? s_background_color : color);
       gpath_draw_filled(ctx,&s_clock_path);
     }
+}
+typedef struct { GContext *ctx; GColor colors[FONT_RASTER_COVERAGE+1]; } ClockPaint;
+static void prv_clock_row(void *context,int y,int first,int end,const uint8_t *coverage) {
+  ClockPaint *paint=context;
+  for(int x=first;x<end;) {
+    const GColor color=paint->colors[coverage[x]];
+    const int begin=x++;
+    while(x<end&&paint->colors[coverage[x]].argb==color.argb)++x;
+    if(color.argb==s_background_color.argb)continue;
+    graphics_context_set_fill_color(paint->ctx,color);
+    graphics_fill_rect(paint->ctx,GRect(begin,y,x-begin,1),0,GCornerNone);
+  }
+}
+static bool prv_raster_glyph(ClockPaint *paint,const ClockGlyph *glyph,
+                             float x,float baseline,float scale) {
+  if(glyph->contour_count>CLOCK_GLYPH_MAX_CONTOURS)return false;
+  unsigned at=0;
+  for(unsigned i=0;i<glyph->contour_count;++i) {
+    const ClockContour *contour=&clock_contours[glyph->first_contour+i];
+    if(at+contour->point_count>CLOCK_GLYPH_MAX_POINTS)return false;
+    s_clock_raster_contours[i]=(FontRasterContour){at,contour->point_count};
+    for(unsigned j=0;j<contour->point_count;++j) {
+      const ClockPoint p=clock_points[contour->first_point+j];
+      s_clock_raster_points[at++]=(FontRasterPoint){
+        prv_round((x+p.x*scale)*FONT_RASTER_ONE),
+        prv_round((baseline-p.y*scale)*FONT_RASTER_ONE)};
+    }
+  }
+  const FontRasterScratch scratch={s_clock_coverage,sizeof(s_clock_coverage),
+      s_clock_intersections,CLOCK_GLYPH_MAX_POINTS};
+  return font_raster_rows(s_clock_raster_points,at,s_clock_raster_contours,
+      glyph->contour_count,200,FULL_LAYOUT_HEIGHT,scratch,prv_clock_row,paint);
+}
+static void prv_vector(GContext *ctx,const char *text,float x,float baseline,float point,GColor color) {
+  ClockPaint paint={.ctx=ctx};
+  const unsigned fr=(color.argb>>4)&3,fg=(color.argb>>2)&3,fb=color.argb&3;
+  const unsigned br=(s_background_color.argb>>4)&3,bg=(s_background_color.argb>>2)&3,bb=s_background_color.argb&3;
+  for(unsigned i=0;i<=FONT_RASTER_COVERAGE;++i) {
+    const unsigned back=FONT_RASTER_COVERAGE-i,half=FONT_RASTER_COVERAGE/2;
+    paint.colors[i]=(GColor){.argb=0xc0|
+      (((fr*i+br*back+half)/FONT_RASTER_COVERAGE)<<4)|
+      (((fg*i+bg*back+half)/FONT_RASTER_COVERAGE)<<2)|
+       ((fb*i+bb*back+half)/FONT_RASTER_COVERAGE)};
+  }
+  const float scale=point/CLOCK_FONT_UNITS_PER_EM;
+  const unsigned char *cursor=(const unsigned char *)text;
+  while(*cursor) {
+    const ClockGlyph *glyph=prv_clock_glyph(body_metric_next_codepoint(&cursor));
+    if(glyph==NULL)return;
+    // A bounded static scanline preserves subpixel outlines; GPath remains a
+    // safe fallback if a future asset exceeds the reviewed scratch capacity.
+    if(!prv_raster_glyph(&paint,glyph,x,baseline,scale))
+      prv_gpath_glyph(ctx,glyph,x,baseline,scale,color);
     x+=glyph->advance*scale;
   }
 }
@@ -541,22 +607,26 @@ static void prv_draw_symbol(GContext *ctx,const ComplicationSlot *slot,int cx,in
   }
 }
 static bool prv_draw_number(GContext *ctx,const ReadingParts *parts,float center,float baseline,
-                            float point,int unit_point,float width) {
+                            float point,float unit_point,float width) {
   char number[READING_PART_BYTES];reading_native_number(parts->number,number,sizeof(number));
-  unit_point=prv_point(unit_point);
-  const int unit_width=parts->unit[0]?prv_measure(parts->unit,unit_point).w:0;
-  const int gap=unit_width?1:0;
+  const float vector_unit_width=parts->unit[0]?prv_vector_width(parts->unit,unit_point):0;
+  const bool vector_unit=vector_unit_width>=0;
+  const int body_unit_point=prv_point(prv_round(unit_point)<14?14:prv_round(unit_point));
+  const float unit_width=vector_unit?vector_unit_width:prv_measure(parts->unit,body_unit_point).w;
   float number_width=prv_vector_width(number,point);
   if(number_width<0)return false;
-  if(number_width+unit_width+gap>width) {
-    point*=((width-unit_width-gap)/number_width);
+  if(number_width+unit_width>width) {
+    point*=((width-unit_width)/number_width);
     if(point<16)return false;
     number_width=prv_vector_width(number,point);
   }
-  const float x=center-(number_width+unit_width+gap)/2;
+  const float x=center-(number_width+unit_width)/2;
   prv_vector(ctx,number,x,baseline,point,s_text_color);
-  if(unit_width)prv_text(ctx,parts->unit,unit_point,prv_round(x+number_width+gap),
-      prv_round(baseline),unit_width+3,s_text_color,GTextAlignmentLeft);
+  if(unit_width) {
+    if(vector_unit)prv_vector(ctx,parts->unit,x+number_width,baseline,unit_point,s_text_color);
+    else prv_text(ctx,parts->unit,body_unit_point,prv_round(x+number_width),
+        prv_round(baseline),prv_round(unit_width)+3,s_text_color,GTextAlignmentLeft);
+  }
   return true;
 }
 static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
@@ -589,7 +659,7 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
   const float baseline=p.row_y+p.value_y;
   if(has_text) {
     bool drawn=numeric&&prv_draw_number(ctx,&parts,value_center,baseline,p.number_size,
-        prv_round(p.unit_size),value_width);
+        p.unit_size,value_width);
     if(!drawn && prv_vector_width(text,p.number_size)>0) {
       float point=p.number_size,width=prv_vector_width(text,point);
       if(width>value_width){point*=value_width/width;width=value_width;}
@@ -602,9 +672,9 @@ static void prv_draw_reading(GContext *ctx,unsigned index,WatchPose p) {
           prv_round(value_width),s_text_color,GTextAlignmentCenter);
     }
   }
-  if(p.label_alpha>0.55f && (temp||probability>=0))
-    prv_text(ctx,prv_reading_label(probability>=0),14,prv_round(center-44),
-        prv_round(p.row_y+p.label_y),88,s_text_color,GTextAlignmentCenter);
+  if(p.label_alpha>0.01f && (temp||probability>=0))
+    prv_text(ctx,prv_reading_label(probability>=0),11,prv_round(center-44),
+        prv_round(p.row_y+p.label_y),88,prv_muted_text(p.label_alpha),GTextAlignmentCenter);
 }
 static void prv_draw_status(GContext *ctx,WatchPose p) {
   if(!s_show_status)return;
@@ -929,7 +999,7 @@ static void prv_outbox_sent(DictionaryIterator *iterator, void *context) {
 static void prv_window_load(Window *window) {
   s_window_layer=window_get_root_layer(window);
   const GRect bounds=layer_get_bounds(s_window_layer);
-  for(unsigned i=0;i<7;++i) {
+  for(size_t i=0;i<BODY_FONT_COUNT;++i) {
     s_body_fonts[i]=fonts_load_custom_font(resource_get_handle(s_body_resources[i]));
     s_body_loaded[i]=s_body_fonts[i]!=NULL;
     if(!s_body_fonts[i])s_body_fonts[i]=fonts_get_system_font(s_body_points[i]>=20?
@@ -950,7 +1020,7 @@ static void prv_window_unload(Window *window) {
   (void)window;unobstructed_area_service_unsubscribe();prv_cancel_motion();prv_private_clear();
   layer_destroy(s_context_layer);layer_destroy(s_background_layer);
   s_context_layer=NULL;s_background_layer=NULL;s_window_layer=NULL;
-  for(unsigned i=0;i<7;++i) {
+  for(size_t i=0;i<BODY_FONT_COUNT;++i) {
     if(s_body_loaded[i])fonts_unload_custom_font(s_body_fonts[i]);
     s_body_fonts[i]=NULL;s_body_loaded[i]=false;
   }

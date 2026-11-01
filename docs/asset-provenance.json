@@ -1,14 +1,14 @@
 {
-  "version": "0.3.0",
+  "version": "0.3.1",
   "pbw": {
-    "file": "Dynamic-0.3.0.pbw",
-    "sha256": "04489566a5f843ee611ac83df905ba91435c6e8e175a2ea3cd9d18f74c1f9c11"
+    "file": "Dynamic-0.3.1.pbw",
+    "sha256": "f98a6bc977e176d121d391ae98b5d6305d40aa0394dd90f33babc92585e3f781"
   },
   "native_payload_sha256": {
-    "appinfo.json": "71d4b1b6755833440c21363fb78fa0d6aa4e37f85a25943d2a83ecbb89efdf91",
-    "emery/app_resources.pbpack": "8867b114b67ac3c9eb83340cc5093018aef4e9026e0ec81dea15a940d24cf7f6",
-    "emery/manifest.json": "ca83c53e6e7d960f5ab34decaeceae0d92f08e63a0ce2399f8d7bc3faf640064",
-    "emery/pebble-app.bin": "ffb6fe2b7602e7b57d85e023fdcc5743185b691e86d3a955a5f1471675258f52"
+    "appinfo.json": "021dc0ae0c90fa3d82384651653b6e1c4effaedab27981e7f622bb95d2742020",
+    "emery/pebble-app.bin": "da6c02dccebebadb4d1159d68f653fb88fdd94ddf7a3777c0511828cbf5130b1",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "f8e11bfeed80d8ebfbe8de5492b4b08869974aab4f06206c0165cb3c5bad9b89"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -26,81 +26,81 @@
   "images": [
     {
       "file": "docs/images/layout-states.png",
-      "sha256": "e4757c4e8bafa2c68e09bb7e412512e29bb0c1712f3a02d4142825b8ff68364c",
+      "sha256": "efc542f9a8b7f26f7ed305374a671e2727afdd0eb7dd044d16401c31fb69baaa",
       "pixels": [
         880,
         282
       ],
-      "provenance": "Native Emery screenshot, or labeled lossless composite of native screenshots, using tested release C/resources and production-packed sample data; not live phone data",
       "fixture_captures": [
-        "normal-idle.png",
-        "normal-music.png",
-        "normal-notice.png",
-        "normal-music-peek.png"
+        "native-f98a6bc9/captures/private-context-clear-native-after.png",
+        "native-f98a6bc9/captures/idle-music-native-after.png",
+        "native-f98a6bc9/captures/music-notice-native-after.png",
+        "native-f98a6bc9/captures/music-peek-native-after.png"
       ],
-      "native_frame_pixels_modified": false
+      "native_frame_pixels_modified": false,
+      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
     },
     {
       "file": "docs/images/music.png",
-      "sha256": "d8b142a1ee56221a5f2b654f36dee2a010771494374c797ddacfc2a4be3161f4",
+      "sha256": "79e39b84d97091d39c7217977cbd3452a7093586ba7fb1064871c90b08a5fd91",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery screenshot, or labeled lossless composite of native screenshots, using tested release C/resources and production-packed sample data; not live phone data",
-      "fixture_capture": "normal-music.png",
-      "native_pixels_modified": false
+      "fixture_capture": "native-f98a6bc9/captures/idle-music-native-after.png",
+      "native_pixels_modified": false,
+      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
     },
     {
       "file": "docs/images/normal.png",
-      "sha256": "3fb2651386fd9d6d0184ae5ce96b5c3f7b574f14ee994aaa747c78bbd7d9d219",
+      "sha256": "9aaadeb8d0a53732e72d779549c9bda0277333c896326e390f88dc3b1be0a7cc",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery screenshot, or labeled lossless composite of native screenshots, using tested release C/resources and production-packed sample data; not live phone data",
-      "fixture_capture": "normal-idle.png",
-      "native_pixels_modified": false
+      "fixture_capture": "native-f98a6bc9/captures/private-context-clear-native-after.png",
+      "native_pixels_modified": false,
+      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
     },
     {
       "file": "docs/images/notification.png",
-      "sha256": "daec52749dd79f757439facf96f475dd3f74292638fc0605c8a1891ad3ee9f3c",
+      "sha256": "e5ef0a19ae6732ab1e8580fe00c9c0a52442481806f40311ddc733b29007b425",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery screenshot, or labeled lossless composite of native screenshots, using tested release C/resources and production-packed sample data; not live phone data",
-      "fixture_capture": "normal-notice.png",
-      "native_pixels_modified": false
+      "fixture_capture": "native-f98a6bc9/captures/music-notice-native-after.png",
+      "native_pixels_modified": false,
+      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
     },
     {
       "file": "docs/images/settings-dark.png",
-      "sha256": "a299c39256d2a3ab9b0d15ff69f67dce514aee80b54292a871725b7961333e28",
+      "sha256": "47ac5afd5b6db87e1f830ea9eeb5ecb4e9d86bbf04a1be2eba5bb1e4967c5fdf",
       "pixels": [
         390,
         1754
       ],
-      "provenance": "Actual Clay form with fixture bridge in Chromium; not a physical phone screenshot"
+      "provenance": "Actual 0.3.1 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
     },
     {
       "file": "docs/images/settings-light.png",
-      "sha256": "71ee23783696e4cd73bde5759cdfb6848145c511abbbc85fe580f175aee0bb0f",
+      "sha256": "ffa0f6521e207de627d9c09b50ff247879aba554474f55026e5e1da3c8ec55c4",
       "pixels": [
         390,
         1735
       ],
-      "provenance": "Actual Clay form with fixture bridge in Chromium; not a physical phone screenshot"
+      "provenance": "Actual 0.3.1 Clay form with fixture bridge in Chromium at 390px; not a physical phone screenshot"
     },
     {
       "file": "docs/images/timeline-peek.png",
-      "sha256": "e7e6e89de0313fe129bb63858b0477f1c2ed085624dcab1b7fa9bf4e2cb40c89",
+      "sha256": "2a05f46c098352bdbbf0bcdb3279c43d21f07b2172076d54f64e2c7704acaf3e",
       "pixels": [
         200,
         228
       ],
-      "provenance": "Native Emery screenshot, or labeled lossless composite of native screenshots, using tested release C/resources and production-packed sample data; not live phone data",
-      "fixture_capture": "normal-music-peek.png",
-      "native_pixels_modified": false
+      "fixture_capture": "native-f98a6bc9/captures/music-peek-native-after.png",
+      "native_pixels_modified": false,
+      "provenance": "Direct native Screenshot-service frames from final0.3.1 candidate with production-codec synthetic fixtures; no phone JS runtime or live plugin callbacks. Labels outside native frames."
     }
   ],
   "design_reference": {
@@ -113,62 +113,164 @@
     "reference_images_redistributed": false
   },
   "native_qa": {
-    "release_pbw_sha256": "04489566a5f843ee611ac83df905ba91435c6e8e175a2ea3cd9d18f74c1f9c11",
-    "tested_native_candidate_pbw_sha256": "4d8d4426334e8653e3b0fdb59bc63409490ff98077523bd006890595c7e8b5a1",
-    "native_binary_and_resources_byte_identical": true,
-    "platform_manifest_difference": "SDK build timestamps only",
-    "rendering_cases": 77,
-    "lifecycle_expiry_relaunch_checks": 3,
-    "initial_motion_paths": 9,
-    "focused_motion_repeats": 9,
-    "focused_distinct_geometry_poses_including_endpoints": [
-      4,
-      10
+    "release_pbw_sha256": "f98a6bc977e176d121d391ae98b5d6305d40aa0394dd90f33babc92585e3f781",
+    "exact_release_pbw_tested": true,
+    "rendering_cases": 25,
+    "native_still_captures": 36,
+    "all_contact_sheets_root_reviewed": true,
+    "motion_paths": 8,
+    "motion_summary": {
+      "idle-music": {
+        "distinct_geometry_poses": 12,
+        "frames": 23,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      },
+      "music-peek": {
+        "distinct_geometry_poses": 5,
+        "frames": 23,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      },
+      "peek-music": {
+        "distinct_geometry_poses": 3,
+        "frames": 23,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      },
+      "music-notice": {
+        "distinct_geometry_poses": 8,
+        "frames": 23,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      },
+      "artist-clear": {
+        "distinct_geometry_poses": 1,
+        "frames": 18,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      },
+      "private-body-clear": {
+        "distinct_geometry_poses": 1,
+        "frames": 18,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      },
+      "private-context-clear": {
+        "distinct_geometry_poses": 12,
+        "frames": 18,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      },
+      "private-clear-mid-slide": {
+        "distinct_geometry_poses": 10,
+        "frames": 18,
+        "final_5_frames_stable": true,
+        "normalized_final_frame_equals_native_screenshot": true
+      }
+    },
+    "privacy_checks": [
+      {
+        "name": "artist-clear",
+        "pass": true,
+        "cleared_region_blank_from_first_post_trigger_capture": true,
+        "region": [
+          65,
+          190,
+          200,
+          228
+        ]
+      },
+      {
+        "name": "private-body-clear",
+        "pass": true,
+        "cleared_region_blank_from_first_post_trigger_capture": true,
+        "region": [
+          0,
+          126,
+          200,
+          228
+        ]
+      },
+      {
+        "name": "private-context-clear",
+        "pass": true,
+        "method": "All normalized returning poses visually reviewed; old private context removed."
+      },
+      {
+        "name": "private-clear-mid-slide",
+        "pass": true,
+        "method": "One initial old framebuffer precedes next native redraw; all subsequent returning poses clear. No zero-latency or physical-display claim."
+      }
     ],
-    "focused_intermediate_geometry_poses": [
-      2,
-      8
-    ],
-    "privacy_clear_checks": 3,
     "animations_off_checks": 2,
-    "watch_battery_at_launch": 5,
-    "phone_battery_fixture": 15,
+    "animation_optout": {
+      "animations-off": {
+        "distinct_endpoint_poses": 2,
+        "final_5_frames_stable": true
+      },
+      "animations-off-relaunch": {
+        "distinct_endpoint_poses": 2,
+        "final_5_frames_stable": true
+      }
+    },
+    "notice_transition_clock_and_both_readings_pixels_constant": true,
+    "positive_script_coverage": [
+      "Cyrillic",
+      "Greek",
+      "Vietnamese Latin Extended Additional"
+    ],
+    "negative_fallback_samples": [
+      "rare Latin Extended Additional characters absent from source font",
+      "unsupported emoji"
+    ],
     "physical_phone_tested": false,
     "actual_timeline_event_text_verified": false,
     "phone_javascript_executed_in_native_captures": false,
     "sdk": "4.33.1",
     "emulated_firmware": "4.33.2",
-    "motion_capture_method": "Raw HMP frames preserved; each frame exact four-level palette decoded using constant white foreground to remove emulator backlight fade. Geometry counts exclude brightness-only changes; settled frames matched the native Screenshot service."
+    "os_locale": "English SDK firmware; Czech strings not injected",
+    "motion_capture_method": "Raw HMP frames preserved; exact per-frame four-level palette decoding removes emulator backlight fade. All eight settled frames match native Screenshot service. No still-image pixel edits.",
+    "limitations": [
+      "No physical phone/watch pairing, real plugin updates, real notification/music callbacks or hardware power/FPS measurements.",
+      "No phone JavaScript or RAF ran during native capture; fixtures packed by pinned production core and injected through real native AppMessage.",
+      "English emulator OS locale; Czech date/label wording was not injected.",
+      "Native SDK Peek system card is empty; actual Timeline event text not verified.",
+      "Prior0.3.0 expiry/relaunch lifecycle tests were not repeated as0.3.1 focused font/coverage regressions."
+    ]
   },
   "settings_qa": {
-    "actual_clay_browser_cases": 68,
-    "languages": 17,
-    "widths": [
-      320,
-      390
+    "current_actual_clay_browser_cases": 2,
+    "languages": [
+      "en",
+      "cs"
     ],
+    "width": 390,
     "modes": [
       "light",
       "dark"
     ],
     "page_errors": 0,
-    "clipped_or_overflowing_controls": 0,
-    "physical_phone_tested": false
+    "overflow": false,
+    "physical_phone_tested": false,
+    "prior_0_3_0_matrix_cases": 68
   },
   "fonts": {
     "source_manifest": "resources/fonts/font-provenance.json",
     "clock_outlines": {
       "result": "PASS",
-      "fontSha256": "ebbd7ce129559205f36e05cc9a7ab3b894ef5e14401ce3355cbd168e6bc4543b",
+      "fontSha256": "526d2361818275d1f9d1df6ce1835095058b84ec989e50e22f271237cc304000",
       "unitsPerEm": 1000,
-      "glyphCount": 17,
-      "contourCount": 29,
-      "pointCount": 1376,
+      "glyphCount": 20,
+      "contourCount": 33,
+      "pointCount": 1607,
       "maximumContourPoints": 145,
+      "maximumGlyphPoints": 145,
+      "maximumGlyphContours": 5,
       "quadraticCubicFlatnessToleranceFontUnits": 2.0,
       "maximumCurveFlatnessPxAt80": 0.16,
-      "characters": "0123456789:.-+,/%",
-      "holeContours": 7,
+      "characters": "0123456789:.-+,/%°CF",
+      "holeContours": 8,
       "overlapRemoval": "fontTools.ttLib.removeOverlaps with skia-pathops; curved nonzero winding union before flattening",
       "fontToolsVersion": "4.61.1",
       "pathopsVersion": "0.9.2",
@@ -189,11 +291,14 @@
         "+": 490,
         ",": 223,
         "/": 489,
-        "%": 779
+        "%": 779,
+        "°": 379,
+        "C": 631,
+        "F": 613
       },
       "sourceFont": "resources/fonts/Fredoka-Bold-Clock.ttf",
       "header": "src/c/generated_clock_glyphs.h",
-      "headerSha256": "5da0112c559c9c6ddc025b80ba0c049a9db083f1317f4bd2e07cc217ec495bfb",
+      "headerSha256": "38706b17a17fc394aea44b6446ff4a22bc52627cae4fe5744d6014354da325ec",
       "regenerationExact": true,
       "nativePointContourGlyphTablesMatch": true,
       "selectedDigitHoleCounts": {
@@ -202,106 +307,229 @@
         "8": 2,
         "9": 1
       },
+      "degreeSymbolHoleCount": 1,
       "scope": "Source geometry, polygon bounds and exact linked tables; native screenshots verify rasterized appearance."
     },
     "body_fonts": {
-      "fontCount": 7,
+      "fontCount": 8,
       "fonts": [
         {
-          "name": "FONT_BODY_14",
+          "name": "FONT_BODY_11",
           "resourceId": 1,
-          "pixelSize": 14,
-          "bytes": 8331,
-          "sha256": "857680600ef8fc31c752ee53ee96c5cc4db59ae80bd4774ba08563c92bdd55be",
+          "pixelSize": 11,
+          "bytes": 16052,
+          "sha256": "80e7c4e762bd7cf596484ab38e3746067b4f1645ca33c1e4d1e4a633429cf441",
           "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
-          "sourceSha256": "7efaf4f743791302104f4004351ea0cea4e45ed4781d378c3eece479cb4b2768",
-          "selectedSourceCodepoints": 396,
-          "packagedCodepointsIncludingFallback": 397,
-          "requiredLocalizedGlyphChecks": 98
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 3,
+            "height": 8,
+            "left": 1,
+            "top": 3,
+            "advance": 4,
+            "hasInk": true
+          }
+        },
+        {
+          "name": "FONT_BODY_14",
+          "resourceId": 2,
+          "pixelSize": 14,
+          "bytes": 18824,
+          "sha256": "da95d55e3e497141d114936e05d5a7c766413f04b450650cd3bc5c28cc5fa0b7",
+          "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 4,
+            "height": 10,
+            "left": 1,
+            "top": 4,
+            "advance": 5,
+            "hasInk": true
+          }
         },
         {
           "name": "FONT_BODY_16",
-          "resourceId": 2,
+          "resourceId": 3,
           "pixelSize": 16,
-          "bytes": 9115,
-          "sha256": "5d9876b070078570b22b3b3e9c9115c4a18a87638b65d5f711095d8d358d6025",
+          "bytes": 20844,
+          "sha256": "31851269c422c7191deb59d2fb4545d8404a40c2173071c8dd5b4bd0d7ac023e",
           "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
-          "sourceSha256": "7efaf4f743791302104f4004351ea0cea4e45ed4781d378c3eece479cb4b2768",
-          "selectedSourceCodepoints": 396,
-          "packagedCodepointsIncludingFallback": 397,
-          "requiredLocalizedGlyphChecks": 98
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 4,
+            "height": 11,
+            "left": 1,
+            "top": 5,
+            "advance": 6,
+            "hasInk": true
+          }
         },
         {
           "name": "FONT_BODY_20",
-          "resourceId": 3,
+          "resourceId": 4,
           "pixelSize": 20,
-          "bytes": 11043,
-          "sha256": "da200d1a659e890ce6d727e1cedc90b25c4a532df993905a49bf5a1ecb8f9a08",
+          "bytes": 26148,
+          "sha256": "46dab7aa0b7561c1fedc2ab7bf42c373fa8e1208bc72ce8783524ebe872f89ea",
           "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
-          "sourceSha256": "7efaf4f743791302104f4004351ea0cea4e45ed4781d378c3eece479cb4b2768",
-          "selectedSourceCodepoints": 396,
-          "packagedCodepointsIncludingFallback": 397,
-          "requiredLocalizedGlyphChecks": 98
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 6,
+            "height": 14,
+            "left": 1,
+            "top": 6,
+            "advance": 8,
+            "hasInk": true
+          }
         },
         {
           "name": "FONT_BODY_24",
-          "resourceId": 4,
+          "resourceId": 5,
           "pixelSize": 24,
-          "bytes": 13731,
-          "sha256": "7f14e445c38346bd66c9f5048cf2f91b4a1219c7404acf275c5c10af7db7bc8f",
+          "bytes": 33072,
+          "sha256": "1cf3bfdfeedcad17485d2ce5ececef2620ab876b26bfce80a3f567f560029f96",
           "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
-          "sourceSha256": "7efaf4f743791302104f4004351ea0cea4e45ed4781d378c3eece479cb4b2768",
-          "selectedSourceCodepoints": 396,
-          "packagedCodepointsIncludingFallback": 397,
-          "requiredLocalizedGlyphChecks": 98
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 7,
+            "height": 17,
+            "left": 1,
+            "top": 7,
+            "advance": 9,
+            "hasInk": true
+          }
         },
         {
           "name": "FONT_BODY_26",
-          "resourceId": 5,
+          "resourceId": 6,
           "pixelSize": 26,
-          "bytes": 15267,
-          "sha256": "e43b1dbc7b6aaa00b72714192429df824cc5b3f1badaea2e9dcb365a76ff46de",
+          "bytes": 37088,
+          "sha256": "30f77c6c6c299b3c6fe9725117446f46c516b303322e0f775c74f106bad37b8f",
           "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
-          "sourceSha256": "7efaf4f743791302104f4004351ea0cea4e45ed4781d378c3eece479cb4b2768",
-          "selectedSourceCodepoints": 396,
-          "packagedCodepointsIncludingFallback": 397,
-          "requiredLocalizedGlyphChecks": 98
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 8,
+            "height": 18,
+            "left": 1,
+            "top": 8,
+            "advance": 10,
+            "hasInk": true
+          }
         },
         {
           "name": "FONT_BODY_28",
-          "resourceId": 6,
+          "resourceId": 7,
           "pixelSize": 28,
-          "bytes": 16671,
-          "sha256": "64a0b8005b857ee2a87026c6e4180a6bfabf5e7b22fc9b1e50497c4ff0e58ac0",
+          "bytes": 40848,
+          "sha256": "122ab2faea4dd055d1f7aeb1bfbf9039b26f8bb2285a1159017fa31798e6723b",
           "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
-          "sourceSha256": "7efaf4f743791302104f4004351ea0cea4e45ed4781d378c3eece479cb4b2768",
-          "selectedSourceCodepoints": 396,
-          "packagedCodepointsIncludingFallback": 397,
-          "requiredLocalizedGlyphChecks": 98
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 9,
+            "height": 20,
+            "left": 1,
+            "top": 8,
+            "advance": 11,
+            "hasInk": true
+          }
         },
         {
           "name": "FONT_BODY_32",
-          "resourceId": 7,
+          "resourceId": 8,
           "pixelSize": 32,
-          "bytes": 20183,
-          "sha256": "f79ddfff9d929ee576fb2248597845af5bf9bf3e72be6452ce926fa7dfe1ab6f",
+          "bytes": 49944,
+          "sha256": "1f982067b36a6a7bd344835ae2c4ecce1cb6e9b343c334cadbd06dd8c4e9f4de",
           "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
-          "sourceSha256": "7efaf4f743791302104f4004351ea0cea4e45ed4781d378c3eece479cb4b2768",
-          "selectedSourceCodepoints": 396,
-          "packagedCodepointsIncludingFallback": 397,
-          "requiredLocalizedGlyphChecks": 98
+          "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+          "selectedSourceCodepoints": 919,
+          "packagedCodepointsIncludingFallback": 920,
+          "requiredLocalizedGlyphChecks": 147,
+          "restoredBlockLetterChecks": 441,
+          "directGlyphInkChecks": 539,
+          "fallback": {
+            "codepoint": 9647,
+            "width": 9,
+            "height": 23,
+            "left": 2,
+            "top": 9,
+            "advance": 13,
+            "hasInk": true
+          }
         }
       ],
       "languages": 17,
       "localizedWeekdays": 119,
-      "requiredGlyphChecks": 686,
+      "requiredGlyphChecks": 1176,
+      "directGlyphInkChecks": 4312,
+      "regressionCorpora": {
+        "cyrillicMusicAndNames": [
+          "Колесом / Kolesom",
+          "Молчат Дома",
+          "Україна",
+          "БЕЛАРУСЬ",
+          "Жыве",
+          "Четверг"
+        ],
+        "greekMusicAndNames": [
+          "Σήμερα",
+          "Ελληνικά",
+          "Άλμπουμ"
+        ],
+        "latinExtendedAdditional": [
+          "Tiếng Việt",
+          "Ứng dụng"
+        ]
+      },
+      "allFallbacksVisible": true,
       "scope": "Exact packaged lookup/bitmap coverage and source repertoire; not a visual layout or arbitrary-Unicode guarantee."
     },
     "body_metrics": {
       "header": "src/c/generated_body_metrics.h",
-      "headerSha256": "a714847957c086c77f8f9daaa36ce38754fdc0511107b932ae6792299b7b7d60",
-      "codepoints": 397,
+      "headerSha256": "09f2522305437b7c5e343c4e5675afd97fa1553792928b4767fe0c96a98ff972",
+      "codepoints": 920,
       "sizes": [
+        11,
         14,
         16,
         20,
@@ -310,7 +538,9 @@
         28,
         32
       ],
-      "packagedGlyphDescentChecks": 2779,
+      "packagedGlyphDescentChecks": 7360,
+      "wildcardIndex": 908,
+      "wildcardCodepoint": 9647,
       "nativeMetricTablesMatch": true,
       "scope": "Every committed descent matches the exact packaged PFO bitmap metrics, including fallback; visible text alignment remains a native rendering check."
     },
@@ -318,5 +548,21 @@
       "GOTHIC_14_BOLD",
       "GOTHIC_24_BOLD"
     ]
+  },
+  "raster": {
+    "implementation": "src/c/font_raster.h",
+    "subpixel_samples": [
+      4,
+      4
+    ],
+    "point_coordinate_fraction_bits": 8,
+    "scratch_reused": true,
+    "per_frame_heap_allocation": false,
+    "original_stroke_geometry_preserved": true,
+    "outline_weight_expansion_rejected": true,
+    "clipping_width": 200,
+    "maximum_glyph_points": 145,
+    "maximum_glyph_contours": 5,
+    "source_geometry_and_raster_validation_are_separate": true
   }
 }

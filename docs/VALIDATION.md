@@ -1,6 +1,73 @@
 # Dynamic validation
 
-## 0.3.0 chunky animated build
+## 0.3.1 preview fidelity correction
+
+The clock and reading values now use fractional 4×4 pixel coverage rather than
+rounding every outline vertex to a whole pixel. The original font geometry,
+advances and layout remain intact. Source-font equality and native raster
+appearance are checked separately.
+
+- **48 JavaScript tests and three strict C99 suites pass.** The new raster suite
+  checks fractional area, counters, disjoint contours, negative clipping,
+  capacity rejection before drawing, winding invariance and exact rational
+  sample boundaries. It also checks all 20 actual glyphs at six sizes against
+  their source polygon area. The raster/asset suites pass ASan/UBSan with leak
+  detection disabled for this environment.
+- Eight packaged body sizes contain **919 source codepoints plus a visible
+  fallback**. Cyrillic, Greek and the font's Latin Extended Additional
+  repertoire are retained. There are **4,312 direct glyph-ink checks** and
+  **7,360 exact packaged bitmap-descent checks**. Missing characters use the
+  authentic upstream `.notdef` outline rather than disappearing silently.
+- The 20 Fredoka vector glyphs include `°CF` for temperature and percent units.
+  The linked point/contour/glyph and body-metric tables match their generated
+  source exactly. Original wire keys, UUID, ReadMusic and the core pin remain
+  unchanged. Four bitmap/fallback corruption checks are correctly rejected.
+- Same-content native/browser comparisons use 10:49 idle and 10:48 music,
+  6°C/100% and the saved orange accent. The rejected outline experiment added
+  unwanted weight. The accepted fractional raster closely matches the
+  grayscale-quantized preview without expanding the stroke; native screenshots
+  remain native pixels. This does not claim browser-pixel identity.
+- Reading units use Fredoka, labels use muted 11px text, and label opacity
+  follows the existing layout animation. All raster scratch is bounded and
+  reused; it adds no per-frame heap allocation.
+- Two current actual Clay captures pass at 390px: English/light and Czech/dark,
+  with the 0.3.1 version and no page errors or overflow. Settings behavior is
+  otherwise unchanged; the earlier 68-case matrix is recorded below.
+- **25 focused native rendering cases and 36 still captures pass.** Normal/Big
+  idle, music, notices, Peek, C/F/percent/range values, multiple clock families,
+  light/dark/custom colors, Cyrillic, Greek and supported Vietnamese text were
+  visually checked. All five contact sheets, including the corrected positive
+  Vietnamese sample, were reviewed. Rare unsupported characters remain a
+  separate visible-fallback case; coverage is not universal Unicode support.
+- Eight captured paths settle, and all eight normalized final frames equal
+  native Screenshot-service endpoints. Notice transitions preserve the clock
+  and both readings. Two opt-out runs, including relaunch, show endpoint-only
+  geometry. Artist/body clears are blank from the first captured frame; a
+  mid-slide clear retains one pre-redraw framebuffer before every returning
+  pose clears. This is normal dispatch/redraw latency, not a zero-latency claim.
+- Captures use the exact final PBW, production-packed fixtures and native
+  AppMessage, with no phone JavaScript. Raw HMP frames are retained; exact
+  per-frame palette decoding removes backlight scaling before geometry counts.
+  The SDK locale is English; Czech date/label wording was not injected. Live
+  plugin delivery, physical playback, real notification callbacks, actual
+  Timeline event text and hardware power/FPS remain untested. Prior expiry
+  lifecycle results below were not repeated as new 0.3.1 checks.
+- SDK 4.33.1 reports **246,928 resource bytes**, a **51,474-byte RAM footprint**
+  and **79,598 bytes free heap**. The final native binary is 42,072 bytes.
+
+Final PBW SHA-256:
+
+`f98a6bc977e176d121d391ae98b5d6305d40aa0394dd90f33babc92585e3f781`
+
+Native binary SHA-256:
+
+`da6c02dccebebadb4d1159d68f653fb88fdd94ddf7a3777c0511828cbf5130b1`
+
+Resources SHA-256:
+
+`2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb`
+
+## Historical 0.3.0 chunky animated build
 
 This is the native Emery implementation of the approved motion study, using
 Fredoka outlines and bundled Roboto Condensed text. The original UUID and

@@ -22,7 +22,7 @@ from fontTools.ttLib.removeOverlaps import removeOverlaps
 ROOT = Path(__file__).resolve().parents[1]
 FONT = ROOT / "resources/fonts/Fredoka-Bold-Clock.ttf"
 HEADER = ROOT / "src/c/generated_clock_glyphs.h"
-CHARS = "0123456789:.-+,/%"
+CHARS = "0123456789:.-+,/%°CF"
 TOLERANCE = 2.0  # 0.16px at the largest 80px clock scale.
 
 
@@ -152,6 +152,9 @@ def build():
                        glyph.xMin, glyph.yMin, glyph.xMax, glyph.yMax))
     assert len(points) <= 65535 and len(contours) <= 65535
     maximum = max(contour[1] for contour in contours)
+    maximum_glyph_points = max(sum(contours[i][1] for i in range(glyph[2], glyph[2] + glyph[3]))
+                               for glyph in glyphs)
+    maximum_glyph_contours = max(glyph[3] for glyph in glyphs)
     assert maximum <= 256
     sha = hashlib.sha256(FONT.read_bytes()).hexdigest()
     lines = [
@@ -163,6 +166,8 @@ def build():
         "#pragma once", "", "#include <stdbool.h>", "#include <stdint.h>", "",
         "#define CLOCK_FONT_UNITS_PER_EM " + str(font["head"].unitsPerEm),
         "#define CLOCK_CONTOUR_MAX_POINTS " + str(maximum),
+        "#define CLOCK_GLYPH_MAX_POINTS " + str(maximum_glyph_points),
+        "#define CLOCK_GLYPH_MAX_CONTOURS " + str(maximum_glyph_contours),
         "#define CLOCK_POINT_COUNT " + str(len(points)),
         "#define CLOCK_CONTOUR_COUNT " + str(len(contours)),
         "#define CLOCK_GLYPH_COUNT " + str(len(glyphs)),
@@ -171,7 +176,7 @@ def build():
         "typedef struct { int16_t x, y; } ClockPoint;",
         "typedef struct { uint16_t first_point, point_count; bool hole; } ClockContour;",
         "typedef struct {",
-        "  char code;",
+        "  uint32_t code;",
         "  uint16_t advance, first_contour, contour_count;",
         "  int16_t x_min, y_min, x_max, y_max;",
         "} ClockGlyph;", "",
@@ -184,8 +189,9 @@ def build():
         lines.append("  {%d,%d,%s}," % (first, count, "true" if hole else "false"))
     lines.extend(["};", "", "static const ClockGlyph clock_glyphs[CLOCK_GLYPH_COUNT] = {"])
     for char, advance, first, count, xmin, ymin, xmax, ymax in glyphs:
-        lines.append("  {'%s',%d,%d,%d,%d,%d,%d,%d}," %
-                     (char, advance, first, count, xmin, ymin, xmax, ymax))
+        code = "'%s'" % char if ord(char) < 128 else "0x%04x" % ord(char)
+        lines.append("  {%s,%d,%d,%d,%d,%d,%d,%d}," %
+                     (code, advance, first, count, xmin, ymin, xmax, ymax))
     lines.extend(["};", ""])
     info = {
         "fontSha256": sha,
@@ -194,6 +200,8 @@ def build():
         "contourCount": len(contours),
         "pointCount": len(points),
         "maximumContourPoints": maximum,
+        "maximumGlyphPoints": maximum_glyph_points,
+        "maximumGlyphContours": maximum_glyph_contours,
         "quadraticCubicFlatnessToleranceFontUnits": TOLERANCE,
         "maximumCurveFlatnessPxAt80": TOLERANCE * 80 / font["head"].unitsPerEm,
         "characters": CHARS,
