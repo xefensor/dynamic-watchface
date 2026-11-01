@@ -1,0 +1,25 @@
+{
+  "repository": "xefensor/dynamic-watchface",
+  "kind": "watchface",
+  "display_name": "Dynamic",
+  "tag_prefix": "v",
+  "prerelease": true,
+  "assets": [
+    "dist/Dynamic-{version}.pbw",
+    "dist/Dynamic-{version}-source.zip"
+  ],
+  "checksums_file": "dist/SHA256SUMS.txt",
+  "app_uuid": "cc1281f1-3b4d-45b5-b235-6881b1fd8fbd",
+  "source_archive": {
+    "path": "dist/Dynamic-{version}-source.zip",
+    "prefix": ""
+  },
+  "notes": {
+    "path": "CHANGELOG.md",
+    "heading": "## {version}"
+  },
+  "bootstrap": {
+    "version": "0.6.1",
+    "source_commit": "cae7b28ca29bb1ae8e6e65fbc5e38ec8d6bd2018"
+  }
+}
