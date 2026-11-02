@@ -2,6 +2,9 @@
 
 ## 0.8.0
 
+- Development prerelease for phone/watch testing. Portable, package and emulator
+  checks pass; real-device alarm vibration, Bluetooth behavior and live plugin
+  delivery remain to be verified.
 - Give generic countdown and elapsed activities large centered Fredoka numerals,
   a directly grouped caption and optional secondary music or activity summary.
 - Keep pause and last-reported marks with the caption, without reserving empty

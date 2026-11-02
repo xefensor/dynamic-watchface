@@ -1,5 +1,13 @@
 # Dynamic validation
 
+## Testing prerelease
+
+Xef authorized publishing 0.8.0 as a GitHub development prerelease for actual
+phone/watch testing on 2 November 2026. The prepared PBW retains the exact native
+and packaged-runtime bytes validated below. Real-phone/plugin delivery,
+Bluetooth behavior, physical vibration and power use remain unverified. Public
+appstore submission stays held; this authorization is for the GitHub prerelease.
+
 ## Local CLI recovery — 2 November 2026
 
 Dynamic 0.8.0 remains unpublished. GitHub `main` was checked at
