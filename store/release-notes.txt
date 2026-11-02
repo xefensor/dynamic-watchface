@@ -1,4 +1,4 @@
-0.9.0 two-item activity views — local candidate
+0.9.0 two-item activity views — GitHub prerelease
 
 Compatible activities can combine a main item and a supporting text, value or independent clock, plus optional 40×40 artwork and a meter derived from a valid value and range. Any activity can be primary or secondary; optional content appears only when it fits. Music and text retain their established fixed-size composition.
 
@@ -8,4 +8,4 @@ Within each provider, the soonest running deadline is shown first. The local Tim
 
 The UUID, two readings, music typography and existing privacy choices are preserved. Last-reported countdowns do not certify completion or a native alarm. No activity commands, Dashboard app or built-in Workout integration are included.
 
-Portable checks, the Emery SDK build and final package/native-style audit pass. Native evidence covers 20 settings presets, 28 activity compositions, four follow-up clock frames without a source resend, and supporting-item/meter expiry. Physical 0.9.0 and live phone/provider behavior remain unverified. This candidate has not been published to GitHub. Published 0.8.0 remains available, and Pebble appstore submission is held.
+Portable checks, the Emery SDK build and final package/native-style audit pass. Native evidence covers 20 settings presets, 28 activity compositions, four follow-up clock frames without a source resend, and supporting-item/meter expiry. Physical 0.9.0 and live phone/provider behavior remain unverified. This version is published as a GitHub development prerelease. Earlier 0.8.0 remains available, and Pebble appstore submission is held.

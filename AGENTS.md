@@ -95,8 +95,8 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   and runtime/build-input checks still apply.
 - This repository pins Core 0.5.0 and Activities 0.2.0 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
-- Version 0.9.0 is a local candidate until its own final validation and
-  publication. Keep the published 0.8.0 download links and bytes available.
+- Version 0.9.0 is a published GitHub development prerelease. Keep its tested
+  artifacts, tag and the earlier 0.8.0 download links/bytes available.
   Prior user success on 0.8.0 is useful history, not a physical 0.9.0 check.
 
 `store/listing.json` is a local publication record, not a Pebble CLI schema.

@@ -29,8 +29,8 @@
   The native virtual image is 65,120 bytes, leaving 415 bytes below the SDK
   limit. Physical 0.9.0 and live phone/provider behavior remain unverified.
   The earlier release's successful user test does not verify the new binary.
-- This candidate is local, not a new GitHub publication. Published 0.8.0
-  artifacts remain unchanged, and Pebble appstore submission remains held.
+- Published as a GitHub development prerelease for sideload testing. Earlier
+  0.8.0 artifacts remain unchanged, and Pebble appstore submission remains held.
 
 ## 0.8.0
 

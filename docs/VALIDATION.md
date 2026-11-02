@@ -1,13 +1,16 @@
 # Dynamic validation
 
-## Local 0.9.0 activity views candidate — 2 November 2026
+## 0.9.0 activity views prerelease — 2 November 2026
 
-The new candidate uses Activities 0.2.0 and its bounded ACT2 projection. An
+This release uses Activities 0.2.0 and its bounded ACT2 projection. An
 activity supplies a main item and optional supporting item, each with its own
 text, value or clock, observation time, expiry and retention policy. Artwork
 and a source-derived meter remain optional. Schema 1 providers are adapted on
-the phone. This version is prepared locally; the published 0.8.0 release and
-its earlier evidence remain available.
+the phone. Version 0.9.0 was published as a GitHub development prerelease from
+commit `25724d4dc561ec61d5d887b4c37d5e237d95b222`. Both GitHub workflows passed,
+and all three downloaded assets match the prepared bytes and checksums.
+Publication-status documentation updates preserve these artifacts. The 0.8.0
+release and its earlier evidence remain available.
 
 - **85 JavaScript tests and 12 strict native suites pass.** Coverage includes
   source/view revisions, independent item clocks, expiry, privacy, provider

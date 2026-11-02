@@ -1,6 +1,6 @@
 # Dynamic and the shared libraries
 
-The local Dynamic 0.9.0 candidate pins Pebble Watchface Core 0.5.0 and Pebble
+Dynamic 0.9.0 pins Pebble Watchface Core 0.5.0 and Pebble
 Activities 0.2.0. Each PBW embeds its libraries and keeps its UUID, settings and
 permission manifest. Halftone retains its own independently adopted pin.
 Neither library is a background app.
