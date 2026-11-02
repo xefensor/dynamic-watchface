@@ -153,7 +153,7 @@ def capture(pebble,pbw,output,preview=None,appmessage=None):
         report={'version':version,'pbw_sha256':sha256(native_pbw.read_bytes()),
             'candidate_source_pbw_sha256':sha256(pbw.read_bytes()),'native_payload_sha256':native_hashes,
             'phone_javascript_executed':False,'fixture_encoder':{'core':plan['coreVersion'],
-                'activities':plan['activitiesVersion'],'core_wire_version':4,'activity_wire_version':1},
+                'activities':plan['activitiesVersion'],'core_wire_version':4,'activity_wire_version':plan['activityWireVersion']},
             'fixture_time_utc':SAMPLE_TIME,'session':session,'captures':captures,
             'scope':'20 actual native Screenshot-service presets; sample data, not live phone/provider verification.',
             'visual_review':{'reviewed':False}}
@@ -222,38 +222,55 @@ def capture_activities(pebble,session,output,appmessage=None):
                 tid=service.send_message(target,dictionary)
                 if not condition.wait_for(lambda:tid in receipts,timeout=10):raise RuntimeError('Activity fixture ACK timed out')
                 if not receipts.pop(tid):raise RuntimeError('Watch rejected activity capture fixture')
-            time.sleep(.8)
+            time.sleep(preset.get('captureDelaySeconds',.8))
             previous=None;path=output/(preset['name']+'.png')
             for attempt in range(3):
                 rows=Screenshot(pebble).grab_image()
                 if len(rows)!=228 or any(len(row)!=600 for row in rows):raise RuntimeError('Expected native 200×228 RGB')
                 pixels=b''.join(rows)
-                # Clocks advance locally once a second. Compare settled clock,
-                # date, both readings and footer without freezing the activity.
-                footer=pixels[200*176*3:]
-                if len(preset.get('activities',[]))>1:
-                    # A second timer is a locally advancing secondary line.
-                    # Compare its static label region without freezing it.
-                    footer=pixels[200*176*3:200*199*3]+pixels[200*216*3:]
-                stable=pixels[:200*92*3]+footer
+                # ACT2 may have clocks in both item and activity positions.
+                # Compare only the settled OS clock/date/readings region;
+                # the entire activity area is allowed to change locally.
+                stable=pixels[:200*92*3]
                 if previous==stable:break
                 previous=stable;time.sleep(.15)
-            else:raise RuntimeError('Activity header/readings/footer did not settle: '+preset['name'])
+            else:raise RuntimeError('Activity header/readings did not settle: '+preset['name'])
             Image.frombytes('RGB',(200,228),pixels).save(path)
-            captures.append({'name':preset['name'],'file':path.name,'sha256':sha256(path.read_bytes()),
+            background=bytes.fromhex(f"{preset['integers']['BACKGROUND_COLOR']:06x}")
+            region_checks=[]
+            for setting,expect_ink in [('expectInk',True),('expectBlank',False)]:
+                for box in preset.get(setting,[]):
+                    region=b''.join(pixels[(row*200+box['x'])*3:(row*200+box['x']+box['width'])*3]
+                        for row in range(box['y'],box['y']+box['height']))
+                    has_ink=any(region[at:at+3]!=background for at in range(0,len(region),3))
+                    if has_ink!=expect_ink:raise RuntimeError('Native activity region expectation failed: '+preset['name']+' '+setting)
+                    region_checks.append({'region':box,'has_ink':has_ink})
+            captured={'name':preset['name'],'file':path.name,'sha256':sha256(path.read_bytes()),
                 'rgb_sha256':sha256(pixels),'pixels':[200,228],'native_pixels_modified':False,
-                'settled_header_readings_footer_rgb_equal':True,'running_clock_changes_allowed':True,
-                'two_configured_readings':True})
+                'settled_header_readings_rgb_equal':True,'running_clock_changes_allowed':True,
+                'capture_delay_seconds':preset.get('captureDelaySeconds',.8),
+                'two_configured_readings':True,'region_checks':region_checks}
+            if preset.get('verifyClockTick'):
+                time.sleep(1.15)
+                later=b''.join(Screenshot(pebble).grab_image())
+                if pixels[200*92*3:]==later[200*92*3:]:raise RuntimeError('Visible native clock did not advance: '+preset['name'])
+                tick_path=output/(preset['name']+'-tick.png')
+                Image.frombytes('RGB',(200,228),later).save(tick_path)
+                captured['clock_tick']={'file':tick_path.name,'sha256':sha256(tick_path.read_bytes()),
+                    'activity_rgb_changed':True,'fixture_resent':False,'wait_seconds':1.15,
+                    'native_pixels_modified':False}
+            captures.append(captured)
             print('Captured '+preset['name'],flush=True)
         # Native Peek hides the activity area, so different clock values must
         # intentionally produce the same unobstructed face above its OS panel.
-        visible=[row for row,preset in zip(captures,plan['presets']) if preset['state']!='timeline']
-        if len({row['rgb_sha256'] for row in visible})!=len(visible):raise RuntimeError('Expected distinct visible generic layouts')
+        # Equivalent layouts are valid: retired LARGE_TEXT has no effect, and
+        # native Peek intentionally hides differing activity content. Functional
+        # regions and local tick proofs above establish the affected behavior.
         report={'version':preview['version'],'session':session,'source':preview['source'],
             'phone_javascript_executed':False,'candidate_install_unchanged':True,
             'fixture_encoder':{'core':plan['coreVersion'],'activities':plan['activitiesVersion'],
-                'core_wire_version':4,'activity_wire_version':1},'captures':captures,
-            'scope':str(len(captures))+' actual generic activity layouts with two configured sample readings. Elapsed workout is a plugin fixture, not native Workout integration.',
+                'core_wire_version':4,'activity_wire_version':plan['activityWireVersion']},'captures':captures,
+            'scope':str(len(captures))+' actual ACT2 activity compositions with two configured sample readings, timed expiry and local-clock proofs. All source data is synthetic; elapsed workout is not native Workout integration.',
             'visual_review':{'reviewed':False}}
         (output/'activities.json').write_text(json.dumps(report,indent=2)+'\n')
         return report

@@ -5,6 +5,8 @@ import hashlib
 import importlib.util
 import io
 import json
+import re
+import struct
 import sys
 import tarfile
 import tempfile
@@ -34,14 +36,15 @@ class PinnedDependenciesTests(unittest.TestCase):
     def write_json(self, name, value):
         (self.root / name).write_text(json.dumps(value), encoding="utf-8")
 
-    def fixture(self, specification, *, unsafe=False, package_keys=False, stale_sdk=False):
+    def fixture(self, specification, *, unsafe=False, package_keys=False, stale_sdk=False,
+                stale_header=False):
         metadata_file, name, version = specification
         source = b"module.exports = {};\n"
         info = {"name": name, "version": version,
                 "pebble": {"messageKeys": ["UNEXPECTED"] if package_keys else []}}
         header = b"int fixture(void);\n"
         sdk = {"js/index.js": b"stale" if stale_sdk else source,
-               "include/" + name + "/fixture.h": header,
+               "include/" + name + "/fixture.h": b"stale header" if stale_header else header,
                "binaries/emery/lib" + name + ".a": b"fixture library"}
         buffer = io.BytesIO()
         with zipfile.ZipFile(buffer, "w") as archive:
@@ -92,6 +95,9 @@ class PinnedDependenciesTests(unittest.TestCase):
             self.assertEqual(verify_dependency(self.root, specification)[0], pin)
             summary, sources = audit.read_dependency(self.root, specification, {"index.js"})
             self.assertEqual(summary["sourceCommit"], "a" * 40)
+            self.assertEqual(summary["nativeSourceSha256"], {
+                "include/fixture.h": hashlib.sha256(b"int fixture(void);\n").hexdigest()})
+            self.assertRegex(summary["sdkArchiveSha256"], r"^[0-9a-f]{64}$")
             self.assertEqual(sources, {"index.js": b"module.exports = {};\n"})
 
     def test_changed_archive_is_rejected(self):
@@ -134,6 +140,11 @@ class PinnedDependenciesTests(unittest.TestCase):
         self.fixture(DEPENDENCIES[0], stale_sdk=True)
         with self.assertRaisesRegex(ValueError, "Source and SDK JavaScript"):
             audit.read_dependency(self.root, DEPENDENCIES[0], {"index.js"})
+
+    def test_consistently_pinned_but_stale_act2_sdk_header_is_rejected(self):
+        self.fixture(DEPENDENCIES[1], stale_header=True)
+        with self.assertRaisesRegex(ValueError, "Source and exported SDK header"):
+            audit.read_dependency(self.root, DEPENDENCIES[1], {"index.js"})
 
     def metric_fixture(self):
         header = '''#define BODY_METRIC_COUNT 4
@@ -231,6 +242,127 @@ ascent = body_metric_ascent_rows[body_metric_ascent_index[body_metric_index(code
         mapped = {"sources": ["_pkjs_shared_additions.js"] * 2, "sourcesContent": [source] * 2}
         with self.assertRaisesRegex(ValueError, "duplicated"):
             audit.audit_sdk_additions(self.root, mapped)
+
+
+class LocalizedWeekdayAuditTests(unittest.TestCase):
+    def fixture(self):
+        source = (SCRIPTS.parent / "src/c/dynamic.c").read_text(encoding="utf-8")
+        table = re.search(r"s_weekdays\[\]\s*=\s*\{(.*?)\n\};", source, re.S).group(1)
+        rows = re.findall(r'\{"([a-z]{2})",\{([^}]+)\}\}', table)
+        encoded = b"".join(language.encode() + b"\0" + b"".join(
+            day.encode().ljust(5, b"\0") for day in re.findall(r'"([^"]+)"', body))
+            for language, body in rows)
+        return source, b"native-prefix" + encoded + b"native-suffix"
+
+    def test_compact_table_preserves_all_17_languages_and_native_utf8_bytes(self):
+        source, binary = self.fixture()
+        weekdays, result = audit.audit_localized_weekdays(source, binary)
+        self.assertEqual(len(weekdays), 17)
+        self.assertEqual(sum(map(len, weekdays.values())), 119)
+        self.assertEqual(weekdays["cs"][2:5], ["ÚTE", "STŘ", "ČTV"])
+        self.assertEqual(weekdays["no"], ["SØN", "MAN", "TIR", "ONS", "TOR", "FRE", "LØR"])
+        self.assertEqual(result["localeAliases"], {"no": "da", "nb": "da", "nn": "da"})
+        self.assertEqual(result["storedWeekdayRows"], 16)
+        self.assertEqual(result["nativeWeekdayTableBytes"], 608)
+
+    def test_missing_duplicate_or_changed_language_cannot_reduce_glyph_requirements(self):
+        source, binary = self.fixture()
+        for before, after in (('{"cs",', '{"en",'), ('"ÚTE"', '"UTE"'),
+                              ('"STŘ"', '"STŘX"'), ('"SØN"', '"SØN","EXTRA"')):
+            with self.subTest(before=before):
+                with self.assertRaises(ValueError):
+                    audit.audit_localized_weekdays(source.replace(before, after), binary)
+
+    def test_alias_region_and_fallback_behavior_changes_require_review(self):
+        source, binary = self.fixture()
+        for before, after in (("b=='n'", "b=='q'"), ("row=0", "row=1"),
+                              ("day>6", "day>5"), ("locale[2]=='-'", "locale[2]=='/'"),
+                              ("days[day]", "days[0]")):
+            with self.subTest(before=before):
+                with self.assertRaisesRegex(ValueError, "locale/alias/fallback"):
+                    audit.audit_localized_weekdays(source.replace(before, after), binary)
+
+    def test_stale_native_weekday_table_is_rejected(self):
+        source, binary = self.fixture()
+        with self.assertRaisesRegex(ValueError, "Native binary"):
+            audit.audit_localized_weekdays(source, binary.replace("ÚTE".encode(), b"UTE\0"))
+
+
+class NativeSizeTests(unittest.TestCase):
+    def fixture(self, load_size=65532, virtual_size=65535, relocations=1):
+        """Construct independent ELF section extents and uint16 metadata fields."""
+        binary = bytearray(load_size)
+        binary[:8] = b"PBLAPP\x00\x00"
+        binary[104:120] = audit.uuid.UUID(audit.APP_UUID).bytes
+        struct.pack_into("<H", binary, 14, load_size & 0xffff)
+        struct.pack_into("<I", binary, 100, relocations)
+        struct.pack_into("<H", binary, 128, virtual_size & 0xffff)
+        names = b"\x00.header\x00.text\x00.bss\x00.shstrtab\x00"
+        payload_offset = 52
+        names_offset = payload_offset + load_size
+        directory_offset = names_offset + len(names)
+        elf = bytearray(directory_offset + 5 * 40)
+        struct.pack_into("<16sHHIIIIIHHHHHH", elf, 0,
+                         b"\x7fELF\x01\x01\x01" + b"\x00" * 9,
+                         2, 40, 1, 0, 0, directory_offset, 0, 52, 0, 0, 40, 5, 4)
+        elf[payload_offset:names_offset] = binary
+        elf[names_offset:directory_offset] = names
+        sections = [
+            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+            (1, 1, 2, 0, payload_offset, 130, 0, 0, 1, 0),
+            (9, 1, 6, 130, payload_offset + 130, load_size - 130, 0, 0, 1, 0),
+            (15, 8, 3, load_size, names_offset, virtual_size - load_size, 0, 0, 1, 0),
+            (20, 3, 0, 0, names_offset, len(names), 0, 0, 1, 0),
+        ]
+        for index, section in enumerate(sections):
+            struct.pack_into("<10I", elf, directory_offset + index * 40, *section)
+        return bytes(binary) + b"\x00" * (relocations * 4), bytes(elf)
+
+    def test_complete_binary_over_65535_is_valid_with_bounded_loaded_and_virtual_sizes(self):
+        binary, elf = self.fixture()
+        result = audit.audit_native_sizes(binary, elf)
+        self.assertEqual(result["fileBytes"], 65536)
+        self.assertEqual(result["loadedBytes"], 65532)
+        self.assertEqual(result["virtualBytes"], 65535)
+        self.assertEqual(result["relocationBytes"], 4)
+        self.assertEqual(result["virtualHeadroomBytes"], 0)
+
+    def test_exact_uint16_and_emery_file_limits_are_inclusive(self):
+        binary, elf = self.fixture(load_size=65535, virtual_size=65535)
+        self.assertEqual(audit.audit_native_sizes(binary, elf)["loadedHeadroomBytes"], 0)
+        binary, elf = self.fixture(relocations=16385)
+        self.assertEqual(audit.audit_native_sizes(binary, elf)["fileBytes"], 131072)
+
+    def test_elf_extents_detect_load_and_virtual_overflow_despite_wrapped_header(self):
+        cases = ((65536, 65536, "loaded image"), (65532, 65536, "virtual size"))
+        for load_size, virtual_size, message in cases:
+            with self.subTest(load_size=load_size, virtual_size=virtual_size):
+                binary, elf = self.fixture(load_size=load_size, virtual_size=virtual_size)
+                with self.assertRaisesRegex(ValueError, message):
+                    audit.audit_native_sizes(binary, elf)
+
+    def test_emery_complete_binary_limit_and_relocation_length_remain_enforced(self):
+        binary, elf = self.fixture(relocations=16386)
+        with self.assertRaisesRegex(ValueError, "128 KiB"):
+            audit.audit_native_sizes(binary, elf)
+        binary, elf = self.fixture()
+        with self.assertRaisesRegex(ValueError, "relocation table length"):
+            audit.audit_native_sizes(binary + b"\x00", elf)
+
+    def test_header_size_uuid_and_loaded_source_mismatch_are_rejected(self):
+        binary, elf = self.fixture()
+        for offset, message in ((14, "process-info sizes"), (104, "UUID"),
+                                (200, "loaded section")):
+            with self.subTest(offset=offset):
+                changed = bytearray(binary)
+                changed[offset] ^= 1
+                with self.assertRaisesRegex(ValueError, message):
+                    audit.audit_native_sizes(changed, elf)
+
+    def test_truncated_elf_section_directory_is_rejected(self):
+        binary, elf = self.fixture()
+        with self.assertRaisesRegex(ValueError, "section directory"):
+            audit.audit_native_sizes(binary, elf[:-1])
 
 
 if __name__ == "__main__":

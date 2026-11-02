@@ -89,7 +89,7 @@ var context = createContext({
 });
 
 var activities = activityLibrary.createActivities({
-  pebble:Pebble,keys:MessageKeys,send:send,
+  pebble:Pebble,keys:MessageKeys,send:send,nativeFormat:2,
   // Generic notices retain the mature adapter's baseline and interruption
   // policy during this migration. Music follows the same user opt-out.
   acceptActivity:function(activity){
@@ -100,11 +100,14 @@ var activities = activityLibrary.createActivities({
     // Music remains the fallback while an ongoing timer or other activity
     // occupies the main area. Keep provider order, choosing the soonest active
     // deadline within a provider before its paused deadlines.
-    var ongoing=[],music=[];
-    cards.forEach(function(card){(String(card.kind).toLowerCase()==='music'?music:ongoing).push(card);});
+    var ongoing=[],results=[],music=[];
+    cards.forEach(function(card){
+      (String(card.kind).toLowerCase()==='music'?music:
+        card.state==='completed'||card.state==='cancelled'?results:ongoing).push(card);
+    });
     var timed=Object.create(null);
     ongoing.forEach(function(card,index){
-      if(card.clock!=='deadline')return;
+      if(!card.main||card.main.type!=='clock'||card.main.mode!=='deadline')return;
       var provider=card.provider||'';
       if(!timed[provider])timed[provider]=[];
       timed[provider].push({card:card,index:index});
@@ -112,18 +115,13 @@ var activities = activityLibrary.createActivities({
     Object.keys(timed).forEach(function(provider){
       var positions=timed[provider].map(function(item){return item.index;});
       timed[provider].sort(function(a,b){
-        var ar=a.card.state==='active',br=b.card.state==='active';
-        return ar!==br?(ar?-1:1):ar&&a.card.deadline!==b.card.deadline?
-          a.card.deadline-b.card.deadline:a.index-b.index;
+        var ar=a.card.main.running,br=b.card.main.running;
+        var ad=a.card.main.anchorAt+a.card.main.baseSeconds;
+        var bd=b.card.main.anchorAt+b.card.main.baseSeconds;
+        return ar!==br?(ar?-1:1):ar&&ad!==bd?ad-bd:a.index-b.index;
       }).forEach(function(item,index){ongoing[positions[index]]=item.card;});
     });
-    return ongoing.concat(music).slice(0,2).map(function(card){
-      if(card.main||typeof card.value!=='number')return card;
-      // Numeric-only providers need no extra formatted field. Retain supplied
-      // display text and units exactly when the source already formats them.
-      var view={};Object.keys(card).forEach(function(key){view[key]=card[key];});
-      view.main=String(card.value)+(card.unit?' '+card.unit:'');return view;
-    });
+    return ongoing.concat(results,music).slice(0,2);
   },
   now:function(){return Date.now();},
   later:function(callback,delay){return setTimeout(callback,delay);},
@@ -222,7 +220,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.8.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.9.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }

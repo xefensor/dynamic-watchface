@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.9.0
+
+- Adopt Activities 0.2.0 ACT2 views: each activity has one main item and an
+  optional supporting text, value or clock, with optional 40×40 artwork and a
+  meter derived from a valid source value and explicit range. Existing schema 1
+  providers remain usable through the phone-side adapter.
+- Keep each item's observation, expiry, running/pause state and retention
+  separate. Source revisions describe activity truth; independent view
+  sequences allow presentation updates without claiming a newer observation.
+- Show related values together, including Timer 0.3.0's remaining and elapsed
+  clocks. Any activity can be primary or secondary; optional content yields
+  when space is insufficient. Preserve fixed 24px text and 20px text footers.
+- Reserve room for pause, uncertainty and original-observation age marks.
+  Estimated or due clocks and unconfirmed native snapshots remain explicit;
+  reaching zero does not imply completion or prove that a native alarm rang.
+- Schedule second updates only for visible running clocks, keeping independent
+  clocks independent of the activity's overall paused state. Clear unavailable
+  private content and expire supporting items and meters independently.
+- Pin Core 0.5.0 and Activities 0.2.0. Preserve UUID, message-key numbers,
+  readings, music composition, settings and notification privacy. Include no
+  activity commands, Dashboard app, firmware fork or built-in Workout access.
+- All 85 JavaScript tests, 12 portable native suites, 40 Python regressions,
+  the fixed-timestamp Emery SDK build and final package/native-style audit pass.
+  Native evidence covers 20 settings presets, 28 activity compositions and
+  four clock follow-up frames without a source resend, including independent
+  clocks, a running secondary clock and supporting-item/meter expiry.
+  The native virtual image is 65,120 bytes, leaving 415 bytes below the SDK
+  limit. Physical 0.9.0 and live phone/provider behavior remain unverified.
+  The earlier release's successful user test does not verify the new binary.
+- This candidate is local, not a new GitHub publication. Published 0.8.0
+  artifacts remain unchanged, and Pebble appstore submission remains held.
+
 ## 0.8.0
 
 - Development prerelease for phone/watch testing. Portable, package and emulator

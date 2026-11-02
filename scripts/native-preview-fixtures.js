@@ -3,7 +3,8 @@
 // Node-only capture fixture producer. Use the installed production encoders;
 // this module is never imported by the phone or watch application.
 const core=require('pebble-watchface-core').wire;
-const activity=require('pebble-activities').wire;
+const activity=require('pebble-activities').view;
+if(!activity)throw Error('Native ACT2 fixtures require the pinned Activities 0.2.0 package');
 const states=['idle','music','notification-summary','notification','timeline'];
 function cover() {
   const palette=[0xc0,0xff,0xc3,0xcf,0xfc,0xf3,0xf0,0xcc],pixels=[];
@@ -47,7 +48,8 @@ function fixtures(options) {
         ACTIVITY_DATA:activity.encode([],{session,revision:++sequence,sentAt:now})}});
   }
   return {coreVersion:require('pebble-watchface-core/package.json').version,
-    activitiesVersion:require('pebble-activities/package.json').version,session,now,presets};
+    activitiesVersion:require('pebble-activities/package.json').version,
+    activityWireVersion:activity.VERSION,session,now,presets};
 }
 function activityPresets(options) {
   const plan=fixtures(options),now=options.now,session=options.session;
@@ -56,6 +58,14 @@ function activityPresets(options) {
     state,clock:'deadline',observedAt:now,validUntil:now+Math.max(3600,seconds+60),private:false,
     unconfirmed:true,main:'',footer:'10 min timer',
     ...(state==='paused'?{duration:seconds}:{deadline:now+seconds}),...extra});
+  const clock=(label,mode,baseSeconds,extra={})=>({type:'clock',label,mode,baseSeconds,
+    running:true,anchorAt:now,retain:true,...extra});
+  const card=(id,caption,main,support=null,extra={})=>({provider,id,kind:id,revision:1,
+    state:'active',observedAt:now,validUntil:now+3600,private:false,
+    caption,main,support,...extra});
+  const expires=card('sample-support-expiry','Outdoor walk',clock('Elapsed','elapsed',1830),
+    {type:'value',label:'Pulse',value:142,unit:'bpm',validUntil:now+3},
+    {meter:{kind:'level',source:'support',min:60,max:180}});
   const specifications=[
     {name:'timer-running',base:'music',card:timer(1)},
     {name:'timer-paused',base:'idle',card:timer(2,'paused')},
@@ -79,14 +89,51 @@ function activityPresets(options) {
       {footer:'Dlouhý časovač s diakritikou a dalšími informacemi pro druhý řádek'})},
     {name:'timer-dark',base:'music',theme:'dark',card:timer(13)},
     {name:'timer-due',base:'idle',card:timer(14,'active',0,{footer:'10 min timer'})},
-    {name:'timer-long-timeline',base:'timeline',card:timer(15,'active',4496,{footer:'2 h timer'})}
+    {name:'timer-long-timeline',base:'timeline',card:timer(15,'active',4496,{footer:'2 h timer'})},
+    {name:'value-eta-artwork-meter',base:'idle',card:card('sample-printer','Boat print',
+      {type:'value',label:'Complete',value:72,unit:'%'},clock('ETA','deadline',2220,{estimated:true}),
+      {image:cover(),meter:{kind:'progress',source:'main',min:0,max:100}})},
+    {name:'two-independent-clocks',base:'idle',verifyClockTick:true,
+      card:card('sample-interval','Interval run',clock('Rest','deadline',80),clock('Elapsed','elapsed',1458))},
+    {name:'paused-with-running-wall-clock',base:'idle',verifyClockTick:true,
+      card:card('sample-paused-session','Paused workout',
+        clock('Active','elapsed',1458,{running:false,anchorAt:0}),clock('Wall','elapsed',1800),{state:'paused'})},
+    {name:'cached-public-value-age',base:'idle',card:card('sample-cached-charge','Charger',
+      {type:'value',label:'Charge',value:72,unit:'%',retain:true},null,
+      {observedAt:now-300,unconfirmed:true})},
+    {name:'support-expiry-before',base:'idle',card:expires,
+      expectInk:[{x:10,y:208,width:180,height:5}]},
+    {name:'support-expiry-after',base:'idle',captureDelaySeconds:4,card:expires,
+      expectBlank:[{x:10,y:208,width:180,height:5}]},
+    {name:'completed-result',base:'idle',card:card('sample-finished-timer','10 min timer',
+      {type:'text',label:'State',text:'Finished',retain:true},
+      clock('Elapsed','elapsed',600,{running:false,anchorAt:0}),
+      {kind:'timer',state:'completed',unconfirmed:true,showTerminal:true,validUntil:now+60})},
+    {name:'clock-primary-clock-secondary',base:'idle',verifyClockTick:true,cards:[
+      card('sample-walk-primary','Outdoor walk',clock('Elapsed','elapsed',1830)),
+      card('sample-tea-secondary','Tea',clock('Left','deadline',240))]},
+    {name:'text-primary-running-secondary',base:'idle',verifyClockTick:true,cards:[
+      card('sample-build-primary','Firmware build',{type:'text',label:'Stage',text:'Verifying'}),
+      card('sample-rest-secondary','Pasta',clock('Left','deadline',80),null,{kind:'timer',unconfirmed:true})]},
+    {name:'unicode-value-body-fallback',base:'idle',card:card('sample-value-unicode','Měření glukózy',
+      {type:'value',label:'Glukóza',value:6.2,unit:'mmol/L'},null,{private:true})},
+    {name:'value-eta-artwork-meter-dark',base:'idle',theme:'dark',card:card('sample-printer-dark','Boat print',
+      {type:'value',label:'Complete',value:72,unit:'%'},clock('ETA','deadline',2220,{estimated:true}),
+      {image:cover(),meter:{kind:'progress',source:'main',min:0,max:100}})}
   ];
   let sequence=options.sequence===undefined?100:options.sequence;
-  return {coreVersion:plan.coreVersion,activitiesVersion:plan.activitiesVersion,session,now,
+  return {coreVersion:plan.coreVersion,activitiesVersion:plan.activitiesVersion,
+    activityWireVersion:activity.VERSION,session,now,
     presets:specifications.map(spec=>{
       const base=plan.presets.find(p=>p.name===`${spec.base}-24-${spec.theme||'light'}`);
-      const cards=spec.cards||[spec.card];
+      const cards=(spec.cards||[spec.card]).map(source=>{
+        const result=source.main&&typeof source.main==='object'?activity.normalize(source):activity.fromLegacy(source);
+        if(!result)throw Error('Invalid native activity fixture: '+spec.name);
+        return result;
+      });
       return {...base,name:spec.name,activity:cards[0],activities:cards,
+        captureDelaySeconds:spec.captureDelaySeconds,verifyClockTick:spec.verifyClockTick===true,
+        expectInk:spec.expectInk||[],expectBlank:spec.expectBlank||[],
         // Appearance settings are persistent on the watch. Reset the optional
         // large setting for every sample so captures are order-independent.
         integers:{...base.integers,LARGE_TEXT:spec.largeText?1:0},

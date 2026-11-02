@@ -88,5 +88,24 @@ int main(void) {
   activity_layout_build_at("A longer activity with a short notification above it",
       "Two metadata lines that remain legible",false,false,0,NULL,130,measure,clock_measure,NULL,&layout);
   text_check(&layout);assert(layout.content.title_top>=130&&!layout.summary);
+  activity_layout_pair_at("08:42","Rest · Run","Elapsed 24:18",false,true,1,1,
+      "Left 4:30 · Pasta",1,false,92,measure,clock_measure,NULL,&layout);
+  assert(layout.clock&&layout.support&&layout.content.title_point==48);
+  assert(layout.content.title_top>=92&&layout.content.title_bottom+6<=layout.content.metadata_top);
+  assert(layout.support_baseline-measure(NULL,"Elapsed 24:18",14).ascent>=
+      layout.content.artist_baseline[0]+measure(NULL,"Rest · Run",20).descent+4);
+  assert(layout.summary&&layout.summary_width==162);
+  activity_layout_pair_at("72%","Charge","ETA 37:00",true,true,1,0,
+      "Left 4:30 · Pasta",0,true,92,measure,clock_measure,NULL,&layout);
+  assert(layout.support&&layout.meter&&!layout.summary);
+  assert(layout.support_left==60&&layout.meter_left==60&&layout.meter_width==130);
+  assert(layout.content.title_top>=92&&layout.content.title_bottom<layout.content.metadata_top);
+  activity_layout_pair_at("24:00:00","Pasta","Elapsed 0:00",false,true,2,1,
+      NULL,0,false,130,measure,clock_measure,NULL,&layout);
+  assert(layout.support&&!layout.summary&&layout.content.title_top>=130);
+  activity_layout_pair_at("A long title that keeps its body type size","A caption",
+      "Position 1:42",false,false,0,0,NULL,0,false,92,measure,clock_measure,NULL,&layout);
+  assert(!layout.clock&&layout.content.title_point==24&&layout.content.title_top>=92);
+  assert(layout.support);
   return 0;
 }

@@ -1,0 +1,544 @@
+{
+  "version": "0.9.0",
+  "session": 14,
+  "source": {
+    "capturedFromCandidatePbwSha256": "b9aa02679648b61198019384514d8ecb724249fcc45731253c4acdfd4a9c9910",
+    "candidateSourcePbwSha256": "c9ac66a6af5c8ea9fc0340b4233ac4c3fc383248385af86ff06af859cbf1d638",
+    "nativePayloadSha256": {
+      "emery/pebble-app.bin": "c29f6e0343b6fc0012c7d3c56efc575309dd5bb4c5b65d74723558b10989c8ca",
+      "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+      "emery/manifest.json": "e7ab466e051825c070fb71a0ae4321d236203f936471bee81dda046b2c9830c0"
+    },
+    "timelineSample": "Actual native unobstructed geometry; reserved OS panel, no event payload."
+  },
+  "phone_javascript_executed": false,
+  "candidate_install_unchanged": true,
+  "fixture_encoder": {
+    "core": "0.5.0",
+    "activities": "0.2.0",
+    "core_wire_version": 4,
+    "activity_wire_version": 2
+  },
+  "captures": [
+    {
+      "name": "timer-running",
+      "file": "timer-running.png",
+      "sha256": "7f920de0be3cccfe7d676db92b1a1b3a649380c33212ffb1e42326b32bfac83a",
+      "rgb_sha256": "975c2310aefc4d88938f34dbfe58b47911297e0aa5a0e8d39ec7cc6f5e512451",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-paused",
+      "file": "timer-paused.png",
+      "sha256": "a134440815352f938bbde104e448af920cd49aeecc89c8437cb9a7f2b710bd9e",
+      "rgb_sha256": "28a166a2a2cc592dd4aee42fe36a4913a40d3dc87fbfaec4406ee75ddace66c0",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "glucose-numeric",
+      "file": "glucose-numeric.png",
+      "sha256": "ab224c970a6c764a519da62d221de7a74d35d98c2f26bc5487dd9c238992a52b",
+      "rgb_sha256": "92423208ac9085b2685113c64316ec16c0f22794afe3702de9f416f7b4c1bea8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "elapsed",
+      "file": "elapsed.png",
+      "sha256": "0b6010eb5d37d91dbeb450204ab3de4724ffd60cd43a179d60384898becd60ea",
+      "rgb_sha256": "245b9d54af0b9267067d5f0ef7dafcb641c0832b834dee750afae11367e94c56",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-heading-banner",
+      "file": "timer-heading-banner.png",
+      "sha256": "0588f5f390bed561de3cdc44b333e91494f128c1af5ed3573b3557373e4cea3b",
+      "rgb_sha256": "34bf9baf24bdff83e6be23c89745ef69a1260ecf09d65f9b317207a676046013",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-timeline",
+      "file": "timer-timeline.png",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
+      "rgb_sha256": "46fd2964512ee7d61359341aa3f8a4335f18a941fd949e9ef79a1ed7bd8747f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-long",
+      "file": "timer-long.png",
+      "sha256": "a7f4727b7153e4bb37ef7a3dcc1bdf2a0789420c6a23a1d1ada7ff836847174d",
+      "rgb_sha256": "d20501d24da0e1fc82b0bd404e5cec3e557068434374b445aa1a25cfffa01673",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-24-hours",
+      "file": "timer-24-hours.png",
+      "sha256": "323721f4e300f5c29c9add0287c576e2789239469440401fe945cc9ea345f33a",
+      "rgb_sha256": "7d3fa7d1ab7e9d140d80311ca01ea6ddb7ad8fc72d9b81aa8576976238adba02",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-secondary",
+      "file": "timer-secondary.png",
+      "sha256": "55f34b13fd73b9508bc28209c440df82dec84cf11ac47c17a4569a01fb682b6d",
+      "rgb_sha256": "826138ea2069b3fa36c63139cd04a9b23d3802c5cec57737f512b10f4fe99c89",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-paused-music",
+      "file": "timer-paused-music.png",
+      "sha256": "2ef25b68d7218b8655c81203deab9575028ff0979ffbff0bcba9dfa853bd1e21",
+      "rgb_sha256": "525fa5513286784fa9a539070a08cc3c75d030f596411992e2411a7d93e07599",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-large-text",
+      "file": "timer-large-text.png",
+      "sha256": "7f920de0be3cccfe7d676db92b1a1b3a649380c33212ffb1e42326b32bfac83a",
+      "rgb_sha256": "975c2310aefc4d88938f34dbfe58b47911297e0aa5a0e8d39ec7cc6f5e512451",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-long-heading-banner",
+      "file": "timer-long-heading-banner.png",
+      "sha256": "7154a6b83b1ea36eceeba62ee012f4c0acd23cbc88cc976ceae58bbcbef877f7",
+      "rgb_sha256": "d6a98b79894f58fa0f6969237bed00aaf24794aa80f25619b62b634f3813ca22",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "clock-with-image",
+      "file": "clock-with-image.png",
+      "sha256": "a0b12458e4fa76900b028ca8bfe0fcf1d06260bd5aef24382c0965d89dec8a83",
+      "rgb_sha256": "8e6524acbfe9589024f04c5c5d26dca01708a2ce134c91c1049cd2919ede78b4",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "clock-long-footer",
+      "file": "clock-long-footer.png",
+      "sha256": "6def50e30612e66206add8ed69708790fd181abb70b5d1b52158eb4e5c23c975",
+      "rgb_sha256": "6dee826adb8dffbd545b4c8ff10da21b3e768c02645d381bb2771772a122fad3",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-dark",
+      "file": "timer-dark.png",
+      "sha256": "ba915419b2348de74087ac020196cb295be427cdf243f1ce50a5f2f7d66bec7a",
+      "rgb_sha256": "d161edbb8adc3d9332d31bba68134b1017fe86a6de047296d9fc41a01bb457d8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-due",
+      "file": "timer-due.png",
+      "sha256": "f52e23fb1548512cebc5767c9cd2881667bb7329c2b0b297b064ed260dffcb55",
+      "rgb_sha256": "da3c5c620bd5f5ada1a08eb1c21cb76b01800c559e478d2c52957a57fb3bf0a3",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-long-timeline",
+      "file": "timer-long-timeline.png",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
+      "rgb_sha256": "46fd2964512ee7d61359341aa3f8a4335f18a941fd949e9ef79a1ed7bd8747f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "value-eta-artwork-meter",
+      "file": "value-eta-artwork-meter.png",
+      "sha256": "937d51d21c87d1bc11b352cbbb8eb777d2887762e21a8db52444808454962ace",
+      "rgb_sha256": "8f8bd9f1a1a21ed3a575648ef10ead336a1d309eb0a49d95b159f8a11071f2e5",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "two-independent-clocks",
+      "file": "two-independent-clocks.png",
+      "sha256": "08c044e85e0e79eee18d1ca0dfde001ec73a67ec7587219289b5c07375696c43",
+      "rgb_sha256": "a227e022c27314d35c1b46b6df62792918c458950fc628b4c906709061858550",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "two-independent-clocks-tick.png",
+        "sha256": "6ff4bd5b8f673f47532545f4cd13d442e1b29a24d862be7e30b44d36eccbb030",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "paused-with-running-wall-clock",
+      "file": "paused-with-running-wall-clock.png",
+      "sha256": "56c49389f54c5e4249539ade3d6a6c2eec452655ff724e61008879ee259a8837",
+      "rgb_sha256": "dae191588982bd4f491ee941fc1da1bc701f06f89b4c3f027fbc8d9c00e82826",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "paused-with-running-wall-clock-tick.png",
+        "sha256": "0b00a1255ad79f89786fd2cbfd3734056da3732faf0569bc2c591eca45cbae5a",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "cached-public-value-age",
+      "file": "cached-public-value-age.png",
+      "sha256": "7b2ea2599a3571bcc554242168335e57a161c5aa0069e1661479be8d921340f1",
+      "rgb_sha256": "bea881cf1c7057e66bf998413c7ad966f1a8e8a860c581019756a63dd13aebe9",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "support-expiry-before",
+      "file": "support-expiry-before.png",
+      "sha256": "abcd54daaff8cd30c8f6c85eaaf1b616d2d2b0bd322405db41f50218e63a41c1",
+      "rgb_sha256": "5240f2c1859ad54cad1ee422ff7e21ae3052ae0a4d569825e6a8449342332989",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [
+        {
+          "region": {
+            "x": 10,
+            "y": 208,
+            "width": 180,
+            "height": 5
+          },
+          "has_ink": true
+        }
+      ]
+    },
+    {
+      "name": "support-expiry-after",
+      "file": "support-expiry-after.png",
+      "sha256": "f139a8ca9832ed92400ea39c49b3cb419141576758f06c7e1e5a3893c6719d03",
+      "rgb_sha256": "af4a92319c4e1e3c74fb4d7f8e463df5817b73566ca22af8bd31c6a0abdab3c8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 4,
+      "two_configured_readings": true,
+      "region_checks": [
+        {
+          "region": {
+            "x": 10,
+            "y": 208,
+            "width": 180,
+            "height": 5
+          },
+          "has_ink": false
+        }
+      ]
+    },
+    {
+      "name": "completed-result",
+      "file": "completed-result.png",
+      "sha256": "8af39dfa3020b31c214d11bce11a350e8957ad5636114a8a0e4c5fd334bb0004",
+      "rgb_sha256": "b977f8237786fc0a092ec0d8ddbc1351d1d010143d231763b5c845495ae0e80c",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "clock-primary-clock-secondary",
+      "file": "clock-primary-clock-secondary.png",
+      "sha256": "ab843dca3931acac01ba0320e92f666070882223b7cef5f08a987a4245b8f262",
+      "rgb_sha256": "333fff979dfef86e82c16417da1e2e85625e9840be09a0455169ea8e415f6655",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "clock-primary-clock-secondary-tick.png",
+        "sha256": "f4fec3ca1f8539a712c093370a3a9033d9fd9d9ee792801ea461d846df03a705",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "text-primary-running-secondary",
+      "file": "text-primary-running-secondary.png",
+      "sha256": "27d9088552ad9fd1bcb5166b916dfba4efad160c2c9bd5f6933407dd5c6096f7",
+      "rgb_sha256": "48b6146f8f7660024234c88874e469426eec5a784df1b7a191fe8dfc6207af7d",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "text-primary-running-secondary-tick.png",
+        "sha256": "1cf22bdde94aee342ac26efda97c761d99b0198665845dceef94f8211bb81a76",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "unicode-value-body-fallback",
+      "file": "unicode-value-body-fallback.png",
+      "sha256": "1e03fb8adf85cb6b6218c8cc133b47f725c85ba8a4fec8f01126daa3c74831bd",
+      "rgb_sha256": "2569f8e2f39d13c3ceebdfe84e44a4cc98daaf0b03c1b6299b97fb6a20879c89",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "value-eta-artwork-meter-dark",
+      "file": "value-eta-artwork-meter-dark.png",
+      "sha256": "2c5c2bd8aa77bc77cc94700d0b6ffeb1c763609e58974d037bff740158c8a105",
+      "rgb_sha256": "69d2aac0c0ef590cd298c3cf7b579d2ac96c2c21b8ecfc9dc44635628e27c838",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    }
+  ],
+  "scope": "28 actual ACT2 activity compositions with two configured sample readings, timed expiry and local-clock proofs. All source data is synthetic; elapsed workout is not native Workout integration.",
+  "visual_review": {
+    "reviewed": true,
+    "reviewer": "Codex",
+    "date": "2026-11-02",
+    "scope": "All 28 activity frames and four no-resend tick frames inspected directly. Checked long/24-hour clocks, running/paused behavior, independent items, terminal result, unicode body fallback, artwork, light/dark meters, support expiry, two readings, notifications and Timeline reservation.",
+    "native_pixels_modified": false
+  },
+  "final_release_pbw": {
+    "file": "dist/Dynamic-0.9.0.pbw",
+    "sha256": "1e097d404819fe4de5455955da1f6e9bc22cf5458389552223987a9142da79f5",
+    "native_renderer_bytes_unchanged_since_capture": true,
+    "change_since_capture": "Rebuilt phone JavaScript to embed the new native settings previews. C binary and resources remain byte-identical; only generatedAt differs in the native manifest.",
+    "native_manifest_metadata_changes": {
+      "generatedAt": {
+        "capture": 1793649072,
+        "final": 1793649776
+      }
+    }
+  }
+}

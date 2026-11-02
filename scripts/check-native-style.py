@@ -44,9 +44,17 @@ CORE_MODULES = {
     "readings.js", "message-queue.js", "complications.js", "complication-data.js",
 }
 ACTIVITY_MODULES = {
-    "index.js", "wire.js", "consumer.js", "publisher.js",
+    "index.js", "wire.js", "view.js", "consumer.js", "publisher.js",
     "adapters/legacy/context.js", "adapters/legacy/complication-data.js",
 }
+ACTIVITY_RELEASE = {
+    "version": "0.2.0",
+    "sourceCommit": "af6c48f727c33cd16ded003347a7a4639fd99901",
+    "archiveSha256": "2d2b3056bdb7c39d8b3d533928a98bcdc74a8172585b88cb2a19df00430e10ae",
+}
+PROCESS_INFO_BYTES = 130
+PROCESS_INFO_SIZE_LIMIT = 0xffff
+EMERY_BINARY_SIZE_LIMIT = 0x20000
 SDK_PBW_FILES = {
     "appinfo.json", "pebble-js-app.js", "pebble-js-app.js.map",
     "emery/pebble-app.bin", "emery/app_resources.pbpack", "emery/manifest.json",
@@ -58,6 +66,40 @@ LEGACY_ENDPOINTS = (
 RESOURCE_TABLE_BYTES = 256 * 16
 BODY_SIZES = (11, 14, 16, 20, 24, 26, 28, 32)
 CLOCK_CHARACTERS = "0123456789:.-+,/%°CF"
+# These are the reviewed three-codepoint prefixes from the original 17
+# language arrays. Norwegian shares Danish storage without losing a locale.
+REVIEWED_WEEKDAYS = {
+    "en": "SUN MON TUE WED THU FRI SAT",
+    "cs": "NED PON ÚTE STŘ ČTV PÁT SOB",
+    "sk": "NED PON UTO STR ŠTV PIA SOB",
+    "de": "SON MON DIE MIT DON FRE SAM",
+    "fr": "DIM LUN MAR MER JEU VEN SAM",
+    "es": "DOM LUN MAR MIÉ JUE VIE SÁB",
+    "it": "DOM LUN MAR MER GIO VEN SAB",
+    "pt": "DOM SEG TER QUA QUI SEX SÁB",
+    "nl": "ZON MAA DIN WOE DON VRI ZAT",
+    "pl": "NIE PON WTO ŚRO CZW PIĄ SOB",
+    "da": "SØN MAN TIR ONS TOR FRE LØR",
+    "sv": "SÖN MÅN TIS ONS TOR FRE LÖR",
+    "fi": "SUN MAA TII KES TOR PER LAU",
+    "hu": "VAS HÉT KED SZE CSÜ PÉN SZO",
+    "ro": "DUM LUN MAR MIE JOI VIN SÂM",
+    "tr": "PAZ PAZ SAL ÇAR PER CUM CUM",
+}
+REVIEWED_WEEKDAY_LOOKUP = """
+static const char *prv_get_localized_day(const char *locale,unsigned day) {
+  unsigned row=0;
+  if(day>6)day=0;
+  if(locale&&locale[0]&&locale[1]&&
+      (!locale[2]||locale[2]=='_'||locale[2]=='-')) {
+    char a=locale[0],b=locale[1];
+    if(a=='n'&&(b=='o'||b=='b'||b=='n')){a='d';b='a';}
+    for(unsigned i=1;i<sizeof(s_weekdays)/sizeof(s_weekdays[0]);++i)
+      if(s_weekdays[i].language[0]==a&&s_weekdays[i].language[1]==b){row=i;break;}
+  }
+  return s_weekdays[row].days[day];
+}
+"""
 BODY_TEXT_CORPORA = {
     "cyrillicMusicAndNames": (
         "Колесом / Kolesom", "Молчат Дома", "Україна", "БЕЛАРУСЬ", "Жыве", "Четверг",
@@ -79,6 +121,82 @@ def sha256(data):
 def safe_name(name):
     path = PurePosixPath(name)
     return not path.is_absolute() and ".." not in path.parts and "\\" not in name
+
+
+def read_elf_sections(elf):
+    """Read the linked ARM ELF32 section extents without requiring SDK tools."""
+    require(len(elf) >= 52 and elf[:7] == b"\x7fELF\x01\x01\x01" and
+            struct.unpack_from("<H", elf, 18)[0] == 40,
+            "Expected a little-endian ARM ELF32 native build")
+    offset = struct.unpack_from("<I", elf, 32)[0]
+    entry_bytes, count, names_index = struct.unpack_from("<HHH", elf, 46)
+    require(entry_bytes == 40 and 0 < count and names_index < count and
+            offset + count * entry_bytes <= len(elf), "Invalid native ELF section directory")
+    entries = [struct.unpack_from("<10I", elf, offset + index * entry_bytes)
+               for index in range(count)]
+    names_entry = entries[names_index]
+    names = elf[names_entry[4]:names_entry[4] + names_entry[5]]
+    require(names_entry[1] == 3 and len(names) == names_entry[5],
+            "Invalid native ELF section names")
+    sections = {}
+    for entry in entries[1:]:
+        name_at, kind, flags, address, data_at, size = entry[:6]
+        require(name_at < len(names) and b"\x00" in names[name_at:],
+                "Invalid native ELF section name")
+        name = names[name_at:names.index(b"\x00", name_at)].decode("ascii")
+        require(name and name not in sections and
+                (kind == 8 or data_at + size <= len(elf)),
+                "Invalid, duplicate or truncated native ELF section: " + name)
+        sections[name] = {"type": kind, "flags": flags, "address": address,
+                          "size": size, "offset": data_at}
+    return sections
+
+
+def audit_native_sizes(binary, elf):
+    """Check uint16 loaded/static sizes separately from Emery's file limit.
+
+    SDK 4.33.1 stores 32-bit relocation entries after load_size; these bytes
+    count towards the 128 KiB file limit, not the loaded image or static extent.
+    ELF extents independently detect overflow instead of trusting uint16 fields.
+    """
+    require(len(binary) >= PROCESS_INFO_BYTES and binary.startswith(b"PBLAPP\x00\x00") and
+            binary[104:120] == uuid.UUID(APP_UUID).bytes,
+            "Native header UUID differs from appinfo")
+    sections = read_elf_sections(elf)
+    header = sections.get(".header", {})
+    require(header.get("address") == 0 and header.get("size") == PROCESS_INFO_BYTES,
+            "Native ELF process-info header differs")
+    allocated = [section for section in sections.values() if section["flags"] & 2]
+    loaded = [section for section in allocated if section["type"] != 8]
+    load_size = max(section["address"] + section["size"] for section in loaded)
+    virtual_size = max(section["address"] + section["size"] for section in allocated)
+    require(load_size <= PROCESS_INFO_SIZE_LIMIT,
+            "Native loaded image exceeds the SDK's 65,535-byte process-info limit")
+    require(virtual_size <= PROCESS_INFO_SIZE_LIMIT,
+            "Native virtual size exceeds the SDK's 65,535-byte process-info limit")
+    require(struct.unpack_from("<H", binary, 14)[0] == load_size and
+            struct.unpack_from("<H", binary, 128)[0] == virtual_size,
+            "Native process-info sizes differ from the linked ELF")
+    require(len(binary) <= EMERY_BINARY_SIZE_LIMIT,
+            "Complete native binary exceeds Emery's 128 KiB SDK limit")
+    relocation_count = struct.unpack_from("<I", binary, 100)[0]
+    require(len(binary) == load_size + relocation_count * 4,
+            "Native relocation table length differs from process-info")
+    for section in loaded:
+        start, size = section["address"], section["size"]
+        if start >= PROCESS_INFO_BYTES:
+            require(binary[start:start + size] ==
+                    elf[section["offset"]:section["offset"] + size],
+                    "Native loaded section differs from the linked ELF")
+    return {"fileBytes": len(binary), "loadedBytes": load_size,
+            "virtualBytes": virtual_size, "relocationEntries": relocation_count,
+            "relocationBytes": relocation_count * 4,
+            "processInfoSizeLimit": PROCESS_INFO_SIZE_LIMIT,
+            "completeBinaryLimit": EMERY_BINARY_SIZE_LIMIT,
+            "loadedHeadroomBytes": PROCESS_INFO_SIZE_LIMIT - load_size,
+            "virtualHeadroomBytes": PROCESS_INFO_SIZE_LIMIT - virtual_size,
+            "linkedElfSectionsMatch": True,
+            "scope": "Loaded image and static extent; this does not measure runtime heap availability."}
 
 
 def read_resource_pack(packed, expected_count):
@@ -258,7 +376,53 @@ def audit_sdk_additions(root, source_map):
             "licenseSha256": record["licenseSha256"]}
 
 
-def audit_body_fonts(root, media, resources, sources):
+def audit_localized_weekdays(sources, binary):
+    """Check the compact table, aliases and native bytes before glyph coverage.
+
+    This is a deliberately finite source audit, not a general C interpreter.
+    Lookup changes require review so a missing alias or fallback cannot pass
+    merely because its letters happen to be present in a font.
+    """
+    declarations = re.findall(
+        r"static\s+const\s+struct\s*\{\s*char\s+language\[3\];\s*"
+        r"char\s+days\[7\]\[5\];\s*\}\s*s_weekdays\[\]\s*=\s*\{(.*?)\};",
+        sources, re.S)
+    require(len(declarations) == 1, "Expected the reviewed compact weekday table")
+    row_pattern = r'\{\s*"([a-z]{2})"\s*,\s*\{([^{}]*)\}\s*\}'
+    rows = re.findall(row_pattern, declarations[0])
+    require(not re.sub(row_pattern, "", declarations[0]).strip(" \t\r\n,"),
+            "Unexpected compact weekday table contents")
+    languages = [language for language, _body in rows]
+    require(languages == list(REVIEWED_WEEKDAYS),
+            "Compact weekday languages differ from the reviewed 16 stored rows")
+    weekdays = {}
+    encoded = bytearray()
+    for language, body in rows:
+        words = re.findall(r'"([^"\\]*)"', body)
+        require(not re.sub(r'"[^"\\]*"', "", body).strip(" \t\r\n,"),
+                "Unsupported compact weekday string syntax")
+        require(len(words) == 7 and all(len(day) == 3 and
+                0 < len(day.encode("utf-8")) < 5 for day in words),
+                "Compact weekday width/count differs from its UTF-8 storage")
+        require(words == REVIEWED_WEEKDAYS[language].split(),
+                "Localized weekday text differs from reviewed abbreviations: " + language)
+        weekdays[language] = words
+        encoded.extend(language.encode("ascii") + b"\0")
+        for day in words:
+            encoded.extend(day.encode("utf-8").ljust(5, b"\0"))
+    lookup = re.findall(r"static const char \*prv_get_localized_day\(.*?^\}",
+                        sources, re.S | re.M)
+    compact = lambda value: re.sub(r"\s+", "", value)
+    require(len(lookup) == 1 and compact(lookup[0]) == compact(REVIEWED_WEEKDAY_LOOKUP),
+            "Review the changed weekday locale/alias/fallback lookup")
+    require(bytes(encoded) in binary, "Native binary lacks the reviewed compact weekday table")
+    weekdays["no"] = list(weekdays["da"])
+    return weekdays, {"storedWeekdayRows": len(rows), "nativeWeekdayTableBytes": len(encoded),
+                      "nativeWeekdayTableMatches": True, "localeLookupReviewed": True,
+                      "localeAliases": {"no": "da", "nb": "da", "nn": "da"}}
+
+
+def audit_body_fonts(root, media, resources, sources, binary):
     names = [item["name"] for item in media]
     sizes = BODY_SIZES
     require(names == ["FONT_BODY_" + str(size) for size in sizes],
@@ -270,11 +434,8 @@ def audit_body_fonts(root, media, resources, sources):
     require(len(definitions) == len(ids) and ids == {
         name: index + 1 for index, name in enumerate(names)},
         "Generated resource IDs are stale or contain unexpected entries")
-    arrays = re.findall(
-        r"static const char \*const s_(\w+)_days\[\]\s*=\s*\{(.*?)\};",
-        sources, re.S)
-    require(len(arrays) == 17, "Expected the reviewed 17 localized weekday arrays")
-    words = [day for _language, body in arrays for day in re.findall(r'"([^"\\]+)"', body)]
+    weekdays, weekday_identity = audit_localized_weekdays(sources, binary)
+    words = [day for days in weekdays.values() for day in days]
     require(len(words) == 17 * 7, "Unexpected localized weekday count")
     required = {ord(char) for char in "".join(words) +
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ·.°%:/+-…−"}
@@ -360,7 +521,8 @@ def audit_body_fonts(root, media, resources, sources):
                         "fallback": {"codepoint": font["wildcard"], **fallback}})
     require(len(source_files) == 1, "Expected one reviewed Roboto Condensed source font")
     return {"fontCount": len(records), "fonts": records,
-            "languages": len(arrays), "localizedWeekdays": len(words),
+            "languages": len(weekdays), "localizedWeekdays": len(words),
+            **weekday_identity,
             "requiredGlyphChecks": len(required) * len(records),
             "directGlyphInkChecks": sum(record["directGlyphInkChecks"] for record in records),
             "regressionCorpora": BODY_TEXT_CORPORA,
@@ -564,8 +726,13 @@ def read_dependency(root, specification, active_modules):
         require(sdk_files["js/" + name] == content,
                 "Active source and packaged JavaScript differ: " + label + "/" + name)
         sources[name] = content
+    native_sources = {name: sha256(content) for name, content in sorted(files.items())
+                      if name.startswith(("include/", "src/c/")) and
+                      name.endswith((".c", ".h"))}
     return {"version": pin["version"], "sourceCommit": pin["source_commit"],
-            "archiveSha256": pin["sha256"], "installedAndSdkStagingMatch": True}, sources
+            "archiveSha256": pin["sha256"], "sdkArchiveSha256": sha256(files["dist.zip"]),
+            "nativeSourceSha256": native_sources,
+            "installedAndSdkStagingMatch": True}, sources
 
 
 def audit_preview_identity(root, version, binary, resources):
@@ -585,7 +752,7 @@ def audit_preview_identity(root, version, binary, resources):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.8.0", "Review this auditor for a different release version")
+    require(package["version"] == "0.9.0", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and
@@ -607,6 +774,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
             "Generated C keys are stale or duplicated")
     core, core_sources = read_dependency(root, DEPENDENCIES[0], CORE_MODULES)
     activities, activity_sources = read_dependency(root, DEPENDENCIES[1], ACTIVITY_MODULES)
+    require(all(activities[key] == value for key, value in ACTIVITY_RELEASE.items()),
+            "Reviewed ACT2 dependency provenance differs")
     licenses = license_payloads(root)
     sdk_pbw = root / "build" / (package["name"] + ".pbw")
     with zipfile.ZipFile(pbw) as release, zipfile.ZipFile(sdk_pbw) as sdk:
@@ -658,9 +827,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         for name, content in (("pebble-app.bin", binary), ("app_resources.pbpack", resources)):
             require(content == (root / "build/emery" / name).read_bytes(),
                     "Selected PBW differs from the current native build: " + name)
-        require(binary.startswith(b"PBLAPP\x00\x00") and
-                binary[104:120] == uuid.UUID(APP_UUID).bytes,
-                "Native header UUID differs from appinfo")
+        native_sizes = audit_native_sizes(binary, (root / "build/emery/pebble-app.elf").read_bytes())
         resource_entries = read_resource_pack(resources, len(media))
         resource_count = len(resource_entries)
         source_map = json.loads(release.read("pebble-js-app.js.map"))
@@ -710,7 +877,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
             "Body font resource loading or lifetime cleanup is missing")
     require(not any(value in sources for value in ("FIRA_SANS", "FONT_KEY_LECO")),
             "The old Fira/LECO presentation is still referenced")
-    body_fonts = audit_body_fonts(root, media, resource_entries, sources)
+    body_fonts = audit_body_fonts(root, media, resource_entries, sources, binary)
     body_metrics = audit_body_metrics(root, resource_entries, binary, sources)
     clock_outlines = audit_clock_outlines(root, binary, sources)
     body_license = (root / "resources/fonts/OFL-RobotoCondensed.txt").read_text(encoding="utf-8")
@@ -732,7 +899,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
                              "pbwAppKeys": len(info["appKeys"]),
                              "pbwMessageKeys": len(info["messageKeys"])},
         "manifestVersion": info["manifestVersion"], "usesPermissions": info["usesPermissions"],
-        "nativePayloadMatchesSdk": True, "customResourceCount": resource_count,
+        "nativePayloadMatchesSdk": True, "nativeSizes": native_sizes,
+        "activityWireVersion": 2, "customResourceCount": resource_count,
         "licenseFileCount": len(licenses), "licenseSourceIdentityVerified": True,
         "nativePreviews": preview_identity,
         "bodyFonts": body_fonts, "bodyMetrics": body_metrics, "clockOutlines": clock_outlines,

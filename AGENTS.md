@@ -10,6 +10,15 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 - Clock activities use centered Fredoka numerals, a fixed value baseline and
   their caption directly below. Optional secondary content never displaces the
   main value or forces unreadable type. Music retains its own fixed footer.
+- ACT2 main and supporting items may each be text, a formatted value or an
+  independent clock. Any activity can occupy either activity role. Keep
+  supporting content, secondary activities, artwork and meters conditional on
+  space; never infer a meter range or truncate essential clock/value units.
+- Preserve per-item observation/expiry and source revision separately from the
+  view sequence. Retained public content needs visible uncertainty and original
+  observation age; unavailable private content clears immediately. Overall
+  activity pause must not freeze a separately running clock. Zero is not a
+  lifecycle transition or alarm acknowledgement.
 - Two shared Pebble readings retain their left/right positions. Timeline Peek
   uses the native OS panel rather than a second event renderer.
 - Notification banners and additional vibration default to Off. They do not
@@ -23,7 +32,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 
 - `src/c/`: Dynamic's renderer, SDK lifecycle and host presentation.
 - `src/pkjs/`: offline Clay settings, translations and phone host integration.
-- `vendor/CORE.json` and `vendor/ACTIVITIES.json`: exact separately released
+- `vendor/CORE.json` and `vendor/ACTIVITIES.json`: exact pinned
   library archive/commit/checksum.
   Change the upstream core repository first, then rebuild and pin its tarball.
 - `scripts/release_licenses.py`: exact notices carried in each standalone PBW.
@@ -33,6 +42,10 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   Halftone, Core and ČHMÚ; project configuration and release identity stay separate.
 - `docs/VALIDATION.md`, `docs/asset-provenance.json`, `docs/qa/`: release-specific
   evidence. Preserve older evidence as historical; do not relabel it as new.
+- Native activity decoding uses `pebble-activity-view.h` and `Pav*` only. Keep
+  legacy provider adaptation on the phone; do not link a second ACT1 decoder
+  into the limited native image. Reuse the bounded activity plan for drawing
+  and clock scheduling; do not copy complete cards per frame.
 
 ## Checks and release order
 
@@ -80,8 +93,11 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.0 and Activities 0.1.2 explicitly. Upstream
+- This repository pins Core 0.5.0 and Activities 0.2.0 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
+- Version 0.9.0 is a local candidate until its own final validation and
+  publication. Keep the published 0.8.0 download links and bytes available.
+  Prior user success on 0.8.0 is useful history, not a physical 0.9.0 check.
 
 `store/listing.json` is a local publication record, not a Pebble CLI schema.
 GitHub builds remain prereleases. The current official

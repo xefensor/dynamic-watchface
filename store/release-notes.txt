@@ -1,7 +1,11 @@
-0.8.0 grouped activity clocks prerelease
+0.9.0 two-item activity views — local candidate
 
-Timed activities use large centered Fredoka numerals with their caption directly below. Pause and last-reported marks stay with the caption, and secondary music or another activity appears only when it fits. Music retains its established fixed footer.
+Compatible activities can combine a main item and a supporting text, value or independent clock, plus optional 40×40 artwork and a meter derived from a valid value and range. Any activity can be primary or secondary; optional content appears only when it fits. Music and text retain their established fixed-size composition.
 
-Within each provider, the soonest running deadline is shown first. Compatible Timer 0.2.0 can share eight native timer slots; the watchface keeps its bounded two-card projection. Core 0.5.0 and Activities 0.1.2 are pinned independently.
+Pause, uncertainty and original observation age remain visible for retained public information. Each item has its own clock state and expiry. A running visible clock gets second updates; paused or hidden clocks do not keep the update timer running. Unavailable private content clears.
 
-The UUID, two readings, music typography and existing privacy choices are preserved. Last-reported countdowns do not certify a native alarm. This remains a sideloaded plugin preview; appstore submission is held.
+Within each provider, the soonest running deadline is shown first. The local Timer 0.3.0 candidate adds remaining and elapsed clocks for its eight native timer slots; Dynamic keeps a bounded two-activity projection. Existing activity providers remain compatible. Core 0.5.0 and Activities 0.2.0 are pinned independently.
+
+The UUID, two readings, music typography and existing privacy choices are preserved. Last-reported countdowns do not certify completion or a native alarm. No activity commands, Dashboard app or built-in Workout integration are included.
+
+Portable checks, the Emery SDK build and final package/native-style audit pass. Native evidence covers 20 settings presets, 28 activity compositions, four follow-up clock frames without a source resend, and supporting-item/meter expiry. Physical 0.9.0 and live phone/provider behavior remain unverified. This candidate has not been published to GitHub. Published 0.8.0 remains available, and Pebble appstore submission is held.

@@ -2,13 +2,16 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.8.0 gives timed activities a centered rounded countdown and uses Fredoka clock outlines and Roboto Condensed text to
-keep a consistent face as its layout changes. Dynamic is an independent
-watchface by Xef.
+Peek. The local 0.9.0 candidate lets an activity combine two related items,
+such as remaining and elapsed time, with optional artwork and a source-derived
+meter. Fredoka clock outlines and Roboto Condensed text keep a consistent face
+as its layout changes. Dynamic is an independent watchface by Xef.
 
 ## Download
 
-The current release is [**v0.8.0 — GitHub prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0).
+The last published release is [**v0.8.0 — GitHub prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0).
+The new [**0.9.0 candidate PBW**](dist/Dynamic-0.9.0.pbw) is prepared locally;
+it has not been published to GitHub or the Pebble appstore.
 
 | File | Use |
 | --- | --- |
@@ -19,14 +22,19 @@ The current release is [**v0.8.0 — GitHub prerelease**](https://github.com/xef
 [All releases](https://github.com/xefensor/dynamic-watchface/releases) ·
 [Changes](CHANGELOG.md) · [Release automation](docs/GITHUB-RELEASES.md)
 
-This is a sideloaded build for the Pebble plugin preview. The GitHub release
-is public; Pebble appstore submission remains held while its preview
-restriction applies. Physical vibration, actual OS Quiet Time transitions
-and live phone/provider delivery remain unverified; see [validation](docs/VALIDATION.md).
+These are sideloaded builds for the Pebble plugin preview. Pebble appstore
+submission remains held while its preview restriction applies. The user has
+reported that the earlier release works on their watch. The 0.9.0 candidate
+passes portable tests, the Emery SDK build and final package/native-style
+audit. Native evidence covers 20 settings presets, 28 activity compositions,
+four clock follow-up frames without resending data, and timed supporting-item
+and meter expiry. Physical 0.9.0 behavior, alarm vibration, actual OS Quiet Time
+transitions and live phone/provider delivery still need verification; see
+[validation](docs/VALIDATION.md).
 
 Dynamic uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
 0.5.0 for readings and [Pebble Activities](https://github.com/xefensor/pebble-activities)
-0.1.2 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
+0.2.0 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
 alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Before installing
@@ -39,23 +47,38 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Plugin activities
 
-Compatible `activity/session` v1 providers are discovered automatically when
-**Plugin activities** is enabled (the default). No plugin-specific layout is
-needed: a provider supplies main content, a footer and optional artwork or clock
-fields. Clock activities use a large centered numeric value, a caption directly
-below and an optional secondary line. Text and music retain their bottom-anchored
-metadata composition. Within each provider, the soonest running deadline takes
-priority over its other or paused deadlines; other providers retain their order.
-A second activity or music summary appears only when it fits at a readable size.
+Compatible providers are discovered automatically when **Plugin activities** is
+enabled (the default). Dynamic prefers `activity/card` schema 2 and adapts an
+existing `activity/session` schema 1 provider when needed. A provider describes
+one main item and an optional supporting item, each containing text, a formatted
+value or its own clock. It can also supply a caption, artwork up to 40×40 and a
+meter derived from an explicit source value and range. It does not choose a
+watchface-specific layout.
+
+Clock activities use a centered numeric value with a caption directly below.
+Values use the same rounded style when its glyphs cover the supplied text;
+other units and text use the body font. Text pairs retain the established
+24px main text and 20px supporting footer. Within each provider, the soonest
+running deadline takes priority over its other or paused deadlines; other
+providers retain their order. Any activity can occupy the primary or secondary
+role. Supporting content and another activity or music summary appear only
+when they fit at a readable size. Artwork belongs to the primary activity.
 Ordinary music remains the fallback when no generic activity is active.
 
-Install [Timer](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
-to try a native watchapp provider. Start the timer on the watch and let it show
+The last published [Timer 0.2.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
+can supply a native watchapp activity. The local Timer 0.3.0 candidate adds
+remaining and elapsed items for timers with a known configured duration.
+Start the timer on the watch and let it show
 **Shared with phone**, then return to Dynamic. The timer's own PKJS publishes a
 snapshot; its independently callable plugin supplies it to Dynamic afterward.
-The small clock mark means **last reported**: offline pause/cancel changes may
-not have reached the phone. The originating watchapp owns its native alarm;
-Dynamic reaching zero does not prove that an alarm rang or the timer completed.
+The small uncertainty mark and observation age identify **last reported**
+public content: offline pause/cancel changes may not have reached the phone.
+Each item keeps its original observation and expiry. Its clock can run or pause
+independently of the other item; a retained supporting item or meter cannot
+outlive the source data it represents. Private content clears when unavailable.
+The originating watchapp owns its native alarm; Dynamic reaching zero does not
+prove that an alarm rang or the timer completed. Dynamic provides no activity
+pause, cancel or other app commands.
 
 This path needs the phone app's plugin support. Existing apps must explicitly
 adopt the convention; installing the library cannot expose another app's private
@@ -250,7 +273,7 @@ Dynamic's vibration can add a second alert to the system's own.
 The two selected complication readings can remain cached for up to two hours
 from confirmed receipt, capped by an earlier source expiry. Reloading a cache
 does not make it fresh again. Receipt time is not the provider's observation
-time. Core 0.4 preserves precise public identity even when a reading expires,
+time. Core preserves precise public identity even when a reading expires,
 while stale/private value payloads are omitted. Clock and date continue
 without the phone.
 
@@ -261,7 +284,9 @@ depending on the source. Obsolete waiting source snapshots are replaced by the
 latest update; settings retain ordered delivery. Music is an information
 panel: use Pebble's Music app for play/pause and track controls. The current
 source does not supply playback position/duration, so there is no invented
-progress bar. Timer integration is not part of this version.
+music progress bar. A compatible activity can supply a meter only from a real
+numeric value and explicit range. Native Timer sharing uses the activity path
+described above.
 
 ## Languages
 
@@ -289,7 +314,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.6.1.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.9.0.pbw
 python3 scripts/package-source.py
 ```
 
@@ -301,7 +326,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.6.1.pbw
+pebble install --emulator emery dist/Dynamic-0.9.0.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -336,13 +361,15 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic now pins Core 0.4.1. Halftone continues to bundle 0.1.0 until an
-independently checked upgrade; installing Dynamic does not change Halftone.
+Dynamic 0.9.0 pins Core 0.5.0 and Activities 0.2.0. Halftone keeps its own
+dependency pin; installing Dynamic does not change Halftone.
 
-`vendor/pebble-watchface-core-0.4.1.tgz` is a committed, version-pinned Pebble
-package. `package-lock.json` records its integrity and `vendor/CORE.json`
-records upstream/version/checksum provenance. `npm ci` installs this archive;
-users install only Dynamic's PBW, not a separate core app.
+`vendor/pebble-watchface-core-0.5.0.tgz` and
+`vendor/pebble-activities-0.2.0.tgz` are committed, version-pinned Pebble packages.
+`package-lock.json` records their integrity; `vendor/CORE.json` and
+`vendor/ACTIVITIES.json` record upstream/version/checksum provenance. `npm ci`
+installs these archives; users install only Dynamic's PBW, not a separate
+library app.
 
 Core source handling, expiry, reconnect behavior and notification privacy are
 shared with Halftone. Layout, font assets, transitions, settings presentation,
@@ -358,8 +385,8 @@ that license. Commercial use requires separate permission. This is
 source-available software rather than an OSI-approved open-source license.
 
 Fredoka and Roboto Condensed use the SIL Open Font License 1.1. Their copyright
-notices and licenses accompany the source fonts. The 0.6.1 PBW includes those
-texts, Clay and bundled-helper notices, and Core/Dynamic attribution:
+notices and licenses accompany the source fonts. The standalone PBW includes those
+texts, Clay and bundled-helper notices, and library/Dynamic attribution:
 
 [Fredoka](resources/fonts/OFL-Fredoka.txt) and
 [Roboto Condensed](resources/fonts/OFL-RobotoCondensed.txt). See

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <pebble-watchface-core/pebble-watchface-core.h>
 #include <pebble-watchface-core/readings.h>
-#include <pebble-activities/pebble-activities.h>
+#include <pebble-activities/pebble-activity-view.h>
 #include "../src/c/context_presentation.h"
 #include "../src/c/context_session.h"
 
@@ -21,9 +21,10 @@ typedef struct {
   WfcReadings core;
   ComplicationSet legacy_context;
   DynamicContextSession session;
-  PaState activities;
+  PavState activities;
   RenderContext from,to;
-  char music_identity[PA_MAIN_BYTES+1];
+  char music_identity[PAV_TEXT_BYTES+1];
+  char activity_identity[PAV_PROVIDER_BYTES+PAV_ID_BYTES+2];
   uint16_t music_offset,music_next;
   bool music_visible;
   void *activity_timer;

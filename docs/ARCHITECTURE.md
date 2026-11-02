@@ -1,8 +1,9 @@
-# Dynamic and the shared core
+# Dynamic and the shared libraries
 
-Dynamic 0.6.1 pins Pebble Watchface Core 0.4.1. Halftone retains its own
-0.1.0 pin until independently upgraded. Each PBW embeds its library and keeps
-its UUID, settings and permission manifest. The core is not a background app.
+The local Dynamic 0.9.0 candidate pins Pebble Watchface Core 0.5.0 and Pebble
+Activities 0.2.0. Each PBW embeds its libraries and keeps its UUID, settings and
+permission manifest. Halftone retains its own independently adopted pin.
+Neither library is a background app.
 
 ## Boundary
 
@@ -10,13 +11,15 @@ its UUID, settings and permission manifest. The core is not a background app.
 | --- | --- |
 | Pebble subscriptions, source identity/observation metadata, receipt cache and transport queue | Shared core JavaScript |
 | Packet validation, native snapshots/cache, expiry and reconnect/session state | Shared core C |
+| Activity discovery, schema 1 adaptation, schema 2 normalization and ACT2 projection | Activities JavaScript |
+| ACT2 validation, item visibility, independent clock computation and source/view revision checks | Activities C |
 | Clock/date, semantic labels, layout, fonts, artwork and transitions | Dynamic |
 | Native AppMessage dispatcher, SDK services, timers and OS clock-format query | Dynamic host |
 | Settings form, translations, permissions, preview and delivery status | Dynamic host |
 | SDK graphics services, system/fallback glyphs and Timeline event panel | PebbleOS |
 
-The core imposes no coordinates, dot border or font family. Native callbacks
-forward events to its state object; Dynamic renders its snapshots. Phone
+The libraries impose no coordinates or font family. Native callbacks forward
+events to their state objects; Dynamic renders the resulting snapshots. Phone
 coordinators receive generated keys, storage, settings and clocks explicitly.
 Halftone's installed renderer/engine are unaffected by this release.
 
@@ -124,16 +127,95 @@ The phone caches the last 12/24 reply separately from saved preferences.
 Settings remain an offline snapshot; Follow Pebble uses the last reported
 style, or labels its illustrative format when none has been received.
 
-## Pinned dependency and v4 data contract
+## ACT2 activity views
 
-The committed dependency is file:vendor/pebble-watchface-core-0.4.1.tgz.
-package-lock.json and vendor/CORE.json record version/integrity/provenance.
-The exact source commit and archive SHA-256 are recorded in `vendor/CORE.json`
-and the build-specific validation record.
-Updating the core repository alone does not update installed PBWs. Each
+Dynamic enables `nativeFormat: 2` in the Activities phone coordinator. It
+prefers an `activity/card` schema 2 source for each provider and otherwise
+adapts that provider's `activity/session` schema 1 source. It does not subscribe
+to both representations of the same provider. Existing music/notification
+compatibility handling remains separate from the generic activity view.
+
+A source supplies one main item and an optional supporting item. Each can be
+text, a provider-formatted value or a clock, with its own nonempty label,
+observation, expiry, retention permission and estimated flag. A clock carries
+its own running state, base seconds and anchor, so two clocks can run or pause
+independently of each other and the activity's overall state. Future anchors
+show the base value as estimated; clocks never subtract negative elapsed time.
+Countdown zero is a due value, not proof of completion or an alarm.
+
+Optional presentation consists of a caption, one artwork image up to 40×40,
+and one progress or level meter. A meter is computed on the phone from the
+referenced value item and an explicit valid minimum/maximum. Native code
+receives the bounded fraction, not an invented range. The meter expires or
+clears with its referenced item. Source kind and raw numeric/unit metadata stay
+on the phone; the native view contains formatted text and clock arithmetic.
+
+The ACT2 frame is at most 2,672 bytes with two activity records. Each record
+has a shared 320-byte UTF-8 string pool, main/support text fields bounded to
+192 bytes each, labels to 64 bytes, a caption to 128 bytes, and at most 800
+packed 4bpp image bytes plus its 16-entry palette. These field limits share
+the pool; they are not simultaneously available capacities. Native `PavState`
+is 2,676 bytes on ARM. It validates length, CRC, reserved fields, canonical
+string references, UTF-8, imagery and time relationships before changing state.
+Dynamic links the ACT2 decoder only; legacy source adaptation occurs on the
+phone rather than adding an ACT1 native decoder.
+
+Provider/run identity and source revision describe the source lifecycle. A
+separate session-bound view sequence orders projection updates. A new view can
+change presentation bytes at the same source revision, but cannot rewrite that
+revision's source state, observation, validity or privacy. Older source
+revisions are rejected for resident runs; a terminal run cannot become active
+again under the same identity. The phone owns source ordering across projection
+windows. Polling, reconnecting and rerendering never refresh observation times.
+
+Main-item validity controls card visibility. Optional support may expire
+earlier without removing the main item. Unavailable public content can remain
+only with that item's explicit retention permission and original validity;
+unavailable private content clears. Retained public items show an uncertainty
+mark and their original observation age. Source-unconfirmed, source-estimated
+and due clocks also remain visibly marked. Pause and uncertainty space is
+reserved before optional text is fitted. An explicit bounded terminal result
+may be displayed only when the source allows it; Dynamic does not infer a
+result from a clock reaching zero.
+
+Any activity can take the primary or secondary role. Within a provider,
+soonest running deadlines precede other or paused deadlines; provider positions
+otherwise remain stable. The renderer chooses a composition from actual item
+types and available space, not from an activity-kind-specific layout ID.
+Numeric pairs use a maximum 48px main value with caption and support below;
+static text pairs retain 24px main text and the established 20px footer.
+Formatted values use Fredoka only when every glyph is supported; other units
+use the body font. Artwork belongs to the primary card. The supporting line,
+secondary activity or music summary and meter appear only when they fit;
+essential clock/value units are never shortened to force a summary into place.
+Notifications and native Timeline Peek retain their existing priority.
+
+One bounded activity plan borrows cards from state and is shared by drawing
+and scheduling. It neither duplicates an artwork buffer nor copies full cards
+per frame. Text continuation resets on provider/run identity as well as changed
+main text. One timer follows the next second boundary only when a visible
+clock actually runs; paused, due or hidden clocks do not keep it alive.
+Retained observation ages update with minute refreshes. Covered/unfocused
+states suspend this work and recompute the plan when visible again.
+
+Timer 0.3.0's native bridge adds configured duration to its public snapshots.
+Its schema 2 source can then derive remaining and elapsed clocks; older
+snapshots without that duration expose remaining only. These native snapshots
+remain explicitly unconfirmed even after reconnecting. The originating app
+owns pause/cancel truth and its native alarm. Dynamic has no activity command
+pipeline, Dashboard app, firmware extension or access to the built-in Workout
+app's live state.
+
+## Pinned dependencies and v4 reading contract
+
+The committed dependencies are `file:vendor/pebble-watchface-core-0.5.0.tgz`
+and `file:vendor/pebble-activities-0.2.0.tgz`. `package-lock.json`,
+`vendor/CORE.json` and `vendor/ACTIVITIES.json` record their integrity and
+provenance, including exact source commits and archive SHA-256 values.
+Updating either library repository alone does not update installed PBWs. Each
 consumer adopts and validates a versioned archive independently.
 
-Core 0.4 preserves provider-formatted text and units, semantic/source kind,
+Core preserves provider-formatted text and units, semantic/source kind,
 raw numeric value/range, short label and precise detail/forecast/observation
 metadata. V4 has five fixed records with a 56-byte header per record. Byte25
 carries detail, byte26 the forecast qualifier, byte27 remains reserved, and
@@ -218,13 +300,32 @@ One bounded NativeState allocation at startup holds core state, rendering
 snapshots and fixed raster scratch outside the SDK's limited load image.
 Initialization failure exits before subscribing services; teardown cancels
 callbacks and frees that block. Rendering adds no per-frame state buffers.
-SDK load usage and runtime allocation are reported separately.
+If AppMessage cannot open, transport-dependent requests and replies remain
+disabled while the local clock continues.
+
+For the fixed-timestamp 0.9.0 native candidate, `NativeState` is 22,472 bytes
+on ARM. The SDK reports a 65,120-byte virtual image, 415 bytes below its
+65,535-byte limit; loaded image bytes are 64,700. These are different from
+runtime heap and stack usage. New native changes need another size check;
+this is a tight code budget, not evidence of spare runtime memory. Rendering
+and scheduling use a single bounded plan per call and the codec allocates no
+heap memory or full temporary snapshot on the stack.
 
 Build/package/source checks establish artifact identity. Native stills and
 intermediate transitions check appearance and fitting; browser checks exercise
 actual Clay controls and saving. Emulator/plugin fixtures are separate from
 physical-phone delivery, hardware animation and battery-life verification.
 See [the build-specific validation record](VALIDATION.md).
+The final 0.9.0 package/native-style audit passes against the captured native
+binary and resources. Its source audit checks the compact weekday table's
+608 native bytes, all 17 locales and 119 abbreviations, Norwegian aliases,
+regional/fallback lookup and exact packaged font coverage. Runtime evidence
+covers 20 settings presets, 28 activity compositions and four clock follow-up
+frames without a source resend, including supporting-item and meter expiry.
+The same native session completes these checks without an observed app fault.
+This does not measure runtime heap, stack high-water or battery use. Physical
+0.9.0/live-provider behavior has not been verified. A successful user test of
+the earlier release is recorded separately from this candidate's evidence.
 
 ## Publication refinements in 0.6.1
 

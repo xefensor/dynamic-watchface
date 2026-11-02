@@ -568,6 +568,7 @@ test('app-only is a phone privacy preference and saved native choices survive op
 test('generic activity discovery starts with the host and follows native session requests',()=>{
   const f=fixture();
   assert.equal(f.activityOptions.getSettings().enabled,true);
+  assert.equal(f.activityOptions.nativeFormat,2);
   f.handlers.ready();assert.equal(f.activityRefreshes.length,1);
   f.handlers.appmessage({payload:{REQUEST_ACTIVITIES:81}});
   f.handlers.appmessage({payload:{[keys.REQUEST_ACTIVITIES]:82}});
@@ -616,10 +617,10 @@ test('ongoing generic activities take priority over music without reordering the
 test('soonest running deadline is projected even from the eighth timer slot',()=>{
   const select=fixture().activityOptions.select;
   const cards=Array.from({length:8},(_,index)=>({provider:'timer-provider',kind:'timer',
-    id:String(index),clock:'deadline',state:'active',deadline:2000-index*100}));
+    id:String(index),state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:1000,baseSeconds:1000-index*100}}));
   const original=cards.slice();
   assert.deepEqual(Array.from(select(cards),card=>card.id),['7','6']);
-  cards[7]={...cards[7],state:'paused',deadline:0};
+  cards[7]={...cards[7],state:'paused',main:{...cards[7].main,running:false,anchorAt:0}};
   assert.deepEqual(Array.from(select(cards),card=>card.id),['6','5']);
   assert.equal(original[0].id,'0');
 });
@@ -627,18 +628,34 @@ test('soonest running deadline is projected even from the eighth timer slot',()=
 test('clock ordering preserves other provider positions and stable equal deadlines',()=>{
   const select=fixture().activityOptions.select;
   const reading={provider:'health',kind:'glucose',id:'reading'};
-  const later={provider:'timer',kind:'timer',id:'later',state:'active',clock:'deadline',deadline:500};
-  const sooner={...later,id:'sooner',deadline:300};
+  const later={provider:'timer',kind:'timer',id:'later',state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:400}};
+  const sooner={...later,id:'sooner',main:{...later.main,baseSeconds:200}};
   assert.deepEqual(Array.from(select([reading,later,sooner]),card=>card.id),['reading','sooner']);
   assert.deepEqual(Array.from(select([later,{...later,id:'equal'}]),card=>card.id),['later','equal']);
 });
 
-test('numeric-only providers get readable main text without overwriting formatted values or source data',()=>{
+test('native view selection preserves canonical items, units, artwork and source data across roles',()=>{
   const select=fixture().activityOptions.select;
-  const glucose={kind:'glucose',main:'',value:6.2,unit:'mmol/L'};
-  const result=select([glucose])[0];
-  assert.equal(result.main,'6.2 mmol/L');assert.equal(glucose.main,'');
-  assert.equal(select([{kind:'level',main:'',value:0,unit:'%'}])[0].main,'0 %');
-  const formatted={kind:'glucose',main:'6,2 mmol/l ↑',value:6.2,unit:'mmol/L'};
-  assert.equal(select([formatted])[0],formatted);
+  const reading={provider:'sensor',id:'reading',kind:'glucose',revision:7,state:'active',caption:'Sensor',
+    main:{type:'value',label:'Glucose',text:'6.2 mmol/L'},support:null,image:{width:2,height:1,palette:[192],pixels:[0]}};
+  const timer={provider:'timer',id:'timer',kind:'timer',state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:400},support:{type:'clock',mode:'elapsed',running:true,anchorAt:100,baseSeconds:20}};
+  const before=JSON.stringify([reading,timer]);
+  assert.equal(select([reading,timer])[0],reading);assert.equal(select([timer,reading])[1],reading);
+  assert.equal(reading.main.text,'6.2 mmol/L');assert.deepEqual(reading.image,{width:2,height:1,palette:[192],pixels:[0]});
+  assert.equal(JSON.stringify([reading,timer]),before,'host role selection must not rewrite source or view content');
+});
+
+test('retained source results follow ongoing activities and precede fallback music',()=>{
+  const select=fixture().activityOptions.select;
+  const result={kind:'timer',state:'completed',showTerminal:true,id:'finished'},active={kind:'workout',state:'active',id:'run'},music={kind:'music',state:'active',id:'song'};
+  assert.deepEqual(Array.from(select([music,result,active]),card=>card.id),['run','finished']);
+  assert.deepEqual(Array.from(select([result,music]),card=>card.id),['finished','song']);
+});
+
+test('deadline ordering uses each datum state and its anchor plus base',()=>{
+  const select=fixture().activityOptions.select;
+  const first={provider:'provider',kind:'timer',id:'first',state:'paused',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:200}};
+  const equal={...first,id:'equal',state:'active',main:{...first.main,anchorAt:200,baseSeconds:100}};
+  const paused={...first,id:'paused-clock',state:'active',main:{...first.main,running:false,anchorAt:0,baseSeconds:1}};
+  assert.deepEqual(Array.from(select([paused,first,equal]),card=>card.id),['first','equal']);
 });

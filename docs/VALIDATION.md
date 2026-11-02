@@ -1,6 +1,71 @@
 # Dynamic validation
 
-## Testing prerelease
+## Local 0.9.0 activity views candidate — 2 November 2026
+
+The new candidate uses Activities 0.2.0 and its bounded ACT2 projection. An
+activity supplies a main item and optional supporting item, each with its own
+text, value or clock, observation time, expiry and retention policy. Artwork
+and a source-derived meter remain optional. Schema 1 providers are adapted on
+the phone. This version is prepared locally; the published 0.8.0 release and
+its earlier evidence remain available.
+
+- **85 JavaScript tests and 12 strict native suites pass.** Coverage includes
+  source/view revisions, independent item clocks, expiry, privacy, provider
+  ordering, retained results, units, readable fallback and two-card bounds.
+- **40 Python release/pinning regressions and the final bundle audit pass.**
+  The audit verifies the exact pinned Activities source/SDK bytes, all five
+  host, four core and seven activity JavaScript modules, native headers,
+  message keys, licenses, embedded preview identity and loaded/virtual image
+  limits. All 17 weekday locales, 119 abbreviations, Norwegian aliases and
+  packaged font glyphs are checked after the compact date-table change.
+- The **SDK 4.33.1 Emery build passes**. The native virtual image is 65,120
+  bytes, leaving 415 bytes below the SDK's 65,535-byte limit. Loaded bytes are
+  64,700; the complete binary is 67,004 bytes including relocation data, within
+  its separate 128 KiB file limit. Resources remain 246,928 bytes.
+- The SDK reports 65,954 bytes of heap before startup allocations.
+  `NativeState` is 22,472 bytes on ARM. Neither number measures runtime free
+  memory. Static compiler reports show a 1,464-byte scheduling frame and a
+  1,448-byte activity drawing frame; nested calls and SDK callers add stack
+  use. Runtime heap use and stack high-water have not been measured.
+- Actual Emery QEMU produced **20 settings presets and 28 activity scenarios**
+  using production ACT2 packets. All 20 settings frames are RGB-identical to
+  the previously reviewed 0.8.0 local-recovery frames. All 28 activity images
+  were inspected directly, including artwork, light/dark meters, Unicode
+  values, long/24-hour clocks, two activities, music and Timeline reservation.
+- **Four additional no-resend captures** verify that independent main,
+  supporting and secondary clocks advance locally. A paused main remains
+  fixed while its running wall clock advances. A timed four-second case
+  removes an expired supporting value and its meter while the main clock
+  continues. These fixtures exercise the actual native renderer without
+  running phone JavaScript.
+- Raw screenshot hashes and the final C/resource identity are verified.
+  Embedded settings previews were rebuilt into the final phone bundle. The
+  native manifest's `generatedAt` changes during that rebuild; the reports
+  retain the original capture metadata and record the final PBW separately.
+  Native binary and resource bytes are identical to those captured.
+- The five-image store kit was regenerated and its provenance check passes.
+  Native screenshots retain their original 200 × 228 pixels. The existing
+  appstore submission hold remains in place.
+
+Evidence: [native settings previews](qa/0.9.0/native/native-previews/previews.json),
+[activity renders and ticking checks](qa/0.9.0/native/activities/activities.json),
+[final bundle audit](qa/0.9.0/native/bundle-audit.json) and
+[artifact/image provenance](asset-provenance.json).
+
+Final PBW SHA-256:
+`1e097d404819fe4de5455955da1f6e9bc22cf5458389552223987a9142da79f5`.
+Native binary SHA-256:
+`c29f6e0343b6fc0012c7d3c56efc575309dd5bb4c5b65d74723558b10989c8ca`.
+
+The successful capture sequence does not establish physical-watch behavior,
+battery life, radio behavior or live plugin delivery. No new Clay browser
+session is claimed; unchanged settings-control evidence keeps its earlier
+scope. Timer 0.3.0 has separate native migration, alarm and deadline evidence
+in its own validation record. Actual Timer-to-Dynamic delivery, phone restart,
+Bluetooth loss and native alarm/vibration still need the phone/watch procedure.
+No Dashboard app, firmware integration or built-in Workout access is claimed.
+
+## Historical 0.8.0 testing prerelease
 
 Xef authorized publishing 0.8.0 as a GitHub development prerelease for actual
 phone/watch testing on 2 November 2026. The prepared PBW retains the exact native
@@ -8,9 +73,9 @@ and packaged-runtime bytes validated below. Real-phone/plugin delivery,
 Bluetooth behavior, physical vibration and power use remain unverified. Public
 appstore submission stays held; this authorization is for the GitHub prerelease.
 
-## Local CLI recovery — 2 November 2026
+## Historical local CLI recovery — 2 November 2026
 
-Dynamic 0.8.0 remains unpublished. GitHub `main` was checked at
+At this recovery stage, Dynamic 0.8.0 was unpublished. GitHub `main` was checked at
 `2ccea6101a84ede7d7ccf7dec6ddffe505767caa`; its newer recovery documentation
 was merged into `recovery/0.8.0-2026-11-02`. The supplied patch passed
 `git apply --check` against its documented 0.7.0 base, and all 224 snapshot
