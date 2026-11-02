@@ -8,7 +8,7 @@ Keep private notification text out of reports and screenshots.
 
 ## Downloads and verification
 
-Use the current [v0.7.0 GitHub prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.7.0)
+Use the current [v0.8.0 GitHub prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0)
 or browse [all releases](https://github.com/xefensor/dynamic-watchface/releases).
 Download the PBW and `SHA256SUMS.txt`; the source ZIP is for building or inspecting
 the checked snapshot. Verify the files you downloaded with

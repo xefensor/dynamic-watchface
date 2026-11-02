@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.0
+
+- Give generic countdown and elapsed activities large centered Fredoka numerals,
+  a directly grouped caption and optional secondary music or activity summary.
+- Keep pause and last-reported marks with the caption, without reserving empty
+  artwork space for imageless clocks. Long values use bounded readable sizes.
+- Select the soonest running deadline within a provider, then its paused timers,
+  while preserving other provider positions and the two-card native limit.
+- Pin separately released Pebble Activities 0.1.2 for compatible multi-slot Timer
+  providers. Preserve UUID, AppMessage key numbers, music and privacy controls.
+- Refresh native settings previews and capture notification/Timeline edge cases.
+
 ## 0.7.0
 
 - Discovers compatible activity providers through independent Pebble Activities

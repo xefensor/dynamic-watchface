@@ -1,0 +1,35 @@
+{
+  "version": "0.8.0",
+  "checked_date": "2026-11-02",
+  "recovered_renderer_commit": "71d8190536bdbbfff179b311e2f0e6990fbe25c2",
+  "result": "PASS",
+  "fresh_checks": [
+    "npm ci --ignore-scripts --offline",
+    "npm test: 82 JavaScript tests and 11 strict native suites",
+    "python3 -m unittest discover -s tests -p test_*.py: 29 tests",
+    "pebble clean; pebble build using SDK 4.33.1",
+    "python3 scripts/package-release.py",
+    "python3 scripts/check-native-style.py --pbw dist/Dynamic-0.8.0.pbw",
+    "python3 scripts/prepare-store.py --check"
+  ],
+  "pbw_sha256": "750072c30c1929973b521cda809a547c81e4008dfe52c9b7bc5fdc53f8061570",
+  "pbw_matches_recovered_release": true,
+  "native_payloads": {
+    "emery/pebble-app.bin": {
+      "bytes": 65212,
+      "sha256": "0c4cac925e43a84db655397ee5d65a290cc1ede7ee7edec1a6fa22beba59c61d"
+    },
+    "emery/app_resources.pbpack": {
+      "bytes": 246928,
+      "sha256": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+    }
+  },
+  "activities_version": "0.1.2",
+  "reused_visual_evidence": {
+    "native_settings_previews": 20,
+    "generic_activity_captures": 17,
+    "reason": "Fresh build preserves exact native renderer and resource bytes from the original captured candidate; all PNG hashes verified. No code changes made during recovery.",
+    "independent_review": "Grouped countdown, caption, banner/long countdown, image footer and Timeline Peek were re-inspected; no material clipping or layout issue found."
+  },
+  "scope": "Fresh portable, SDK/package and saved-render identity checks. No new physical-watch or live-mobile-app verification."
+}

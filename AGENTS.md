@@ -7,6 +7,9 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 
 - One typography system: 24px music titles, 20px artists, a 40px artwork tile
   and a footer bottom at y216. Titles continue once and never loop or shrink.
+- Clock activities use centered Fredoka numerals, a fixed value baseline and
+  their caption directly below. Optional secondary content never displaces the
+  main value or forces unreadable type. Music retains its own fixed footer.
 - Two shared Pebble readings retain their left/right positions. Timeline Peek
   uses the native OS panel rather than a second event renderer.
 - Notification banners and additional vibration default to Off. They do not
@@ -77,7 +80,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.0 and Activities 0.1.0 explicitly. Upstream
+- This repository pins Core 0.5.0 and Activities 0.1.2 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 
 `store/listing.json` is a local publication record, not a Pebble CLI schema.

@@ -613,6 +613,26 @@ test('ongoing generic activities take priority over music without reordering the
   assert.deepEqual(Array.from(select([glucose,timer,music])),[glucose,timer]);
 });
 
+test('soonest running deadline is projected even from the eighth timer slot',()=>{
+  const select=fixture().activityOptions.select;
+  const cards=Array.from({length:8},(_,index)=>({provider:'timer-provider',kind:'timer',
+    id:String(index),clock:'deadline',state:'active',deadline:2000-index*100}));
+  const original=cards.slice();
+  assert.deepEqual(Array.from(select(cards),card=>card.id),['7','6']);
+  cards[7]={...cards[7],state:'paused',deadline:0};
+  assert.deepEqual(Array.from(select(cards),card=>card.id),['6','5']);
+  assert.equal(original[0].id,'0');
+});
+
+test('clock ordering preserves other provider positions and stable equal deadlines',()=>{
+  const select=fixture().activityOptions.select;
+  const reading={provider:'health',kind:'glucose',id:'reading'};
+  const later={provider:'timer',kind:'timer',id:'later',state:'active',clock:'deadline',deadline:500};
+  const sooner={...later,id:'sooner',deadline:300};
+  assert.deepEqual(Array.from(select([reading,later,sooner]),card=>card.id),['reading','sooner']);
+  assert.deepEqual(Array.from(select([later,{...later,id:'equal'}]),card=>card.id),['later','equal']);
+});
+
 test('numeric-only providers get readable main text without overwriting formatted values or source data',()=>{
   const select=fixture().activityOptions.select;
   const glucose={kind:'glucose',main:'',value:6.2,unit:'mmol/L'};

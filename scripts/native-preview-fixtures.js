@@ -52,9 +52,10 @@ function fixtures(options) {
 function activityPresets(options) {
   const plan=fixtures(options),now=options.now,session=options.session;
   const provider='46f0a5c9-48ce-4ecb-87b7-c1510088a3d2';
-  const timer=(revision,state='active')=>({provider,id:'sample-pasta',kind:'timer',revision,
-    state,clock:'deadline',observedAt:now,validUntil:now+3600,private:false,main:'',footer:'Pasta',
-    ...(state==='paused'?{duration:522}:{deadline:now+522})});
+  const timer=(revision,state='active',seconds=522,extra={})=>({provider,id:'sample-pasta',kind:'timer',revision,
+    state,clock:'deadline',observedAt:now,validUntil:now+Math.max(3600,seconds+60),private:false,
+    unconfirmed:true,main:'',footer:'10 min timer',
+    ...(state==='paused'?{duration:seconds}:{deadline:now+seconds}),...extra});
   const specifications=[
     {name:'timer-running',base:'music',card:timer(1)},
     {name:'timer-paused',base:'idle',card:timer(2,'paused')},
@@ -65,14 +66,32 @@ function activityPresets(options) {
       state:'active',clock:'elapsed',observedAt:now,validUntil:now+3600,private:false,
       duration:1830,clockAt:now,main:'',footer:'Outdoor walk'}},
     {name:'timer-heading-banner',base:'notification-summary',card:timer(3)},
-    {name:'timer-timeline',base:'timeline',card:timer(4)}
+    {name:'timer-timeline',base:'timeline',card:timer(4)},
+    {name:'timer-long',base:'music',card:timer(5,'active',4496,{footer:'2 h timer'})},
+    {name:'timer-24-hours',base:'idle',card:timer(6,'active',86400,{footer:'24 h timer'})},
+    {name:'timer-secondary',base:'idle',cards:[timer(7),
+      timer(1,'active',1040,{id:'sample-second-timer',footer:'20 min timer'})]},
+    {name:'timer-paused-music',base:'music',card:timer(8,'paused')},
+    {name:'timer-large-text',base:'music',largeText:true,card:timer(9)},
+    {name:'timer-long-heading-banner',base:'notification-summary',card:timer(10,'active',4496,{footer:'2 h timer'})},
+    {name:'clock-with-image',base:'idle',card:timer(11,'active',522,{image:cover()})},
+    {name:'clock-long-footer',base:'idle',card:timer(12,'active',522,
+      {footer:'Dlouhý časovač s diakritikou a dalšími informacemi pro druhý řádek'})},
+    {name:'timer-dark',base:'music',theme:'dark',card:timer(13)},
+    {name:'timer-due',base:'idle',card:timer(14,'active',0,{footer:'10 min timer'})},
+    {name:'timer-long-timeline',base:'timeline',card:timer(15,'active',4496,{footer:'2 h timer'})}
   ];
   let sequence=options.sequence===undefined?100:options.sequence;
   return {coreVersion:plan.coreVersion,activitiesVersion:plan.activitiesVersion,session,now,
     presets:specifications.map(spec=>{
-      const base=plan.presets.find(p=>p.name===`${spec.base}-24-light`);
-      return {...base,name:spec.name,activity:spec.card,
-        bytes:{...base.bytes,ACTIVITY_DATA:activity.encode([spec.card],{session,revision:++sequence,sentAt:now})}};
+      const base=plan.presets.find(p=>p.name===`${spec.base}-24-${spec.theme||'light'}`);
+      const cards=spec.cards||[spec.card];
+      return {...base,name:spec.name,activity:cards[0],activities:cards,
+        // Appearance settings are persistent on the watch. Reset the optional
+        // large setting for every sample so captures are order-independent.
+        integers:{...base.integers,LARGE_TEXT:spec.largeText?1:0},
+        preserve:base.state==='timeline'?[{x:0,y:171,width:200,height:57}]:[],
+        bytes:{...base.bytes,ACTIVITY_DATA:activity.encode(cards,{session,revision:++sequence,sentAt:now})}};
     })};
 }
 module.exports={fixtures,activityPresets};

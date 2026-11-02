@@ -1,11 +1,11 @@
 {
-  "version": "0.7.0",
+  "version": "0.8.0",
   "pbw": {
-    "file": "Dynamic-0.7.0.pbw",
-    "sha256": "d43fd4bb269b0e614e56abb3b02b1e2bd224b9ef4c9822fb2321147f7a00cf47"
+    "file": "Dynamic-0.8.0.pbw",
+    "sha256": "750072c30c1929973b521cda809a547c81e4008dfe52c9b7bc5fdc53f8061570"
   },
   "native_payload_sha256": {
-    "emery/pebble-app.bin": "bbd08d3ee66d133a0f272cbee0f1fedfa78432ba614366c36d3d069dd37be358",
+    "emery/pebble-app.bin": "0c4cac925e43a84db655397ee5d65a290cc1ede7ee7edec1a6fa22beba59c61d",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
   },
   "screenshots": [
@@ -44,7 +44,7 @@
     {
       "file": "emery_dark.png",
       "source": "docs/images/dark.png",
-      "sha256": "dab6e5ef4500bb4c64f0622489d3fe69131f579944c87f6969e2294480ce52f2",
+      "sha256": "3629d99a35f6628860e95c3ce8e358457e1a16514c2ff04c4a0136bc9a9eb7c3",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false

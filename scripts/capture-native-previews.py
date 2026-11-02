@@ -168,7 +168,7 @@ def capture(pebble,pbw,output,preview=None,appmessage=None):
 
 
 def capture_activities(pebble,session,output,appmessage=None):
-    """Capture six affected generic layouts on the existing native candidate.
+    """Capture affected generic layouts on the existing native candidate.
 
     Call after capture() in the same emulator session. This function does not
     reinstall, launch, reconnect or modify the twenty Clay preview frames.
@@ -230,7 +230,12 @@ def capture_activities(pebble,session,output,appmessage=None):
                 pixels=b''.join(rows)
                 # Clocks advance locally once a second. Compare settled clock,
                 # date, both readings and footer without freezing the activity.
-                stable=pixels[:200*92*3]+pixels[200*176*3:]
+                footer=pixels[200*176*3:]
+                if len(preset.get('activities',[]))>1:
+                    # A second timer is a locally advancing secondary line.
+                    # Compare its static label region without freezing it.
+                    footer=pixels[200*176*3:200*199*3]+pixels[200*216*3:]
+                stable=pixels[:200*92*3]+footer
                 if previous==stable:break
                 previous=stable;time.sleep(.15)
             else:raise RuntimeError('Activity header/readings/footer did not settle: '+preset['name'])
@@ -240,12 +245,15 @@ def capture_activities(pebble,session,output,appmessage=None):
                 'settled_header_readings_footer_rgb_equal':True,'running_clock_changes_allowed':True,
                 'two_configured_readings':True})
             print('Captured '+preset['name'],flush=True)
-        if len({row['rgb_sha256'] for row in captures})!=6:raise RuntimeError('Expected six distinct generic layouts')
+        # Native Peek hides the activity area, so different clock values must
+        # intentionally produce the same unobstructed face above its OS panel.
+        visible=[row for row,preset in zip(captures,plan['presets']) if preset['state']!='timeline']
+        if len({row['rgb_sha256'] for row in visible})!=len(visible):raise RuntimeError('Expected distinct visible generic layouts')
         report={'version':preview['version'],'session':session,'source':preview['source'],
             'phone_javascript_executed':False,'candidate_install_unchanged':True,
             'fixture_encoder':{'core':plan['coreVersion'],'activities':plan['activitiesVersion'],
                 'core_wire_version':4,'activity_wire_version':1},'captures':captures,
-            'scope':'Six actual generic activity layouts with two configured sample readings. Elapsed workout is a plugin fixture, not native Workout integration.',
+            'scope':str(len(captures))+' actual generic activity layouts with two configured sample readings. Elapsed workout is a plugin fixture, not native Workout integration.',
             'visual_review':{'reviewed':False}}
         (output/'activities.json').write_text(json.dumps(report,indent=2)+'\n')
         return report

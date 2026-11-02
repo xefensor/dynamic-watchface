@@ -2,19 +2,19 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.7.0 adds compatible plugin activities and uses Fredoka clock outlines and Roboto Condensed text to
+Peek. Version 0.8.0 gives timed activities a centered rounded countdown and uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
 ## Download
 
-The current release is [**v0.7.0 — GitHub prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.7.0).
+The current release is [**v0.8.0 — GitHub prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0).
 
 | File | Use |
 | --- | --- |
-| [Dynamic-0.7.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.7.0/Dynamic-0.7.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
-| [Dynamic-0.7.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.7.0/Dynamic-0.7.0-source.zip) | The checked source snapshot and pinned dependencies |
-| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.7.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+| [Dynamic-0.8.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.8.0/Dynamic-0.8.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
+| [Dynamic-0.8.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.8.0/Dynamic-0.8.0-source.zip) | The checked source snapshot and pinned dependencies |
+| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.8.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
 
 [All releases](https://github.com/xefensor/dynamic-watchface/releases) ·
 [Changes](CHANGELOG.md) · [Release automation](docs/GITHUB-RELEASES.md)
@@ -26,7 +26,7 @@ and live phone/provider delivery remain unverified; see [validation](docs/VALIDA
 
 Dynamic uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
 0.5.0 for readings and [Pebble Activities](https://github.com/xefensor/pebble-activities)
-0.1.0 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
+0.1.2 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
 alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Before installing
@@ -42,11 +42,14 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 Compatible `activity/session` v1 providers are discovered automatically when
 **Plugin activities** is enabled (the default). No plugin-specific layout is
 needed: a provider supplies main content, a footer and optional artwork or clock
-fields. Dynamic uses the same fixed footer for timers and formatted readings.
+fields. Clock activities use a large centered numeric value, a caption directly
+below and an optional secondary line. Text and music retain their bottom-anchored
+metadata composition. Within each provider, the soonest running deadline takes
+priority over its other or paused deadlines; other providers retain their order.
 A second activity or music summary appears only when it fits at a readable size.
 Ordinary music remains the fallback when no generic activity is active.
 
-Install [Activity Timer](https://github.com/xefensor/pebble-activities/releases/tag/v0.1.0)
+Install [Timer](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
 to try a native watchapp provider. Start the timer on the watch and let it show
 **Shared with phone**, then return to Dynamic. The timer's own PKJS publishes a
 snapshot; its independently callable plugin supplies it to Dynamic afterward.

@@ -1,9 +1,7 @@
-0.7.0 plugin activities prerelease
+0.8.0 grouped activity clocks prerelease
 
-Automatically discovers compatible activity plugins and presents timers or formatted readings in the shared main/footer area. A second activity or music summary appears only when it fits.
+Timed activities use large centered Fredoka numerals with their caption directly below. Pause and last-reported marks stay with the caption, and secondary music or another activity appears only when it fits. Music retains its established fixed footer.
 
-Adds a Plugin activities switch and provider status in all 17 languages. Uses separate Pebble Activities 0.1.0 and lean Watchface Core 0.5.0, preserving existing notification privacy and app settings.
+Within each provider, the soonest running deadline is shown first. Compatible Timer 0.2.0 can share eight native timer slots; the watchface keeps its bounded two-card projection. Core 0.5.0 and Activities 0.1.2 are pinned independently.
 
-Keeps the UUID, two readings, 24px music title, 20px artists and fixed footer. Identical font metrics are stored once to reduce the native image without changing the rendered fonts.
-
-The reference timer is a separate native watchapp/provider. Last-reported countdowns do not certify its alarm or offline state. Stock PebbleOS only; native Workout session access and the future dashboard are not included. This is a sideloaded plugin preview; appstore submission remains held.
+The UUID, two readings, music typography and existing privacy choices are preserved. Last-reported countdowns do not certify a native alarm. This remains a sideloaded plugin preview; appstore submission is held.

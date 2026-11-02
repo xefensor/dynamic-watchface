@@ -1,14 +1,14 @@
 {
-  "version": "0.7.0",
+  "version": "0.8.0",
   "pbw": {
-    "file": "Dynamic-0.7.0.pbw",
-    "sha256": "d43fd4bb269b0e614e56abb3b02b1e2bd224b9ef4c9822fb2321147f7a00cf47"
+    "file": "Dynamic-0.8.0.pbw",
+    "sha256": "750072c30c1929973b521cda809a547c81e4008dfe52c9b7bc5fdc53f8061570"
   },
   "native_payload_sha256": {
-    "appinfo.json": "acf6829041a1e1e42cb4e93867ad01e603f8327800a2b99acab22b98a4764af4",
-    "emery/pebble-app.bin": "bbd08d3ee66d133a0f272cbee0f1fedfa78432ba614366c36d3d069dd37be358",
+    "appinfo.json": "05310e049d6e9e73d7b55439761b5794d546aabf11476a5b8a283b419edec8d5",
+    "emery/pebble-app.bin": "0c4cac925e43a84db655397ee5d65a290cc1ede7ee7edec1a6fa22beba59c61d",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "91dc41da574a53f280ae85a000b69449bb39bfe4c27dee6646ed89f8b39c893e"
+    "emery/manifest.json": "646263c0f876a6f977376596658d663e48e4dc588024f2e1942e1aa5457c956d"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -25,16 +25,16 @@
   },
   "activities": {
     "package": "pebble-activities",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "repository": "https://github.com/xefensor/pebble-activities",
-    "artifact": "pebble-activities-0.1.0.tgz",
-    "sha256": "46c69a333b81f475d7e6c38f5aae5b82d1d519b743d4875675f44d07d3bf781e",
-    "integrity": "sha512-aaTwRc2TqJmAAd6MWetZFtgh8w5wmblsowJLZ1bvkywKYYT2bEZmf3poKT13QvwPi9yX5LmDyaedaI7DoD5W0g==",
+    "artifact": "pebble-activities-0.1.2.tgz",
+    "sha256": "dd49a628fa14c319648bb782eb15502a485cf225c77f5f709e86c74aa57be0f6",
+    "integrity": "sha512-n8Rp6V2w9de1DVPiL2FeBgwCUx62rR2toa/LJD59uKaLuOaUjx4XON1DBVsDck+UD3JB5g//Jm/ZXrPre4BpMg==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "c6eb79d31cb31425b00933b64c23f0152e943457"
+    "source_commit": "baac66dc88a6be6062dc8fe57156fdb96007b3c7"
   },
   "images": [
     {
@@ -75,7 +75,7 @@
     },
     {
       "file": "docs/images/dark.png",
-      "sha256": "dab6e5ef4500bb4c64f0622489d3fe69131f579944c87f6969e2294480ce52f2",
+      "sha256": "3629d99a35f6628860e95c3ce8e358457e1a16514c2ff04c4a0136bc9a9eb7c3",
       "pixels": [
         200,
         228
@@ -84,7 +84,7 @@
     },
     {
       "file": "docs/images/activity-timer.png",
-      "sha256": "cb1a277fe6c41c0de472cabb3efc5613cde05f4869a4f718dbd2f655e034c667",
+      "sha256": "315f5d154288143668dc1fb4b52ce737ae976d487471d03ea5504ecd86e870fe",
       "pixels": [
         200,
         228
@@ -102,11 +102,11 @@
     }
   ],
   "native_qa": [
-    "docs/qa/0.7.0/native-previews/previews.json",
-    "docs/qa/0.7.0/activities/activities.json",
-    "docs/qa/0.7.0/bundle-audit.json"
+    "docs/qa/0.8.0/native-previews/previews.json",
+    "docs/qa/0.8.0/activities/activities.json",
+    "docs/qa/0.8.0/bundle-audit.json"
   ],
   "fixture_data": true,
-  "scope": "20 native settings samples and6 generic activity layouts from exact final native payloads. Timer handoff/offline alarm evidence is in pebble-activities docs/qa/0.1.0. No physical watch/real mobile app verification.",
-  "historical_images": "Other existing composites and phone settings screenshots retain their earlier release scope documented in VALIDATION.md."
+  "scope": "20 native settings samples and 17 generic activity scenarios from the final native payload. Renderer data is illustrative; no physical-watch or live-mobile-app verification.",
+  "historical_images": "Other composites and phone settings screenshots retain their earlier release scope in VALIDATION.md."
 }

@@ -1,5 +1,36 @@
 # Dynamic validation
 
+## 0.8.0 grouped activity clocks
+
+- 82 JavaScript tests, 11 strict native suites and 29 Python release/pinning
+  regressions pass. Clock layout tests include long values, image/no-image,
+  accented captions and bounded secondary content.
+- The official SDK 4.33.1 Emery build and final bundle/style audit pass. The
+  native binary is 65,212 bytes (323 bytes below the SDK cap); the SDK reports
+  a 62,834-byte footprint and 68,238 bytes of heap before runtime allocations.
+  Native resources remain 246,928 bytes.
+- Captured 20 standard settings previews and 17 generic activity scenarios from
+  the actual native renderer at 200 × 228. Running/paused clocks, long durations,
+  a second timer, music, dark colours, artwork, long accented captions and compact
+  notifications fit. Timeline cases keep time/readings above the reserved native
+  OS area and omit the activity rather than squeeze it into that area.
+- Settings previews reference the final native binary/resource hashes. The final
+  PBW audit verifies these hashes after rebuilding the embedded preview assets.
+- Provider selection tests choose the nearest running deadline even from the
+  eighth Timer slot, put paused clocks after running clocks within that provider,
+  and retain other provider positions. Core 0.5.0 and Activities 0.1.2 are pinned.
+
+Evidence: [settings previews](qa/0.8.0/native-previews/previews.json),
+[activity renders](qa/0.8.0/activities/activities.json), and
+[final bundle audit](qa/0.8.0/bundle-audit.json).
+The [recovery audit](qa/0.8.0/recovery-audit.json) records the fresh checks after
+two interrupted Work chats. The rebuilt PBW is byte-identical to the recovered
+release; its original native captures remain valid and were re-inspected.
+
+These are emulator/sample-data and packaged-runtime checks. They do not certify
+physical vibration, live mobile plugin delivery, battery use or native Workout
+session access. Timer’s own alarm/migration checks live in its separate repo.
+
 ## 0.7.0 stock activity integration
 
 Dynamic pins Core 0.5.0 and independent Pebble Activities 0.1.0. The UUID and all

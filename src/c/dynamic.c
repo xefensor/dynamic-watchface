@@ -1045,6 +1045,20 @@ static void prv_activity_summary(const PaActivity *activity,char *text,size_t ca
   // Clock text plus the bounded footer fits before the measured ellipsis.
   prv_ellipsize(text,capacity,14,180);
 }
+static MusicTextMetrics prv_activity_clock_measure(void *context,const char *text,int point) {
+  (void)context;
+  int ascent=0,descent=0;
+  const unsigned char *cursor=(const unsigned char *)text;
+  while(*cursor) {
+    const ClockGlyph *glyph=prv_clock_glyph(body_metric_next_codepoint(&cursor));
+    if(!glyph)return (MusicTextMetrics){0};
+    if(glyph->y_max>ascent)ascent=glyph->y_max;
+    if(-glyph->y_min>descent)descent=-glyph->y_min;
+  }
+  return (MusicTextMetrics){prv_round(prv_vector_width(text,point)),
+      (ascent*point+CLOCK_FONT_UNITS_PER_EM-1)/CLOCK_FONT_UNITS_PER_EM,
+      (descent*point+CLOCK_FONT_UNITS_PER_EM-1)/CLOCK_FONT_UNITS_PER_EM};
+}
 static void prv_draw_activity_image(GContext *ctx,const PaActivity *activity,int x,int bottom) {
   if(!(activity->flags&PA_FLAG_IMAGE)||!activity->width||!activity->height)return;
   const int longest=activity->width>activity->height?activity->width:activity->height;
@@ -1075,13 +1089,19 @@ static void prv_draw_activity(GContext *ctx,const PaActivity *activity,int y,boo
   const PaActivity *alternate=pa_state_select(&s_activities,(uint32_t)time(NULL),1);
   if(alternate)prv_activity_summary(alternate,summary,sizeof(summary));
   else if(s_context_to.mode==CONTEXT_MUSIC&&context_slot_fresh(&s_context_to.title,time(NULL))) {
-    watch_layout_copy_utf8(s_context_to.title.text,summary,sizeof(summary));
+    const ComplicationSlot *artist=render_context_music(&s_context_to,true);
+    if(artist&&context_slot_fresh(artist,time(NULL))&&artist->text[0]) {
+      watch_layout_copy_utf8(artist->text,summary,sizeof(summary)/2);
+      const size_t length=strlen(summary);
+      memcpy(summary+length," · ",5);
+      watch_layout_copy_utf8(s_context_to.title.text,summary+length+4,sizeof(summary)-length-4);
+    } else watch_layout_copy_utf8(s_context_to.title.text,summary,sizeof(summary));
     prv_ellipsize(summary,sizeof(summary),14,180);
   }
   ActivityLayout layout;
   activity_layout_build_at(main,activity->footer,image,activity->clock!=PA_CLOCK_NONE,marks,
       banner?NULL:summary,banner?prv_notice_music_top(&s_context_to.title):92,
-      prv_music_measure,NULL,&layout);
+      prv_music_measure,prv_activity_clock_measure,NULL,&layout);
   if(s_app_focused&&paged&&!offset&&!layout.content.title.complete&&layout.content.title.consumed) {
     size_t next=layout.content.title.consumed;
     while(music_space(activity->main[next]))++next;
@@ -1090,18 +1110,21 @@ static void prv_draw_activity(GContext *ctx,const PaActivity *activity,int y,boo
       if(!s_title_timer)s_title_timer=app_timer_register(3000,prv_music_continue,NULL);
     }
   }
-  if(layout.summary)prv_text(ctx,summary,14,10,y+92+body_text_ascent(summary,14),180,
-      prv_muted_text(1),GTextAlignmentLeft);
-  for(int i=0;i<layout.content.title.count;++i)
-    prv_text(ctx,layout.content.title.text[i],layout.content.title_point,10,
+  if(layout.summary)prv_text(ctx,summary,14,10,y+layout.summary_baseline,180,
+      prv_muted_text(1),layout.clock?GTextAlignmentCenter:GTextAlignmentLeft);
+  for(int i=0;i<layout.content.title.count;++i) {
+    if(layout.clock)prv_vector(ctx,layout.content.title.text[i],layout.main_left,
+        y+layout.content.title_baseline[i],layout.content.title_point,s_text_color);
+    else prv_text(ctx,layout.content.title.text[i],layout.content.title_point,layout.main_left,
         y+layout.content.title_baseline[i],180,s_text_color,GTextAlignmentLeft);
+  }
   prv_draw_activity_image(ctx,activity,0,y+MUSIC_BOTTOM);
   for(int i=0;i<layout.content.artist.count;++i)
     prv_text(ctx,layout.content.artist.text[i],layout.content.artist_point,layout.footer_left,
-        y+layout.content.artist_baseline[i],190-layout.footer_left,
+        y+layout.content.artist_baseline[i],layout.footer_width,
         prv_muted_text(1),GTextAlignmentLeft);
-  int mark_x=10;
-  const int mark_y=y+MUSIC_BOTTOM-9;
+  int mark_x=layout.marks_left;
+  const int mark_y=y+layout.marks_y;
   if(marks&&image) {
     graphics_context_set_fill_color(ctx,s_background_color);
     graphics_fill_rect(ctx,GRect(mark_x,mark_y-4,(int)marks*18,13),2,GCornersAll);
