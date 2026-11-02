@@ -59,6 +59,15 @@ int main(void) {
   activity_layout_build("08:42","10 min timer",false,true,0,"Night Trouble",measure,clock_measure,NULL,&layout);
   clock_check(&layout,92,false);
   assert(layout.content.title_point==58&&layout.summary);
+  activity_layout_build("00:36","1 min timer",false,true,2,NULL,measure,clock_measure,NULL,&layout);
+  clock_check(&layout,92,false);
+  assert(layout.content.title_point==58&&!layout.support&&!layout.summary);
+  assert(!strcmp(layout.content.artist.text[0],"1 min timer"));
+  activity_layout_build("00:36","A meaningful custom timer name that does not fit",false,true,2,
+      NULL,measure,clock_measure,NULL,&layout);
+  clock_check(&layout,92,false);
+  assert(layout.content.title_point==58&&!layout.content.artist.complete);
+  activity_layout_build("08:42","10 min timer",false,true,0,"Night Trouble",measure,clock_measure,NULL,&layout);
   const int numeric_home=layout.content.title_baseline[0];
   activity_layout_build("08:42","10 min timer",false,true,2,"Night Trouble",measure,clock_measure,NULL,&layout);
   clock_check(&layout,92,false);

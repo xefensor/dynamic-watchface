@@ -1,0 +1,70 @@
+{
+  "phase": "install-final",
+  "source_pbw_sha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d",
+  "native_payload_sha256": {
+    "emery/pebble-app.bin": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+  },
+  "phone_javascript_executed": false,
+  "captures": [
+    {
+      "file": "boot-before-explicit-launch.png",
+      "sha256": "84d68975a01a61478fb5c87df44cdc6b4e59c414454379257da9449973cb4062",
+      "rgb_sha256": "2443044c9954e08b1f08244334506a4052c358770cbe9a09e101cd8d57d59622",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "explicit-launch.png",
+      "sha256": "e8d6580db82549860a026485b655c165ba44c6a618dcc048369a1d3bf24b2f23",
+      "rgb_sha256": "d1d5a7684e2d3e973ea62a7262f99f8f1f359530a1df1e55a550434d9ad22b73",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "relaunch-1.png",
+      "sha256": "e8d6580db82549860a026485b655c165ba44c6a618dcc048369a1d3bf24b2f23",
+      "rgb_sha256": "d1d5a7684e2d3e973ea62a7262f99f8f1f359530a1df1e55a550434d9ad22b73",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "relaunch-2.png",
+      "sha256": "e8d6580db82549860a026485b655c165ba44c6a618dcc048369a1d3bf24b2f23",
+      "rgb_sha256": "d1d5a7684e2d3e973ea62a7262f99f8f1f359530a1df1e55a550434d9ad22b73",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "settled-after-relaunches.png",
+      "sha256": "e8d6580db82549860a026485b655c165ba44c6a618dcc048369a1d3bf24b2f23",
+      "rgb_sha256": "d1d5a7684e2d3e973ea62a7262f99f8f1f359530a1df1e55a550434d9ad22b73",
+      "native_pixels_modified": false
+    }
+  ],
+  "native_sessions": [
+    20,
+    20,
+    21,
+    21,
+    22,
+    22
+  ],
+  "native_install_pbw_sha256": "ebab767fa006fee5c56e42baf79589bc7f47f7d6283a474b3994df592d5ecfcc",
+  "installed_native_payload_sha256": {
+    "emery/pebble-app.bin": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "fbe1bba412f7696e967ae768e9b8a0a78e93c202d55867e42dbbff8ba0e20555"
+  },
+  "start_checks": [
+    {
+      "name": "explicit-launch",
+      "native_session_received": true
+    },
+    {
+      "name": "relaunch-1",
+      "native_session_received": true
+    },
+    {
+      "name": "relaunch-2",
+      "native_session_received": true
+    }
+  ],
+  "fault_log_entries": []
+}

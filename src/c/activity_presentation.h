@@ -3,6 +3,30 @@
 #include "music_layout.h"
 #include <pebble-activities/pebble-activity-view.h>
 
+enum { ACTIVITY_PAUSED=1u, ACTIVITY_UNCERTAIN=2u, ACTIVITY_AGE=4u };
+static inline bool activity_is_result(const PavCard *card) {
+  return card->source_state==PAV_COMPLETED||card->source_state==PAV_CANCELLED;
+}
+static inline uint8_t activity_status_marks(const PavCard *card,const PavDatum *datum,
+    uint32_t now,bool connected,bool main) {
+  const PavClockValue clock=pav_clock_value(card,datum,now,connected);
+  const bool cached=!connected||(card->flags&PAV_SOURCE_UNCONFIRMED);
+  const bool paused=!activity_is_result(card)&&((datum->type==PAV_CLOCK&&!(datum->flags&PAV_RUNNING))||
+      (main&&card->source_state==PAV_PAUSED));
+  const bool uncertain=cached||(datum->flags&PAV_ESTIMATED)||now<datum->observed_at||
+      clock.estimated||clock.due;
+  return (paused?ACTIVITY_PAUSED:0)|(uncertain?ACTIVITY_UNCERTAIN:0)|(cached?ACTIVITY_AGE:0);
+}
+static inline uint8_t activity_support_marks(const PavCard *card,uint8_t main,uint8_t support) {
+  const uint8_t provenance=ACTIVITY_UNCERTAIN|ACTIVITY_AGE;
+  // One source-age indication covers matching observations. Independent item
+  // estimates and observations retain their own indication; pause is local.
+  if(card->main.observed_at==card->support.observed_at&&
+      !((card->main.flags^card->support.flags)&PAV_ESTIMATED)&&
+      !((main^support)&provenance))support&=(uint8_t)~provenance;
+  return support;
+}
+
 static inline bool activity_datum_changes(const PavCard *card,const PavDatum *datum,
                                            uint32_t now,bool connected) {
   const PavClockValue clock=pav_clock_value(card,datum,now,connected);

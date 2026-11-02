@@ -1,0 +1,500 @@
+{
+  "result": "PASS",
+  "version": "0.9.1",
+  "uuid": "cc1281f1-3b4d-45b5-b235-6881b1fd8fbd",
+  "platform": "emery",
+  "messageKeys": 44,
+  "legacyKeysPreserved": true,
+  "messageKeyCounts": {
+    "package": 44,
+    "generatedC": 44,
+    "generatedJavaScript": 44,
+    "bundledJavaScript": 44,
+    "pbwAppKeys": 44,
+    "pbwMessageKeys": 44
+  },
+  "manifestVersion": 2,
+  "usesPermissions": [
+    "ReadMusic"
+  ],
+  "nativePayloadMatchesSdk": true,
+  "nativeSizes": {
+    "fileBytes": 67276,
+    "loadedBytes": 64972,
+    "virtualBytes": 65392,
+    "relocationEntries": 576,
+    "relocationBytes": 2304,
+    "processInfoSizeLimit": 65535,
+    "completeBinaryLimit": 131072,
+    "loadedHeadroomBytes": 563,
+    "virtualHeadroomBytes": 143,
+    "linkedElfSectionsMatch": true,
+    "scope": "Loaded image and static extent; this does not measure runtime heap availability."
+  },
+  "activityWireVersion": 2,
+  "customResourceCount": 8,
+  "licenseFileCount": 9,
+  "licenseSourceIdentityVerified": true,
+  "nativePreviews": {
+    "samples": 20,
+    "nativeBinaryAndResourcesMatch": true
+  },
+  "bodyFonts": {
+    "fontCount": 8,
+    "fonts": [
+      {
+        "name": "FONT_BODY_11",
+        "resourceId": 1,
+        "pixelSize": 11,
+        "bytes": 16052,
+        "sha256": "80e7c4e762bd7cf596484ab38e3746067b4f1645ca33c1e4d1e4a633429cf441",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 3,
+          "height": 8,
+          "left": 1,
+          "top": 3,
+          "advance": 4,
+          "hasInk": true
+        }
+      },
+      {
+        "name": "FONT_BODY_14",
+        "resourceId": 2,
+        "pixelSize": 14,
+        "bytes": 18824,
+        "sha256": "da95d55e3e497141d114936e05d5a7c766413f04b450650cd3bc5c28cc5fa0b7",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 4,
+          "height": 10,
+          "left": 1,
+          "top": 4,
+          "advance": 5,
+          "hasInk": true
+        }
+      },
+      {
+        "name": "FONT_BODY_16",
+        "resourceId": 3,
+        "pixelSize": 16,
+        "bytes": 20844,
+        "sha256": "31851269c422c7191deb59d2fb4545d8404a40c2173071c8dd5b4bd0d7ac023e",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 4,
+          "height": 11,
+          "left": 1,
+          "top": 5,
+          "advance": 6,
+          "hasInk": true
+        }
+      },
+      {
+        "name": "FONT_BODY_20",
+        "resourceId": 4,
+        "pixelSize": 20,
+        "bytes": 26148,
+        "sha256": "46dab7aa0b7561c1fedc2ab7bf42c373fa8e1208bc72ce8783524ebe872f89ea",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 6,
+          "height": 14,
+          "left": 1,
+          "top": 6,
+          "advance": 8,
+          "hasInk": true
+        }
+      },
+      {
+        "name": "FONT_BODY_24",
+        "resourceId": 5,
+        "pixelSize": 24,
+        "bytes": 33072,
+        "sha256": "1cf3bfdfeedcad17485d2ce5ececef2620ab876b26bfce80a3f567f560029f96",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 7,
+          "height": 17,
+          "left": 1,
+          "top": 7,
+          "advance": 9,
+          "hasInk": true
+        }
+      },
+      {
+        "name": "FONT_BODY_26",
+        "resourceId": 6,
+        "pixelSize": 26,
+        "bytes": 37088,
+        "sha256": "30f77c6c6c299b3c6fe9725117446f46c516b303322e0f775c74f106bad37b8f",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 8,
+          "height": 18,
+          "left": 1,
+          "top": 8,
+          "advance": 10,
+          "hasInk": true
+        }
+      },
+      {
+        "name": "FONT_BODY_28",
+        "resourceId": 7,
+        "pixelSize": 28,
+        "bytes": 40848,
+        "sha256": "122ab2faea4dd055d1f7aeb1bfbf9039b26f8bb2285a1159017fa31798e6723b",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 9,
+          "height": 20,
+          "left": 1,
+          "top": 8,
+          "advance": 11,
+          "hasInk": true
+        }
+      },
+      {
+        "name": "FONT_BODY_32",
+        "resourceId": 8,
+        "pixelSize": 32,
+        "bytes": 49944,
+        "sha256": "1f982067b36a6a7bd344835ae2c4ecce1cb6e9b343c334cadbd06dd8c4e9f4de",
+        "sourceFile": "fonts/RobotoCondensed-Bold.ttf",
+        "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+        "selectedSourceCodepoints": 919,
+        "packagedCodepointsIncludingFallback": 920,
+        "requiredLocalizedGlyphChecks": 136,
+        "restoredBlockLetterChecks": 441,
+        "directGlyphInkChecks": 528,
+        "fallback": {
+          "codepoint": 9647,
+          "width": 9,
+          "height": 23,
+          "left": 2,
+          "top": 9,
+          "advance": 13,
+          "hasInk": true
+        }
+      }
+    ],
+    "languages": 17,
+    "localizedWeekdays": 119,
+    "storedWeekdayRows": 16,
+    "nativeWeekdayTableBytes": 608,
+    "nativeWeekdayTableMatches": true,
+    "localeLookupReviewed": true,
+    "localeAliases": {
+      "no": "da",
+      "nb": "da",
+      "nn": "da"
+    },
+    "requiredGlyphChecks": 1088,
+    "directGlyphInkChecks": 4224,
+    "regressionCorpora": {
+      "cyrillicMusicAndNames": [
+        "\u041a\u043e\u043b\u0435\u0441\u043e\u043c / Kolesom",
+        "\u041c\u043e\u043b\u0447\u0430\u0442 \u0414\u043e\u043c\u0430",
+        "\u0423\u043a\u0440\u0430\u0457\u043d\u0430",
+        "\u0411\u0415\u041b\u0410\u0420\u0423\u0421\u042c",
+        "\u0416\u044b\u0432\u0435",
+        "\u0427\u0435\u0442\u0432\u0435\u0440\u0433"
+      ],
+      "greekMusicAndNames": [
+        "\u03a3\u03ae\u03bc\u03b5\u03c1\u03b1",
+        "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac",
+        "\u0386\u03bb\u03bc\u03c0\u03bf\u03c5\u03bc"
+      ],
+      "latinExtendedAdditional": [
+        "Ti\u1ebfng Vi\u1ec7t",
+        "\u1ee8ng d\u1ee5ng"
+      ]
+    },
+    "allFallbacksVisible": true,
+    "scope": "Exact packaged lookup/bitmap coverage and source repertoire; not a visual layout or arbitrary-Unicode guarantee."
+  },
+  "bodyMetrics": {
+    "header": "src/c/generated_body_metrics.h",
+    "headerSha256": "aa1be2872036905cfef9c419f2c5067f33b77b0bf8a14d711a478f1bfdbcc4c1",
+    "codepoints": 920,
+    "sizes": [
+      11,
+      14,
+      16,
+      20,
+      24,
+      26,
+      28,
+      32
+    ],
+    "packagedGlyphDescentChecks": 7360,
+    "packagedGlyphAscentChecks": 7360,
+    "uniqueDescentRows": 88,
+    "uniqueAscentRows": 149,
+    "compressedMetricBytes": 3736,
+    "wildcardIndex": 908,
+    "wildcardCodepoint": 9647,
+    "nativeMetricTablesMatch": true,
+    "scope": "Every committed ascent/descent matches the exact packaged PFO bitmap metrics, including fallback and empty glyph normalization; visible text alignment remains a native rendering check."
+  },
+  "clockOutlines": {
+    "result": "PASS",
+    "fontSha256": "526d2361818275d1f9d1df6ce1835095058b84ec989e50e22f271237cc304000",
+    "unitsPerEm": 1000,
+    "glyphCount": 20,
+    "contourCount": 33,
+    "pointCount": 1607,
+    "maximumContourPoints": 145,
+    "maximumGlyphPoints": 145,
+    "maximumGlyphContours": 5,
+    "quadraticCubicFlatnessToleranceFontUnits": 2.0,
+    "maximumCurveFlatnessPxAt80": 0.16,
+    "characters": "0123456789:.-+,/%\u00b0CF",
+    "holeContours": 8,
+    "overlapRemoval": "fontTools.ttLib.removeOverlaps with skia-pathops; curved nonzero winding union before flattening",
+    "fontToolsVersion": "4.61.1",
+    "pathopsVersion": "0.9.2",
+    "glyphAdvances": {
+      "0": 565,
+      "1": 379,
+      "2": 566,
+      "3": 565,
+      "4": 551,
+      "5": 493,
+      "6": 521,
+      "7": 522,
+      "8": 541,
+      "9": 521,
+      ":": 221,
+      ".": 220,
+      "-": 403,
+      "+": 490,
+      ",": 223,
+      "/": 489,
+      "%": 779,
+      "\u00b0": 379,
+      "C": 631,
+      "F": 613
+    },
+    "sourceFont": "resources/fonts/Fredoka-Bold-Clock.ttf",
+    "header": "src/c/generated_clock_glyphs.h",
+    "headerSha256": "38706b17a17fc394aea44b6446ff4a22bc52627cae4fe5744d6014354da325ec",
+    "regenerationExact": true,
+    "nativePointContourGlyphTablesMatch": true,
+    "selectedDigitHoleCounts": {
+      "0": 1,
+      "6": 1,
+      "8": 2,
+      "9": 1
+    },
+    "degreeSymbolHoleCount": 1,
+    "scope": "Source geometry, polygon bounds and exact linked tables; native screenshots verify rasterized appearance."
+  },
+  "javaScriptPayloadMatchesBuild": true,
+  "sourceSystemFontKeys": [
+    "GOTHIC_14_BOLD",
+    "GOTHIC_24_BOLD"
+  ],
+  "nativeSystemFontKeys": [
+    "GOTHIC_14_BOLD",
+    "GOTHIC_24_BOLD"
+  ],
+  "sourceFontKeysNotLinked": [],
+  "hostModules": 5,
+  "coreModules": 4,
+  "activityModules": 7,
+  "sourceMapMatchesCurrentSource": true,
+  "sourceMapModuleCount": 21,
+  "legacyWeatherClientActive": false,
+  "core": {
+    "version": "0.5.0",
+    "sourceCommit": "54944101ed607549107e5fd2ab1174dc5b5eae38",
+    "archiveSha256": "cbdca160efbcf6faa8f49bae10daa5887a2d68b90aeef05af86183c880dd59fb",
+    "sdkArchiveSha256": "44839ddea157f34fb5e0bc11161affdd63441456a2e9e0aa858948f4f4c63507",
+    "nativeSourceSha256": {
+      "include/complication_data.h": "a3b9c4482330cacff589c595f960604852b710af653b9a996841001d0302695b",
+      "include/context_data.h": "b950b6d331e1d741fbcb982139a096c17727b8ea0ae357a6ae66f128ddb0d973",
+      "include/core_types.h": "db13f44fa65216227391c9dc15b54b602c6c80fd02789ddaaf9355a8ecc8edd2",
+      "include/pebble-watchface-core.h": "741e7e3a4bbddda460854cbdcbf23216b26a5348e320328dc7831a2cfd81bc3d",
+      "include/readings.h": "6b60e188ed16aa1d36c125a3d1bbd9040a741f25fda2cba1e4e529d8b4cbdd27",
+      "src/c/pebble-watchface-core.c": "f6ed1f4ddf9388975abd5cb0fb2d3200b01b0c7a69834e4b635c12a59c2ca25b",
+      "src/c/readings.c": "7683a19614070122d06298d88d94db231d4dacdcec3b488a61aab9f287014de0",
+      "src/c/readings_impl.h": "2e0998f63c5b8b5f8f96c20f08d9642ba35c5835f515e07ad1098cac5e5bc551"
+    },
+    "installedAndSdkStagingMatch": true
+  },
+  "activities": {
+    "version": "0.2.1",
+    "sourceCommit": "d2251a1e4e3d8543ad2e8be01fccc8758e785fb6",
+    "archiveSha256": "2dfaf5cd7dd69b9bf850cc56248500278d80ca47a00a3d836b8608d14cf9c17a",
+    "sdkArchiveSha256": "e5a6cfaad13f228f7d142c879449d5611fa731e44167c864b3116830c117a76b",
+    "nativeSourceSha256": {
+      "include/pebble-activities.h": "e5623ab49385a1fbf3039f1c176b88d13397b945c59b66e30245264509f7e0a3",
+      "include/pebble-activity-view.h": "9e67425c6bd8122ffdcaab133e077e0e5e086c01e5b65c000fbd0bc140ddab76",
+      "src/c/activity-view.c": "1892efd418800f72863d3345092b0ef72b45e40f5107c406cbc53dc434740c6b",
+      "src/c/pebble-activities.c": "4ef0947112da9c3ec59014dffb0c25ba3a73c9faa7f240360a1d995915a8ba29"
+    },
+    "installedAndSdkStagingMatch": true
+  },
+  "sdkInjectedJavaScript": {
+    "sdkVersion": "4.33.1",
+    "source": "_pkjs_shared_additions.js",
+    "sourceSha256": "3d23174c39cbe6fb12d4d162d63a37c41a41941fdd0df3a19290eabffbf3f888",
+    "reviewedSourceMatches": true,
+    "copyrightNoticePreserved": true,
+    "licenseFile": "licenses/Apache-2.0.txt",
+    "licenseSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+  },
+  "pbwSha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d",
+  "inventory": [
+    {
+      "file": "appinfo.json",
+      "bytes": 3591,
+      "sha256": "d5539055b78f6782f06d33661e3f02dc68670d4e524fbdf35e394f659d6dd86b",
+      "sdkByteIdentical": false
+    },
+    {
+      "file": "emery/app_resources.pbpack",
+      "bytes": 246928,
+      "sha256": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+      "sdkByteIdentical": true
+    },
+    {
+      "file": "emery/manifest.json",
+      "bytes": 356,
+      "sha256": "fbe1bba412f7696e967ae768e9b8a0a78e93c202d55867e42dbbff8ba0e20555",
+      "sdkByteIdentical": true
+    },
+    {
+      "file": "emery/pebble-app.bin",
+      "bytes": 67276,
+      "sha256": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
+      "sdkByteIdentical": true
+    },
+    {
+      "file": "licenses/Apache-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "sourceFile": "licenses/Apache-2.0.txt",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/Clay-MIT.txt",
+      "bytes": 1084,
+      "sha256": "fca91c2fb46f56fc82e7b497c1e5c96d9e5714bca79e5c274df436374ed010b4",
+      "sourceFile": "licenses/Clay-MIT.txt",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/Clay-bundled-NOTICES.txt",
+      "bytes": 11502,
+      "sha256": "3ec81f7beffe431490042a1a4c858ee8a3c3ec05391e7a61f509f7eef28bcb63",
+      "sourceFile": "licenses/Clay-bundled-NOTICES.txt",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/Dynamic-LICENSE.txt",
+      "bytes": 4744,
+      "sha256": "77ce6abe7cdf2e49a244ea73379006a3552918f259fb358bf3408db8d612c031",
+      "sourceFile": "LICENSE",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/OFL-Fredoka.txt",
+      "bytes": 4388,
+      "sha256": "5c9e7eee5c6b25f4b05b8d53b2e470ea4962f9ced742d044a98f7d95d1375bab",
+      "sourceFile": "resources/fonts/OFL-Fredoka.txt",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/OFL-RobotoCondensed.txt",
+      "bytes": 4393,
+      "sha256": "0e4cc6ece88573545be2ed25835363662a6182ba4a4c1b5c8feda52add30e8a6",
+      "sourceFile": "resources/fonts/OFL-RobotoCondensed.txt",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/THIRD-PARTY-NOTICES.txt",
+      "bytes": 2374,
+      "sha256": "7981de9a413d4377533d716fab7a0d1607cf6a3427ae672f16f8f026fdc57935",
+      "sourceFile": "THIRD-PARTY-NOTICES.md",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/pebble-activities-LICENSE.txt",
+      "bytes": 4654,
+      "sha256": "d98d3677d07448a915a4ec03e84d888c3e7ead3eaa8b371288705be3d497d40f",
+      "sourceFile": "licenses/pebble-activities-LICENSE.txt",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "licenses/pebble-watchface-core-LICENSE.txt",
+      "bytes": 4654,
+      "sha256": "d98d3677d07448a915a4ec03e84d888c3e7ead3eaa8b371288705be3d497d40f",
+      "sourceFile": "licenses/pebble-watchface-core-LICENSE.txt",
+      "sourceByteIdentical": true
+    },
+    {
+      "file": "pebble-js-app.js",
+      "bytes": 785722,
+      "sha256": "6e08dc12a8755d52a56e554c3624e24973c37e4465c57476d618c4a246c16373",
+      "sdkByteIdentical": true
+    },
+    {
+      "file": "pebble-js-app.js.map",
+      "bytes": 898298,
+      "sha256": "9a4396a9957ccdc1c23e06180bee28c4d71235f2d0e780ad7a5b6972dceafff7",
+      "sdkByteIdentical": true
+    }
+  ],
+  "scope": "SDK/package/source identity, generated/linked clock outlines and packaged body glyph coverage. Native screenshots and captured transitions verify appearance, fitting and motion; no physical-device behavior is claimed."
+}

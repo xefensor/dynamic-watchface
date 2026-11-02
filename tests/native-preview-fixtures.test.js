@@ -119,7 +119,9 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
     'value-eta-artwork-meter','two-independent-clocks','paused-with-running-wall-clock',
     'cached-public-value-age','support-expiry-before','support-expiry-after','completed-result',
     'clock-primary-clock-secondary','text-primary-running-secondary','unicode-value-body-fallback',
-    'value-eta-artwork-meter-dark'];
+    'value-eta-artwork-meter-dark','timer-one-minute','matching-item-provenance',
+    'different-item-provenance','completed-result-music','ongoing-result-music',
+    'timer-acknowledged-idle','timer-acknowledged-music'];
   assert.deepEqual(plan.presets.map(p=>p.name),names);
   for(const [index,preset]of plan.presets.entries()) {
     const packet=Buffer.from(preset.bytes.ACTIVITY_DATA),records=activityRecords(preset.bytes.ACTIVITY_DATA);
@@ -142,6 +144,16 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
   const find=name=>plan.presets.find(p=>p.name===name);
   const record=name=>activityRecords(find(name).bytes.ACTIVITY_DATA)[0];
   assert.equal(record('timer-running').main.base,522);
+  assert.equal(record('timer-running').main.label,record('timer-running').caption);
+  assert.equal(record('timer-running').support,null);
+  assert.equal(record('timer-one-minute').main.base,36);
+  assert.equal(record('timer-one-minute').caption,'1 min timer');
+  const matching=record('matching-item-provenance'),different=record('different-item-provenance');
+  assert.equal(matching.main.observedAt,matching.support.observedAt);
+  assert.notEqual(different.main.observedAt,different.support.observedAt);
+  assert.equal(record('timer-acknowledged-idle').state,3);
+  assert.equal(record('timer-acknowledged-idle').flags&4,0);
+  assert.equal(record('timer-acknowledged-music').flags&4,0);
   assert.equal(record('timer-long').main.base,4496);
   assert.equal(record('timer-24-hours').main.base,86400);
   assert.equal(record('timer-due').state,1);

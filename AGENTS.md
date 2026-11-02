@@ -19,6 +19,10 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   observation age; unavailable private content clears immediately. Overall
   activity pause must not freeze a separately running clock. Zero is not a
   lifecycle transition or alarm acknowledgement.
+- Share an age/uncertainty indication only when the items' observation and
+  provenance match; preserve independent estimates and pause state. Completed
+  clocks are final values, not paused clocks. Optional terminal results yield
+  to ongoing activity and both generic and compatibility-adapter music.
 - Two shared Pebble readings retain their left/right positions. Timeline Peek
   uses the native OS panel rather than a second event renderer.
 - Notification banners and additional vibration default to Off. They do not
@@ -93,11 +97,13 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.0 and Activities 0.2.0 explicitly. Upstream
+- This repository pins Core 0.5.0 and Activities 0.2.1 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 - Version 0.9.0 is a published GitHub development prerelease. Keep its tested
   artifacts, tag and the earlier 0.8.0 download links/bytes available.
   Prior user success on 0.8.0 is useful history, not a physical 0.9.0 check.
+- Version 0.9.1 is a GitHub development prerelease. Preserve published 0.9.0
+  artifacts and their original source snapshot while validating the new bytes.
 
 `store/listing.json` is a local publication record, not a Pebble CLI schema.
 GitHub builds remain prereleases. The current official

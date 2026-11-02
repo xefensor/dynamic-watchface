@@ -1,11 +1,11 @@
 {
-  "version": "0.9.0",
+  "version": "0.9.1",
   "pbw": {
-    "file": "Dynamic-0.9.0.pbw",
-    "sha256": "1e097d404819fe4de5455955da1f6e9bc22cf5458389552223987a9142da79f5"
+    "file": "Dynamic-0.9.1.pbw",
+    "sha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d"
   },
   "native_payload_sha256": {
-    "emery/pebble-app.bin": "c29f6e0343b6fc0012c7d3c56efc575309dd5bb4c5b65d74723558b10989c8ca",
+    "emery/pebble-app.bin": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
   },
   "screenshots": [

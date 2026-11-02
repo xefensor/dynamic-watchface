@@ -97,9 +97,9 @@ var activities = activityLibrary.createActivities({
     return kind!=='notification'&&kind!=='notifications'&&(kind!=='music'||enabledSetting('SHOW_MUSIC',true));
   },
   select:function(cards){
-    // Music remains the fallback while an ongoing timer or other activity
-    // occupies the main area. Keep provider order, choosing the soonest active
-    // deadline within a provider before its paused deadlines.
+    // Ongoing activities keep priority. Music precedes optional terminal
+    // results. Keep provider order, choosing the soonest active deadline
+    // within a provider before its paused deadlines.
     var ongoing=[],results=[],music=[];
     cards.forEach(function(card){
       (String(card.kind).toLowerCase()==='music'?music:
@@ -121,7 +121,7 @@ var activities = activityLibrary.createActivities({
         return ar!==br?(ar?-1:1):ar&&ad!==bd?ad-bd:a.index-b.index;
       }).forEach(function(item,index){ongoing[positions[index]]=item.card;});
     });
-    return ongoing.concat(results,music).slice(0,2);
+    return ongoing.concat(music,results).slice(0,2);
   },
   now:function(){return Date.now();},
   later:function(callback,delay){return setTimeout(callback,delay);},
@@ -220,7 +220,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.9.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.9.1. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }

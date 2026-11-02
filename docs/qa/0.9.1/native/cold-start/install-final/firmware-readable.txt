@@ -1,0 +1,66 @@
+PebbleOS
+{,(c) 2013-2026 The PebbleOS contributorsOV
+Firmware version: v4.33.2
+Platform: 245, hw: , sn: 
+ILD ID: 8d1765c163246194d1b03976e61397e07d795557
+reboot_reason.c
+/We don't know why we Dangerously rebooted.
+reboot_reason.c
+ reset reason mask: 0x4
+service_filesystem: Couldn't resolve last written pgM
+storage_flash.c
+2)Checking bank 0 for system resources
+storage_flash.c
+Valid system resources found!
+app_db.c
+service_blob_db: Found 3 apps. Next ID: 4 
+L(service_timeline: Not setting timer
+ather_service.c
+=service_weather: No SerializedWeatherAppPrefs available!P
+event_loop.c
+Starting Launcher
+services.c
+Setting runlevel to 4
+bluetooth_ctl.c
+H;service_bluetooth: BLE HRM sharing prefs: is_enabled=0
+session.c
+Xservice_comm_session: Session event: is_open=1, destination=H, app_uuid={N
+torage_normal.c
+O0000  53 59 53 54 45 4d 5f 43  41 50 41 42 49 4c 49 54   SYSTEM_C APABILIT
+torage_normal.c
+B0010  49 45 53 00                                        IES.
+torage_normal.c
+F0000  a3 00 00 00 00 00 00 00                            ........
+local_addr.c
+c9service_bluetooth: Pinned address: 00:00:00:00:00:00{
+local_addr.c
+oGservice_bluetooth: No bondings found that require address pinning!
+ource_storage.c
+resource_watch not supported for resource type 1.
+L(service_timeline: Not setting timer:
+activity.c
+service_activity: Activity tracking started
+local_addr.c
+Oservice_bluetooth: Pausing address cycling (pinned_addr=00:00:00:00:00:00)!
+gap_le_advert.c
+bt: Scheduling advertising job: DIS
+testinfra.c
+Ready for communication.@
+torage_normal.c
+O0000  53 59 53 54 45 4d 5f 43  41 50 41 42 49 4c 49 54   SYSTEM_C APABILIT-
+torage_normal.c
+B0010  49 45 53 00                                        IES.h
+torage_normal.c
+F0000  ff ff ff ff 00 00 00 00                            ........
+emote_version.c
+Tservice_comm_session: Phone app: is_system=1, plf=0x32, capabilities=0xffffffff
+service.c
+service_app_fetch_endpoint: Sent request for app with uuid: {cc1281f1-3b4d-45b5-b235-6881b1fd8fbd} and 
+service.c
+@service_app_fetch_endpoint: App fetch cleanup with result 0
+ocess_manager.c
+sage for App <Dynamic>: Total Size <65680B> 
+sed <29684B> Still allocated <0B>J
+ocess_manager.c
+sage for App <Dynamic>: Total Size <65680B> 
+sed <29684B> Still allocated <0B>

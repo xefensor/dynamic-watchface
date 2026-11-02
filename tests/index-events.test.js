@@ -645,11 +645,13 @@ test('native view selection preserves canonical items, units, artwork and source
   assert.equal(JSON.stringify([reading,timer]),before,'host role selection must not rewrite source or view content');
 });
 
-test('retained source results follow ongoing activities and precede fallback music',()=>{
+test('retained source results yield to ongoing activities and music',()=>{
   const select=fixture().activityOptions.select;
   const result={kind:'timer',state:'completed',showTerminal:true,id:'finished'},active={kind:'workout',state:'active',id:'run'},music={kind:'music',state:'active',id:'song'};
-  assert.deepEqual(Array.from(select([music,result,active]),card=>card.id),['run','finished']);
-  assert.deepEqual(Array.from(select([result,music]),card=>card.id),['finished','song']);
+  assert.deepEqual(Array.from(select([music,result,active]),card=>card.id),['run','song']);
+  assert.deepEqual(Array.from(select([result,music]),card=>card.id),['song','finished']);
+  assert.deepEqual(Array.from(select([result]),card=>card.id),['finished']);
+  assert.deepEqual(Array.from(select([result,{...result,kind:'delivery',id:'delivered'},active]),card=>card.id),['run','finished']);
 });
 
 test('deadline ordering uses each datum state and its anchor plus base',()=>{

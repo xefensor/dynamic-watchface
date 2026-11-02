@@ -1,14 +1,14 @@
 {
-  "version": "0.9.0",
+  "version": "0.9.1",
   "pbw": {
-    "file": "Dynamic-0.9.0.pbw",
-    "sha256": "1e097d404819fe4de5455955da1f6e9bc22cf5458389552223987a9142da79f5"
+    "file": "Dynamic-0.9.1.pbw",
+    "sha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d"
   },
   "native_payload_sha256": {
-    "appinfo.json": "22688dae23656165e139afefd185280158065b08a4cb4e13f05b07fd1adc7df6",
-    "emery/pebble-app.bin": "c29f6e0343b6fc0012c7d3c56efc575309dd5bb4c5b65d74723558b10989c8ca",
+    "appinfo.json": "d5539055b78f6782f06d33661e3f02dc68670d4e524fbdf35e394f659d6dd86b",
+    "emery/pebble-app.bin": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "96714655fcd62856a2c1613616f6f937bd1b2179f5dbaaf82f47470ef549cac0"
+    "emery/manifest.json": "fbe1bba412f7696e967ae768e9b8a0a78e93c202d55867e42dbbff8ba0e20555"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -25,16 +25,16 @@
   },
   "activities": {
     "package": "pebble-activities",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "repository": "https://github.com/xefensor/pebble-activities",
-    "artifact": "pebble-activities-0.2.0.tgz",
-    "sha256": "2d2b3056bdb7c39d8b3d533928a98bcdc74a8172585b88cb2a19df00430e10ae",
-    "integrity": "sha512-2G938yCyVUF/NLv7z/PCm2iRjbHfTf7Dy+fZDH3BYuwhoGK12QBL2n9WB0IjzmnzG+wSvCsIgYn/6C/ap5WQ/Q==",
+    "artifact": "pebble-activities-0.2.1.tgz",
+    "sha256": "2dfaf5cd7dd69b9bf850cc56248500278d80ca47a00a3d836b8608d14cf9c17a",
+    "integrity": "sha512-bAFm760ptWt7gZVysS2+L9Wyxe6zu+2eKpsmm8EwUILL7hD49ybMUZ9f8yl33T5kfKJj1/4mLBR0lBO3QtiyZQ==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "af6c48f727c33cd16ded003347a7a4639fd99901"
+    "source_commit": "d2251a1e4e3d8543ad2e8be01fccc8758e785fb6"
   },
   "images": [
     {
@@ -84,7 +84,7 @@
     },
     {
       "file": "docs/images/activity-timer.png",
-      "sha256": "7f920de0be3cccfe7d676db92b1a1b3a649380c33212ffb1e42326b32bfac83a",
+      "sha256": "66300102e5633927cf98073daa58a23a11ba59c10f871f9d6a795df1d7140ee1",
       "pixels": [
         200,
         228
@@ -102,11 +102,13 @@
     }
   ],
   "native_qa": [
-    "docs/qa/0.9.0/native/native-previews/previews.json",
-    "docs/qa/0.9.0/native/activities/activities.json",
-    "docs/qa/0.9.0/native/bundle-audit.json"
+    "docs/qa/0.9.1/native/native-previews/previews.json",
+    "docs/qa/0.9.1/native/activities/activities.json",
+    "docs/qa/0.9.1/native/bundle-audit.json",
+    "docs/qa/0.9.1/native/cold-start/cold-start-audit.json",
+    "docs/qa/0.9.1/native/cold-start/stack-interpretation.json"
   ],
   "fixture_data": true,
-  "scope": "20 native settings samples, 28 ACT2 activity scenarios, four local-clock tick proofs without resending fixtures, and timed support/meter expiry from the final native payload. Renderer data is illustrative; no physical-watch or live-mobile-app verification.",
+  "scope": "20 native settings samples, 35 ACT2 activity scenarios and 4 local-clock tick proofs without resending packets; timed support/meter expiry. All 35 activity frames and 4 follow-ups were inspected directly; all 20 settings frames are RGB-identical to reviewed 0.9.0. Captured and final native binary/resources are identical. No physical-watch or live-mobile-app verification. Controlled follow-up: seven actual restart handshakes and two automatic cold boots of exact final native bytes, with 15 separately preserved raw screenshots and per-phase firmware logs. An earlier unpreserved Timer-QA boot overlay did not reproduce and remains undiagnosed.",
   "historical_images": "Other composites and phone settings screenshots retain their earlier release scope in VALIDATION.md."
 }

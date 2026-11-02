@@ -430,11 +430,17 @@ static uint32_t prv_millis(void) {
   time_ms(&seconds,&millis);
   return (uint32_t)seconds*1000u+millis;
 }
+static bool prv_activity_music_fresh(uint32_t now) {
+  const ComplicationSlot *music=render_context_music(&s_context_to,false);
+  return s_phone_connected&&!s_private_rebaseline&&music&&context_slot_fresh(music,now);
+}
 static const PavCard *prv_primary_activity(void) {
   // New notification interruptions retain their bounded priority. A compatible
   // ongoing activity otherwise takes the main area, including while music plays.
-  return s_context_to.mode==CONTEXT_NOTIFICATION&&!s_context_to.heading_only&&!s_private_rebaseline?NULL:
-      pav_state_select(&s_activities,(uint32_t)time(NULL),0);
+  if(s_context_to.mode==CONTEXT_NOTIFICATION&&!s_context_to.heading_only&&!s_private_rebaseline)return NULL;
+  const uint32_t now=(uint32_t)time(NULL);
+  const PavCard *card=pav_state_select(&s_activities,now,0);
+  return card&&activity_is_result(card)&&prv_activity_music_fresh(now)?NULL:card;
 }
 static WatchPose prv_full_pose(void) {
   if(prv_primary_activity())return watch_pose_context(s_context_to.mode==CONTEXT_NOTIFICATION);
@@ -970,7 +976,6 @@ static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int 
     }
   }
 }
-enum { ACTIVITY_PAUSED=1u, ACTIVITY_UNCERTAIN=2u, ACTIVITY_AGE=4u };
 typedef struct {
   const PavCard *card,*alternate;
   ActivityLayout layout;
@@ -991,16 +996,6 @@ static MusicTextMetrics prv_activity_clock_measure(void *context,const char *tex
   return (MusicTextMetrics){prv_round(prv_vector_width(text,point)),
       (ascent*point+CLOCK_FONT_UNITS_PER_EM-1)/CLOCK_FONT_UNITS_PER_EM,
       (descent*point+CLOCK_FONT_UNITS_PER_EM-1)/CLOCK_FONT_UNITS_PER_EM};
-}
-static uint8_t prv_activity_marks(const PavCard *card,const PavDatum *datum,
-                                   uint32_t now,bool main) {
-  const PavClockValue clock=pav_clock_value(card,datum,now,s_phone_connected);
-  const bool cached=!s_phone_connected||(card->flags&PAV_SOURCE_UNCONFIRMED);
-  const bool paused=(datum->type==PAV_CLOCK&&!(datum->flags&PAV_RUNNING))||
-      (main&&card->source_state==PAV_PAUSED);
-  const bool uncertain=cached||(datum->flags&PAV_ESTIMATED)||now<datum->observed_at||
-      clock.estimated||clock.due;
-  return (paused?ACTIVITY_PAUSED:0)|(uncertain?ACTIVITY_UNCERTAIN:0)|(cached?ACTIVITY_AGE:0);
 }
 static unsigned prv_activity_mark_units(uint8_t marks) {
   return ((marks&ACTIVITY_PAUSED)?1u:0u)+((marks&ACTIVITY_AGE)?2u:
@@ -1056,9 +1051,10 @@ static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,Ac
   memset(out,0,sizeof(*out));out->card=card;
   const bool image=(card->flags&PAV_HAS_IMAGE)!=0;
   const int width=image?130:180;
-  out->marks=prv_activity_marks(card,&card->main,now,true);
+  out->marks=activity_status_marks(card,&card->main,now,s_phone_connected,true);
   const bool support=pav_datum_visible(card,&card->support,now,s_phone_connected);
-  if(support)out->support_marks=prv_activity_marks(card,&card->support,now,false);
+  if(support)out->support_marks=activity_support_marks(card,out->marks,
+      activity_status_marks(card,&card->support,now,s_phone_connected,false));
   const bool meter=pav_meter_visible(card,now,s_phone_connected);
   out->static_pair=support&&card->main.type==PAV_TEXT&&card->support.type==PAV_TEXT&&
       !out->support_marks&&!meter;
@@ -1076,8 +1072,9 @@ static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,Ac
     prv_activity_line(card,&card->support,now,false,
         width-(int)prv_activity_mark_units(out->support_marks)*18,out->support,sizeof(out->support));
   out->alternate=banner?NULL:pav_state_select(&s_activities,now,1);
+  if(out->alternate&&activity_is_result(out->alternate)&&prv_activity_music_fresh(now))out->alternate=NULL;
   if(out->alternate) {
-    out->summary_marks=prv_activity_marks(out->alternate,&out->alternate->main,now,true);
+    out->summary_marks=activity_status_marks(out->alternate,&out->alternate->main,now,s_phone_connected,true);
     prv_activity_line(out->alternate,&out->alternate->main,now,true,
         width-(int)prv_activity_mark_units(out->summary_marks)*18,out->summary,sizeof(out->summary));
   } else if(!banner&&s_context_to.mode==CONTEXT_MUSIC&&context_slot_fresh(&s_context_to.title,now)) {

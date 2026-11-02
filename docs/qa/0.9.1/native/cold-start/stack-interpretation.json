@@ -1,0 +1,22 @@
+{
+  "candidate_sdk_tuple": [
+    5,
+    106
+  ],
+  "classification": "ProcessAppSDKType_4x by published firmware comparison against first4x=(5,80)",
+  "emery_nominal_stack_bytes_before_guard": 4096,
+  "runtime_stack_watermark_measured": false,
+  "source_tree": "c01b565ac51ca19a3c5f79c5279c4c6cbc529ab4",
+  "classification_source": "https://github.com/coredevices/PebbleOS/blob/c01b565ac51ca19a3c5f79c5279c4c6cbc529ab4/fw/process_management/pebble_process_md.c",
+  "allocation_source": "https://github.com/coredevices/PebbleOS/blob/c01b565ac51ca19a3c5f79c5279c4c6cbc529ab4/fw/process_management/app_manager.c",
+  "scope": "Static classification against the identified published source tree. The PBL_SDK_3 build define is not the native process SDK tuple. Exact emulator firmware/source identity and runtime stack high-water are not established.",
+  "current_compiler_frames_bytes": {
+    "prv_prepare_activity": 480,
+    "prv_activity_clock_schedule": 1464,
+    "prv_draw_activity": 1448,
+    "prv_apply_unobstructed_layout": 288,
+    "prv_primary_activity": 16,
+    "main": 88
+  },
+  "compiler_frame_scope": "Standalone -fstack-usage compile with current SDK CFLAGS, DEFINES and exact pinned headers; the largest activity plan frames match the previous 0.9.0 compiler report. Nested frames and SDK callers add usage."
+}

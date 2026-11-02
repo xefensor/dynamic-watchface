@@ -1,5 +1,83 @@
 # Dynamic validation
 
+## 0.9.1 activity glance prerelease — 2 November 2026
+
+This development prerelease responds to the user's busy Timer screenshot
+and acknowledged-result feedback. It pins Core 0.5.0 and Activities 0.2.1 at
+source `d2251a1e4e3d8543ad2e8be01fccc8758e785fb6`. Published 0.9.0 and earlier
+tags and versioned artifacts stay unchanged.
+
+- **85 JavaScript tests, 12 portable C suites and 40 Python regressions pass.**
+  Targeted cases cover matching/differing item provenance, independent pause,
+  completed clocks without a false pause icon, ongoing/music/result ordering,
+  compact Timer projection and the production ACT2 decoder's capture inputs.
+  The settings status version is checked against the package version.
+- **SDK 4.33.1 Emery build and final package/native-style audit pass.**
+  The native virtual image is **65,392 bytes**, leaving **143 bytes** below the
+  65,535-byte SDK limit. Loaded bytes are 64,972; the complete binary is 67,276
+  bytes including 2,304 relocation bytes. Resources remain 246,928 bytes.
+  This is static image sizing, not runtime free heap or stack high-water.
+- Actual Emery QEMU captured **20 native settings presets and 35 activity
+  compositions**, plus **four no-resend clock follow-ups**. All 20 settings
+  frames are RGB-identical to the previously reviewed 0.9.0 native captures.
+  All 35 activity frames and four follow-ups were inspected directly.
+- New compositions include the user's one-minute Timer case, matching and
+  differing observation ages, completed-result/music priority, an ongoing
+  activity with a completed alternate and music, and acknowledged hidden
+  results restoring idle or music. Clock labels, long captions, 24-hour values,
+  light/dark artwork and meters, Unicode units and Timeline bounds retain
+  their earlier coverage. Supporting-item/meter expiry and independent clocks
+  still execute in the native renderer without a source resend.
+- The Timer fixture uses the installed Activities production projection with
+  explicit `timerPresentation: 'compact'`. It removes the inverse elapsed
+  supporting clock and uses Timer identity as the clock label. Other providers
+  retain their independent supporting items and clock labels. These captures
+  prove rendering of synthetic source states, not a live Timer dismissal
+  delivered through the phone; Timer's own tests cover its source lifecycle.
+- Embedded native settings previews were rebuilt into the final PBW using the
+  original native application timestamp, `1793656733`. Final native binary and
+  resource hashes match the captured payload exactly. Only the manifest's
+  `generatedAt` changes; the reports preserve original capture metadata and
+  separately record final distribution identity.
+- All raw screenshot hashes were rechecked. The five-image store kit was
+  refreshed and `prepare-store.py --check` passes. Source packaging and
+  committed-head release preparation follow final documentation review.
+- A subsequent Timer QA boot reported a Dynamic not-responding overlay, but
+  its original screenshot/log was overwritten before the installed binary or
+  crash location could be established. A controlled follow-up installed the
+  exact final native binary/resources, checked seven actual startup/relaunch
+  handshakes, and automatically started Dynamic after two separate cold QEMU
+  boots on the same flash. All 15 raw screenshots were inspected (one stock
+  pre-install control and 14 Dynamic frames); preserved firmware logs contain
+  no observed Dynamic fault. The original event did not reproduce and remains
+  undiagnosed. These checks changed no app source or candidate bytes.
+- The native process header records SDK tuple `(5, 106)`, independently of the
+  `PBL_SDK_3` build define. The identified published PebbleOS source classifies
+  this as a 4.x app and selects a nominal 4 KiB Emery stack before its guard.
+  This is a source-level classification, not proof of exact emulator-firmware
+  source identity or a measured runtime watermark. A standalone current-SDK
+  compile reports 1,464-byte scheduling, 1,448-byte drawing and 480-byte
+  preparation frames, unchanged from 0.9.0; nested calls add stack usage.
+
+Evidence: [settings captures](qa/0.9.1/native/native-previews/previews.json),
+[activity captures and review](qa/0.9.1/native/activities/activities.json),
+[final native/package audit](qa/0.9.1/native/bundle-audit.json) and
+[current image provenance](asset-provenance.json). The follow-up
+[cold-start audit](qa/0.9.1/native/cold-start/cold-start-audit.json) preserves
+its separate phase reports, screenshots and firmware logs; the
+[stack interpretation](qa/0.9.1/native/cold-start/stack-interpretation.json)
+links the exact published-source predicates and current compiler frame report.
+
+Final PBW SHA-256:
+`b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d`.
+
+Physical-watch appearance, actual button feel, vibration, battery use and live
+phone/plugin transport remain separate device checks. A disconnected Timer
+cannot immediately retract a cached card on another native app; original
+expiry and eventual acknowledged-state delivery remain relevant. No new Clay
+browser session, Dashboard app, built-in Workout access or firmware integration
+is claimed. Pebble appstore submission remains held.
+
 ## 0.9.0 activity views prerelease — 2 November 2026
 
 This release uses Activities 0.2.0 and its bounded ACT2 projection. An

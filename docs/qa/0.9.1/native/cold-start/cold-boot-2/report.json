@@ -1,0 +1,62 @@
+{
+  "phase": "cold-boot-2",
+  "source_pbw_sha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d",
+  "native_payload_sha256": {
+    "emery/pebble-app.bin": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+  },
+  "phone_javascript_executed": false,
+  "captures": [
+    {
+      "file": "boot-before-explicit-launch.png",
+      "sha256": "39cdb854d4b31db0a42a8c600e4fecd72113201de0b9b0768d73a2fef0577463",
+      "rgb_sha256": "5acfa22f37897bf1b75e748f20335cdca5fad248bb2c3ad09034a3414cc3094a",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "explicit-launch.png",
+      "sha256": "39cdb854d4b31db0a42a8c600e4fecd72113201de0b9b0768d73a2fef0577463",
+      "rgb_sha256": "5acfa22f37897bf1b75e748f20335cdca5fad248bb2c3ad09034a3414cc3094a",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "relaunch-1.png",
+      "sha256": "39cdb854d4b31db0a42a8c600e4fecd72113201de0b9b0768d73a2fef0577463",
+      "rgb_sha256": "5acfa22f37897bf1b75e748f20335cdca5fad248bb2c3ad09034a3414cc3094a",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "relaunch-2.png",
+      "sha256": "39cdb854d4b31db0a42a8c600e4fecd72113201de0b9b0768d73a2fef0577463",
+      "rgb_sha256": "5acfa22f37897bf1b75e748f20335cdca5fad248bb2c3ad09034a3414cc3094a",
+      "native_pixels_modified": false
+    },
+    {
+      "file": "settled-after-relaunches.png",
+      "sha256": "39cdb854d4b31db0a42a8c600e4fecd72113201de0b9b0768d73a2fef0577463",
+      "rgb_sha256": "5acfa22f37897bf1b75e748f20335cdca5fad248bb2c3ad09034a3414cc3094a",
+      "native_pixels_modified": false
+    }
+  ],
+  "native_sessions": [
+    27,
+    27,
+    28,
+    28
+  ],
+  "start_checks": [
+    {
+      "name": "explicit-launch",
+      "native_session_received": false
+    },
+    {
+      "name": "relaunch-1",
+      "native_session_received": true
+    },
+    {
+      "name": "relaunch-2",
+      "native_session_received": true
+    }
+  ],
+  "fault_log_entries": []
+}

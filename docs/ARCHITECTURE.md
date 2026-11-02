@@ -1,7 +1,7 @@
 # Dynamic and the shared libraries
 
-Dynamic 0.9.0 pins Pebble Watchface Core 0.5.0 and Pebble
-Activities 0.2.0. Each PBW embeds its libraries and keeps its UUID, settings and
+Dynamic 0.9.1 pins Pebble Watchface Core 0.5.0 and Pebble
+Activities 0.2.1. Each PBW embeds its libraries and keeps its UUID, settings and
 permission manifest. Halftone retains its own independently adopted pin.
 Neither library is a background app.
 
@@ -178,6 +178,11 @@ reserved before optional text is fitted. An explicit bounded terminal result
 may be displayed only when the source allows it; Dynamic does not infer a
 result from a clock reaching zero.
 
+Matching main/support observations share their uncertainty/age indication when
+the observation timestamp, explicit estimated flag and displayed provenance
+agree. Different item provenance retains separate marks. Pause remains
+independent per item; a final clock in a completed result is not paused.
+
 Any activity can take the primary or secondary role. Within a provider,
 soonest running deadlines precede other or paused deadlines; provider positions
 otherwise remain stable. The renderer chooses a composition from actual item
@@ -189,6 +194,10 @@ use the body font. Artwork belongs to the primary card. The supporting line,
 secondary activity or music summary and meter appear only when they fit;
 essential clock/value units are never shortened to force a summary into place.
 Notifications and native Timeline Peek retain their existing priority.
+Optional completed results yield to ongoing activities and music. This priority
+also applies to fresh music in the existing compatibility renderer, including
+music under a heading-only notification; an expired/private-rebaselined music
+snapshot cannot hide an otherwise eligible public result.
 
 One bounded activity plan borrows cards from state and is shared by drawing
 and scheduling. It neither duplicates an artwork buffer nor copies full cards
@@ -198,9 +207,13 @@ clock actually runs; paused, due or hidden clocks do not keep it alive.
 Retained observation ages update with minute refreshes. Covered/unfocused
 states suspend this work and recompute the plan when visible again.
 
-Timer 0.3.0's native bridge adds configured duration to its public snapshots.
-Its schema 2 source can then derive remaining and elapsed clocks; older
-snapshots without that duration expose remaining only. These native snapshots
+The Timer native bridge carries current-run duration in its public snapshots.
+Its provider explicitly chooses `timerPresentation: 'compact'`: a remaining
+clock whose label is the timer identity, without the inverse elapsed clock.
+Elapsed remains in Timer's detail view; the shared library's default detailed
+projection and unrelated providers retain supporting clocks. A new explicit
+terminal-visibility bridge field lets the source acknowledge a finished run
+without claiming cancellation. Older snapshots remain compatible. Native snapshots
 remain explicitly unconfirmed even after reconnecting. The originating app
 owns pause/cancel truth and its native alarm. Dynamic has no activity command
 pipeline, Dashboard app, firmware extension or access to the built-in Workout
@@ -209,7 +222,7 @@ app's live state.
 ## Pinned dependencies and v4 reading contract
 
 The committed dependencies are `file:vendor/pebble-watchface-core-0.5.0.tgz`
-and `file:vendor/pebble-activities-0.2.0.tgz`. `package-lock.json`,
+and `file:vendor/pebble-activities-0.2.1.tgz`. `package-lock.json`,
 `vendor/CORE.json` and `vendor/ACTIVITIES.json` record their integrity and
 provenance, including exact source commits and archive SHA-256 values.
 Updating either library repository alone does not update installed PBWs. Each
@@ -303,9 +316,9 @@ callbacks and frees that block. Rendering adds no per-frame state buffers.
 If AppMessage cannot open, transport-dependent requests and replies remain
 disabled while the local clock continues.
 
-For the fixed-timestamp 0.9.0 native candidate, `NativeState` is 22,472 bytes
-on ARM. The SDK reports a 65,120-byte virtual image, 415 bytes below its
-65,535-byte limit; loaded image bytes are 64,700. These are different from
+For the fixed-timestamp 0.9.1 native candidate, `NativeState` remains 22,472 bytes
+on ARM. The SDK reports a 65,392-byte virtual image, 143 bytes below its
+65,535-byte limit; loaded image bytes are 64,972. These are different from
 runtime heap and stack usage. New native changes need another size check;
 this is a tight code budget, not evidence of spare runtime memory. Rendering
 and scheduling use a single bounded plan per call and the codec allocates no
@@ -316,15 +329,15 @@ intermediate transitions check appearance and fitting; browser checks exercise
 actual Clay controls and saving. Emulator/plugin fixtures are separate from
 physical-phone delivery, hardware animation and battery-life verification.
 See [the build-specific validation record](VALIDATION.md).
-The final 0.9.0 package/native-style audit passes against the captured native
+The final 0.9.1 package/native-style audit passes against the captured native
 binary and resources. Its source audit checks the compact weekday table's
 608 native bytes, all 17 locales and 119 abbreviations, Norwegian aliases,
 regional/fallback lookup and exact packaged font coverage. Runtime evidence
-covers 20 settings presets, 28 activity compositions and four clock follow-up
+covers 20 settings presets, 35 activity compositions and four clock follow-up
 frames without a source resend, including supporting-item and meter expiry.
 The same native session completes these checks without an observed app fault.
 This does not measure runtime heap, stack high-water or battery use. Physical
-0.9.0/live-provider behavior has not been verified. A successful user test of
+0.9.1/live-provider behavior has not been verified. A successful user test of
 the earlier release is recorded separately from this candidate's evidence.
 
 ## Publication refinements in 0.6.1

@@ -4,7 +4,7 @@
 // this module is never imported by the phone or watch application.
 const core=require('pebble-watchface-core').wire;
 const activity=require('pebble-activities').view;
-if(!activity)throw Error('Native ACT2 fixtures require the pinned Activities 0.2.0 package');
+if(!activity)throw Error('Native ACT2 fixtures require the pinned Activities 0.2.1 package');
 const states=['idle','music','notification-summary','notification','timeline'];
 function cover() {
   const palette=[0xc0,0xff,0xc3,0xcf,0xfc,0xf3,0xf0,0xcc],pixels=[];
@@ -56,7 +56,7 @@ function activityPresets(options) {
   const provider='46f0a5c9-48ce-4ecb-87b7-c1510088a3d2';
   const timer=(revision,state='active',seconds=522,extra={})=>({provider,id:'sample-pasta',kind:'timer',revision,
     state,clock:'deadline',observedAt:now,validUntil:now+Math.max(3600,seconds+60),private:false,
-    unconfirmed:true,main:'',footer:'10 min timer',
+    unconfirmed:true,main:'',footer:'10 min timer',totalDuration:600,
     ...(state==='paused'?{duration:seconds}:{deadline:now+seconds}),...extra});
   const clock=(label,mode,baseSeconds,extra={})=>({type:'clock',label,mode,baseSeconds,
     running:true,anchorAt:now,retain:true,...extra});
@@ -119,7 +119,26 @@ function activityPresets(options) {
       {type:'value',label:'Glukóza',value:6.2,unit:'mmol/L'},null,{private:true})},
     {name:'value-eta-artwork-meter-dark',base:'idle',theme:'dark',card:card('sample-printer-dark','Boat print',
       {type:'value',label:'Complete',value:72,unit:'%'},clock('ETA','deadline',2220,{estimated:true}),
-      {image:cover(),meter:{kind:'progress',source:'main',min:0,max:100}})}
+      {image:cover(),meter:{kind:'progress',source:'main',min:0,max:100}})},
+    {name:'timer-one-minute',base:'idle',card:timer(16,'active',36,{footer:'1 min timer',totalDuration:60})},
+    {name:'matching-item-provenance',base:'idle',card:card('sample-matching-provenance','Interval run',
+      clock('Rest','deadline',600,{anchorAt:now-70}),clock('Elapsed','elapsed',1458,{anchorAt:now-70}),
+      {kind:'workout',observedAt:now-70,unconfirmed:true})},
+    {name:'different-item-provenance',base:'idle',card:card('sample-different-provenance','Interval run',
+      clock('Rest','deadline',600,{anchorAt:now-70}),
+      clock('Elapsed','elapsed',1458,{anchorAt:now-300,observedAt:now-300}),
+      {kind:'workout',observedAt:now-70,unconfirmed:true})},
+    {name:'completed-result-music',base:'music',card:card('sample-result-with-music','10 min timer',
+      {type:'text',label:'State',text:'Finished',retain:true},null,
+      {kind:'timer',state:'completed',unconfirmed:true,showTerminal:true,validUntil:now+60})},
+    {name:'ongoing-result-music',base:'music',cards:[
+      card('sample-ongoing-with-result','Outdoor walk',clock('Elapsed','elapsed',1830),null,{kind:'workout'}),
+      card('sample-result-secondary','10 min timer',{type:'text',label:'State',text:'Finished',retain:true},null,
+        {kind:'timer',state:'completed',unconfirmed:true,showTerminal:true,validUntil:now+60})]},
+    {name:'timer-acknowledged-idle',base:'idle',card:timer(17,'completed',0,
+      {clock:'none',showTerminal:false,deadline:0,validUntil:now+60})},
+    {name:'timer-acknowledged-music',base:'music',card:timer(18,'completed',0,
+      {clock:'none',showTerminal:false,deadline:0,validUntil:now+60})}
   ];
   let sequence=options.sequence===undefined?100:options.sequence;
   return {coreVersion:plan.coreVersion,activitiesVersion:plan.activitiesVersion,
@@ -127,7 +146,8 @@ function activityPresets(options) {
     presets:specifications.map(spec=>{
       const base=plan.presets.find(p=>p.name===`${spec.base}-24-${spec.theme||'light'}`);
       const cards=(spec.cards||[spec.card]).map(source=>{
-        const result=source.main&&typeof source.main==='object'?activity.normalize(source):activity.fromLegacy(source);
+        const result=source.main&&typeof source.main==='object'?activity.normalize(source):
+          activity.fromLegacy(source,{terminalResults:true,timerPresentation:'compact'});
         if(!result)throw Error('Invalid native activity fixture: '+spec.name);
         return result;
       });

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.9.1
+
+- Simplify the updated Timer provider's explicit compact projection to one
+  remaining clock and its identity. Keep generic main/support views, meaningful
+  clock labels, artwork and independent secondary activities available.
+- Coalesce matching observation-age and uncertainty indicators once per card.
+  Preserve distinct observation/estimate provenance and independent pause state;
+  keep cached native snapshots visibly last reported.
+- Treat completed clocks as final values instead of paused clocks. Optional
+  terminal results yield to ongoing activities and music from either the
+  generic activity source or the existing music adapter.
+- Pin Activities 0.2.1 and retain Core 0.5.0, UUID, existing message keys,
+  privacy settings, typography and native alarm ownership. Timer acknowledgment
+  remains the source's responsibility; zero never proves completion.
+- Refresh native settings previews and capture compact one-minute timers,
+  matching/differing item provenance, acknowledged hidden results and terminal
+  results alongside music. Earlier published assets and tags stay unchanged.
+- GitHub development prerelease for sideload testing; physical watch and live
+  phone/provider checks remain separate. Pebble appstore submission stays held.
+
 ## 0.9.0
 
 - Adopt Activities 0.2.0 ACT2 views: each activity has one main item and an

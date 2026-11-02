@@ -1,0 +1,42 @@
+{
+  "checked_at_utc": "2026-11-02T22:19:14.242999+00:00",
+  "candidate_pbw": "Dynamic-0.9.1.pbw",
+  "candidate_pbw_sha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d",
+  "native_binary_sha256": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
+  "phases": [
+    {
+      "phase": "install-final",
+      "report": "install-final/report.json",
+      "actual_restart_handshakes": 3,
+      "already_running_start_request_noop": false,
+      "screenshot_count": 5,
+      "fault_log_entries": []
+    },
+    {
+      "phase": "cold-boot-1",
+      "report": "cold-boot-1/report.json",
+      "actual_restart_handshakes": 2,
+      "already_running_start_request_noop": true,
+      "screenshot_count": 5,
+      "fault_log_entries": []
+    },
+    {
+      "phase": "cold-boot-2",
+      "report": "cold-boot-2/report.json",
+      "actual_restart_handshakes": 2,
+      "already_running_start_request_noop": true,
+      "screenshot_count": 5,
+      "fault_log_entries": []
+    }
+  ],
+  "separate_cold_boot_processes_after_exact_install": 2,
+  "actual_restart_handshakes": 7,
+  "automatic_cold_boot_native_frames_inspected": 2,
+  "already_running_start_noops": 2,
+  "start_noop_contract_source": "https://github.com/coredevices/PebbleOS/blob/c01b565ac51ca19a3c5f79c5279c4c6cbc529ab4/fw/process_management/app_run_state.c",
+  "raw_native_screenshots_inspected": 15,
+  "scope": "The original unpreserved Timer-QA startup overlay could not be diagnosed. Exact final native binary/resources were installed, launched and relaunched, then automatically started after two fresh QEMU process boots on the same flash. All new screenshots were inspected; no Dynamic fault or not-responding overlay was observed. First pre-install screenshot is a stock-face control, followed by 14 Dynamic frames. Requests to start the already-running cold-boot face are no-ops and need not emit another native session. Phone JavaScript and physical-watch behavior are outside this check.",
+  "candidate_source_or_bytes_changed": false,
+  "original_event_reproduced": false,
+  "success": true
+}

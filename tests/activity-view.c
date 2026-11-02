@@ -30,10 +30,42 @@ int main(void) {
   other.flags=PAV_PRIVATE;
   assert(!activity_view_needs_tick(&main,false,&other,true,110,false));
   main=card();main.source_state=PAV_PAUSED;
+  assert(!activity_is_result(&main));
   assert(activity_view_needs_tick(&main,false,NULL,false,110,true));
   main.main.type=PAV_VALUE;main.main.flags=PAV_RETAIN;
   main.main.base_seconds=main.main.anchor_at=0;
   assert(!activity_view_needs_tick(&main,false,NULL,false,110,true));
   assert(activity_view_needs_tick(&main,true,NULL,false,110,true));
+
+  /* A saved native snapshot is visibly uncertain once per shared observation,
+   * without treating a separately stopped or estimated item as equivalent. */
+  main=card();main.flags=PAV_SOURCE_UNCONFIRMED;
+  const uint8_t cached=ACTIVITY_UNCERTAIN|ACTIVITY_AGE;
+  uint8_t marks=activity_status_marks(&main,&main.main,110,true,true);
+  uint8_t support=activity_status_marks(&main,&main.support,110,true,false);
+  assert(marks==cached&&support==cached);
+  assert(activity_support_marks(&main,marks,support)==0);
+  main.support.observed_at=99;
+  assert(activity_support_marks(&main,marks,support)==cached);
+  main.support.observed_at=main.main.observed_at;
+  main.support.flags|=PAV_ESTIMATED;
+  assert(activity_support_marks(&main,marks,support)==cached);
+  main.support.flags&=(uint8_t)~(PAV_ESTIMATED|PAV_RUNNING);
+  main.support.anchor_at=0;
+  support=activity_status_marks(&main,&main.support,110,true,false);
+  assert(activity_support_marks(&main,marks,support)==ACTIVITY_PAUSED);
+  assert(activity_support_marks(&main,0,cached)==cached);
+  assert(activity_status_marks(&main,&main.main,110,false,true)==cached);
+
+  /* Finished elapsed values are final results, not paused activity clocks. */
+  main.source_state=PAV_COMPLETED;main.flags|=PAV_SHOW_TERMINAL;
+  assert(activity_is_result(&main));
+  assert(activity_status_marks(&main,&main.support,110,true,false)==cached);
+  main.source_state=PAV_CANCELLED;
+  assert(activity_is_result(&main));
+  assert(!(activity_status_marks(&main,&main.support,110,true,false)&ACTIVITY_PAUSED));
+  main.source_state=PAV_PAUSED;
+  assert(activity_status_marks(&main,&main.main,110,true,true)==(cached|ACTIVITY_PAUSED));
+  assert(activity_status_marks(&main,&main.main,110,true,false)==cached);
   return 0;
 }

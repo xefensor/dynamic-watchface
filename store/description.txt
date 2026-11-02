@@ -12,4 +12,4 @@ Optional watchface notification banners can show only the app, an app/sender sum
 
 Dynamic targets Pebble Time 2. Live readings use Pebble's plugin system; Android is required for music and notification integration. The clock and date continue without the phone. Use Pebble's Music app for playback controls.
 
-Version 0.9.0 is a GitHub sideload prerelease for the plugin preview. Public store submission is on hold while Pebble's preview restriction applies.
+Version 0.9.1 is a GitHub sideload prerelease for the plugin preview. Public store submission is on hold while Pebble's preview restriction applies.
