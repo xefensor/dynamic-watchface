@@ -8,6 +8,8 @@ has no analytics, advertising, account service or separate weather server.
 - The first two Pebble complication choices provide the readings on the face.
   Their providers may use a network service or location according to their own
   settings and permissions. Dynamic has no direct weather HTTP client.
+- Compatible activity plugins provide main/footer text, optional artwork and
+  clock or numeric fields. Providers control their source permissions and expiry.
 - Music uses the current title, artist, playing state and optional artwork.
 - Optional watchface notification banners use the app identity, sender/title,
   optional message text and optional icon. Notification access is controlled
@@ -36,6 +38,12 @@ packets. Pebble's phone-side notification reader still needs notification
 access, and Dynamic can examine an update locally to tell it from an unchanged
 notification. The app-name filter controls which banners Dynamic displays; it
 does not replace Pebble's permission controls or system notification settings.
+
+Generic activities stay in transient consumer memory, including after reconnect.
+A public clock may remain explicitly unconfirmed only through its original
+validity; private content clears on disconnection. The separate reference timer
+plugin stores a bounded non-private timer snapshot on the phone. Dynamic does
+not own or read the timer watchapp's native storage.
 
 ## Other software and support
 

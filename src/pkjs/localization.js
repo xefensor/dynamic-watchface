@@ -2914,6 +2914,115 @@ Object.keys(SETTINGS_MESSAGES).forEach(function(language) {
   row.sourceOff = row.stateOff;
   row.sourcePermission = row.sourceDenied;
 });
+var ACTIVITY_MESSAGES = {
+  "en": {
+    "showActivities": "Show activity plugins",
+    "activitiesHelp": "Compatible activity plugins connect automatically. Manage access permissions in Pebble.",
+    "activityStateHelp": "Clock mark: last-reported activity state. The source app owns tracking and alarms.",
+    "activitiesSource": "Activity plugins"
+  },
+  "cs": {
+    "showActivities": "Zobrazovat pluginy aktivit",
+    "activitiesHelp": "Kompatibilní pluginy aktivit se připojí automaticky. Přístupová oprávnění spravujte v Pebble.",
+    "activityStateHelp": "Značka hodin: poslední nahlášený stav aktivity. Měření a budíky zajišťuje zdrojová aplikace.",
+    "activitiesSource": "Pluginy aktivit"
+  },
+  "sk": {
+    "showActivities": "Zobrazovať pluginy aktivít",
+    "activitiesHelp": "Kompatibilné pluginy aktivít sa pripoja automaticky. Prístupové oprávnenia spravujte v Pebble.",
+    "activityStateHelp": "Značka hodín: posledný nahlásený stav aktivity. Meranie a budíky zabezpečuje zdrojová aplikácia.",
+    "activitiesSource": "Pluginy aktivít"
+  },
+  "de": {
+    "showActivities": "Aktivitätsplugins anzeigen",
+    "activitiesHelp": "Kompatible Aktivitätsplugins verbinden sich automatisch. Zugriffsrechte werden in Pebble verwaltet.",
+    "activityStateHelp": "Uhrsymbol: zuletzt gemeldeter Aktivitätsstatus. Die Quell-App übernimmt Aufzeichnung und Alarme.",
+    "activitiesSource": "Aktivitätsplugins"
+  },
+  "fr": {
+    "showActivities": "Afficher les plugins d’activité",
+    "activitiesHelp": "Les plugins d’activité compatibles se connectent automatiquement. Gérez les autorisations dans Pebble.",
+    "activityStateHelp": "Symbole d’horloge : dernier état reçu. L’application source assure le suivi et les alarmes.",
+    "activitiesSource": "Plugins d’activité"
+  },
+  "es": {
+    "showActivities": "Mostrar plugins de actividad",
+    "activitiesHelp": "Los plugins de actividad compatibles se conectan automáticamente. Gestiona los permisos en Pebble.",
+    "activityStateHelp": "Símbolo de reloj: último estado recibido. La aplicación de origen gestiona el seguimiento y las alarmas.",
+    "activitiesSource": "Plugins de actividad"
+  },
+  "it": {
+    "showActivities": "Mostra plugin attività",
+    "activitiesHelp": "I plugin attività compatibili si collegano automaticamente. Gestisci le autorizzazioni in Pebble.",
+    "activityStateHelp": "Simbolo orologio: ultimo stato ricevuto. L’app di origine gestisce registrazione e allarmi.",
+    "activitiesSource": "Plugin attività"
+  },
+  "pt": {
+    "showActivities": "Mostrar plugins de atividade",
+    "activitiesHelp": "Os plugins de atividade compatíveis ligam-se automaticamente. Gere as permissões no Pebble.",
+    "activityStateHelp": "Símbolo de relógio: último estado recebido. A aplicação de origem gere o registo e os alarmes.",
+    "activitiesSource": "Plugins de atividade"
+  },
+  "nl": {
+    "showActivities": "Activiteitsplugins tonen",
+    "activitiesHelp": "Compatibele activiteitsplugins verbinden automatisch. Beheer toegangsrechten in Pebble.",
+    "activityStateHelp": "Kloksymbool: laatst gemelde activiteitstoestand. De bronapp verzorgt metingen en alarmen.",
+    "activitiesSource": "Activiteitsplugins"
+  },
+  "pl": {
+    "showActivities": "Pokaż wtyczki aktywności",
+    "activitiesHelp": "Zgodne wtyczki aktywności łączą się automatycznie. Uprawnieniami zarządzaj w Pebble.",
+    "activityStateHelp": "Symbol zegara: ostatnio zgłoszony stan aktywności. Aplikacja źródłowa odpowiada za pomiary i alarmy.",
+    "activitiesSource": "Wtyczki aktywności"
+  },
+  "da": {
+    "showActivities": "Vis aktivitetsplugins",
+    "activitiesHelp": "Kompatible aktivitetsplugins forbindes automatisk. Administrer adgangstilladelser i Pebble.",
+    "activityStateHelp": "Ursymbol: senest rapporterede aktivitetsstatus. Kildeappen styrer registrering og alarmer.",
+    "activitiesSource": "Aktivitetsplugins"
+  },
+  "sv": {
+    "showActivities": "Visa aktivitetsplugin",
+    "activitiesHelp": "Kompatibla aktivitetsplugin ansluts automatiskt. Hantera åtkomstbehörigheter i Pebble.",
+    "activityStateHelp": "Klocksymbol: senast rapporterade aktivitetsstatus. Källappen sköter registrering och larm.",
+    "activitiesSource": "Aktivitetsplugin"
+  },
+  "fi": {
+    "showActivities": "Näytä toimintolisäosat",
+    "activitiesHelp": "Yhteensopivat toimintolisäosat yhdistetään automaattisesti. Hallitse käyttöoikeuksia Pebblessä.",
+    "activityStateHelp": "Kellomerkki: viimeksi ilmoitettu toiminnan tila. Lähdesovellus vastaa seurannasta ja hälytyksistä.",
+    "activitiesSource": "Toimintolisäosat"
+  },
+  "no": {
+    "showActivities": "Vis aktivitetsprogramtillegg",
+    "activitiesHelp": "Kompatible aktivitetsprogramtillegg kobles til automatisk. Administrer tilgangstillatelser i Pebble.",
+    "activityStateHelp": "Klokkesymbol: sist rapporterte aktivitetsstatus. Kildeappen styrer registrering og alarmer.",
+    "activitiesSource": "Aktivitetsprogramtillegg"
+  },
+  "hu": {
+    "showActivities": "Tevékenységbővítmények megjelenítése",
+    "activitiesHelp": "A kompatibilis tevékenységbővítmények automatikusan csatlakoznak. Az engedélyeket a Pebble-ben kezelheted.",
+    "activityStateHelp": "Órajel: a legutóbb jelentett tevékenységállapot. A forrásalkalmazás végzi a követést és a riasztást.",
+    "activitiesSource": "Tevékenységbővítmények"
+  },
+  "ro": {
+    "showActivities": "Afișează pluginurile de activitate",
+    "activitiesHelp": "Pluginurile de activitate compatibile se conectează automat. Gestionează permisiunile în Pebble.",
+    "activityStateHelp": "Simbolul ceasului: ultima stare raportată. Aplicația sursă gestionează înregistrarea și alarmele.",
+    "activitiesSource": "Pluginuri de activitate"
+  },
+  "tr": {
+    "showActivities": "Etkinlik eklentilerini göster",
+    "activitiesHelp": "Uyumlu etkinlik eklentileri otomatik bağlanır. Erişim izinlerini Pebble’da yönet.",
+    "activityStateHelp": "Saat simgesi: son bildirilen etkinlik durumu. Kaynak uygulama takibi ve alarmları yönetir.",
+    "activitiesSource": "Etkinlik eklentileri"
+  }
+};
+Object.keys(ACTIVITY_MESSAGES).forEach(function(language) {
+  Object.keys(ACTIVITY_MESSAGES[language]).forEach(function(key) {
+    MESSAGES[language][key]=ACTIVITY_MESSAGES[language][key];
+  });
+});
 var LANGUAGES = Object.keys(MESSAGES);
 var LITERALS = Object.create(null);
 Object.keys(MESSAGES.en).forEach(function(key) { LITERALS[MESSAGES.en[key]] = key; });

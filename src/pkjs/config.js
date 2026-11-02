@@ -31,6 +31,8 @@ module.exports = [
     {type:'text',defaultValue:'These are shared Pebble slots. Changing them also affects other watchfaces that use them.'},
     {type:'text',defaultValue:'Choose slots 1 and 2 in Pebble → Settings → Complications.'},
     {type:'text',defaultValue:'Units come from Pebble and the selected plugin.'},
+    {type:'toggle',messageKey:'SHOW_ACTIVITIES',defaultValue:true,label:'Show activity plugins',description:'Compatible activity plugins connect automatically. Manage access permissions in Pebble.'},
+    {type:'text',defaultValue:'Clock mark: last-reported activity state. The source app owns tracking and alarms.'},
     {type:'text',defaultValue:'Music & notifications'},
     {type:'toggle',messageKey:'SHOW_MUSIC',defaultValue:true,label:'Show music while playing'},
     {type:'text',id:'dynamic-notification-mode',defaultValue:'Watchface banners'},

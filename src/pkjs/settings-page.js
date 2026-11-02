@@ -404,7 +404,7 @@ module.exports = function() {
     var health = node(item('dynamic-source-status'));
     if (health) {
       clear(health);
-      [['music','musicSource'],['notifications','notificationsSource'],['phone','phoneSource']].forEach(function(pair) {
+      [['music','musicSource'],['notifications','notificationsSource'],['phone','phoneSource'],['activities','activitiesSource']].forEach(function(pair) {
         var source = data.sources && data.sources[pair[0]] || {}, row = make('div',null,'dynamic-health');
         row.appendChild(make('span',t(pair[1]))); row.appendChild(make('span',state(pair[0] !== 'music' && source.state === 'idle' ? 'ready' : source.state),'dynamic-state'));
         health.appendChild(row);
@@ -435,7 +435,7 @@ module.exports = function() {
     if (technical && context) {
       var details = make('details',null,'dynamic-details'); details.appendChild(make('summary',t('technicalDetails')));
       technical.parentNode.insertBefore(details,technical); details.appendChild(technical); details.appendChild(context);
-      [['music','musicSource'],['notifications','notificationsSource'],['phone','phoneSource']].forEach(function(pair) {
+      [['music','musicSource'],['notifications','notificationsSource'],['phone','phoneSource'],['activities','activitiesSource']].forEach(function(pair) {
         var source = data.sources && data.sources[pair[0]];
         if (source && source.message) { details.appendChild(make('p',t(pair[1]) + ': ' + source.message)); }
       });

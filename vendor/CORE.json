@@ -1,13 +1,13 @@
 {
   "package": "pebble-watchface-core",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "repository": "https://github.com/xefensor/pebble-watchface-core",
-  "artifact": "pebble-watchface-core-0.4.1.tgz",
-  "sha256": "9bc0b432a40293a5551dc78991fd6817c523683a8f7a5d02f9bb96dfcfd6209c",
-  "integrity": "sha512-DygC3UHi+bjuyqC3yOPWYUijXLeVWo7cK7uLEvLXdDzQCaAiLIcD99juVn0mcjcVNLLIG+5LYvzzIzyD/xhovw==",
+  "artifact": "pebble-watchface-core-0.5.0.tgz",
+  "sha256": "cbdca160efbcf6faa8f49bae10daa5887a2d68b90aeef05af86183c880dd59fb",
+  "integrity": "sha512-0LGVI25OW9gacE7/HEikdq2ZL6QjXiRb7hNVCAfTHPLZyJ74t/ZZxVkcHtWUhdcI1/bR9fUpZyR0KxX3U5cVuw==",
   "sdk": "4.33.1",
   "platforms": [
     "emery"
   ],
-  "source_commit": "6a6fb32e5a52d146e60d32fd6ee1b92e67722ada"
+  "source_commit": "54944101ed607549107e5fd2ab1174dc5b5eae38"
 }

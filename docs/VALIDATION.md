@@ -1,5 +1,43 @@
 # Dynamic validation
 
+## 0.7.0 stock activity integration
+
+Dynamic pins Core 0.5.0 and independent Pebble Activities 0.1.0. The UUID and all
+41 existing keys remain unchanged; three activity keys are appended.
+
+- 80 JavaScript tests, 11 strict native suites and 29 Python packaging/audit
+  regressions pass. The optional music/notification adapter retains the existing
+  baseline and privacy behavior. Core and Activities have their own test suites.
+- The official SDK 4.33.1 Emery build passes. Load image is 61,508 bytes, below
+  65,535. Resources remain 246,928 bytes; reported total native footprint is
+  61,922 bytes with 69,150 bytes available before startup. All 14,720 original
+  font ascent/descent values are preserved by the smaller deduplicated tables.
+- 20 actual native settings presets and six generic layouts were captured through
+  the Screenshot service. Main/footer text, two configured readings, paused
+  timers, numeric glucose, elapsed time, compact banners and native Timeline Peek
+  fit without shrinking the agreed text sizes. The elapsed session is a plugin
+  fixture, not built-in Workout access.
+- An actual QEMU/pypkjs phone handoff from the native timer demonstrates shared
+  storage, cold plugin reads, automatic discovery, local countdown, pause and
+  cancellation restoring music. Normal button navigation passes. Recorded
+  Dynamic exits release all heap allocations; the sampled log reports 29,540
+  used of 69,144 bytes before cleanup. This is not a power or hardware test.
+- New settings controls and provider status are translated in all 17 locales.
+  The current portable settings checks pass; the extensive browser checks below
+  remain historical to their stated releases and are not relabelled as 0.7.0.
+
+Evidence: [native presets](qa/0.7.0/native-previews/previews.json),
+[generic layouts](qa/0.7.0/activities/activities.json) and
+[reference timer handoff](https://github.com/xefensor/pebble-activities/blob/main/docs/qa/0.1.0/handoff.json).
+Native preview binary/resource identity is checked again against the final PBW.
+
+The reference timer owns its native alarm. A clean emulator run confirms offline Wakeup
+launch at the deadline; a displayed zero on Dynamic remains separate from that
+originating-app completion. A watchdog dialog occurred during repeated forced developer
+launch commands; subsequent normal button roundtrips passed. Real mobile-app
+integration, physical alarm/vibration, power use and launch stress are not
+certified. No firmware fork, built-in Workout access or dashboard app is shipped.
+
 ## GitHub distribution after 0.6.1
 
 [GitHub v0.6.1](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)

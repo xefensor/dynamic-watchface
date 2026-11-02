@@ -2,7 +2,7 @@
 
 **Status: GitHub prerelease published; Pebble appstore submission is held.** Pebble's
 [plugin-preview guide](https://developer.repebble.com/guides/plugins/preview/)
-currently says not to publish apps that use plugins to the store. The [v0.6.1 GitHub release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)
+currently says not to publish apps that use plugins to the store. The [v0.7.0 GitHub release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.7.0)
 provides the checked sideloaded PBW/source download. This kit does not submit or
 upload anything to the Pebble appstore. Recheck that rule before a public submission.
 
@@ -49,7 +49,8 @@ has allowed public submission.
 
 ## Frozen release and current documentation
 
-The v0.6.1 package and asset manifest identify the original checked release.
+The v0.7.0 package and asset manifest identify this checked release; earlier
+published versions retain their own original source and artifacts.
 Later documentation-only changes on `main` do not rewrite those published
 packages, hashes or tags. Regenerate the kit/source snapshot while preparing a
 new version, not to replace an existing public release. The separate

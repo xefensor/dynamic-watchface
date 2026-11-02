@@ -8,7 +8,7 @@ Keep private notification text out of reports and screenshots.
 
 ## Downloads and verification
 
-Use the current [v0.6.1 GitHub prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)
+Use the current [v0.7.0 GitHub prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.7.0)
 or browse [all releases](https://github.com/xefensor/dynamic-watchface/releases).
 Download the PBW and `SHA256SUMS.txt`; the source ZIP is for building or inspecting
 the checked snapshot. Verify the files you downloaded with
@@ -26,6 +26,14 @@ permission availability depend on your Pebble app and plugins.
 The clock and date work without a phone. Live readings, music and notification
 banners require their sources. Music is a display; use Pebble's Music app for
 playback controls. Timeline Peek is the watch's native panel.
+
+## Plugin activities
+
+Enable Plugin activities in Content and install a provider built for the
+`activity/session` v1 convention. Activity Timer bundles its native watchapp,
+phone bridge and provider. Wait for Shared with phone before leaving the timer.
+A clock mark means last reported; offline changes may be missing. The originating
+watchapp owns its alarm. Include both app versions and sharing status in reports.
 
 ## Notification overlap
 

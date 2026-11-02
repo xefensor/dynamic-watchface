@@ -1,6 +1,6 @@
 # GitHub releases
 
-The current [v0.6.1 prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1)
+The current [v0.7.0 prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.7.0)
 is live with the checked PBW, source ZIP and flat `SHA256SUMS.txt`.
 [All versions](https://github.com/xefensor/dynamic-watchface/releases) remain
 available on the repository's Releases page.
@@ -32,14 +32,17 @@ include the automation files when the next version is prepared.
 
 1. Bump `package.json`, its lockfile metadata and the strict release auditor's
    version expectations. Update `CHANGELOG.md` and any affected product docs.
-   A Core upgrade is a separate deliberate change to the versioned archive,
-   lockfile and `vendor/CORE.json`; publishing Core does not upgrade Dynamic.
+   A library upgrade deliberately changes its archive, lockfile and
+   `vendor/CORE.json` or `vendor/ACTIVITIES.json`; publishing a library does not
+   upgrade Dynamic.
 2. Run the portable checks, build with the intended SDK, then package and audit
    the PBW. Follow [AGENTS.md](../AGENTS.md) for the full order, native size
    constraint, license packaging, preview capture and store-kit provenance.
 3. Finish source/docs for this unpublished snapshot, prepare its source archive
    and update `dist/SHA256SUMS.txt`. Source ZIPs exclude generated `build/`,
-   dependency, Git and `.pebble/` folders, and contain no PBW binary. Runtime
+   dependency, Git and `.pebble/` folders, generated QA PNG copies, and all PBW
+   binaries. QA images remain in the repository; embedded preview data and
+   product screenshots stay in the archive. Runtime
    and build inputs must match the selected release commit.
 4. Commit the version, checked artifacts, checksums and notes locally. Then
    check the committed release inputs without publishing:

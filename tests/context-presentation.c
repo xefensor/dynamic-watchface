@@ -96,5 +96,30 @@ int main(void) {
   assert(view.mode==CONTEXT_NONE&&!view.title&&!view.music_title);
   view=render_context_view(&live,true,true,201);
   assert(view.mode==CONTEXT_NONE);
+
+  // Notification snapshots borrow only the fixed live music slots. A provider
+  // edit is visible immediately without another entrance or private image copy.
+  memset(&live,0,sizeof(live));
+  text(0,"First track",300);text(1,"First artist",300);text(2,"App banner",240);
+  capture(201);RenderContext outgoing=snapshot;
+  assert(snapshot.music_title==&live.slots[0]&&snapshot.music_artist==&live.slots[1]);
+  assert(!contains(&snapshot,sizeof(snapshot),"First track"));
+  text(0,"Latest track",300);text(1,"Latest artist",300);
+  view=render_context_view(&live,true,false,202);
+  assert(render_context_equal(&snapshot,&view));
+  assert(!render_context_should_slide(&snapshot,&view));
+  assert(!strcmp(render_context_music(&snapshot,false)->text,"Latest track"));
+  render_context_redact(&snapshot,&live,true,false,240);
+  assert(snapshot.mode==CONTEXT_MUSIC&&!snapshot.music_title&&!snapshot.music_artist);
+  assert(!strcmp(snapshot.title.text,"Latest track"));
+
+  // A clear revokes the borrowed slots for both transition directions, while
+  // the normal-music fallback copy also obeys the same live permission gate.
+  memset(&live.slots[0],0,sizeof(live.slots[0]));
+  memset(&live.slots[1],0,sizeof(live.slots[1]));
+  render_context_redact(&outgoing,&live,true,false,241);
+  render_context_redact(&snapshot,&live,true,false,241);
+  assert(!outgoing.music_title&&!outgoing.music_artist&&!outgoing.has_music);
+  assert(!render_context_music(&outgoing,false));zeroed();
   return 0;
 }

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.0
+
+- Discovers compatible activity providers through independent Pebble Activities
+  0.1.0, with a shared main/footer layout and bounded two-card projection.
+- Shows native timer snapshots with local countdowns and an explicit last-reported
+  mark. Pause/cancel authority and alarms remain in the originating watchapp.
+- Adds a translated Plugin activities switch and separate provider health.
+- Pins lean Core 0.5.0 for readings and keeps music/notification privacy behavior
+  through the optional Activities compatibility adapter.
+- Deduplicates identical font measurement rows without changing any glyph metric,
+  font resource, text size or footer position.
+- Preserves the UUID and all 41 existing AppMessage key numbers; appends 3 activity
+  keys. No firmware fork or native Workout integration is included.
+
 ## 0.6.1
 
 - Clears fully redacted, malformed or newly filtered notifications immediately,

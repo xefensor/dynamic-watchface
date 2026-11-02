@@ -5,7 +5,10 @@
 typedef struct {
   ContextMode mode;
   bool heading_only,has_music;
-  ComplicationSlot title,subtitle,music_title,music_artist;
+  ComplicationSlot title,subtitle;
+  // Background music follows validated live slots instead of duplicating two
+  // image buffers in every outgoing/incoming notification snapshot.
+  const ComplicationSlot *music_title,*music_artist;
 } RenderContext;
 typedef struct {
   ContextMode mode;
@@ -54,8 +57,10 @@ static inline bool render_context_equal(const RenderContext *snapshot,const Cont
       snapshot->has_music==view->has_music&&(view->mode==CONTEXT_NONE||
       (render_optional_slot_equal(&snapshot->title,view->title)&&
        render_optional_slot_equal(&snapshot->subtitle,view->subtitle)&&
-       render_optional_slot_equal(&snapshot->music_title,view->music_title)&&
-       render_optional_slot_equal(&snapshot->music_artist,view->music_artist)));
+       ((snapshot->music_title==NULL&&view->music_title==NULL)||
+        (snapshot->music_title&&view->music_title&&render_slot_identity_equal(snapshot->music_title,view->music_title)))&&
+       ((snapshot->music_artist==NULL&&view->music_artist==NULL)||
+        (snapshot->music_artist&&view->music_artist&&render_slot_identity_equal(snapshot->music_artist,view->music_artist)))));
 }
 // A burst has one entrance. Edits to its heading/body remain in place, and
 // an artist arriving after a title also must not replay the song entrance.
@@ -71,12 +76,12 @@ static inline void render_context_capture(RenderContext *snapshot,const ContextV
   snapshot->heading_only=view->heading_only;snapshot->has_music=view->has_music;
   if(view->title)snapshot->title=*view->title;
   if(view->subtitle)snapshot->subtitle=*view->subtitle;
-  if(view->music_title)snapshot->music_title=*view->music_title;
-  if(view->music_artist)snapshot->music_artist=*view->music_artist;
+  snapshot->music_title=view->music_title;
+  snapshot->music_artist=view->music_artist;
 }
 static inline const ComplicationSlot *render_context_music(const RenderContext *snapshot,bool artist) {
   if(snapshot->mode==CONTEXT_MUSIC)return artist?&snapshot->subtitle:&snapshot->title;
-  if(snapshot->has_music)return artist?&snapshot->music_artist:&snapshot->music_title;
+  if(snapshot->has_music)return artist?snapshot->music_artist:snapshot->music_title;
   return NULL;
 }
 
@@ -90,10 +95,11 @@ static inline void render_context_redact(RenderContext *snapshot,const Complicat
   if(!context_slot_fresh(&snapshot->title,now)||!context_slot_fresh(&live->slots[i],now)||
       (i==2&&!render_slot_identity_equal(&snapshot->title,&live->slots[i]))) {
     if(snapshot->heading_only&&snapshot->has_music&&
-        context_slot_fresh(&snapshot->music_title,now)&&context_slot_fresh(&live->slots[0],now)) {
-      snapshot->title=snapshot->music_title;snapshot->subtitle=snapshot->music_artist;
-      memset(&snapshot->music_title,0,sizeof(snapshot->music_title));
-      memset(&snapshot->music_artist,0,sizeof(snapshot->music_artist));
+        snapshot->music_title&&context_slot_fresh(snapshot->music_title,now)&&context_slot_fresh(&live->slots[0],now)) {
+      snapshot->title=*snapshot->music_title;
+      if(snapshot->music_artist)snapshot->subtitle=*snapshot->music_artist;
+      else memset(&snapshot->subtitle,0,sizeof(snapshot->subtitle));
+      snapshot->music_title=NULL;snapshot->music_artist=NULL;
       snapshot->mode=CONTEXT_MUSIC;snapshot->heading_only=false;snapshot->has_music=false;
       i=0;
     } else {memset(snapshot,0,sizeof(*snapshot));return;}
@@ -102,10 +108,9 @@ static inline void render_context_redact(RenderContext *snapshot,const Complicat
       !(live->slots[i+1].flags&COMPLICATION_FLAG_TEXT)||!live->slots[i+1].text_length)
     memset(&snapshot->subtitle,0,sizeof(snapshot->subtitle));
   if(snapshot->has_music) {
-    if(!context_slot_fresh(&snapshot->music_title,now)||!context_slot_fresh(&live->slots[0],now)) {
-      memset(&snapshot->music_title,0,sizeof(snapshot->music_title));
-      memset(&snapshot->music_artist,0,sizeof(snapshot->music_artist));snapshot->has_music=false;
-    } else if(!context_slot_fresh(&snapshot->music_artist,now)||!context_slot_fresh(&live->slots[1],now))
-      memset(&snapshot->music_artist,0,sizeof(snapshot->music_artist));
+    if(!snapshot->music_title||!context_slot_fresh(snapshot->music_title,now)||!context_slot_fresh(&live->slots[0],now)) {
+      snapshot->music_title=NULL;snapshot->music_artist=NULL;snapshot->has_music=false;
+    } else if((!snapshot->music_artist||!context_slot_fresh(snapshot->music_artist,now))||!context_slot_fresh(&live->slots[1],now))
+      snapshot->music_artist=NULL;
   }
 }

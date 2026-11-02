@@ -1,6 +1,8 @@
-Dynamic keeps the time and your two Pebble readings visible while making room for what is happening on your phone.
+Dynamic keeps the time and your two Pebble readings visible while making room for compatible activities, music and notifications.
 
 The large rounded clock settles into a compact header when music is playing. Song titles stay readable at one fixed size, continuing through the remaining text once when needed. Artwork and artists keep a stable bottom position, with a simple fallback while a cover is missing.
+
+Compatible activity plugins can supply a timer or formatted reading without a separate app-specific layout. Timers show their last reported state; their originating watchapp remains responsible for the alarm. Plugin support and a successful phone handoff are required.
 
 Choose your background, text and accent colours, share a colour code, or use a separate palette during the watch's Quiet Time. Follow Pebble's time format or choose 12-hour or 24-hour time. Settings support 17 languages and phone light/dark appearances.
 

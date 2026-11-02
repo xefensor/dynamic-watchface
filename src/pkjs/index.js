@@ -1,9 +1,10 @@
 var MessageKeys = require('message_keys');
 var Clay = require('@rebble/clay');
 var clayConfig = require('./config');
-var core = require('pebble-watchface-core');
+var core = require('pebble-watchface-core/readings');
+var activityLibrary = require('pebble-activities');
 var createComplications = core.createComplications;
-var createContext = core.createContext;
+var createContext = activityLibrary.createContext;
 var createMessageQueue = core.createMessageQueue;
 var localization = require('./localization');
 var previewAssets = require('./settings-preview');
@@ -36,6 +37,7 @@ function clockFormat(settings) {
 }
 var send = createMessageQueue({
   keys: MessageKeys,
+  snapshotChannels:[{name:'activities',dataKey:'ACTIVITY_DATA',sidecarKeys:['REQUEST_ACTIVITIES']}],
   send: function(payload, success, failure) { Pebble.sendAppMessage(payload, success, failure); },
   later: function(callback, delay) { return setTimeout(callback, delay); },
   cancelLater: function(timer) { clearTimeout(timer); }
@@ -86,6 +88,33 @@ var context = createContext({
   }
 });
 
+var activities = activityLibrary.createActivities({
+  pebble:Pebble,keys:MessageKeys,send:send,
+  // Generic notices retain the mature adapter's baseline and interruption
+  // policy during this migration. Music follows the same user opt-out.
+  acceptActivity:function(activity){
+    var kind=String(activity.kind).toLowerCase();
+    return kind!=='notification'&&kind!=='notifications'&&(kind!=='music'||enabledSetting('SHOW_MUSIC',true));
+  },
+  select:function(cards){
+    // Music remains the fallback while an ongoing timer or other activity
+    // occupies the main area. Preserve stable source order within each group.
+    var ongoing=[],music=[];
+    cards.forEach(function(card){(String(card.kind).toLowerCase()==='music'?music:ongoing).push(card);});
+    return ongoing.concat(music).slice(0,2).map(function(card){
+      if(card.main||typeof card.value!=='number')return card;
+      // Numeric-only providers need no extra formatted field. Retain supplied
+      // display text and units exactly when the source already formats them.
+      var view={};Object.keys(card).forEach(function(key){view[key]=card[key];});
+      view.main=String(card.value)+(card.unit?' '+card.unit:'');return view;
+    });
+  },
+  now:function(){return Date.now();},
+  later:function(callback,delay){return setTimeout(callback,delay);},
+  cancelLater:function(timer){clearTimeout(timer);},
+  getSettings:function(){return {enabled:enabledSetting('SHOW_ACTIVITIES',true)};}
+});
+
 function requestContextSession(attempt) {
   var query = {}; query[MessageKeys.REQUEST_CONTEXT] = 1;
   send(query, null, function() {
@@ -94,7 +123,7 @@ function requestContextSession(attempt) {
 }
 Pebble.addEventListener('ready', function() {
   resyncPresentation();
-  complications.refresh(); context.refresh(true); requestContextSession(1);
+  complications.refresh(); context.refresh(true); activities.refresh(); requestContextSession(1);
 });
 var SYSTEM_CLOCK_KEY = 'dynamic-system-clock-v1';
 function systemClockFormat() {
@@ -120,6 +149,10 @@ Pebble.addEventListener('appmessage', function(event) {
     resyncPresentation();
   }
   else if (token === 1) { context.refresh(); }
+  var activityToken=Number(messageValue(event.payload || {},'REQUEST_ACTIVITIES'));
+  if(Number.isInteger(activityToken)&&activityToken>=2&&activityToken<=2147483647)
+    activities.connectionChanged(true,activityToken);
+  else if(activityToken===1)activities.refresh();
 });
 Pebble.addEventListener('showConfiguration', function() {
   var clockQuery = {}; clockQuery[MessageKeys.CLOCK_FORMAT] = 255;
@@ -173,7 +206,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.6.1. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.7.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }
@@ -246,7 +279,14 @@ function settingsMetadata(status, dynamic) {
       category:slot.category || '', item:slot.item || '', property:slot.property || ''};
   }), sources:{music:source('music', enabledSetting('SHOW_MUSIC', true)),
     notifications:source('notifications', enabledSetting('SHOW_NOTIFICATIONS', false)),
-    phone:source('phone', enabledSetting('SHOW_STATUS', true))},
+    phone:source('phone', enabledSetting('SHOW_STATUS', true)),
+    activities:(function(){
+      var status=activities.status();
+      return {state:!enabledSetting('SHOW_ACTIVITIES',true)?'off':
+        status.error==='PERMISSION_DENIED'?'denied':status.error?'unavailable':
+        status.available===false?'disabled':status.ready?(status.count?'ready':'idle'):'waiting',
+        message:status.error || ''};
+    })()},
     save:{state:record ? record.state : 'none', message:''}};
 }
 function deliverSettings(record, attempt) {
@@ -302,7 +342,7 @@ Pebble.addEventListener('webviewclosed', function(event) {
   catch (error) { log('Invalid settings response'); return; }
   // Apply phone-only source controls immediately, including privacy switches.
   // Theme delivery can retry independently without postponing a context clear.
-  context.configure();
+  context.configure(); activities.configure();
   if (!Object.keys(payload).length) { complications.configure(); return; }
   if (settingsRetry !== null) { clearTimeout(settingsRetry); settingsRetry = null; }
   var record = {id:String(Date.now()) + '-' + (++deliverySequence), state:'pending', payload:payload};

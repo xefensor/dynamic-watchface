@@ -11,9 +11,9 @@ function fixture(settings = {}, locales = {}) {
   let watchLanguage = locales.watch;
   let saved = JSON.stringify(settings);
   const storage = Object.assign({},locales.storage || {});
-  let options, contextOptions, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
+  let options, contextOptions, activityOptions, activityConfigured=0, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
   const deferred=[];
-  const contextRefreshes=[], connections=[];
+  const contextRefreshes=[], connections=[],activityRefreshes=[],activityConnections=[];
   const handlers = {}, deliveries = [], clockQueries = [], urls = [], timers = [];
   const status = {available:true,configured:0,ready:0,error:'',slots:[]};
   const contextStatus = {available:true,ready:false,error:''};
@@ -38,12 +38,19 @@ function fixture(settings = {}, locales = {}) {
         };
         clay=this;
       };
-      if (name === 'pebble-watchface-core') return {
+      if (name === 'pebble-watchface-core/readings') return {
         createComplications: received=> {
           options=received;
           return {refresh:()=>refreshed++,configure:()=>configured++,status:()=>status};
         },
-        createMessageQueue: shared.createMessageQueue,
+        createMessageQueue: shared.createMessageQueue
+      };
+      if (name === 'pebble-activities') return {
+        createActivities: received=> {
+          activityOptions=received;
+          return {refresh:(...args)=>activityRefreshes.push(args),configure:()=>activityConfigured++,
+            connectionChanged:(...args)=>activityConnections.push(args),status:()=>({available:true,ready:false,count:0,error:''})};
+        },
         createContext: received=> {
           contextOptions=received;
           return {refresh:value=>contextRefreshes.push(value),configure:()=>contextConfigured++,
@@ -65,7 +72,7 @@ function fixture(settings = {}, locales = {}) {
     clearTimeout:id=>{const at=timers.findIndex(timer=>timer.id===id);if(at>=0)timers.splice(at,1);},
     console:{log:()=>{}}
   });
-  return {handlers,deliveries,clockQueries,urls,status,contextStatus,clay,options,contextOptions,timers,contextRefreshes,connections,
+  return {handlers,deliveries,clockQueries,urls,status,contextStatus,clay,options,contextOptions,activityOptions,timers,contextRefreshes,connections,activityRefreshes,activityConnections,activityConfigured:()=>activityConfigured,
     refreshes:()=>refreshed,configured:()=>configured,settings:()=>JSON.parse(saved),
     contextConfigured:()=>contextConfigured,storage,
     fail:value=>{fail=value;},hold:value=>{hold=value;},deferred,watchLanguage:value=>{watchLanguage=value;}};
@@ -277,7 +284,8 @@ test('Dynamic uses the installed core API and its own complication cache namespa
   const f=fixture();
   assert.equal(f.options.cacheKey,'dynamic-complications-v1');
   assert.doesNotMatch(source,/require\(['"]\.\/(?:complications|context|message-queue|complication-data)['"]\)/);
-  assert.match(source,/require\('pebble-watchface-core'\)/);
+  assert.match(source,/require\('pebble-watchface-core\/readings'\)/);
+  assert.match(source,/require\('pebble-activities'\)/);
 });
 
 
@@ -316,7 +324,7 @@ test('new appearance keys extend the original wire contract without renumbering 
     'WEATHER_CONDITION','COMPLICATION_DATA','REQUEST_COMPLICATIONS','CONTEXT_DATA','REQUEST_CONTEXT',
     'SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS','SHOW_STATUS','PANEL_TRANSITIONS'];
   assert.deepEqual(packageInfo.pebble.messageKeys.slice(0,31),legacy);
-  assert.equal(packageInfo.pebble.messageKeys.length,41);
+  assert.equal(packageInfo.pebble.messageKeys.length,44);
   assert.equal(keys.ACCENT_COLOR,10031);
   assert.equal(keys.ANIMATIONS,10032);
   assert.equal(keys.CLOCK_FORMAT,10033);
@@ -554,5 +562,63 @@ test('app-only is a phone privacy preference and saved native choices survive op
     assert.equal(f.deliveries[0][keys.NOTIFICATION_APP_ONLY],undefined);
     assert.equal(f.contextOptions.getSettings().notificationAppOnly,true);
   }
-  assert.deepEqual(packageInfo.pebble.messageKeys.slice(34),['NOTIFICATION_VIBRATION','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR','NOTIFICATION_APP_ONLY','CONTEXT_STATE']);
+  assert.deepEqual(packageInfo.pebble.messageKeys.slice(34,41),['NOTIFICATION_VIBRATION','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR','NOTIFICATION_APP_ONLY','CONTEXT_STATE']);
+});
+
+test('generic activity discovery starts with the host and follows native session requests',()=>{
+  const f=fixture();
+  assert.equal(f.activityOptions.getSettings().enabled,true);
+  f.handlers.ready();assert.equal(f.activityRefreshes.length,1);
+  f.handlers.appmessage({payload:{REQUEST_ACTIVITIES:81}});
+  f.handlers.appmessage({payload:{[keys.REQUEST_ACTIVITIES]:82}});
+  assert.deepEqual(f.activityConnections,[[true,81],[true,82]]);
+  f.handlers.appmessage({payload:{REQUEST_ACTIVITIES:1}});
+  assert.equal(f.activityRefreshes.length,2);
+  for(const value of [0,-1,1.2,2147483648,'garbage'])
+    f.handlers.appmessage({payload:{REQUEST_ACTIVITIES:value}});
+  assert.equal(f.activityConnections.length,2);
+});
+
+test('activity preferences remain phone-only and reconfigure before native settings delivery',()=>{
+  for(const key of ['SHOW_ACTIVITIES',String(keys.SHOW_ACTIVITIES)]) {
+    const f=fixture({[key]:false});
+    assert.equal(f.activityOptions.getSettings().enabled,false);
+    f.handlers.webviewclosed({response:JSON.stringify({[key]:true,TEXT_COLOR:123})});
+    assert.equal(f.activityConfigured(),1);
+    assert.equal(f.activityOptions.getSettings().enabled,true);
+    assert.equal(f.deliveries[0][keys.SHOW_ACTIVITIES],undefined);
+    assert.equal(f.deliveries[0][keys.TEXT_COLOR],123);
+  }
+  assert.deepEqual(packageInfo.pebble.messageKeys.slice(41),
+    ['ACTIVITY_DATA','REQUEST_ACTIVITIES','SHOW_ACTIVITIES']);
+});
+
+test('generic sources respect music opt-outs and reserve notifications for the baseline adapter',()=>{
+  for(const saved of [{SHOW_MUSIC:false},{[keys.SHOW_MUSIC]:0}]) {
+    const f=fixture(saved),accept=f.activityOptions.acceptActivity;
+    for(const kind of ['timer','glucose','workout'])assert.equal(accept({kind}),true);
+    assert.equal(accept({kind:'music'}),false);
+    for(const kind of ['notification','notifications','Notification'])assert.equal(accept({kind}),false);
+    f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:true})});
+    assert.equal(accept({kind:'music'}),true);
+  }
+  assert.equal(fixture().activityOptions.acceptActivity({kind:'music'}),true);
+});
+
+test('ongoing generic activities take priority over music without reordering their sources',()=>{
+  const select=fixture().activityOptions.select;
+  const music={kind:'music',id:'song'},timer={kind:'timer',id:'tea'},glucose={kind:'glucose',id:'level'};
+  assert.deepEqual(Array.from(select([music,timer])),[timer,music]);
+  assert.deepEqual(Array.from(select([music,timer,glucose])),[timer,glucose]);
+  assert.deepEqual(Array.from(select([glucose,timer,music])),[glucose,timer]);
+});
+
+test('numeric-only providers get readable main text without overwriting formatted values or source data',()=>{
+  const select=fixture().activityOptions.select;
+  const glucose={kind:'glucose',main:'',value:6.2,unit:'mmol/L'};
+  const result=select([glucose])[0];
+  assert.equal(result.main,'6.2 mmol/L');assert.equal(glucose.main,'');
+  assert.equal(select([{kind:'level',main:'',value:0,unit:'%'}])[0].main,'0 %');
+  const formatted={kind:'glucose',main:'6,2 mmol/l ↑',value:6.2,unit:'mmol/L'};
+  assert.equal(select([formatted])[0],formatted);
 });

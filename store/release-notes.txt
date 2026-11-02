@@ -1,9 +1,9 @@
-0.6.1 publication candidate
+0.7.0 plugin activities prerelease
 
-Fixes notification privacy when a source fully redacts or filters an active or queued message. Old private text now clears immediately.
+Automatically discovers compatible activity plugins and presents timers or formatted readings in the shared main/footer area. A second activity or music summary appears only when it fits.
 
-Improves keyboard access to colour pickers, restores saved appearance after watch resets, and adds an independent daytime/Quiet Time colour preview. Clarifies that watchface banners and vibration are additional to PebbleOS alerts.
+Adds a Plugin activities switch and provider status in all 17 languages. Uses separate Pebble Activities 0.1.0 and lean Watchface Core 0.5.0, preserving existing notification privacy and app settings.
 
-Keeps warnings visible on custom palettes, supplies a fallback for invisible notification icons, and pauses song-title paging beneath system windows. Includes full license notices in the standalone PBW, plus privacy, support and store materials.
+Keeps the UUID, two readings, 24px music title, 20px artists and fixed footer. Identical font metrics are stored once to reduce the native image without changing the rendered fonts.
 
-The unified layout and existing preferences remain. Music and notifications require the Android plugin preview. Public store submission remains on hold while Pebble restricts plugin-based releases.
+The reference timer is a separate native watchapp/provider. Last-reported countdowns do not certify its alarm or offline state. Stock PebbleOS only; native Workout session access and the future dashboard are not included. This is a sideloaded plugin preview; appstore submission remains held.

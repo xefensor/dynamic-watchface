@@ -10,7 +10,6 @@ accesses the network.
 """
 
 import argparse
-import base64
 import hashlib
 import io
 import json
@@ -24,6 +23,7 @@ import unicodedata
 import uuid
 import zipfile
 from release_licenses import LICENSE_FILES, license_payloads
+from pinned_dependencies import DEPENDENCIES, verify_dependency
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,10 +41,12 @@ LEGACY_KEYS = (
 )
 APP_MODULES = {"index.js", "config.js", "localization.js", "settings-page.js", "settings-preview.js"}
 CORE_MODULES = {
-    "index.js", "message-queue.js", "complications.js", "complication-data.js", "context.js",
+    "readings.js", "message-queue.js", "complications.js", "complication-data.js",
 }
-CORE_SHA256 = "9bc0b432a40293a5551dc78991fd6817c523683a8f7a5d02f9bb96dfcfd6209c"
-CORE_COMMIT = "6a6fb32e5a52d146e60d32fd6ee1b92e67722ada"
+ACTIVITY_MODULES = {
+    "index.js", "wire.js", "consumer.js", "publisher.js",
+    "adapters/legacy/context.js", "adapters/legacy/complication-data.js",
+}
 SDK_PBW_FILES = {
     "appinfo.json", "pebble-js-app.js", "pebble-js-app.js.map",
     "emery/pebble-app.bin", "emery/app_resources.pbpack", "emery/manifest.json",
@@ -232,6 +234,30 @@ def source_matches(mapped, source, label):
         "Unexpected source-map transform: " + label)
 
 
+def audit_sdk_additions(root, source_map):
+    record = json.loads((root / "licenses/sdk-bundled-provenance.json").read_text())
+    require(record["sdkVersion"] == "4.33.1" and
+            record["sourceMapSource"] == "_pkjs_shared_additions.js",
+            "Review SDK-injected JavaScript provenance for this SDK")
+    matches = [content for name, content in zip(source_map["sources"], source_map["sourcesContent"])
+               if name == record["sourceMapSource"]]
+    require(len(matches) == 1, "SDK-injected JavaScript source is missing or duplicated")
+    content = matches[0]
+    encoded = content.encode("utf-8")
+    original = encoded[:record["sourceBytes"]]
+    require(len(original) == record["sourceBytes"] and sha256(original) == record["sourceSha256"],
+            "SDK-injected JavaScript differs from the reviewed source")
+    source_matches(content, original, record["sourceMapSource"])
+    require(record["copyright"] == "Copyright 2024 Google LLC" and
+            record["copyright"].encode() in original and
+            b"Licensed under the Apache License, Version 2.0" in original,
+            "SDK-injected JavaScript copyright/license notice is missing")
+    return {"sdkVersion": record["sdkVersion"], "source": record["sourceMapSource"],
+            "sourceSha256": record["sourceSha256"], "reviewedSourceMatches": True,
+            "copyrightNoticePreserved": True, "licenseFile": record["licenseFile"],
+            "licenseSha256": record["licenseSha256"]}
+
+
 def audit_body_fonts(root, media, resources, sources):
     names = [item["name"] for item in media]
     sizes = BODY_SIZES
@@ -351,10 +377,27 @@ def audit_body_metrics(root, resources, binary, sources):
     require(sizes == list(BODY_SIZES), "Body metric sizes changed")
     points = [int(point, 16) for point in re.findall(
         r"0x([0-9a-f]+)", header.split("body_metric_codepoints[BODY_METRIC_COUNT] = {", 1)[1].split("};", 1)[0])]
-    rows = [list(map(int, row.split(","))) for row in re.findall(
-        r"\{([\d,-]+)\}", header.split("body_metric_descents[BODY_METRIC_COUNT][BODY_METRIC_POINT_COUNT] = {", 1)[1].split("};", 1)[0])]
-    ascents = [list(map(int, row.split(","))) for row in re.findall(
-        r"\{([\d,-]+)\}", header.split("body_metric_ascents[BODY_METRIC_COUNT][BODY_METRIC_POINT_COUNT] = {", 1)[1].split("};", 1)[0])]
+    pools, maps = {}, {}
+    for metric in ("descent", "ascent"):
+        count_name = "BODY_METRIC_" + metric.upper() + "_ROW_COUNT"
+        count = int(re.search(r"#define " + count_name + r" (\d+)\b", header).group(1))
+        start = "body_metric_" + metric + "_rows[" + count_name + "][BODY_METRIC_POINT_COUNT] = {"
+        pool = [list(map(int, row.split(","))) for row in re.findall(
+            r"\{([\d,-]+)\}", header.split(start, 1)[1].split("};", 1)[0])]
+        start = "body_metric_" + metric + "_index[BODY_METRIC_COUNT] = {"
+        indices = list(map(int, re.findall(
+            r"\d+", header.split(start, 1)[1].split("};", 1)[0])))
+        require(0 < count <= 256 and len(pool) == count and
+                len({tuple(row) for row in pool}) == count and
+                all(len(row) == len(sizes) and all(-128 <= value <= 127 for value in row)
+                    for row in pool) and len(indices) == len(points) and
+                all(0 <= index < count for index in indices),
+                "Compressed body metric row/map shape changed: " + metric)
+        lookup = "body_metric_" + metric + "_rows[body_metric_" + metric + "_index[body_metric_index(codepoint)]][column]"
+        require(lookup in header, "Body metric helper bypasses its exact row map: " + metric)
+        pools[metric], maps[metric] = pool, indices
+    rows = [pools["descent"][index] for index in maps["descent"]]
+    ascents = [pools["ascent"][index] for index in maps["ascent"]]
     provenance = json.loads((root / "resources/fonts/font-provenance.json").read_text())
     record = provenance["generatedBodyMetrics"]
     require(len(points) == len(rows) == len(ascents) == record["metricCodepointCountIncludingWildcard"] and
@@ -384,11 +427,12 @@ def audit_body_metrics(root, resources, binary, sources):
                     "Body ascent differs from exact packaged glyph: %dpx U+%04X" % (size, point))
             checks += 1
     raw_points = struct.pack("<" + "H" * len(points), *points)
-    raw_rows = bytes(value & 0xff for row in rows for value in row)
-    raw_ascents = bytes(value & 0xff for row in ascents for value in row)
-    require(binary.count(raw_points) == 1 and binary.count(raw_rows) == 1 and
-            binary.count(raw_ascents) == 1,
-            "Native binary does not contain the exact body codepoint/descent/ascent tables")
+    linked_tables = [raw_points]
+    for metric in ("descent", "ascent"):
+        linked_tables.extend((bytes(maps[metric]),
+                              bytes(value & 0xff for row in pools[metric] for value in row)))
+    require(all(binary.count(table) == 1 for table in linked_tables),
+            "Native binary does not contain the exact body codepoint/metric pool/map tables")
     require(record["header"] == "src/c/generated_body_metrics.h" and
             record["sha256"] == sha256(header.encode()) and record["pointSizes"] == sizes,
             "Body metric header differs from reviewed provenance")
@@ -400,6 +444,9 @@ def audit_body_metrics(root, resources, binary, sources):
     return {"header": record["header"], "headerSha256": record["sha256"],
             "codepoints": len(points), "sizes": sizes, "packagedGlyphDescentChecks": checks,
             "packagedGlyphAscentChecks": checks,
+            "uniqueDescentRows": len(pools["descent"]),
+            "uniqueAscentRows": len(pools["ascent"]),
+            "compressedMetricBytes": sum(len(table) for table in linked_tables[1:]),
             "wildcardIndex": int(fallback.group(1)), "wildcardCodepoint": 0x25af,
             "nativeMetricTablesMatch": True,
             "scope": "Every committed ascent/descent matches the exact packaged PFO bitmap metrics, including fallback and empty glyph normalization; visible text alignment remains a native rendering check."}
@@ -484,56 +531,41 @@ def audit_clock_outlines(root, binary, sources):
             "scope": "Source geometry, polygon bounds and exact linked tables; native screenshots verify rasterized appearance."}
 
 
-def read_core(root, package):
-    pin = json.loads((root / "vendor/CORE.json").read_text(encoding="utf-8"))
-    require(pin["package"] == "pebble-watchface-core" and pin["version"] == "0.4.1",
-            "Review this auditor before changing the shared core release")
-    require(pin["source_commit"] == CORE_COMMIT and pin["sha256"] == CORE_SHA256,
-            "Shared core provenance differs from the verified 0.4.1 release")
-    name = pin["artifact"]
-    require(name == "pebble-watchface-core-0.4.1.tgz", "Unexpected core archive name")
-    require(package["dependencies"]["pebble-watchface-core"] == "file:vendor/" + name,
-            "The app must use the committed, pinned core archive")
-    raw = (root / "vendor" / name).read_bytes()
-    require(sha256(raw) == CORE_SHA256, "Pinned core archive checksum differs")
-    integrity = "sha512-" + base64.b64encode(hashlib.sha512(raw).digest()).decode()
-    require(pin["integrity"] == integrity, "Pinned core npm integrity differs")
-    lock = json.loads((root / "package-lock.json").read_text(encoding="utf-8"))
-    entry = lock["packages"]["node_modules/pebble-watchface-core"]
-    require(entry["version"] == "0.4.1" and entry["integrity"] == integrity,
-            "Lockfile differs from the committed core archive")
-    with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as archive:
-        members = archive.getmembers()
-        require(len(members) == len({item.name for item in members}) == 14,
-                "Pinned core archive has unexpected entries")
-        require(all(item.isfile() and safe_name(item.name) and
-                    item.name.startswith("package/") for item in members),
-                "Pinned core contains a nonregular or unsafe entry")
-        files = {item.name: archive.extractfile(item).read() for item in members}
-    core_info = json.loads(files["package/package.json"])
-    require(core_info["name"] == pin["package"] and core_info["version"] == pin["version"],
-            "Pinned core metadata differs")
-    require(not core_info["pebble"].get("messageKeys"),
-            "Unexpected package-owned keys could renumber existing app settings")
-    installed = root / "node_modules/pebble-watchface-core"
+def read_dependency(root, specification, active_modules):
+    pin, files = verify_dependency(root, specification)
+    label = pin["package"]
+    installed = root / "node_modules" / label
     for name, content in files.items():
-        relative = name.removeprefix("package/")
-        require((installed / relative).read_bytes() == content,
-                "Installed core differs from pinned archive: " + relative)
-    with zipfile.ZipFile(io.BytesIO(files["package/dist.zip"])) as sdk:
-        require(sdk.testzip() is None, "Pinned SDK library archive is corrupt")
+        require((installed / name).read_bytes() == content,
+                "Installed dependency differs from pinned archive: " + label + "/" + name)
+    with zipfile.ZipFile(io.BytesIO(files["dist.zip"])) as sdk:
+        require(sdk.testzip() is None and
+                len(sdk.namelist()) == len(set(sdk.namelist())) and
+                all(safe_name(name) for name in sdk.namelist()),
+                "Pinned SDK library archive is corrupt, duplicated or unsafe: " + label)
         sdk_files = {name: sdk.read(name) for name in sdk.namelist()}
     for name, content in sdk_files.items():
-        require(safe_name(name) and (installed / "dist" / name).read_bytes() == content,
-                "SDK core staging differs from pinned archive: " + name)
+        require((installed / "dist" / name).read_bytes() == content,
+                "SDK staging differs from pinned archive: " + label + "/" + name)
+        if name.startswith("js/"):
+            require(files["src/" + name] == content,
+                    "Source and SDK JavaScript differ: " + label + "/" + name)
+    for name, content in files.items():
+        if name.startswith("include/") and name.endswith(".h"):
+            exported = "include/" + label + "/" + name.removeprefix("include/")
+            require(sdk_files[exported] == content,
+                    "Source and exported SDK header differ: " + label + "/" + name)
+    require({name for name in sdk_files if name.startswith("binaries/")} ==
+            {"binaries/emery/lib" + label + ".a"},
+            "Unexpected SDK binary inventory: " + label)
     sources = {}
-    for name in CORE_MODULES:
-        content = files["package/src/js/" + name]
+    for name in active_modules:
+        content = files["src/js/" + name]
         require(sdk_files["js/" + name] == content,
-                "Core source and packaged JavaScript differ: " + name)
+                "Active source and packaged JavaScript differ: " + label + "/" + name)
         sources[name] = content
-    return {"version": pin["version"], "sourceCommit": CORE_COMMIT,
-            "archiveSha256": CORE_SHA256, "installedAndSdkStagingMatch": True}, sources
+    return {"version": pin["version"], "sourceCommit": pin["source_commit"],
+            "archiveSha256": pin["sha256"], "installedAndSdkStagingMatch": True}, sources
 
 
 def audit_preview_identity(root, version, binary, resources):
@@ -553,7 +585,7 @@ def audit_preview_identity(root, version, binary, resources):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.6.1", "Review this auditor for a different release version")
+    require(package["version"] == "0.7.0", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and
@@ -562,8 +594,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
     media = settings["resources"].get("media", [])
     require(media and all(item.get("type") == "font" for item in media),
             "Only the declared custom body fonts are expected")
-    require(tuple(settings["messageKeys"]) == LEGACY_KEYS + ("ANIMATIONS", "CLOCK_FORMAT", "NOTIFICATION_VIBRATION", "NIGHT_PALETTE", "NIGHT_BACKGROUND_COLOR", "NIGHT_TEXT_COLOR", "NIGHT_ACCENT_COLOR", "NOTIFICATION_APP_ONLY", "CONTEXT_STATE"),
-            "Preserve the first 34 keys and append the seven 0.6 settings/context keys")
+    require(tuple(settings["messageKeys"]) == LEGACY_KEYS + ("ANIMATIONS", "CLOCK_FORMAT", "NOTIFICATION_VIBRATION", "NIGHT_PALETTE", "NIGHT_BACKGROUND_COLOR", "NIGHT_TEXT_COLOR", "NIGHT_ACCENT_COLOR", "NOTIFICATION_APP_ONLY", "CONTEXT_STATE", "ACTIVITY_DATA", "REQUEST_ACTIVITIES", "SHOW_ACTIVITIES"),
+            "Preserve the 41 existing keys and append the three activity keys")
     keys = {name: 10000 + index for index, name in enumerate(settings["messageKeys"])}
     generated = json.loads((root / "build/js/message_keys.json").read_text())
     require(generated == keys, "Generated JavaScript keys are stale")
@@ -573,7 +605,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
     native_keys = {name: int(value) for name, value in native_entries}
     require(len(native_entries) == len(native_keys) and native_keys == keys,
             "Generated C keys are stale or duplicated")
-    core, core_sources = read_core(root, package)
+    core, core_sources = read_dependency(root, DEPENDENCIES[0], CORE_MODULES)
+    activities, activity_sources = read_dependency(root, DEPENDENCIES[1], ACTIVITY_MODULES)
     licenses = license_payloads(root)
     sdk_pbw = root / "build" / (package["name"] + ".pbw")
     with zipfile.ZipFile(pbw) as release, zipfile.ZipFile(sdk_pbw) as sdk:
@@ -634,20 +667,28 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         active_js = release.read("pebble-js-app.js").decode("utf-8")
     require(len(source_map["sources"]) == len(source_map["sourcesContent"]),
             "Invalid source map")
+    sdk_additions = audit_sdk_additions(root, source_map)
     preview_identity = audit_preview_identity(root, package["version"], binary, resources)
     require(len(source_map["sources"]) == len(set(source_map["sources"])),
             "Source map has duplicate modules")
-    hosts, modules, xhr, bundled_keys = set(), set(), [], None
+    hosts, modules, activity_modules, xhr, bundled_keys = set(), set(), set(), [], None
     for name, content in zip(source_map["sources"], source_map["sourcesContent"]):
         if name.startswith("./src/pkjs/"):
             relative = name.removeprefix("./")
             source_matches(content, (root / relative).read_bytes(), name)
             hosts.add(Path(relative).name)
         elif name.startswith("./~/pebble-watchface-core/dist/js/"):
-            leaf = name.rsplit("/", 1)[1]
+            leaf = name.removeprefix("./~/pebble-watchface-core/dist/js/")
             require(leaf in core_sources, "Unexpected active core module: " + leaf)
             source_matches(content, core_sources[leaf], name)
             modules.add(leaf)
+        elif name.startswith("./~/pebble-activities/dist/js/"):
+            relative = name.removeprefix("./~/pebble-activities/dist/js/")
+            require(relative in activity_sources, "Unexpected active activity module: " + relative)
+            source_matches(content, activity_sources[relative], name)
+            activity_modules.add(relative)
+        elif "pebble-watchface-core/" in name or "pebble-activities/" in name:
+            require(False, "Unexpected dependency module path: " + name)
         elif name == "./build/js/message_keys.json":
             exported = re.match(r"^module\.exports\s*=\s*(\{[^\n]+\})", content)
             require(exported and json.loads(exported.group(1)) == keys,
@@ -655,8 +696,9 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
             bundled_keys = json.loads(exported.group(1))
         if "XMLHttpRequest" in content:
             xhr.append(name)
-    require(hosts == APP_MODULES and modules == CORE_MODULES,
-            "The active application/core dependency graph changed")
+    require(hosts == APP_MODULES and modules == CORE_MODULES and
+            activity_modules == ACTIVITY_MODULES,
+            "The active application/core/activity dependency graph changed")
     require(bundled_keys == keys, "Bundled JavaScript key mapping is missing")
     require(xhr == ["./~/@rebble/clay/dist/js/index.js"],
             "Unexpected active HTTP client")
@@ -698,9 +740,11 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         "sourceSystemFontKeys": font_keys, "nativeSystemFontKeys": linked_keys,
         "sourceFontKeysNotLinked": sorted(set(font_keys) - set(linked_keys)),
         "hostModules": len(hosts),
-        "coreModules": len(modules), "sourceMapMatchesCurrentSource": True,
+        "coreModules": len(modules), "activityModules": len(activity_modules),
+        "sourceMapMatchesCurrentSource": True,
         "sourceMapModuleCount": len(source_map["sources"]),
-        "legacyWeatherClientActive": False, "core": core,
+        "legacyWeatherClientActive": False, "core": core, "activities": activities,
+        "sdkInjectedJavaScript": sdk_additions,
         "pbwSha256": sha256(pbw.read_bytes()), "inventory": inventory,
         "scope": "SDK/package/source identity, generated/linked clock outlines and packaged body glyph coverage. Native screenshots and captured transitions verify appearance, fitting and motion; no physical-device behavior is claimed.",
     }

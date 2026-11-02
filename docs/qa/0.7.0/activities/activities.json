@@ -1,0 +1,113 @@
+{
+  "version": "0.7.0",
+  "session": 41,
+  "source": {
+    "capturedFromCandidatePbwSha256": "dc0937c7d1ca4824c2c66dbf2dc8b2e3bf9ef7cc384f2c98d89be3e8fca72ca8",
+    "candidateSourcePbwSha256": "71405dd0ec7d5ce220bcfae25a8c8633406020fa1608d46d8fb90319c1f24ae1",
+    "nativePayloadSha256": {
+      "emery/pebble-app.bin": "bbd08d3ee66d133a0f272cbee0f1fedfa78432ba614366c36d3d069dd37be358",
+      "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+      "emery/manifest.json": "08fb668cb2b4ca5d77c870a1de0802cd19a6bd0648ea68600c7d9a5260a38b79"
+    },
+    "timelineSample": "Actual native unobstructed geometry; reserved OS panel, no event payload."
+  },
+  "phone_javascript_executed": false,
+  "candidate_install_unchanged": true,
+  "fixture_encoder": {
+    "core": "0.5.0",
+    "activities": "0.1.0",
+    "core_wire_version": 4,
+    "activity_wire_version": 1
+  },
+  "captures": [
+    {
+      "name": "timer-running",
+      "file": "timer-running.png",
+      "sha256": "cb1a277fe6c41c0de472cabb3efc5613cde05f4869a4f718dbd2f655e034c667",
+      "rgb_sha256": "0ef4be7ff0bd6b487ef06d1cbb372f975eb3a36db02427ac9a38ce2ed4ab0ad9",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-paused",
+      "file": "timer-paused.png",
+      "sha256": "2a0b390c757013d4e17b64d557611aca8fd585890b3f33eb79d2727e86e044b9",
+      "rgb_sha256": "5d3cbaa0b31302fc18693acdbee3b27a3eac4f878932af1cc79b0a5ae404428f",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "glucose-numeric",
+      "file": "glucose-numeric.png",
+      "sha256": "ceccaa38665cb40e5a12ec0d1689e3836c5fb150c87c3de5918943daa26e96f4",
+      "rgb_sha256": "d9d26fb8f759d8c68f82d93f589fd9eedb920286bd97935373e5284fc43487b8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "elapsed",
+      "file": "elapsed.png",
+      "sha256": "2aa33d583b8e4779b6a1117b2bc5d7b3a0963117d217374e008e12c0953e4047",
+      "rgb_sha256": "00d0b5855dcebea4f2638876a79d8c17df84bc03e3ba4ca0632f22ffcbe85b25",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-heading-banner",
+      "file": "timer-heading-banner.png",
+      "sha256": "e54b2d6bb165a2844663efaca82dbf2c9bb671fe7c389054aec049962469fb67",
+      "rgb_sha256": "01c02af7a026ebd2f4a580acc05e7b53f84afea31835570fcbd7a84f788276f1",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-timeline",
+      "file": "timer-timeline.png",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
+      "rgb_sha256": "46fd2964512ee7d61359341aa3f8a4335f18a941fd949e9ef79a1ed7bd8747f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    }
+  ],
+  "scope": "Six actual generic activity layouts with two configured sample readings. Elapsed workout is a plugin fixture, not native Workout integration.",
+  "visual_review": {
+    "reviewed": true,
+    "scope": "All six native frames inspected with two readings: main/footer text, pause, banner and Timeline spacing fit at fixed font sizes. Elapsed session is a plugin fixture."
+  }
+}

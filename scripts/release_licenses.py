@@ -10,6 +10,8 @@ LICENSE_FILES = {
     "licenses/Dynamic-LICENSE.txt": "LICENSE",
     "licenses/THIRD-PARTY-NOTICES.txt": "THIRD-PARTY-NOTICES.md",
     "licenses/pebble-watchface-core-LICENSE.txt": "licenses/pebble-watchface-core-LICENSE.txt",
+    "licenses/pebble-activities-LICENSE.txt": "licenses/pebble-activities-LICENSE.txt",
+    "licenses/Apache-2.0.txt": "licenses/Apache-2.0.txt",
     "licenses/Clay-MIT.txt": "licenses/Clay-MIT.txt",
     "licenses/Clay-bundled-NOTICES.txt": "licenses/Clay-bundled-NOTICES.txt",
     "licenses/OFL-Fredoka.txt": "resources/fonts/OFL-Fredoka.txt",
@@ -34,13 +36,22 @@ def license_payloads(root):
             hashlib.sha256(payloads["licenses/Clay-bundled-NOTICES.txt"]).hexdigest() !=
             bundled["notice_sha256"]):
         raise ValueError("Review bundled Clay dependency notices for this installed bundle")
-    pin = json.loads((root / "vendor/CORE.json").read_text())
-    with tarfile.open(fileobj=io.BytesIO((root / "vendor" / pin["artifact"]).read_bytes()),
-                      mode="r:gz") as archive:
-        core = archive.extractfile("package/LICENSE").read()
-    if payloads["licenses/pebble-watchface-core-LICENSE.txt"] != core:
-        raise ValueError("Core license differs from the pinned release archive")
+    sdk = json.loads((root / "licenses/sdk-bundled-provenance.json").read_text())
+    if (sdk["licenseFile"] != "licenses/Apache-2.0.txt" or
+            hashlib.sha256(payloads["licenses/Apache-2.0.txt"]).hexdigest() != sdk["licenseSha256"]):
+        raise ValueError("SDK-injected JavaScript license differs from reviewed provenance")
+    for metadata_file, package in (("CORE.json", "pebble-watchface-core"),
+                                   ("ACTIVITIES.json", "pebble-activities")):
+        pin = json.loads((root / "vendor" / metadata_file).read_text())
+        raw = (root / "vendor" / pin["artifact"]).read_bytes()
+        if hashlib.sha256(raw).hexdigest() != pin["sha256"]:
+            raise ValueError("Pinned dependency archive differs: " + package)
+        with tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz") as archive:
+            license_text = archive.extractfile("package/LICENSE").read()
+        if payloads["licenses/" + package + "-LICENSE.txt"] != license_text:
+            raise ValueError("Dependency license differs from pinned archive: " + package)
     for name, marker in [("licenses/Clay-MIT.txt", b"Permission is hereby granted"),
+                         ("licenses/Apache-2.0.txt", b"Version 2.0, January 2004"),
                          ("licenses/OFL-Fredoka.txt", b"Fredoka Project Authors"),
                          ("licenses/OFL-RobotoCondensed.txt", b"Roboto Project Authors")]:
         if marker not in payloads[name]:

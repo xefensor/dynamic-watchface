@@ -1,7 +1,10 @@
 #include <pebble.h>
 #include "complication_data.h"
 #include "context_data.h"
-#include <pebble-watchface-core/pebble-watchface-core.h>
+#include <pebble-watchface-core/readings.h>
+#include <pebble-activities/pebble-activities.h>
+#include "context_session.h"
+#include "activity_presentation.h"
 #include "watch_layout.h"
 #include "reading_presentation.h"
 #include "generated_clock_glyphs.h"
@@ -50,7 +53,10 @@ static BatteryChargeState s_battery;
 // snapshots and raster scratch off BSS leaves the app's load image below the
 // SDK's16-bit virtual-size limit without adding any per-frame allocation.
 typedef struct {
-  WatchfaceCore core;
+  WfcReadings core;
+  ComplicationSet legacy_context;
+  DynamicContextSession session;
+  PaState activities;
   RenderContext context_from,context_to;
   GPoint clock_path_points[CLOCK_CONTOUR_MAX_POINTS];
   GPath clock_path;
@@ -58,7 +64,7 @@ typedef struct {
   FontRasterContour clock_raster_contours[CLOCK_GLYPH_MAX_CONTOURS];
   int32_t clock_intersections[CLOCK_GLYPH_MAX_POINTS];
   uint8_t clock_coverage[200];
-  char music_identity[COMPLICATION_MAX_TEXT_BYTES+1];
+  char music_identity[PA_MAIN_BYTES+1];
   uint16_t music_offset,music_next;
   bool music_visible;
 } NativeState;
@@ -72,11 +78,13 @@ static NativeState *s_native;
 #define s_clock_raster_contours (s_native->clock_raster_contours)
 #define s_clock_intersections (s_native->clock_intersections)
 #define s_clock_coverage (s_native->clock_coverage)
-#define s_context s_core.context
+#define s_context (s_native->legacy_context)
+#define s_session (s_native->session)
+#define s_activities (s_native->activities)
 #define s_complications s_core.complications
 #define s_has_complications s_core.has_complications
 #define s_phone_connected s_core.phone_connected
-static AppTimer *s_context_timer, *s_startup_timer, *s_motion_timer,*s_title_timer;
+static AppTimer *s_context_timer, *s_startup_timer, *s_motion_timer,*s_title_timer,*s_activity_timer;
 // Three UTF-8 weekday scalars + separator + DD.MM. + NUL fit in24 bytes.
 static char s_compact_date_buffer[24], s_time_buffer[6];
 static char s_weekday_buffer[13], s_numeric_date_buffer[8];
@@ -105,6 +113,7 @@ static void prv_music_reset(void);
 static void prv_music_cancel_timer(void);
 static void prv_music_continue(void *context);
 static void prv_apply_colors(void);
+static void prv_activity_clock_schedule(void);
 
 
 // The face displays three-character day names. Keep only that exact visible
@@ -479,7 +488,14 @@ static uint32_t prv_millis(void) {
   time_ms(&seconds,&millis);
   return (uint32_t)seconds*1000u+millis;
 }
+static const PaActivity *prv_primary_activity(void) {
+  // New notification interruptions retain their bounded priority. A compatible
+  // ongoing activity otherwise takes the main area, including while music plays.
+  return s_context_to.mode==CONTEXT_NOTIFICATION&&!s_context_to.heading_only&&!s_private_rebaseline?NULL:
+      pa_state_select(&s_activities,(uint32_t)time(NULL),0);
+}
 static WatchPose prv_full_pose(void) {
+  if(prv_primary_activity())return watch_pose_context(s_context_to.mode==CONTEXT_NOTIFICATION);
   if(s_context_to.mode==CONTEXT_NONE||s_private_rebaseline)return watch_pose_idle();
   if(s_context_to.heading_only&&!s_context_to.has_music)return watch_pose_summary();
   return watch_pose_context(s_context_to.mode==CONTEXT_NOTIFICATION);
@@ -543,12 +559,15 @@ static void prv_apply_unobstructed_layout(void) {
     if(!s_slide_active) memset(&s_context_from,0,sizeof(s_context_from));
   } else render_context_capture(&s_context_to,&next); // A lease confirmation does not replay motion.
   const ComplicationSlot *music=render_context_music(&s_context_to,false);
-  if(!music||!context_slot_fresh(music,time(NULL)))prv_music_reset();
-  else if(strcmp(s_native->music_identity,music->text)!=0) {
-    prv_music_reset();watch_layout_copy_utf8(music->text,s_native->music_identity,
+  const PaActivity *activity=prv_primary_activity();
+  const char *identity=activity&&activity->clock==PA_CLOCK_NONE?activity->main:
+      !activity&&music&&context_slot_fresh(music,time(NULL))?music->text:NULL;
+  if(!identity)prv_music_reset();
+  else if(strcmp(s_native->music_identity,identity)!=0) {
+    prv_music_reset();watch_layout_copy_utf8(identity,s_native->music_identity,
         sizeof(s_native->music_identity));
   }
-  s_native->music_visible=next.mode==CONTEXT_MUSIC&&
+  s_native->music_visible=(activity?activity->clock==PA_CLOCK_NONE:next.mode==CONTEXT_MUSIC)&&
       layer_get_unobstructed_bounds(s_window_layer).size.h>=228;
   if(!s_native->music_visible)prv_music_cancel_timer();
   const WatchPose target=prv_full_pose();
@@ -558,7 +577,7 @@ static void prv_apply_unobstructed_layout(void) {
     if(!motion)s_pose=target;
   }
   if(!s_animations_enabled) {prv_cancel_motion();s_pose=s_pose_target;}
-  prv_sync_layers();
+  prv_sync_layers();prv_activity_clock_schedule();
   if((s_layout_active||s_slide_active)&&s_motion_timer==NULL)
     s_motion_timer=app_timer_register(MOTION_FRAME_MS,prv_motion_frame,NULL);
 }
@@ -575,8 +594,26 @@ static void prv_sync_layers(void) {
 static void prv_schedule_context_expiry(void) {
   if(s_context_timer) {app_timer_cancel(s_context_timer);s_context_timer=NULL;}
   const time_t now=time(NULL);
-  const uint32_t next=wfc_prune_context(&s_core,now);
-  if(next>(uint32_t)now) s_context_timer=app_timer_register((next-(uint32_t)now)*1000,prv_context_expired,NULL);
+  uint32_t next=dynamic_context_prune(&s_context,now);
+  const uint32_t activity_next=pa_state_prune(&s_activities,(uint32_t)now);
+  if(activity_next&&(!next||activity_next<next))next=activity_next;
+  if(next>(uint32_t)now) {
+    const uint32_t seconds=next-(uint32_t)now;
+    s_context_timer=app_timer_register((seconds>3600?3600:seconds)*1000,prv_context_expired,NULL);
+  }
+}
+static void prv_activity_clock_tick(void *context) {
+  (void)context;s_activity_timer=NULL;
+  pa_state_prune(&s_activities,(uint32_t)time(NULL));
+  prv_apply_unobstructed_layout();
+}
+static void prv_activity_clock_schedule(void) {
+  if(s_activity_timer){app_timer_cancel(s_activity_timer);s_activity_timer=NULL;}
+  const PaActivity *activity=prv_primary_activity();
+  if(!activity||!s_app_focused||!s_window_layer||
+      layer_get_unobstructed_bounds(s_window_layer).size.h<FULL_LAYOUT_HEIGHT)return;
+  const PaClockValue clock=pa_clock_value(activity,(uint32_t)time(NULL),s_phone_connected);
+  if(clock.running)s_activity_timer=app_timer_register(1000,prv_activity_clock_tick,NULL);
 }
 static void prv_context_expired(void *context) {
   (void)context;s_context_timer=NULL;
@@ -877,7 +914,7 @@ static void prv_draw_music(GContext *ctx,const ComplicationSlot *title,const Com
   MusicLayout layout;
   music_layout_build_at(title->text+offset,has_artist?artist->text:"",true,
       top,prv_music_measure,NULL,&layout);
-  if(s_app_focused&&active&&!layout.title.complete&&layout.title.consumed) {
+  if(s_app_focused&&active&&!offset&&!layout.title.complete&&layout.title.consumed) {
     size_t next=offset+layout.title.consumed;
     while(music_space(title->text[next]))++next;
     if(title->text[next]) {
@@ -974,7 +1011,7 @@ static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int 
   if(value->mode==CONTEXT_MUSIC) {
     prv_draw_music(ctx,title,subtitle,x,y,prv_music_top());
   } else if(value->heading_only) {
-    if(value->has_music)prv_draw_music(ctx,&value->music_title,&value->music_artist,x,y,prv_notice_music_top(title));
+    if(value->has_music)prv_draw_music(ctx,value->music_title,value->music_artist,x,y,prv_notice_music_top(title));
     prv_draw_notice_banner(ctx,value,x,y,value->has_music);
   } else {
     NoticeLine heading;prv_notice_line(title,false,0,&heading);
@@ -993,11 +1030,106 @@ static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int 
     }
   }
 }
+static void prv_activity_main(const PaActivity *activity,char *text,size_t capacity) {
+  if(activity->clock!=PA_CLOCK_NONE) {
+    const PaClockValue clock=pa_clock_value(activity,(uint32_t)time(NULL),s_phone_connected);
+    if(pa_format_duration(clock.seconds,text,capacity))return;
+  }
+  watch_layout_copy_utf8(activity->main,text,capacity);
+}
+static void prv_activity_summary(const PaActivity *activity,char *text,size_t capacity) {
+  if(activity->clock!=PA_CLOCK_NONE&&activity->footer[0]) {
+    char main[16];prv_activity_main(activity,main,sizeof(main));
+    snprintf(text,capacity,"%s · %s",main,activity->footer);
+  } else prv_activity_main(activity,text,capacity);
+  // Clock text plus the bounded footer fits before the measured ellipsis.
+  prv_ellipsize(text,capacity,14,180);
+}
+static void prv_draw_activity_image(GContext *ctx,const PaActivity *activity,int x,int bottom) {
+  if(!(activity->flags&PA_FLAG_IMAGE)||!activity->width||!activity->height)return;
+  const int longest=activity->width>activity->height?activity->width:activity->height;
+  const int width=(activity->width*40+longest/2)/longest;
+  const int height=(activity->height*40+longest/2)/longest;
+  const int left=x+10+(40-width)/2,top=bottom-height;
+  const unsigned stride=(activity->width+1)/2;
+  for(int row=0;row<height;++row)for(int column=0;column<width;++column) {
+    const unsigned sx=column*activity->width/width,sy=row*activity->height/height;
+    const uint8_t pair=activity->pixels[sy*stride+sx/2];
+    const uint8_t color=activity->palette[sx%2?pair&15:pair>>4];
+    if(!(color&0xc0))continue;
+    graphics_context_set_fill_color(ctx,(GColor){.argb=color});
+    graphics_fill_rect(ctx,GRect(left+column,top+row,1,1),0,GCornerNone);
+  }
+}
+static void prv_draw_activity(GContext *ctx,const PaActivity *activity,int y,bool banner) {
+  const bool image=(activity->flags&PA_FLAG_IMAGE)!=0;
+  const PaClockValue clock=pa_clock_value(activity,(uint32_t)time(NULL),s_phone_connected);
+  const bool paused=activity->state==PA_PAUSED;
+  const unsigned marks=(paused?1u:0u)+(clock.estimated?1u:0u);
+  char main[PA_MAIN_BYTES+1],summary[PA_MAIN_BYTES+1]={0};
+  prv_activity_main(activity,main,sizeof(main));
+  const bool paged=activity->clock==PA_CLOCK_NONE&&s_native->music_visible&&
+      strcmp(activity->main,s_native->music_identity)==0;
+  const size_t offset=paged?s_native->music_offset:0;
+  if(offset)watch_layout_copy_utf8(activity->main+offset,main,sizeof(main));
+  const PaActivity *alternate=pa_state_select(&s_activities,(uint32_t)time(NULL),1);
+  if(alternate)prv_activity_summary(alternate,summary,sizeof(summary));
+  else if(s_context_to.mode==CONTEXT_MUSIC&&context_slot_fresh(&s_context_to.title,time(NULL))) {
+    watch_layout_copy_utf8(s_context_to.title.text,summary,sizeof(summary));
+    prv_ellipsize(summary,sizeof(summary),14,180);
+  }
+  ActivityLayout layout;
+  activity_layout_build_at(main,activity->footer,image,activity->clock!=PA_CLOCK_NONE,marks,
+      banner?NULL:summary,banner?prv_notice_music_top(&s_context_to.title):92,
+      prv_music_measure,NULL,&layout);
+  if(s_app_focused&&paged&&!offset&&!layout.content.title.complete&&layout.content.title.consumed) {
+    size_t next=layout.content.title.consumed;
+    while(music_space(activity->main[next]))++next;
+    if(activity->main[next]) {
+      s_native->music_next=(uint16_t)next;
+      if(!s_title_timer)s_title_timer=app_timer_register(3000,prv_music_continue,NULL);
+    }
+  }
+  if(layout.summary)prv_text(ctx,summary,14,10,y+92+body_text_ascent(summary,14),180,
+      prv_muted_text(1),GTextAlignmentLeft);
+  for(int i=0;i<layout.content.title.count;++i)
+    prv_text(ctx,layout.content.title.text[i],layout.content.title_point,10,
+        y+layout.content.title_baseline[i],180,s_text_color,GTextAlignmentLeft);
+  prv_draw_activity_image(ctx,activity,0,y+MUSIC_BOTTOM);
+  for(int i=0;i<layout.content.artist.count;++i)
+    prv_text(ctx,layout.content.artist.text[i],layout.content.artist_point,layout.footer_left,
+        y+layout.content.artist_baseline[i],190-layout.footer_left,
+        prv_muted_text(1),GTextAlignmentLeft);
+  int mark_x=10;
+  const int mark_y=y+MUSIC_BOTTOM-9;
+  if(marks&&image) {
+    graphics_context_set_fill_color(ctx,s_background_color);
+    graphics_fill_rect(ctx,GRect(mark_x,mark_y-4,(int)marks*18,13),2,GCornersAll);
+  }
+  if(paused) {
+    graphics_context_set_fill_color(ctx,s_text_color);
+    graphics_fill_rect(ctx,GRect(mark_x+2,mark_y-3,3,9),0,GCornerNone);
+    graphics_fill_rect(ctx,GRect(mark_x+8,mark_y-3,3,9),0,GCornerNone);mark_x+=18;
+  }
+  if(clock.estimated) {
+    graphics_context_set_stroke_color(ctx,prv_warning_color());graphics_context_set_stroke_width(ctx,1);
+    graphics_draw_circle(ctx,GPoint(mark_x+6,mark_y+1),5);
+    graphics_draw_line(ctx,GPoint(mark_x+6,mark_y+1),GPoint(mark_x+6,mark_y-2));
+    graphics_draw_line(ctx,GPoint(mark_x+6,mark_y+1),GPoint(mark_x+9,mark_y+1));
+  }
+}
 static void prv_draw_context(Layer *layer,GContext *ctx) {
   (void)layer;prv_redact_context(&s_context_from);prv_redact_context(&s_context_to);
   const WatchPose p=prv_current_pose();
   const float reveal=watch_smooth((watch_context_visibility(p)-0.72f)/0.28f);
   const int y=-86+prv_round(22*(1-reveal)+65*watch_clamp(p.peek));
+  const PaActivity *activity=prv_primary_activity();
+  if(activity) {
+    const bool banner=s_context_to.mode==CONTEXT_NOTIFICATION&&s_context_to.heading_only;
+    prv_draw_activity(ctx,activity,y,banner);
+    if(banner)prv_draw_notice_banner(ctx,&s_context_to,0,y,true);
+    return;
+  }
   if(s_slide_active&&s_banner_slide) {
     const ComplicationSlot *music=render_context_music(&s_context_to,false);
     const ComplicationSlot *artist=render_context_music(&s_context_to,true);
@@ -1041,14 +1173,15 @@ static void prv_request_complications(void) {
     return;
   }
   dict_write_uint8(iterator, MESSAGE_KEY_REQUEST_COMPLICATIONS, 1);
-  dict_write_uint32(iterator, MESSAGE_KEY_REQUEST_CONTEXT, wfc_request_marker(&s_core));
+  dict_write_uint32(iterator, MESSAGE_KEY_REQUEST_CONTEXT, dynamic_context_request_marker(&s_session));
+  dict_write_uint32(iterator, MESSAGE_KEY_REQUEST_ACTIVITIES, s_session.token);
   dict_write_uint8(iterator, MESSAGE_KEY_CLOCK_FORMAT, clock_is_24h_style()?24:12);
   s_outbox_format_only=false;
   const AppMessageResult sent = app_message_outbox_send();
   if (sent != APP_MSG_OK) {
-    wfc_request_failed(&s_core);
+    dynamic_context_request_failed(&s_session);
     APP_LOG(APP_LOG_LEVEL_WARNING, "Complication request failed: %d", sent);
-  } else { s_format_reply_pending=false;wfc_request_accepted(&s_core, time(NULL)); }
+  } else { s_format_reply_pending=false;wfc_readings_request_accepted(&s_core, time(NULL)); }
 }
 
 static void prv_startup_request(void *context) {
@@ -1057,14 +1190,19 @@ static void prv_startup_request(void *context) {
 }
 
 static void prv_phone_connection_changed(bool connected) {
-  if (!wfc_connection_changed(&s_core, connected)) { return; }
+  if (!wfc_readings_connection_changed(&s_core, connected)) { return; }
+  dynamic_context_session_reset(&s_session,&s_context,connected);
+  // Native public timers retain their original deadline as unconfirmed while
+  // disconnected. Reconnect creates a new generation before accepting packets.
+  pa_state_set_connected(&s_activities,connected);
+  if(connected)pa_state_set_session(&s_activities,s_session.token);
   prv_private_clear();
   s_seen_burst=0;
   s_private_rebaseline=false;
   prv_schedule_context_expiry();
   prv_apply_unobstructed_layout();
   if (connected) {
-    persist_write_int(PERSIST_KEY_CONTEXT_SESSION, (int32_t)s_core.session_token);
+    persist_write_int(PERSIST_KEY_CONTEXT_SESSION, (int32_t)s_session.token);
     if (s_startup_timer != NULL) { app_timer_cancel(s_startup_timer); }
     s_startup_timer = app_timer_register(1000, prv_startup_request, NULL);
   }
@@ -1076,7 +1214,7 @@ static void prv_battery_changed(BatteryChargeState charge) {
 }
 
 static void prv_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-  const bool request_due = wfc_tick(&s_core, time(NULL));
+  const bool request_due = wfc_readings_tick(&s_core, time(NULL));
   prv_update_clock();
   prv_apply_colors();
   // One request on the freshness transition; denied/unavailable slots do not
@@ -1109,10 +1247,10 @@ static void prv_apply_colors(void) {
   prv_sync_layers();
 }
 static void prv_focus_will_change(bool focused) {
-  if(!focused){s_app_focused=false;prv_music_cancel_timer();}
+  if(!focused){s_app_focused=false;prv_music_cancel_timer();if(s_activity_timer){app_timer_cancel(s_activity_timer);s_activity_timer=NULL;}}
 }
 static void prv_focus_did_change(bool focused) {
-  if(focused){s_app_focused=true;prv_sync_layers();}
+  if(focused){s_app_focused=true;prv_sync_layers();prv_activity_clock_schedule();}
 }
 
 static uint32_t prv_context_request_value(const Tuple *marker) {
@@ -1132,13 +1270,24 @@ static uint32_t prv_context_request_value(const Tuple *marker) {
 }
 
 static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
+  Tuple *activity_data=dict_find(iterator,MESSAGE_KEY_ACTIVITY_DATA);
+  const uint32_t activity_request=prv_context_request_value(dict_find(iterator,MESSAGE_KEY_REQUEST_ACTIVITIES));
+  if(!activity_data&&activity_request==1) {
+    if(s_startup_timer)app_timer_cancel(s_startup_timer);
+    s_startup_timer=app_timer_register(100,prv_startup_request,NULL);
+  }
+  if(activity_data) {
+    pa_state_receive(&s_activities,activity_data->type==TUPLE_BYTE_ARRAY?activity_data->value->data:NULL,
+        activity_data->type==TUPLE_BYTE_ARRAY?activity_data->length:0,(uint32_t)time(NULL));
+    prv_schedule_context_expiry();
+  }
   Tuple *context_data = dict_find(iterator, MESSAGE_KEY_CONTEXT_DATA);
   const uint32_t marker_value = prv_context_request_value(dict_find(iterator, MESSAGE_KEY_REQUEST_CONTEXT));
   if (context_data == NULL && marker_value == 1) {
     // PKJS may become ready after the first native request was acknowledged.
     // A new phone process starts a fresh event sequence and native session.
-    wfc_context_query(&s_core);
-    persist_write_int(PERSIST_KEY_CONTEXT_SESSION,(int32_t)s_core.session_token);
+    dynamic_context_session_reset(&s_session,&s_context,true);pa_state_set_session(&s_activities,s_session.token);
+    persist_write_int(PERSIST_KEY_CONTEXT_SESSION,(int32_t)s_session.token);
     s_seen_burst=0;
     prv_private_clear();s_private_rebaseline=true;
     if (s_startup_timer != NULL) { app_timer_cancel(s_startup_timer); }
@@ -1146,17 +1295,17 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   }
   if (context_data != NULL) {
     const bool bytes = context_data->type == TUPLE_BYTE_ARRAY;
-    const bool accepted=wfc_receive_context(&s_core, bytes ? context_data->value->data : NULL,
+    const bool accepted=dynamic_context_receive(&s_session,&s_context,s_phone_connected, bytes ? context_data->value->data : NULL,
         bytes ? context_data->length : 0, marker_value);
-    if(accepted && marker_value==s_core.session_token)s_private_rebaseline=false;
+    if(accepted && marker_value==s_session.token)s_private_rebaseline=false;
     if(!accepted)prv_private_clear();
     ContextEffects effects;
     const Tuple *state=dict_find(iterator,MESSAGE_KEY_CONTEXT_STATE);
     const bool valid=accepted&&state&&state->type==TUPLE_BYTE_ARRAY&&
         context_effects_read(state->value->data,state->length,&effects)&&
-        effects.session==s_core.session_token;
+        effects.session==s_session.token;
     s_music_paused=valid&&effects.paused&&context_slot_fresh(&s_context.slots[0],time(NULL));
-    if(valid&&!s_core.context_awaiting_baseline&&!s_private_rebaseline&&
+    if(valid&&!s_session.awaiting_baseline&&!s_private_rebaseline&&
         context_slot_fresh(&s_context.slots[2],time(NULL))&&
         context_effects_alert(effects.burst,&s_seen_burst,s_vibration,quiet_time_is_active())) {
       if(s_vibration==1)vibes_short_pulse();else vibes_double_pulse();
@@ -1166,7 +1315,7 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   Tuple *data = dict_find(iterator, MESSAGE_KEY_COMPLICATION_DATA);
   if (data != NULL) {
     const bool bytes = data->type == TUPLE_BYTE_ARRAY;
-    if (wfc_receive_complications(&s_core, bytes ? data->value->data : NULL,
+    if (wfc_readings_receive(&s_core, bytes ? data->value->data : NULL,
         bytes ? data->length : 0, time(NULL))) {
       prv_remove_legacy_data();
     }
@@ -1222,13 +1371,13 @@ static void prv_inbox_dropped(AppMessageResult reason, void *context) {
 }
 static void prv_outbox_failed(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
   if(s_outbox_format_only){s_outbox_format_only=false;return;}
-  wfc_request_failed(&s_core);
+  dynamic_context_request_failed(&s_session);
   APP_LOG(APP_LOG_LEVEL_WARNING, "Complication request failed: %d", reason);
   prv_send_clock_format();
 }
 static void prv_outbox_sent(DictionaryIterator *iterator, void *context) {
   if(s_outbox_format_only)s_outbox_format_only=false;
-  else wfc_request_acknowledged(&s_core);
+  else dynamic_context_request_acknowledged(&s_session);
   prv_send_clock_format();
 }
 
@@ -1270,9 +1419,11 @@ static bool prv_init(void) {
   s_animations_enabled=true;s_show_status=true;
   const WfcConfig core_config={.storage={.size=prv_storage_size,.read=prv_storage_read,
     .write=prv_storage_write,.remove=prv_storage_remove},.cache_first_key=PERSIST_KEY_COMPLICATION_FIRST};
-  wfc_init(&s_core,&core_config,connection_service_peek_pebble_app_connection(),
-      persist_exists(PERSIST_KEY_CONTEXT_SESSION)?(uint32_t)persist_read_int(PERSIST_KEY_CONTEXT_SESSION):0);
-  persist_write_int(PERSIST_KEY_CONTEXT_SESSION,(int32_t)s_core.session_token);
+  wfc_readings_init(&s_core,&core_config,connection_service_peek_pebble_app_connection());
+  dynamic_context_session_init(&s_session,persist_exists(PERSIST_KEY_CONTEXT_SESSION)?
+      (uint32_t)persist_read_int(PERSIST_KEY_CONTEXT_SESSION):0);
+  pa_state_init(&s_activities,s_session.token,s_phone_connected);
+  persist_write_int(PERSIST_KEY_CONTEXT_SESSION,(int32_t)s_session.token);
   s_battery=battery_state_service_peek();
   if(persist_exists(PERSIST_KEY_BACKGROUND_COLOR))s_background_color=GColorFromHEX(persist_read_int(PERSIST_KEY_BACKGROUND_COLOR));
   if(persist_exists(PERSIST_KEY_TEXT_COLOR))s_text_color=GColorFromHEX(persist_read_int(PERSIST_KEY_TEXT_COLOR));
@@ -1300,7 +1451,7 @@ static bool prv_init(void) {
       persist_exists(PERSIST_KEY_USE_12_HOUR)?persist_read_bool(PERSIST_KEY_USE_12_HOUR):-1);
   if(persist_exists(PERSIST_KEY_SHOW_STATUS))s_show_status=persist_read_bool(PERSIST_KEY_SHOW_STATUS);
   if(persist_exists(PERSIST_KEY_ANIMATIONS))s_animations_enabled=persist_read_bool(PERSIST_KEY_ANIMATIONS);
-  persist_delete(PERSIST_KEY_LAYOUT_STYLE);wfc_load_cache(&s_core,time(NULL));
+  persist_delete(PERSIST_KEY_LAYOUT_STYLE);wfc_readings_load_cache(&s_core,time(NULL));
   prv_apply_colors();
   s_window=window_create();
   if(!s_window){memset(s_native,0,sizeof(*s_native));free(s_native);s_native=NULL;return false;}
@@ -1311,7 +1462,7 @@ static bool prv_init(void) {
   app_focus_service_subscribe_handlers((AppFocusHandlers){.will_focus=prv_focus_will_change,
       .did_focus=prv_focus_did_change});
   // One v4 snapshot is bounded at5206bytes, plus dictionary/setting overhead.
-  app_message_open(NATIVE_INBOX_BYTES,32);tick_timer_service_subscribe(MINUTE_UNIT,prv_tick_handler);
+  app_message_open(NATIVE_INBOX_BYTES,64);tick_timer_service_subscribe(MINUTE_UNIT,prv_tick_handler);
   window_stack_push(s_window,false);
   connection_service_subscribe((ConnectionHandlers){.pebble_app_connection_handler=prv_phone_connection_changed});
   battery_state_service_subscribe(prv_battery_changed);
@@ -1322,6 +1473,7 @@ static void prv_deinit(void) {
   if(!s_native)return;
   if(s_startup_timer)app_timer_cancel(s_startup_timer);
   if(s_context_timer)app_timer_cancel(s_context_timer);
+  if(s_activity_timer)app_timer_cancel(s_activity_timer);
   prv_cancel_motion();prv_private_clear();memset(&s_context,0,sizeof(s_context));
   battery_state_service_unsubscribe();connection_service_unsubscribe();tick_timer_service_unsubscribe();
   app_focus_service_unsubscribe();

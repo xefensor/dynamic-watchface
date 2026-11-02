@@ -20,7 +20,8 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 
 - `src/c/`: Dynamic's renderer, SDK lifecycle and host presentation.
 - `src/pkjs/`: offline Clay settings, translations and phone host integration.
-- `vendor/CORE.json`: exact separately released Core archive/commit/checksum.
+- `vendor/CORE.json` and `vendor/ACTIVITIES.json`: exact separately released
+  library archive/commit/checksum.
   Change the upstream core repository first, then rebuild and pin its tarball.
 - `scripts/release_licenses.py`: exact notices carried in each standalone PBW.
 - `.github/release.json`, `.github/workflows/release.yml` and
@@ -36,7 +37,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
    automation has separate tests:
    `python3 -m unittest discover -s tests -p test_github_release.py`.
 2. `pebble build` uses the pinned font sources and generated metrics. Inspect
-   native load-image size after native edits: the 0.6.1 image is close to the
+   native load-image size after native edits and keep it below the
    SDK's 65,535-byte limit. Heap availability is a separate measurement.
 3. `python3 scripts/package-release.py` packages exact SDK payloads and notices.
 4. `python3 scripts/check-native-style.py --pbw dist/Dynamic-VERSION.pbw`
@@ -72,13 +73,15 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 - Published-byte changes need a new version. The workflow refuses changed or
   incomplete published assets, conflicting tags and RC/beta promotion to stable.
 - Source ZIPs exclude generated `build/`, dependency, Git and `.pebble/` folders,
-  and contain no PBW binary. Committed source recipes are allowed; archive path
+  generated `docs/qa/**/*.png` copies, and all PBW binaries. QA PNGs remain
+  versioned in Git; buildable embedded previews and product screenshots stay in
+  the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.4.1 explicitly. A new Core release does not
-  automatically repin or rebuild either watchface.
+- This repository pins Core 0.5.0 and Activities 0.1.0 explicitly. Upstream
+  releases do not automatically repin or rebuild the watchface.
 
 `store/listing.json` is a local publication record, not a Pebble CLI schema.
-GitHub v0.6.1 is published as a prerelease. The current official
+GitHub builds remain prereleases. The current official
 [plugin-preview guide](https://developer.repebble.com/guides/plugins/preview/)
 holds appstore submission. Recheck
 the linked official rule before changing that status; preparing a consistent

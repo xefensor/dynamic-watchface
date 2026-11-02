@@ -6,3 +6,6 @@ __pycache__/
 
 .lock-waf*
 .waf*
+
+# Native-only QA installation copies are generated, never source inputs.
+docs/qa/**/native-candidate.pbw

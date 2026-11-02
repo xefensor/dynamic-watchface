@@ -2,19 +2,19 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.6.1 uses Fredoka clock outlines and Roboto Condensed text to
+Peek. Version 0.7.0 adds compatible plugin activities and uses Fredoka clock outlines and Roboto Condensed text to
 keep a consistent face as its layout changes. Dynamic is an independent
 watchface by Xef.
 
 ## Download
 
-The current release is [**v0.6.1 — GitHub prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.6.1).
+The current release is [**v0.7.0 — GitHub prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.7.0).
 
 | File | Use |
 | --- | --- |
-| [Dynamic-0.6.1.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.6.1/Dynamic-0.6.1.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
-| [Dynamic-0.6.1-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.6.1/Dynamic-0.6.1-source.zip) | The checked source snapshot and pinned dependencies |
-| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.6.1/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+| [Dynamic-0.7.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.7.0/Dynamic-0.7.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
+| [Dynamic-0.7.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.7.0/Dynamic-0.7.0-source.zip) | The checked source snapshot and pinned dependencies |
+| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.7.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
 
 [All releases](https://github.com/xefensor/dynamic-watchface/releases) ·
 [Changes](CHANGELOG.md) · [Release automation](docs/GITHUB-RELEASES.md)
@@ -25,7 +25,8 @@ restriction applies. Physical vibration, actual OS Quiet Time transitions
 and live phone/provider delivery remain unverified; see [validation](docs/VALIDATION.md).
 
 Dynamic uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
-0.4.1. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
+0.5.0 for readings and [Pebble Activities](https://github.com/xefensor/pebble-activities)
+0.1.0 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
 alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Before installing
@@ -35,6 +36,37 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 - The two readings follow your shared Pebble complication choices and their available providers.
 - Watchface banners and additional vibration default to Off. They do not replace PebbleOS notifications.
 - [Privacy and data](PRIVACY.md) · [Support](SUPPORT.md) · [Prepared publication materials](store/README.md).
+
+## Plugin activities
+
+Compatible `activity/session` v1 providers are discovered automatically when
+**Plugin activities** is enabled (the default). No plugin-specific layout is
+needed: a provider supplies main content, a footer and optional artwork or clock
+fields. Dynamic uses the same fixed footer for timers and formatted readings.
+A second activity or music summary appears only when it fits at a readable size.
+Ordinary music remains the fallback when no generic activity is active.
+
+Install [Activity Timer](https://github.com/xefensor/pebble-activities/releases/tag/v0.1.0)
+to try a native watchapp provider. Start the timer on the watch and let it show
+**Shared with phone**, then return to Dynamic. The timer's own PKJS publishes a
+snapshot; its independently callable plugin supplies it to Dynamic afterward.
+The small clock mark means **last reported**: offline pause/cancel changes may
+not have reached the phone. The originating watchapp owns its native alarm;
+Dynamic reaching zero does not prove that an alarm rang or the timer completed.
+
+This path needs the phone app's plugin support. Existing apps must explicitly
+adopt the convention; installing the library cannot expose another app's private
+state. The built-in Workout app's live session is unavailable through the public
+stock SDK. This release uses stock PebbleOS and includes no firmware fork.
+Generic notification kinds remain reserved in this first Dynamic integration;
+standard notifications continue through the existing privacy and baseline rules.
+The future dashboard is a separate consumer and is not included in this PBW.
+
+[Native timer sample](docs/images/activity-timer.png) ·
+[Native glucose sample](docs/images/activity-glucose.png)
+
+These are renderer samples with two configured readings; glucose is illustrative
+plugin data, not a connection to a medical service.
 
 ## Layout
 
@@ -154,7 +186,7 @@ priority over completing an outgoing animation.
    only background, text and accent colours; importing it changes no content,
    privacy, app-filter or vibration preference.
 5. In **Content**, check the shared reading summaries and adjacent recovery
-   help, then choose music and notification visibility. A normal summary can
+   help, then choose plugin activities, music and notification visibility. A normal summary can
    include a sender or notification title; App-only hides the sender and body.
    Message previews are optional. Viewing a sample does not enable that feature;
    a nearby note identifies disabled examples.
