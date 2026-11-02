@@ -1,5 +1,67 @@
 # Dynamic validation
 
+## 0.10.0 identified cards and Dynamic-local priority — 3 November 2026
+
+Every activity now carries an app name, image and current content. The optional
+secondary card has a fixed divided band instead of an anonymous footer. Timer
+uses an hourglass and one countdown. Music participates in the same host order;
+any activity can occupy either role. Settings and saved preferences belong to
+Dynamic, while Activities 0.2.2 provides reusable selection without storage.
+Core remains 0.5.0. The exact Activities source is
+`645b781919673e1da421e1a594312f181983ebc9`.
+
+- **95 JavaScript tests, 12 portable C suites and 40 Python regressions pass.**
+  Integration covers both Timer/Music orders, hidden apps, idle-provider metadata,
+  saved unavailable providers, restored preferences, strict malformed preference
+  handling and private Music. Canonical ACT2 sources retain their own UUID
+  preferences when the same provider also offers the legacy music convention.
+  Unchanged Music no longer triggers an ACT2 transfer for each notice/battery update.
+- **SDK 4.33.1 Emery build and final package/native-style audit pass.** The
+  static virtual image is **64,708 bytes**, leaving **827 bytes** below 65,535.
+  Loaded bytes are 64,288; the complete binary is 66,592 including 2,304 relocation
+  bytes. Resources remain 246,928 bytes. These are image-size measurements,
+  separate from runtime heap and stack watermarks.
+- **20 native settings presets, 44 activity compositions and six local-clock
+  follow-ups pass** on Emery QEMU. Sources are synthetic and packets use the
+  pinned production encoder. The production C decoder now applies every fixture
+  statefully in sequence, checking real source/run lifecycle restrictions as well
+  as packet validity. A fixture which reused a finished Timer ID was corrected
+  to create a new run; production correctly rejected resurrection.
+- Raw native frames were inspected directly and at their original 200×228 size
+  in a contact sheet. Independent renderer review covered both roles, cached
+  Timer bands, dark icons, canonical Music, long clocks/units and a complete
+  18-digit scalar next to 40px artwork. Pixel checks verify visible secondary
+  bands and whole-band hiding for essential support or an overwide secondary
+  clock. Expiring support removes its own meter; independent clocks advance
+  without a source resend. Cached data retains explicit original-observation age.
+- The actual offline Clay page passes at 360×800 in English and Czech: touch
+  dragging, desktop drag/drop, arrow buttons, keyboard, 44px controls, literal
+  untrusted names, dirty/save state and a 64-entry unavailable-provider boundary.
+  Real Clay responses are replayed through production PKJS with simulated SDK
+  coordinators, then restored in a fresh host. All 17 locales include the new
+  controls. Source hashes and the reproducible browser driver are preserved.
+- Embedded previews now show canonical named Music cards. The final rebuild uses
+  native application timestamp `1793661953`; final binary/resources match the
+  captured payload byte for byte. Native module/font/license/pin checks pass,
+  and the five-image held store kit is refreshed. Prior 0.9.1 and earlier artifacts
+  and tags remain unchanged. Existing Timer 0.5.0 needs no rebuild or update.
+
+Evidence: [native previews](qa/0.10.0/native/native-previews/previews.json),
+[activity captures](qa/0.10.0/native/activities/activities.json),
+[secondary visibility](qa/0.10.0/native/role-visibility.json),
+[final package audit](qa/0.10.0/native/bundle-audit.json),
+[distribution identity](qa/0.10.0/native/final-distribution.json) and
+[actual Clay settings](qa/0.10.0/settings/README.md).
+
+Final PBW SHA-256:
+`2c0c182c57b6f5a855d3bbaa718e83fa8613258a7e1e9f97a984222dd496a506`.
+
+This is a GitHub development prerelease for sideload testing. Physical-watch
+appearance, live phone/provider delivery, Bluetooth behavior, vibration and
+power use remain device checks. No native workout access, Dashboard app, global
+preferences service or new activity control API is claimed. Pebble appstore
+submission remains held.
+
 ## 0.9.1 activity glance prerelease — 2 November 2026
 
 This development prerelease responds to the user's busy Timer screenshot

@@ -5,13 +5,27 @@ const fs = require('node:fs');
 const source = fs.readFileSync(require.resolve('../src/pkjs/index.js'), 'utf8');
 const packageInfo = require('../package.json');
 const shared = require('pebble-watchface-core');
+const activityLibrary = require('pebble-activities');
+const presentationModule = {exports:{}};
+vm.runInNewContext(fs.readFileSync(require.resolve('../src/pkjs/activity-presentation.js'),'utf8'),{
+  module:presentationModule,require:name=>{assert.equal(name,'pebble-activities');return activityLibrary;}
+});
+const TIMER='50e9ef12-a5ab-4369-a3b5-3447bfba5151', HEALTH='c9e7cb18-eaf7-4b30-9b09-9a8fae187801',N=1700000000;
+function activity(extra={}) {
+  const card={provider:HEALTH,id:'activity',kind:'workout',state:'active',revision:1,
+    observedAt:N,validUntil:N+3600,caption:'App',private:false,main:{type:'text',label:'Activity',text:'Current'},...extra};
+  if(card.main&&!card.main.label)card.main={label:'Activity',...card.main};
+  if(card.support&&!card.support.label)card.support={label:'Elapsed',...card.support};
+  return card;
+}
 const keys = Object.fromEntries(packageInfo.pebble.messageKeys.map((key,i) => [key,10000+i]));
 
 function fixture(settings = {}, locales = {}) {
   let watchLanguage = locales.watch;
   let saved = JSON.stringify(settings);
   const storage = Object.assign({},locales.storage || {});
-  let options, contextOptions, activityOptions, activityConfigured=0, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
+  let options, contextOptions, activityOptions, activityConfigured=0, activityReprojects=0, musicActivity=null, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
+  const activityProviders=[];
   const deferred=[];
   const contextRefreshes=[], connections=[],activityRefreshes=[],activityConnections=[];
   const handlers = {}, deliveries = [], clockQueries = [], urls = [], timers = [];
@@ -24,6 +38,7 @@ function fixture(settings = {}, locales = {}) {
       if (name === './settings-page') return require('../src/pkjs/settings-page');
       if (name === './settings-preview') return require('../src/pkjs/settings-preview');
       if (name === './localization') return require('../src/pkjs/localization');
+      if (name === './activity-presentation') return presentationModule.exports;
       if (name === '@rebble/clay') return function(config,_custom,opts) {
         assert.equal(opts.autoHandleEvents,false);
         this.config=JSON.parse(JSON.stringify(config));
@@ -46,14 +61,17 @@ function fixture(settings = {}, locales = {}) {
         createMessageQueue: shared.createMessageQueue
       };
       if (name === 'pebble-activities') return {
+        selection:activityLibrary.selection,
         createActivities: received=> {
           activityOptions=received;
           return {refresh:(...args)=>activityRefreshes.push(args),configure:()=>activityConfigured++,
+            reproject:()=>activityReprojects++,providers:()=>activityProviders,
             connectionChanged:(...args)=>activityConnections.push(args),status:()=>({available:true,ready:false,count:0,error:''})};
         },
         createContext: received=> {
           contextOptions=received;
           return {refresh:value=>contextRefreshes.push(value),configure:()=>contextConfigured++,
+            musicActivity:()=>musicActivity,
             connectionChanged:(value,token)=>connections.push({value,token}),status:()=>contextStatus};
         }
       };
@@ -74,7 +92,8 @@ function fixture(settings = {}, locales = {}) {
   });
   return {handlers,deliveries,clockQueries,urls,status,contextStatus,clay,options,contextOptions,activityOptions,timers,contextRefreshes,connections,activityRefreshes,activityConnections,activityConfigured:()=>activityConfigured,
     refreshes:()=>refreshed,configured:()=>configured,settings:()=>JSON.parse(saved),
-    contextConfigured:()=>contextConfigured,storage,
+    contextConfigured:()=>contextConfigured,storage,activityProviders,activityReprojects:()=>activityReprojects,
+    setMusic:card=>{musicActivity=card;},
     fail:value=>{fail=value;},hold:value=>{hold=value;},deferred,watchLanguage:value=>{watchLanguage=value;}};
 }
 const allItems=f=>f.clay.config.flatMap(section=>[section].concat(section.items || []));
@@ -583,7 +602,8 @@ test('generic activity discovery starts with the host and follows native session
 test('activity preferences remain phone-only and reconfigure before native settings delivery',()=>{
   for(const key of ['SHOW_ACTIVITIES',String(keys.SHOW_ACTIVITIES)]) {
     const f=fixture({[key]:false});
-    assert.equal(f.activityOptions.getSettings().enabled,false);
+    assert.equal(f.activityOptions.getSettings().enabled,true,'coordinator still transports Music');
+    assert.equal(f.activityOptions.acceptActivity({kind:'timer'}),false);
     f.handlers.webviewclosed({response:JSON.stringify({[key]:true,TEXT_COLOR:123})});
     assert.equal(f.activityConfigured(),1);
     assert.equal(f.activityOptions.getSettings().enabled,true);
@@ -608,15 +628,15 @@ test('generic sources respect music opt-outs and reserve notifications for the b
 
 test('ongoing generic activities take priority over music without reordering their sources',()=>{
   const select=fixture().activityOptions.select;
-  const music={kind:'music',id:'song'},timer={kind:'timer',id:'tea'},glucose={kind:'glucose',id:'level'};
-  assert.deepEqual(Array.from(select([music,timer])),[timer,music]);
-  assert.deepEqual(Array.from(select([music,timer,glucose])),[timer,glucose]);
-  assert.deepEqual(Array.from(select([glucose,timer,music])),[glucose,timer]);
+  const music=activity({kind:'music',selectionKey:'builtin:music',id:'song'}),timer=activity({provider:TIMER,kind:'timer',id:'tea'}),glucose=activity({kind:'glucose',id:'level'});
+  assert.deepEqual(Array.from(select([music,timer]),card=>card.id),['tea','song']);
+  assert.deepEqual(Array.from(select([music,timer,glucose]),card=>card.id),['tea','level']);
+  assert.deepEqual(Array.from(select([glucose,timer,music]),card=>card.id),['level','tea']);
 });
 
 test('soonest running deadline is projected even from the eighth timer slot',()=>{
   const select=fixture().activityOptions.select;
-  const cards=Array.from({length:8},(_,index)=>({provider:'timer-provider',kind:'timer',
+  const cards=Array.from({length:8},(_,index)=>activity({provider:TIMER,kind:'timer',
     id:String(index),state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:1000,baseSeconds:1000-index*100}}));
   const original=cards.slice();
   assert.deepEqual(Array.from(select(cards),card=>card.id),['7','6']);
@@ -627,8 +647,8 @@ test('soonest running deadline is projected even from the eighth timer slot',()=
 
 test('clock ordering preserves other provider positions and stable equal deadlines',()=>{
   const select=fixture().activityOptions.select;
-  const reading={provider:'health',kind:'glucose',id:'reading'};
-  const later={provider:'timer',kind:'timer',id:'later',state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:400}};
+  const reading=activity({provider:HEALTH,kind:'glucose',id:'reading'});
+  const later=activity({provider:TIMER,kind:'timer',id:'later',state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:400}});
   const sooner={...later,id:'sooner',main:{...later.main,baseSeconds:200}};
   assert.deepEqual(Array.from(select([reading,later,sooner]),card=>card.id),['reading','sooner']);
   assert.deepEqual(Array.from(select([later,{...later,id:'equal'}]),card=>card.id),['later','equal']);
@@ -636,18 +656,18 @@ test('clock ordering preserves other provider positions and stable equal deadlin
 
 test('native view selection preserves canonical items, units, artwork and source data across roles',()=>{
   const select=fixture().activityOptions.select;
-  const reading={provider:'sensor',id:'reading',kind:'glucose',revision:7,state:'active',caption:'Sensor',
-    main:{type:'value',label:'Glucose',text:'6.2 mmol/L'},support:null,image:{width:2,height:1,palette:[192],pixels:[0]}};
-  const timer={provider:'timer',id:'timer',kind:'timer',state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:400},support:{type:'clock',mode:'elapsed',running:true,anchorAt:100,baseSeconds:20}};
+  const reading=activity({provider:HEALTH,id:'reading',kind:'glucose',revision:7,state:'active',caption:'Sensor',
+    main:{type:'value',label:'Glucose',text:'6.2 mmol/L'},support:null,image:{width:2,height:1,palette:[192],pixels:[0]}});
+  const timer=activity({provider:TIMER,id:'timer',kind:'timer',state:'active',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:400},support:{type:'clock',mode:'elapsed',running:true,anchorAt:100,baseSeconds:20}});
   const before=JSON.stringify([reading,timer]);
-  assert.equal(select([reading,timer])[0],reading);assert.equal(select([timer,reading])[1],reading);
+  assert.equal(select([reading,timer])[0].id,reading.id);assert.equal(select([timer,reading])[1].id,reading.id);
   assert.equal(reading.main.text,'6.2 mmol/L');assert.deepEqual(reading.image,{width:2,height:1,palette:[192],pixels:[0]});
   assert.equal(JSON.stringify([reading,timer]),before,'host role selection must not rewrite source or view content');
 });
 
 test('retained source results yield to ongoing activities and music',()=>{
   const select=fixture().activityOptions.select;
-  const result={kind:'timer',state:'completed',showTerminal:true,id:'finished'},active={kind:'workout',state:'active',id:'run'},music={kind:'music',state:'active',id:'song'};
+  const result=activity({kind:'timer',state:'completed',showTerminal:true,id:'finished'}),active=activity({kind:'workout',state:'active',id:'run'}),music=activity({kind:'music',selectionKey:'builtin:music',state:'active',id:'song'});
   assert.deepEqual(Array.from(select([music,result,active]),card=>card.id),['run','song']);
   assert.deepEqual(Array.from(select([result,music]),card=>card.id),['song','finished']);
   assert.deepEqual(Array.from(select([result]),card=>card.id),['finished']);
@@ -656,8 +676,72 @@ test('retained source results yield to ongoing activities and music',()=>{
 
 test('deadline ordering uses each datum state and its anchor plus base',()=>{
   const select=fixture().activityOptions.select;
-  const first={provider:'provider',kind:'timer',id:'first',state:'paused',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:200}};
+  const first=activity({provider:TIMER,kind:'timer',id:'first',state:'paused',main:{type:'clock',mode:'deadline',running:true,anchorAt:100,baseSeconds:200}});
   const equal={...first,id:'equal',state:'active',main:{...first.main,anchorAt:200,baseSeconds:100}};
   const paused={...first,id:'paused-clock',state:'active',main:{...first.main,running:false,anchorAt:0,baseSeconds:1}};
   assert.deepEqual(Array.from(select([paused,first,equal]),card=>card.id),['first','equal']);
+});
+
+test('Dynamic provider preferences reorder Timer and built-in Music in either role and survive restart',()=>{
+  const timer=activity({provider:TIMER,kind:'timer',id:'tea'});
+  const music=activity({kind:'music',selectionKey:'builtin:music',id:'track',private:true});
+  const f=fixture();f.setMusic(music);
+  assert.deepEqual(Array.from(f.activityOptions.select([timer]),card=>card.kind),['timer','music']);
+  function save(order,hidden=[],showMusic=true) {
+    f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:{value:showMusic},
+      __dynamicActivityPreferences:{value:JSON.stringify({order,hidden,content:'Never store this',runId:'temporary'})}})});
+  }
+  save(['builtin:music',TIMER]);
+  assert.deepEqual(Array.from(f.activityOptions.select([timer]),card=>card.kind),['music','timer']);
+  const restarted=fixture(f.settings(),{storage:f.storage});restarted.setMusic(music);
+  assert.deepEqual(Array.from(restarted.activityOptions.select([timer]),card=>card.kind),['music','timer']);
+  save([TIMER,'builtin:music']);
+  assert.deepEqual(Array.from(f.activityOptions.select([timer]),card=>card.kind),['timer','music']);
+  save(['builtin:music',TIMER],[TIMER]);
+  assert.deepEqual(Array.from(f.activityOptions.select([timer]),card=>card.kind),['music']);
+  save(['builtin:music',TIMER],['builtin:music'],false);
+  assert.deepEqual(Array.from(f.activityOptions.select([timer]),card=>card.kind),['timer']);
+  assert.equal(f.contextOptions.getSettings().showMusic,false);
+  assert.equal(f.contextOptions.musicAsActivity,true);
+  assert.ok(f.deliveries.every(payload=>payload.NaN===undefined&&payload.__dynamicActivityPreferences===undefined));
+  assert.doesNotMatch(JSON.stringify(f.storage),/Never store this|temporary/);
+  assert.equal(f.settings().__dynamicActivityPreferences,undefined);
+  const previous=f.activityReprojects();f.contextOptions.onChanged();assert.equal(f.activityReprojects(),previous+1);
+});
+
+test('installed idle provider metadata and absent provider preferences reach settings without activity contents',()=>{
+  const absent='55555555-5555-4555-8555-555555555555';
+  const preferences={order:[absent,TIMER,'builtin:music'],hidden:[absent]};
+  const f=fixture({SHOW_MUSIC:false},{storage:{'dynamic-activity-preferences-v1':JSON.stringify(preferences)}});
+  f.activityProviders.push({uuid:TIMER,name:'Timer <safe>',item:'activity_view',available:true});
+  f.handlers.showConfiguration();
+  const metadata=metadataItem(f,'dynamic-settings-data');
+  assert.deepEqual(metadata.activityProviders,[{uuid:TIMER,name:'Timer <safe>',item:'activity_view',available:true}]);
+  assert.deepEqual(metadata.activityPreferences,{order:preferences.order,hidden:[absent,'builtin:music']});
+  assert.deepEqual(JSON.parse(f.storage['dynamic-activity-preferences-v1']),preferences,'opening settings preserves absent entries');
+  assert.match(item(f,'dynamic-settings-data').defaultValue,/Timer &lt;safe&gt;/);
+});
+
+test('malformed activity preferences are bounded and cannot become native settings or save content',()=>{
+  const f=fixture();
+  f.handlers.webviewclosed({response:JSON.stringify({TEXT_COLOR:{value:123},__dynamicActivityPreferences:{value:JSON.stringify({
+    order:['temporary-run',TIMER,TIMER,'builtin:music',{},null],hidden:[TIMER,'song title'],title:'Private song'})}})});
+  assert.deepEqual(JSON.parse(f.storage['dynamic-activity-preferences-v1']),{order:[TIMER,'builtin:music'],hidden:[TIMER]});
+  assert.deepEqual(f.deliveries.at(-1),{[keys.TEXT_COLOR]:123});
+  assert.doesNotMatch(JSON.stringify(f.storage),/Private song|song title|temporary-run/);
+});
+
+test('phone and notification changes do not resend an unchanged Music activity snapshot',()=>{
+  const f=fixture(),change=f.contextOptions.onChanged;
+  change();change();assert.equal(f.activityReprojects(),0);
+  const music=activity({kind:'music',selectionKey:'builtin:music',id:'track',revision:1,private:true});
+  f.setMusic(music);change();assert.equal(f.activityReprojects(),1,'new Music appears immediately');
+  for(let i=0;i<20;i++){f.setMusic({...music});change();}
+  assert.equal(f.activityReprojects(),1,'other context publishes and cloned getters do not retransmit Music');
+  f.setMusic({...music,revision:2});change();assert.equal(f.activityReprojects(),2);
+  f.setMusic({...music,revision:2,observedAt:N+1,validUntil:N+3601});change();assert.equal(f.activityReprojects(),3);
+  f.setMusic(null);change();change();assert.equal(f.activityReprojects(),4,'clearing Music remains immediate');
+  f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:{value:false}})});
+  assert.equal(f.activityReprojects(),5,'an explicit settings save still forces re-selection');
+  assert.doesNotMatch(JSON.stringify(f.storage),/track|Current/);
 });

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.10.0
+
+- Give every activity a visible app identity and icon. The primary card has
+  prominent content; the optional secondary card has its own divided band,
+  icon, app name and current content. Any activity can occupy either role.
+- Show a recognizable hourglass for Timer without repeating its configured
+  duration. Preserve meaningful metric labels, complete units, independent
+  supporting items and explicit last-reported provenance.
+- Add a reorderable, show/hide activity list in Dynamic's settings. Music
+  participates in the same order as compatible plugins. Preferences belong to
+  Dynamic; other apps retain their own order. Newly installed providers append
+  to saved choices, including compatible apps that currently have no activity.
+- Bridge the existing music source into the same transient activity selection,
+  preserving privacy, expiry and notification interruption behavior. Source
+  revisions and observation times remain separate from host presentation.
+- Pin Activities 0.2.2 and retain Core 0.5.0, the UUID and every existing native
+  message key. Existing Timer 0.5.0 works without a new Timer installation.
+- GitHub development prerelease for sideload testing. Earlier published assets
+  and tags remain unchanged; Pebble appstore submission remains held.
+
 ## 0.9.1
 
 - Simplify the updated Timer provider's explicit compact projection to one

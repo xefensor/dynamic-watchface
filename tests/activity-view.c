@@ -28,7 +28,8 @@ int main(void) {
   other.main.flags|=PAV_ELAPSED;
   assert(activity_view_needs_tick(&main,false,&other,true,110,true));
   other.flags=PAV_PRIVATE;
-  assert(!activity_view_needs_tick(&main,false,&other,true,110,false));
+  assert(activity_view_needs_tick(&main,false,&other,true,110,false));
+  assert(!activity_view_needs_tick(&main,false,&other,true,160,false));
   main=card();main.source_state=PAV_PAUSED;
   assert(!activity_is_result(&main));
   assert(activity_view_needs_tick(&main,false,NULL,false,110,true));
@@ -67,5 +68,30 @@ int main(void) {
   main.source_state=PAV_PAUSED;
   assert(activity_status_marks(&main,&main.main,110,true,true)==(cached|ACTIVITY_PAUSED));
   assert(activity_status_marks(&main,&main.main,110,true,false)==cached);
+  /* Identity repeats are omitted, while metric roles remain local. */
+  PavCard named={0};strcpy(named.strings,"Timer");strcpy(named.strings+6,"Rest");
+  named.caption_length=5;named.main.label_length=5;
+  assert(!strcmp(activity_identity(&named),"Timer"));
+  assert(!activity_role(&named,&named.main)[0]);
+  named.main.label_offset=6;named.main.label_length=4;
+  assert(!strcmp(activity_role(&named,&named.main),"Rest"));
+
+  main=card();main.flags=PAV_SOURCE_UNCONFIRMED;
+  main.main.type=PAV_VALUE;main.support.type=PAV_NONE;
+  assert(activity_view_needs_tick(&main,false,NULL,false,135,true));
+  assert(!activity_view_needs_tick(&main,false,NULL,false,160,true));
+  assert(activity_view_needs_tick(&named,false,&main,true,135,true));
+  assert(!activity_view_needs_tick(&named,false,&main,false,135,true));
+  char status[64];
+  activity_status_text(&main.main,cached,135,status,sizeof(status));
+  assert(!strcmp(status,"Last reported 35s ago"));
+  assert(!strstr(status,"<1m"));
+  activity_status_text(&main.main,cached|ACTIVITY_PAUSED,160,status,sizeof(status));
+  assert(!strcmp(status,"Paused · Last reported 1m ago"));
+  activity_status_text(&main.main,cached,99,status,sizeof(status));
+  assert(!strcmp(status,"Last reported time unknown"));
+  activity_status_text(&main.main,ACTIVITY_UNCERTAIN,110,status,sizeof(status));
+  assert(!strcmp(status,"Estimated"));
+  activity_status_text(&main.main,0,110,status,sizeof(status));assert(!status[0]);
   return 0;
 }

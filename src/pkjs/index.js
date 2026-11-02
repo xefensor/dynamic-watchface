@@ -3,6 +3,7 @@ var Clay = require('@rebble/clay');
 var clayConfig = require('./config');
 var core = require('pebble-watchface-core/readings');
 var activityLibrary = require('pebble-activities');
+var activityPresentation = require('./activity-presentation');
 var createComplications = core.createComplications;
 var createContext = activityLibrary.createContext;
 var createMessageQueue = core.createMessageQueue;
@@ -72,11 +73,35 @@ function enabledSetting(name, fallback) {
   var value = messageValue(savedSettings(), name);
   return value === undefined ? fallback : value === true || value === 1 || value === 'true' || value === '1';
 }
+var ACTIVITY_PREFERENCES_KEY = 'dynamic-activity-preferences-v1';
+var ACTIVITY_PREFERENCES_RESPONSE = '__dynamicActivityPreferences';
+function activityPreferences() {
+  var value;
+  try { value = JSON.parse(localStorage.getItem(ACTIVITY_PREFERENCES_KEY)); } catch (ignored) {}
+  var result = activityLibrary.selection.normalizePreferences(value);
+  // Keep the established music switch authoritative for upgrades and saves.
+  result.hidden = result.hidden.filter(function(id) { return id !== 'builtin:music'; });
+  if (!enabledSetting('SHOW_MUSIC', true)) { result.hidden.push('builtin:music'); }
+  return result;
+}
+var musicProjectionSignature = null;
+function contextChanged() {
+  if (!context) { return; }
+  var card = context.musicActivity();
+  // Context also publishes phone battery and notification changes. Only a
+  // changed canonical Music receipt needs another complete ACT2 snapshot.
+  // Keep the immutable identity/revision/freshness tuple in memory, no text.
+  var signature = card ? JSON.stringify([card.provider,card.id,card.revision,card.observedAt,card.validUntil]) : null;
+  if (signature === musicProjectionSignature) { return; }
+  musicProjectionSignature = signature;
+  if (activities) { activities.reproject(); }
+}
 var context = createContext({
-  pebble: Pebble, keys: MessageKeys, send: send,
+  pebble: Pebble, keys: MessageKeys, send: send, musicAsActivity:true,
   now: function() { return Date.now(); },
   later: function(callback, delay) { return setTimeout(callback, delay); },
   cancelLater: function(timer) { clearTimeout(timer); },
+  onChanged:contextChanged,
   getSettings: function() {
     var apps = messageValue(savedSettings(), 'NOTIFICATION_APPS');
     return {showMusic:enabledSetting('SHOW_MUSIC', true),
@@ -94,39 +119,20 @@ var activities = activityLibrary.createActivities({
   // policy during this migration. Music follows the same user opt-out.
   acceptActivity:function(activity){
     var kind=String(activity.kind).toLowerCase();
-    return kind!=='notification'&&kind!=='notifications'&&(kind!=='music'||enabledSetting('SHOW_MUSIC',true));
+    return enabledSetting('SHOW_ACTIVITIES',true)&&kind!=='notification'&&kind!=='notifications'&&
+      (kind!=='music'||enabledSetting('SHOW_MUSIC',true));
   },
   select:function(cards){
-    // Ongoing activities keep priority. Music precedes optional terminal
-    // results. Keep provider order, choosing the soonest active deadline
-    // within a provider before its paused deadlines.
-    var ongoing=[],results=[],music=[];
-    cards.forEach(function(card){
-      (String(card.kind).toLowerCase()==='music'?music:
-        card.state==='completed'||card.state==='cancelled'?results:ongoing).push(card);
-    });
-    var timed=Object.create(null);
-    ongoing.forEach(function(card,index){
-      if(!card.main||card.main.type!=='clock'||card.main.mode!=='deadline')return;
-      var provider=card.provider||'';
-      if(!timed[provider])timed[provider]=[];
-      timed[provider].push({card:card,index:index});
-    });
-    Object.keys(timed).forEach(function(provider){
-      var positions=timed[provider].map(function(item){return item.index;});
-      timed[provider].sort(function(a,b){
-        var ar=a.card.main.running,br=b.card.main.running;
-        var ad=a.card.main.anchorAt+a.card.main.baseSeconds;
-        var bd=b.card.main.anchorAt+b.card.main.baseSeconds;
-        return ar!==br?(ar?-1:1):ar&&ad!==bd?ad-bd:a.index-b.index;
-      }).forEach(function(item,index){ongoing[positions[index]]=item.card;});
-    });
-    return ongoing.concat(music,results).slice(0,2);
+    return activityPresentation.select(cards,activityPreferences(),context.musicActivity());
   },
   now:function(){return Date.now();},
   later:function(callback,delay){return setTimeout(callback,delay);},
   cancelLater:function(timer){clearTimeout(timer);},
-  getSettings:function(){return {enabled:enabledSetting('SHOW_ACTIVITIES',true)};}
+  // The coordinator also transports built-in music. Generic plugin visibility
+  // is a host filter so music and idle-provider discovery remain available.
+  getSettings:function(){return {enabled:true,
+    providers:enabledSetting('SHOW_ACTIVITIES',true)?undefined:[],
+    disabledProviders:activityPreferences().hidden.filter(function(id){return id!=='builtin:music';})};}
 });
 
 function requestContextSession(attempt) {
@@ -220,7 +226,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.9.1. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.10.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }
@@ -301,6 +307,8 @@ function settingsMetadata(status, dynamic) {
         status.available===false?'disabled':status.ready?(status.count?'ready':'idle'):'waiting',
         message:status.error || ''};
     })()},
+    activityPreferences:activityPreferences(),
+    activityProviders:typeof activities.providers==='function'?activities.providers():[],
     save:{state:record ? record.state : 'none', message:''}};
 }
 function deliverSettings(record, attempt) {
@@ -352,11 +360,25 @@ function resyncPresentation() {
 Pebble.addEventListener('webviewclosed', function(event) {
   if (!event || !event.response) { return; }
   var payload;
-  try { payload = watchSettings(clay.getSettings(event.response)); }
+  try {
+    var response = JSON.parse(/^\{/.test(event.response) ? event.response : decodeURIComponent(event.response));
+    var preferences = response[ACTIVITY_PREFERENCES_RESPONSE];
+    delete response[ACTIVITY_PREFERENCES_RESPONSE];
+    if (preferences && typeof preferences === 'object' && typeof preferences.value === 'string') {
+      preferences = JSON.parse(preferences.value);
+    }
+    payload = watchSettings(clay.getSettings(JSON.stringify(response)));
+    if (preferences && typeof preferences === 'object' && !Array.isArray(preferences)) {
+      // Only stable provider keys and visibility flags survive. Generic titles,
+      // private music content and temporary run IDs never enter phone storage.
+      localStorage.setItem(ACTIVITY_PREFERENCES_KEY,
+        JSON.stringify(activityLibrary.selection.normalizePreferences(preferences)));
+    }
+  }
   catch (error) { log('Invalid settings response'); return; }
   // Apply phone-only source controls immediately, including privacy switches.
   // Theme delivery can retry independently without postponing a context clear.
-  context.configure(); activities.configure();
+  context.configure(); activities.reproject(); activities.configure();
   if (!Object.keys(payload).length) { complications.configure(); return; }
   if (settingsRetry !== null) { clearTimeout(settingsRetry); settingsRetry = null; }
   var record = {id:String(Date.now()) + '-' + (++deliverySequence), state:'pending', payload:payload};

@@ -1,11 +1,11 @@
 {
-  "version": "0.9.1",
+  "version": "0.10.0",
   "pbw": {
-    "file": "Dynamic-0.9.1.pbw",
-    "sha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d"
+    "file": "Dynamic-0.10.0.pbw",
+    "sha256": "2c0c182c57b6f5a855d3bbaa718e83fa8613258a7e1e9f97a984222dd496a506"
   },
   "native_payload_sha256": {
-    "emery/pebble-app.bin": "2f31e86569d671c74f919e2fbc738fe50d199d62d4788810865413f3afe4b83d",
+    "emery/pebble-app.bin": "e9f151b351608025bfc11b34655ebeafb9a81ca6f9fe695076c66e15f9304741",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
   },
   "screenshots": [
@@ -20,7 +20,7 @@
     {
       "file": "emery_music.png",
       "source": "docs/images/music.png",
-      "sha256": "f418e0ca5949c552619baeb7b00a645920a2f42d16b3413024cb241bc56479e5",
+      "sha256": "06ed351b138935d43c0b51a3f1b16e70aac4d5c1f2b7b825e235f91cac0b90ec",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false
@@ -28,7 +28,7 @@
     {
       "file": "emery_notification_summary.png",
       "source": "docs/images/notification-summary.png",
-      "sha256": "f0248132a8818caf6e76c112e9691a6952404d55b8f5f7e74468872fdee67b50",
+      "sha256": "15d1e90c3d1b75986933b4488c0fb0bad8d3ebeaa18a2e97ffaa5ca06a36f0ac",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false
@@ -44,7 +44,7 @@
     {
       "file": "emery_dark.png",
       "source": "docs/images/dark.png",
-      "sha256": "3629d99a35f6628860e95c3ce8e358457e1a16514c2ff04c4a0136bc9a9eb7c3",
+      "sha256": "28adfbf6b902dcc3d255a954aa9c76a36b8876965c87353d9abd3e7217629fb2",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false

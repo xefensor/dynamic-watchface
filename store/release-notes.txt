@@ -1,11 +1,9 @@
-0.9.1 calmer activity glances — GitHub development prerelease
+0.10.0 identified activities — GitHub development prerelease
 
-The updated Timer provider explicitly chooses a compact remaining-time and timer-identity glance. Elapsed stays in Timer's own detail view. Generic providers retain their main/support text, values and independent clocks, optional artwork, meters and either activity role.
+Every activity has an app name, icon and current content. The primary is prominent; the optional secondary sits in its own divided band. Timer uses an hourglass and one countdown. Any compatible activity can occupy either role.
 
-Matching observation-age and uncertainty indicators appear once per card. Different observations and explicit estimates remain distinct; independent pause state stays visible. Final completed clocks no longer show a misleading pause icon.
+Reorder or show/hide activity apps in Dynamic’s Content settings. Music follows the same order as plugins. Compatible installed apps appear while idle; unavailable apps keep their saved position. Preferences stay in Dynamic, and other apps can choose their own order.
 
-Optional terminal results yield to ongoing activities and music, including the established music adapter. Source acknowledgment removes the updated Timer's completed result; a countdown reaching zero does not prove completion or a native alarm.
+Meaningful metric labels, complete units, independent supporting items and explicit original-observation age remain intact. Essential primary content takes precedence over the optional secondary band. Private music stays transient and clears on disconnection or opt-out.
 
-Core 0.5.0 and Activities 0.2.1 are pinned independently. The UUID, message keys, two readings, fixed typography and existing privacy choices are preserved. No activity commands, Dashboard app or built-in Workout integration are included.
-
-Native validation covers 20 settings presets and affected activity layouts, including compact one-minute timers, shared and differing provenance, acknowledged hidden results and terminal results alongside music. Phone/provider transport and physical-watch behavior remain separate device checks. Published 0.9.0 and earlier assets stay unchanged. Pebble appstore submission remains held.
+Core 0.5.0 and Activities 0.2.2 are pinned independently. Existing Timer 0.5.0 works with this watchface. Earlier published artifacts and tags remain unchanged. Portable, SDK and native-emulator checks are documented separately from real-phone or physical-watch checks. Pebble appstore submission remains held.

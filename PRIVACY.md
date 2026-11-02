@@ -23,7 +23,10 @@ Pebble controls those permissions and the selected providers.
 ## Storage and display choices
 
 Appearance settings, delivery state and selected app names are stored locally
-on the phone. Appearance settings and bounded reading caches are also stored
+on the phone. Dynamic also saves stable activity-provider identifiers, order and
+visibility flags in its own phone settings; it never saves activity content or
+run identifiers in that preference list. Other apps keep their own order.
+Appearance settings and bounded reading caches are also stored
 on the watch. Selected readings other than music and notifications may remain
 cached for up to two hours from confirmed receipt, capped by an earlier source
 expiry; restoring a cache does not renew it.

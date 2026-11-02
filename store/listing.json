@@ -1,7 +1,7 @@
 {
   "name": "Dynamic",
   "author": "Xef",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "type": "watchface",
   "target_platforms": [
     "emery"

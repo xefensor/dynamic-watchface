@@ -93,6 +93,19 @@ module.exports = function() {
     '.dynamic-app-chip span{min-width:0;overflow-wrap:anywhere}',
     '.dynamic-app-chip button{flex-shrink:0;min-height:36px;min-width:36px;padding:3px;border:0;background:none;color:var(--ink);font-size:20px}',
     '.dynamic-app-filter .dynamic-app-error{margin:7px 0 0;color:var(--ink);font-size:12px}',
+    '.dynamic-activity-list{padding:0;margin:12px 0 0;list-style:none}',
+    '.dynamic-activity-row{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:6px 8px;padding:10px 0;border-top:1px solid var(--line)}',
+    '.dynamic-activity-row[data-hidden=true] .dynamic-activity-name{color:var(--muted)}',
+    '.dynamic-activity-name{min-width:0;overflow-wrap:anywhere;font-size:15px;font-weight:600}',
+    '.dynamic-activity-name small{display:block;font-size:12px;font-weight:400;color:var(--muted)}',
+    '.dynamic-activity-row button{width:auto;min-width:36px;min-height:44px;margin:0;padding:7px;box-shadow:none;border:1px solid var(--line);border-radius:7px;background:var(--field);color:var(--ink);font:inherit;text-transform:none;letter-spacing:0}',
+    '.dynamic-activity-row button:disabled{opacity:.35}',
+    '.dynamic-activity-handle{touch-action:none;cursor:grab;font-size:21px!important}',
+    '.dynamic-activity-move{grid-column:2/4;display:flex;gap:8px}',
+    '.dynamic-activity-move button{flex:1;min-width:0;font-size:13px}',
+    '.dynamic-activity-visible{display:flex!important;align-items:center;gap:6px;min-height:44px!important;font-size:13px}',
+    '.dynamic-activity-visible input{position:static!important;width:20px!important;height:20px!important;opacity:1!important;margin:0!important}',
+    '.dynamic-activity-announcement{font-size:12px!important;min-height:18px;margin-top:7px!important}',
     '.dynamic-reading-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}',
     '.dynamic-reading{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--field);min-width:0}',
     '.dynamic-reading small,.dynamic-health small{display:block;font-size:12px;color:var(--muted)}',
@@ -198,6 +211,137 @@ module.exports = function() {
     });
     var initialSnapshot = '', appEntry;
     function updateDirty() {}
+    var activityHost = node(item('dynamic-activity-order'));
+    var activityPreferences = data.activityPreferences || {}, activityOrder = [], activityHidden = [];
+    var activityProviders = Object.create(null), activityList, activityAnnouncement;
+    function providerKey(value) { return typeof value === 'string' &&
+      (value === 'builtin:music' || /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(value)); }
+    (data.activityProviders || []).forEach(function(provider) {
+      if (!provider || !providerKey(provider.uuid)) { return; }
+      activityProviders[provider.uuid] = {name:String(provider.name || provider.uuid).slice(0,96),available:provider.available !== false};
+    });
+    activityProviders['builtin:music'] = {name:t('musicSource'),available:true};
+    var visibleProviderKeys=Object.keys(activityProviders);
+    var unavailableBudget=Math.max(0,64-visibleProviderKeys.length),unavailableCount=0;
+    (Array.isArray(activityPreferences.order) ? activityPreferences.order : []).concat(visibleProviderKeys).forEach(function(id) {
+      if (!providerKey(id) || activityOrder.indexOf(id) >= 0) { return; }
+      // Reserve room for installed apps and Music before remembering absent
+      // apps. A full old preference list must never hide current controls.
+      if (!activityProviders[id] && unavailableCount++ >= unavailableBudget) { return; }
+      activityOrder.push(id);
+    });
+    (Array.isArray(activityPreferences.hidden) ? activityPreferences.hidden : []).forEach(function(id) {
+      if (providerKey(id) && activityHidden.indexOf(id) < 0) { activityHidden.push(id); }
+    });
+    function activityValue() { return {order:activityOrder.slice(),hidden:activityHidden.slice()}; }
+    // A hidden Clay field carries phone-only ordering through its serializer.
+    // PKJS removes it before numeric AppMessage conversion; no native key exists.
+    var activityPreferenceField = field('__dynamicActivityPreferences');
+    show(activityPreferenceField,false);
+    function syncActivityValue() { activityPreferenceField.set(JSON.stringify(activityValue())); }
+    syncActivityValue();
+    function activityName(id) { return activityProviders[id] ? activityProviders[id].name : t('activityUnavailableApp'); }
+    function moveActivity(id, target, focusAction) {
+      var from = activityOrder.indexOf(id);
+      target = Math.max(0,Math.min(activityOrder.length - 1,target));
+      if (from < 0 || from === target) { return; }
+      activityOrder.splice(from,1); activityOrder.splice(target,0,id); syncActivityValue(); renderActivities(); updateDirty();
+      if (activityAnnouncement) { activityAnnouncement.textContent = t('activityMoved',{name:activityName(id),position:target+1}); }
+      if (focusAction && activityList) {
+        var row = activityList.children[target], button = row && row.querySelector('[data-action="' + focusAction + '"]');
+        if (button && !button.disabled) { button.focus(); }
+        else if (row) { row.querySelector('.dynamic-activity-handle').focus(); }
+      }
+    }
+    function activityAt(target) {
+      while (target && target !== activityList) {
+        if (target.getAttribute && target.getAttribute('data-provider')) { return target.getAttribute('data-provider'); }
+        target = target.parentNode;
+      }
+      return null;
+    }
+    var draggingActivity = null, touchActivityTarget = null;
+    function renderActivities() {
+      if (!activityList) { return; }
+      clear(activityList);
+      activityOrder.forEach(function(id,index) {
+        var provider = activityProviders[id], row = make('li',null,'dynamic-activity-row');
+        row.setAttribute('data-provider',id); row.setAttribute('data-hidden',activityHidden.indexOf(id) >= 0 ? 'true' : 'false');
+        var handle = make('button','≡','dynamic-activity-handle'); handle.type = 'button'; handle.draggable = true;
+        handle.setAttribute('aria-label',t('activityMove',{name:activityName(id)})); handle.setAttribute('data-action','handle');
+        handle.addEventListener('keydown',function(event) {
+          if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault(); moveActivity(id,index + (event.key === 'ArrowUp' ? -1 : 1),'handle');
+          }
+        });
+        handle.addEventListener('dragstart',function(event) {
+          draggingActivity = id; if (event.dataTransfer) { event.dataTransfer.effectAllowed='move'; event.dataTransfer.setData('text/plain',id); }
+        });
+        handle.addEventListener('dragend',function() { draggingActivity=null; });
+        function moveTouch(x,y) {
+          var target = activityAt(document.elementFromPoint(x,y));
+          if (target && target !== id) { touchActivityTarget=target; }
+          Array.prototype.forEach.call(activityList.children,function(child) {
+            child.style.outline=child.getAttribute('data-provider') === touchActivityTarget ? '2px solid var(--accent)' : '';
+          });
+        }
+        function finishTouch() {
+          var target=touchActivityTarget; touchActivityTarget=null; draggingActivity=null;
+          if (target) { moveActivity(id,activityOrder.indexOf(target),'handle'); }
+          else { renderActivities(); }
+        }
+        if (typeof PointerEvent !== 'undefined') {
+          handle.addEventListener('pointerdown',function(event) {
+            if (event.pointerType === 'mouse') { return; }
+            draggingActivity=id; touchActivityTarget=null; if (handle.setPointerCapture) { handle.setPointerCapture(event.pointerId); }
+          });
+          handle.addEventListener('pointermove',function(event) {
+            if (draggingActivity === id) { event.preventDefault(); moveTouch(event.clientX,event.clientY); }
+          });
+          handle.addEventListener('pointerup',function() { if (draggingActivity === id) { finishTouch(); } });
+          handle.addEventListener('pointercancel',function() { draggingActivity=null; touchActivityTarget=null; renderActivities(); });
+        } else {
+          handle.addEventListener('touchstart',function() { draggingActivity=id; touchActivityTarget=null; },{passive:true});
+          handle.addEventListener('touchmove',function(event) {
+            if (draggingActivity !== id || !event.touches.length) { return; }
+            event.preventDefault(); moveTouch(event.touches[0].clientX,event.touches[0].clientY);
+          },{passive:false});
+          handle.addEventListener('touchend',finishTouch);
+          handle.addEventListener('touchcancel',function() { draggingActivity=null; touchActivityTarget=null; renderActivities(); });
+        }
+        row.addEventListener('dragover',function(event) { if (draggingActivity) { event.preventDefault(); } });
+        row.addEventListener('drop',function(event) { event.preventDefault(); if (draggingActivity) {
+          var moving=draggingActivity; draggingActivity=null; moveActivity(moving,activityOrder.indexOf(id),'handle');
+        } });
+        row.appendChild(handle);
+        var title = make('span',activityName(id),'dynamic-activity-name');
+        if (!provider || !provider.available) { title.appendChild(make('small',t('activityUnavailable'))); }
+        row.appendChild(title);
+        var label = make('label',null,'dynamic-activity-visible'), toggle = make('input'); toggle.type='checkbox';
+        toggle.checked=activityHidden.indexOf(id)<0; toggle.setAttribute('aria-label',t('activityShow',{name:activityName(id)}));
+        label.appendChild(toggle); label.appendChild(make('span',t('activityVisible'))); row.appendChild(label);
+        toggle.addEventListener('change',function() {
+          activityHidden=activityHidden.filter(function(value) { return value !== id; });
+          if (!toggle.checked) { activityHidden.push(id); }
+          if (id === 'builtin:music') { field('SHOW_MUSIC').set(toggle.checked); }
+          syncActivityValue(); row.setAttribute('data-hidden',toggle.checked?'false':'true'); updateDirty(); renderPreview();
+        });
+        var moves = make('div',null,'dynamic-activity-move');
+        [['up',-1,'activityUp'],['down',1,'activityDown']].forEach(function(action) {
+          var button = make('button',t(action[2])); button.type='button'; button.disabled=index+action[1]<0||index+action[1]>=activityOrder.length;
+          button.setAttribute('data-action',action[0]); button.setAttribute('aria-label',t(action[2]) + ': ' + activityName(id));
+          button.addEventListener('click',function() { moveActivity(id,index+action[1],action[0]); }); moves.appendChild(button);
+        });
+        row.appendChild(moves); activityList.appendChild(row);
+      });
+    }
+    if (activityHost) {
+      clear(activityHost); activityHost.appendChild(make('strong',t('activityPriority')));
+      activityHost.appendChild(make('p',t('activityPriorityHelp'),'description'));
+      activityList=make('ol',null,'dynamic-activity-list'); activityList.setAttribute('aria-label',t('activityPriority')); activityHost.appendChild(activityList);
+      activityAnnouncement=make('p','','dynamic-activity-announcement'); activityAnnouncement.setAttribute('aria-live','polite'); activityHost.appendChild(activityAnnouncement);
+      renderActivities(); show(field('SHOW_MUSIC'),false);
+    }
     var themeChanging = false;
     var bg = field('BACKGROUND_COLOR'), fg = field('TEXT_COLOR'), accent = field('ACCENT_COLOR');
     var initialTheme = color('BACKGROUND_COLOR') === 0xFFFFFF && color('TEXT_COLOR') === 0 ? 'light' :
@@ -420,7 +564,7 @@ module.exports = function() {
       submitHost.insertBefore(saveStatus,submitHost.firstChild);
     }
     function signature() {
-      return JSON.stringify(['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APP_ONLY','NOTIFICATION_VIBRATION','NOTIFICATION_APPS','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].map(function(key) { return field(key).get(); }).concat([noticeMode.value !== 'off' && appMode.value === 'selected' ? appEntry.value.trim() : '']));
+      return JSON.stringify(['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_ACTIVITIES','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APP_ONLY','NOTIFICATION_VIBRATION','NOTIFICATION_APPS','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].map(function(key) { return field(key).get(); }).concat([noticeMode.value !== 'off' && appMode.value === 'selected' ? appEntry.value.trim() : '',activityValue()]));
     }
     updateDirty = function() {
       if (!initialSnapshot) { return; }
@@ -548,7 +692,7 @@ module.exports = function() {
     field('SHOW_MUSIC').on('change',renderPreview);
     updateNotifications(); updateColors();
     initialSnapshot = signature();
-    ['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APP_ONLY','NOTIFICATION_VIBRATION','NOTIFICATION_APPS','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].forEach(function(key) { field(key).on('input change',updateDirty); });
+    ['BACKGROUND_COLOR','TEXT_COLOR','ACCENT_COLOR','CLOCK_FORMAT','ANIMATIONS','SHOW_STATUS','SHOW_ACTIVITIES','SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APP_ONLY','NOTIFICATION_VIBRATION','NOTIFICATION_APPS','NIGHT_PALETTE','NIGHT_BACKGROUND_COLOR','NIGHT_TEXT_COLOR','NIGHT_ACCENT_COLOR'].forEach(function(key) { field(key).on('input change',updateDirty); });
     updateDirty();
     var form = document.getElementById('main-form');
     if (form) {

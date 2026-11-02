@@ -4,7 +4,8 @@
 // this module is never imported by the phone or watch application.
 const core=require('pebble-watchface-core').wire;
 const activity=require('pebble-activities').view;
-if(!activity)throw Error('Native ACT2 fixtures require the pinned Activities 0.2.1 package');
+const presentation=require('../src/pkjs/activity-presentation');
+if(!activity)throw Error('Native ACT2 fixtures require the pinned Activities 0.2.2 package');
 const states=['idle','music','notification-summary','notification','timeline'];
 function cover() {
   const palette=[0xc0,0xff,0xc3,0xcf,0xfc,0xf3,0xf0,0xcc],pixels=[];
@@ -28,9 +29,18 @@ function fixtures(options) {
   let sequence=0;
   for(const theme of ['light','dark'])for(const format of [24,12])for(const state of states) {
     const slots=[];
+    let music=null;
     if(state==='music'||state==='notification-summary') {
-      slots[0]=Object.assign(ready('Flower In A Hurricane [from the soundtrack]'),{bitmap:cover()});
-      slots[1]=ready('Justice, Tame Impala');
+      if(options.legacyMusic) {
+        slots[0]=Object.assign(ready('Flower In A Hurricane [from the soundtrack]'),{bitmap:cover()});
+        slots[1]=ready('Justice, Tame Impala');
+      } else {
+        music=presentation.project({provider:'7f635d12-7288-4d10-885d-41ea49f4d5a4',
+          providerName:'Music',id:'settings-music',kind:'music',revision:1,state:'active',
+          observedAt:now,validUntil:now+120,private:true,unconfirmed:false,caption:'Music',
+          main:{type:'text',label:'Music',text:'Flower In A Hurricane [from the soundtrack]'},
+          support:{type:'text',label:'Artist',text:'Justice, Tame Impala'},image:cover()});
+      }
     }
     if(state==='notification'||state==='notification-summary') {
       slots[2]=ready('Xef',8);
@@ -38,41 +48,45 @@ function fixtures(options) {
     }
     const dark=theme==='dark';
     presets.push({name:`${state}-${format}-${theme}`,state,format,theme,
-      preserve:state==='music'||state==='notification-summary'?[{x:10,y:176,width:40,height:40}]:
+      preserve:state==='music'||state==='notification-summary'?
+        [{x:10,y:options.legacyMusic?176:state==='music'?92:116,width:40,height:40}]:
         state==='timeline'?[{x:0,y:171,width:200,height:57}]:[],
       integers:{BACKGROUND_COLOR:dark?0:0xffffff,TEXT_COLOR:dark?0xffffff:0,
         ACCENT_COLOR:0x55aaff,ANIMATIONS:0,CLOCK_FORMAT:format,SHOW_STATUS:1,
         NOTIFICATION_VIBRATION:0,NIGHT_PALETTE:0,REQUEST_CONTEXT:session},
       bytes:{COMPLICATION_DATA:core.packComplications([temperature,rain],now),
         CONTEXT_DATA:core.packComplications(slots,now),
-        ACTIVITY_DATA:activity.encode([],{session,revision:++sequence,sentAt:now})}});
+        ACTIVITY_DATA:activity.encode(music?[music]:[],{session,revision:++sequence,sentAt:now})}});
   }
   return {coreVersion:require('pebble-watchface-core/package.json').version,
     activitiesVersion:require('pebble-activities/package.json').version,
     activityWireVersion:activity.VERSION,session,now,presets};
 }
 function activityPresets(options) {
-  const plan=fixtures(options),now=options.now,session=options.session;
+  const plan=fixtures({...options,legacyMusic:true}),now=options.now,session=options.session;
   const provider='46f0a5c9-48ce-4ecb-87b7-c1510088a3d2';
-  const timer=(revision,state='active',seconds=522,extra={})=>({provider,id:'sample-pasta',kind:'timer',revision,
+  const timer=(revision,state='active',seconds=522,extra={})=>({provider:'50e9ef12-a5ab-4369-a3b5-3447bfba5151',providerName:'Timer',id:'sample-pasta',kind:'timer',revision,
     state,clock:'deadline',observedAt:now,validUntil:now+Math.max(3600,seconds+60),private:false,
     unconfirmed:true,main:'',footer:'10 min timer',totalDuration:600,
     ...(state==='paused'?{duration:seconds}:{deadline:now+seconds}),...extra});
   const clock=(label,mode,baseSeconds,extra={})=>({type:'clock',label,mode,baseSeconds,
     running:true,anchorAt:now,retain:true,...extra});
-  const card=(id,caption,main,support=null,extra={})=>({provider,id,kind:id,revision:1,
+  const card=(id,caption,main,support=null,extra={})=>({provider,id,providerName:/printer/.test(id)?'Printer':/glucose|unicode/.test(id)?'Glucose':/charge/.test(id)?'Charger':/build/.test(id)?'Build':/timer|tea|rest/.test(id)?'Timer':'Workout',kind:id,revision:1,
     state:'active',observedAt:now,validUntil:now+3600,private:false,
     caption,main,support,...extra});
+  const music=card('sample-music','Music',{type:'text',label:'Music',text:'One More Time'},null,
+    {provider:'7f635d12-7288-4d10-885d-41ea49f4d5a4',providerName:'Music',selectionKey:'builtin:music',
+      kind:'music',private:true,image:cover()});
   const expires=card('sample-support-expiry','Outdoor walk',clock('Elapsed','elapsed',1830),
     {type:'value',label:'Pulse',value:142,unit:'bpm',validUntil:now+3},
     {meter:{kind:'level',source:'support',min:60,max:180}});
   const specifications=[
     {name:'timer-running',base:'music',card:timer(1)},
     {name:'timer-paused',base:'idle',card:timer(2,'paused')},
-    {name:'glucose-numeric',base:'idle',card:{provider,id:'sample-glucose',kind:'glucose',revision:1,
+    {name:'glucose-numeric',base:'idle',card:{provider,providerName:'Glucose',id:'sample-glucose',kind:'glucose',revision:1,
       state:'active',clock:'none',observedAt:now,validUntil:now+120,private:true,
       value:6.2,unit:'mmol/L',main:'6.2 mmol/L',footer:'Glucose'}},
-    {name:'elapsed',base:'idle',card:{provider,id:'sample-walk',kind:'workout',revision:1,
+    {name:'elapsed',base:'idle',card:{provider,providerName:'Workout',id:'sample-walk',kind:'workout',revision:1,
       state:'active',clock:'elapsed',observedAt:now,validUntil:now+3600,private:false,
       duration:1830,clockAt:now,main:'',footer:'Outdoor walk'}},
     {name:'timer-heading-banner',base:'notification-summary',card:timer(3)},
@@ -102,9 +116,9 @@ function activityPresets(options) {
       {type:'value',label:'Charge',value:72,unit:'%',retain:true},null,
       {observedAt:now-300,unconfirmed:true})},
     {name:'support-expiry-before',base:'idle',card:expires,
-      expectInk:[{x:10,y:208,width:180,height:5}]},
+      expectInk:[{x:10,y:187,width:180,height:4}]},
     {name:'support-expiry-after',base:'idle',captureDelaySeconds:4,card:expires,
-      expectBlank:[{x:10,y:208,width:180,height:5}]},
+      expectBlank:[{x:10,y:187,width:180,height:4}]},
     {name:'completed-result',base:'idle',card:card('sample-finished-timer','10 min timer',
       {type:'text',label:'State',text:'Finished',retain:true},
       clock('Elapsed','elapsed',600,{running:false,anchorAt:0}),
@@ -138,7 +152,32 @@ function activityPresets(options) {
     {name:'timer-acknowledged-idle',base:'idle',card:timer(17,'completed',0,
       {clock:'none',showTerminal:false,deadline:0,validUntil:now+60})},
     {name:'timer-acknowledged-music',base:'music',card:timer(18,'completed',0,
-      {clock:'none',showTerminal:false,deadline:0,validUntil:now+60})}
+      {clock:'none',showTerminal:false,deadline:0,validUntil:now+60})},
+    {name:'timer-primary-music-secondary',base:'idle',verifyClockTick:true,cards:[
+      timer(19,'active',25,{id:'sample-ordered-timer'}),music]},
+    {name:'music-primary-timer-secondary',base:'idle',verifyClockTick:true,cards:[
+      music,timer(20,'active',25,{id:'sample-ordered-timer'})]},
+    {name:'two-identified-timers',base:'idle',cards:[
+      timer(21,'active',25,{id:'sample-new-pasta'}),
+      timer(22,'active',1040,{id:'sample-tea'})]},
+    {name:'delivery-primary-timer-secondary',base:'idle',cards:[
+      card('parcel','Delivery',{type:'text',label:'Delivery',text:'At your door'},null,
+        {kind:'delivery',providerName:'Parcel'}),timer(23,'active',25,{id:'sample-delivery-timer'})]},
+    {name:'support-yields-secondary',base:'idle',cards:[
+      card('workout','Intervals',clock('Rest','deadline',80),clock('Elapsed','elapsed',1458),
+        {kind:'workout',providerName:'Workout'}),music]},
+    {name:'secondary-long-clock',base:'idle',cards:[music,
+      card('long-clock','Long session',clock('Elapsed','elapsed',4294967295),null,
+        {providerName:'Workout'})]},
+    {name:'secondary-cached',base:'idle',cards:[music,
+      timer(24,'active',25,{id:'sample-cached-secondary-timer',observedAt:now-70,unconfirmed:true})]},
+    {name:'small-scalar-icon-spacing',base:'idle',card:card('small-scalar','Counter',
+      {type:'value',label:'Items',text:'123456789012345678'},null,
+      {providerName:'Counter',image:cover()}),
+      expectBlank:[{x:10,y:132,width:40,height:3}],expectInk:[{x:10,y:135,width:40,height:16}]},
+    {name:'long-provider-identity',base:'idle',card:card('provider-name','Instance',
+      {type:'text',label:'Status',text:'Ready'},null,
+      {providerName:'Dlouhý název aplikace s diakritikou',kind:'custom'})}
   ];
   let sequence=options.sequence===undefined?100:options.sequence;
   return {coreVersion:plan.coreVersion,activitiesVersion:plan.activitiesVersion,
@@ -149,7 +188,7 @@ function activityPresets(options) {
         const result=source.main&&typeof source.main==='object'?activity.normalize(source):
           activity.fromLegacy(source,{terminalResults:true,timerPresentation:'compact'});
         if(!result)throw Error('Invalid native activity fixture: '+spec.name);
-        return result;
+        return presentation.project({...result,providerName:source.providerName,selectionKey:source.selectionKey});
       });
       return {...base,name:spec.name,activity:cards[0],activities:cards,
         captureDelaySeconds:spec.captureDelaySeconds,verifyClockTick:spec.verifyClockTick===true,

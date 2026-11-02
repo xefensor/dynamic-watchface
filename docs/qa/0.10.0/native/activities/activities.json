@@ -1,0 +1,821 @@
+{
+  "version": "0.10.0",
+  "session": 8,
+  "source": {
+    "capturedFromCandidatePbwSha256": "62ddc37e18ca10dea3535c23a0fceecf4c2bbbd61d4065950a715ec010b195ca",
+    "candidateSourcePbwSha256": "47748ed645ada3d52dc3580555350488c1a9bcc5146be91c93a24a40459e6f9f",
+    "nativePayloadSha256": {
+      "emery/pebble-app.bin": "e9f151b351608025bfc11b34655ebeafb9a81ca6f9fe695076c66e15f9304741",
+      "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+      "emery/manifest.json": "de316deb467424c73ed71ae6340dc931253c9d60053343db94075f4d6686ccaf"
+    },
+    "timelineSample": "Actual native unobstructed geometry; reserved OS panel, no event payload."
+  },
+  "phone_javascript_executed": false,
+  "candidate_install_unchanged": true,
+  "fixture_encoder": {
+    "core": "0.5.0",
+    "activities": "0.2.2",
+    "core_wire_version": 4,
+    "activity_wire_version": 2
+  },
+  "captures": [
+    {
+      "name": "timer-running",
+      "file": "timer-running.png",
+      "sha256": "a18b6d7202ac0811d09f9213a6cd7b2ed642934db53e6fd9ada0fb208e15a242",
+      "rgb_sha256": "d9f9e8bc4b6951f293aa32726392bec11f682cec2751a8a3d8f7554665fb824e",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-paused",
+      "file": "timer-paused.png",
+      "sha256": "987b9e7923999b442913bf4a6d59af3d69e42eca890bb3518864a401eb2631e1",
+      "rgb_sha256": "55ac96a579bd2bdb32a9d0fc72246952819984bf92462d0bd5d45d95fbb73bba",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "glucose-numeric",
+      "file": "glucose-numeric.png",
+      "sha256": "c301943a93d65c55c086506b301c9a6bf1838f2ec1015f29c145eabd958207cf",
+      "rgb_sha256": "ae6a596c8f4cc0f989cea720b5215aa8efb3ae7912e9d0c0b0a31d014203c838",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "elapsed",
+      "file": "elapsed.png",
+      "sha256": "2cb56b1d985e8f19d934db1c82f3ce9a1293db746077c2b081b7b2dccc04d97d",
+      "rgb_sha256": "7f0b855724ad630eee127428a5bcc2e566305f86839cca1470e92da5c624c97b",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-heading-banner",
+      "file": "timer-heading-banner.png",
+      "sha256": "b16152a7e0d93ad5239d88d640db8fbb60ff3f2abbd585259033b6ae7d752164",
+      "rgb_sha256": "ba863c3405b4a263b5f16595d4aca9e873b3787cb438ba9e52aca76d310e459f",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-timeline",
+      "file": "timer-timeline.png",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
+      "rgb_sha256": "46fd2964512ee7d61359341aa3f8a4335f18a941fd949e9ef79a1ed7bd8747f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-long",
+      "file": "timer-long.png",
+      "sha256": "93d7d735194a014ba3d57ba743b5388ab25ee16f8b6db6d5d1cf679c499e5d3c",
+      "rgb_sha256": "845e621c5350d45af849847ae97f615e094c0963cee59659e385054f785f4345",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-24-hours",
+      "file": "timer-24-hours.png",
+      "sha256": "6cee16c49745b0ee8703f1c1b8c0d07a6f3004a61145faa92fae7c8da0db6066",
+      "rgb_sha256": "3ae1f47870d2955584c8928fd241d6b8711ead544197c2b1033e53169c13a85d",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-secondary",
+      "file": "timer-secondary.png",
+      "sha256": "21b6a0054cda2d44fbeaa8ec6393f32afbc17810296e65f3d7d7948f223e5936",
+      "rgb_sha256": "a0f5affae7209068ad33b30a1946eef595bec67e1c755da76f52161a7aecb7aa",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-paused-music",
+      "file": "timer-paused-music.png",
+      "sha256": "cc56228f565473ae9eb71261fb51e3b0229920bee6426a44da9d63bc191bd22a",
+      "rgb_sha256": "a25813bccf83de06467171893b6e5268350b8b8773b3d971d2b268fa4f20a627",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-large-text",
+      "file": "timer-large-text.png",
+      "sha256": "a18b6d7202ac0811d09f9213a6cd7b2ed642934db53e6fd9ada0fb208e15a242",
+      "rgb_sha256": "d9f9e8bc4b6951f293aa32726392bec11f682cec2751a8a3d8f7554665fb824e",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-long-heading-banner",
+      "file": "timer-long-heading-banner.png",
+      "sha256": "87dc5867b16943a75a9350adcfeeddd69bdb70b70826a8a8b299f12ac83b9404",
+      "rgb_sha256": "824f13a80e1ba023609f00ad14c886823941c54d3247fe63d1e08a61cc5a1ba4",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "clock-with-image",
+      "file": "clock-with-image.png",
+      "sha256": "252329e6b65175e19d9ac7fcfb240e76dcbd32f0e26dd1643ce7d39c9ea7ac7d",
+      "rgb_sha256": "4554b3a57d0a7b191ada83430a0f1de7c314c89b0d713ac564ef57ae955785f1",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "clock-long-footer",
+      "file": "clock-long-footer.png",
+      "sha256": "c67971f9c19da8560a0b68845c34ff360bdea5c5aed9688842b241df1fbcb0e9",
+      "rgb_sha256": "d8f4a51d7a0eb43261c1e0674823bad78ca2446470fe31368d73637f78b6eaf3",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-dark",
+      "file": "timer-dark.png",
+      "sha256": "09945910557c8eabf8cad47815358bf9dbab91828de67be17bcadf21d6bbed5e",
+      "rgb_sha256": "57d21ccff0cb00d2503c1462d3ca0242ee6f264abf1fa4a2a3e0dcb06846c277",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-due",
+      "file": "timer-due.png",
+      "sha256": "1616a6c51afad55b023ea753f845f74790b54b5067aafd438df79126046ae0f6",
+      "rgb_sha256": "c0d55c54a8586460670bfaee69afbd8d98df892669ba924709cb62e339620b27",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-long-timeline",
+      "file": "timer-long-timeline.png",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
+      "rgb_sha256": "46fd2964512ee7d61359341aa3f8a4335f18a941fd949e9ef79a1ed7bd8747f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "value-eta-artwork-meter",
+      "file": "value-eta-artwork-meter.png",
+      "sha256": "2344be348af782bc27f6f476b45c036723b89432fcda30abeaf61d9d6433ba0b",
+      "rgb_sha256": "dba44e398b48aaac5abbc9a6f76a45ede7140fe0cb33388167c66612f180f811",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "two-independent-clocks",
+      "file": "two-independent-clocks.png",
+      "sha256": "c6f06026341c7bc62b16a785126db919e7059e69af624151254ae95acbf3dd9a",
+      "rgb_sha256": "a7f1038ee92c94d194ef435be6bc3cf2d8c247f873886c682ee2dff07fefb60e",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "two-independent-clocks-tick.png",
+        "sha256": "66bd8f400c30afccbd437c1fcc945925a4ac286725dff8538feefed3398687e2",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "paused-with-running-wall-clock",
+      "file": "paused-with-running-wall-clock.png",
+      "sha256": "045af69a7570f9038c059dad1bc589447f16393f49cbc45d984db5e16a96284c",
+      "rgb_sha256": "b7a91134bec8ba8ebffac9fc53ea9d1de32e61367b098a6fb66f13f50abfbe57",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "paused-with-running-wall-clock-tick.png",
+        "sha256": "d07ecf2b74f96172d93171c8d5e561fd6bc39e57f97f98b010d7f4ef3104b149",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "cached-public-value-age",
+      "file": "cached-public-value-age.png",
+      "sha256": "348ff3a0a38447d3a9dfb78ef6a9be6a6cfe0c63b4ef66d2a03aef94f65d9f7e",
+      "rgb_sha256": "2c3aeedd2e9848c9dbbf56a820e5405f20decbda55e153e7d558fd0e691a0c53",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "support-expiry-before",
+      "file": "support-expiry-before.png",
+      "sha256": "0aa3e1fa129a8d09e10e7a21176a0c9351915395d9f189d5487b747a2eb5ed7c",
+      "rgb_sha256": "7fe0d6907c8c9ea79d95bf4bbe2ea189085956cd2d4c2542c79b653b33b757ef",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [
+        {
+          "region": {
+            "x": 10,
+            "y": 187,
+            "width": 180,
+            "height": 4
+          },
+          "has_ink": true
+        }
+      ]
+    },
+    {
+      "name": "support-expiry-after",
+      "file": "support-expiry-after.png",
+      "sha256": "284cf65f8084f3c192c2b93033c860702a9854f6fbaf31e3f6590dba5ed2ebc2",
+      "rgb_sha256": "6e22856b53acae5a3f7a8633a65a79f5f250d449f2351987394c9c151fdf572b",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 4,
+      "two_configured_readings": true,
+      "region_checks": [
+        {
+          "region": {
+            "x": 10,
+            "y": 187,
+            "width": 180,
+            "height": 4
+          },
+          "has_ink": false
+        }
+      ]
+    },
+    {
+      "name": "completed-result",
+      "file": "completed-result.png",
+      "sha256": "aaf3b02744714a3c475c7d1fdbd8b4fa4bbfc32484784a672d4a589fe72d3bb9",
+      "rgb_sha256": "caae5ab8a0845fcdf499e7905c5a428b58d326aa600654f573589409e06cd62f",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "clock-primary-clock-secondary",
+      "file": "clock-primary-clock-secondary.png",
+      "sha256": "edff7d56388837daee102d4797c15941ac4e105c44077610a6d12a2a22f3c08c",
+      "rgb_sha256": "64fae89192e1819181d429b7e9b526a2cc2318f0693a1c8cc522559cfc85ba6d",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "clock-primary-clock-secondary-tick.png",
+        "sha256": "0ffcabb783cbeaa6a7668920b646de291e3952fe45e38aba04c584dfe2b0ec26",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "text-primary-running-secondary",
+      "file": "text-primary-running-secondary.png",
+      "sha256": "42fc7237a359b8ab3e35b6d009aed50bd0546c1c5db4297cdecbccb25a5c5c34",
+      "rgb_sha256": "b7051d1220a930ecc82148908d396e62a692eff98a346b6a1e4bd8a6dc688fb9",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "text-primary-running-secondary-tick.png",
+        "sha256": "4ec258b2b1a47d227b1c007cd8ffc1763bc4625812e82c89f30a0bdd91692c0d",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "unicode-value-body-fallback",
+      "file": "unicode-value-body-fallback.png",
+      "sha256": "e802945373aa8ce5b2799eaf6bf2e838b8c0222f01968e613eef31f2a8a8d5ae",
+      "rgb_sha256": "44b3b0805c6b0e92a40be25668733b9eccdb4e72180419ffb2052412f8ed1ced",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "value-eta-artwork-meter-dark",
+      "file": "value-eta-artwork-meter-dark.png",
+      "sha256": "a006f8347329f7790aa5341b3a799413395eb6a3e0cf8b71fc38fb09f9745297",
+      "rgb_sha256": "80787a7b6b411dccb12cd0dcb053dfbc1f8b0ded55a75c666f5236e6bc80b818",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-one-minute",
+      "file": "timer-one-minute.png",
+      "sha256": "ca4614bc645563275475a4ee1c073bd222c08916a14365c1a467564effae2887",
+      "rgb_sha256": "6536064d2dd21feeaf6a34d296bc3bd2ebf05765a576271b333f799329e2550d",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "matching-item-provenance",
+      "file": "matching-item-provenance.png",
+      "sha256": "3097846867f84574a65d2410cedba02437f03870641a4e55d2b184ef1d291c02",
+      "rgb_sha256": "704fe76b442ba9f1490a57f3f4d8d2e116f6502d753c8961d09462b69590987f",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "different-item-provenance",
+      "file": "different-item-provenance.png",
+      "sha256": "25ebd455214fb56492db403c6bff096784cc35fe4d471592ce6d5f9328ade7a0",
+      "rgb_sha256": "8d4724d8dee4f26dd7866da4052fe2b7967ad58fb65d37566013ed6bfb8b9ef3",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "completed-result-music",
+      "file": "completed-result-music.png",
+      "sha256": "d974768b46f04623594fcf07819c21ef7e5bb8e67ec682bdb13ac9b1953f003b",
+      "rgb_sha256": "ba0baccd6ae72977d342863d44cd59bbdd88f57fadeda37ec6902233a123efda",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "ongoing-result-music",
+      "file": "ongoing-result-music.png",
+      "sha256": "50fb640336cfa5ca1a168c26760dd59b694d13c43616a8b1bb0c071da10a23ca",
+      "rgb_sha256": "ae8372f1af4f3231610c197ade4f274248ab22b06fe7b0134b5f8539fdd6e6a3",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-acknowledged-idle",
+      "file": "timer-acknowledged-idle.png",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028",
+      "rgb_sha256": "9c9b67d96a5911e260afa433a5b7568a043957f2f2b0b8a883e39cfee7d1de76",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-acknowledged-music",
+      "file": "timer-acknowledged-music.png",
+      "sha256": "f418e0ca5949c552619baeb7b00a645920a2f42d16b3413024cb241bc56479e5",
+      "rgb_sha256": "edb62205a42b3c44ebbe9e38c96a2f1436827092ad153fa9a9f909c2fb169166",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "timer-primary-music-secondary",
+      "file": "timer-primary-music-secondary.png",
+      "sha256": "cbf7e566b49b94d75daed05883102776d4f008f5cb464c1be57cc455d011c033",
+      "rgb_sha256": "0a095285c416d379da15a4d2c4b71723508ccc3cd031d30f0932d8fd494d674a",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "timer-primary-music-secondary-tick.png",
+        "sha256": "36629db15cd58ed5ec2746c228f429aa3a5f2a32b8c47df342d2b077f8b5f736",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "music-primary-timer-secondary",
+      "file": "music-primary-timer-secondary.png",
+      "sha256": "43c2b0b07e75e720538d5c0ae22db401dc7555fbe4dfe774af96daf55d46d378",
+      "rgb_sha256": "e5f9434eded31b5c2c40729119449041c82d7723e2869e3b93e9cb415b2a79cf",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [],
+      "clock_tick": {
+        "file": "music-primary-timer-secondary-tick.png",
+        "sha256": "a602dd467d0e620186e229671504a6f618115912f221287457c3037b85f80d40",
+        "activity_rgb_changed": true,
+        "fixture_resent": false,
+        "wait_seconds": 1.15,
+        "native_pixels_modified": false
+      }
+    },
+    {
+      "name": "two-identified-timers",
+      "file": "two-identified-timers.png",
+      "sha256": "98f76038435608dcf18d71b3cfe42f9f0fbc99458b2da98d6a9ab8a5f222b28a",
+      "rgb_sha256": "faad9eb4d03dd75bd80612d8bea3437d584196270919b4381e856e83f1fd908b",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "delivery-primary-timer-secondary",
+      "file": "delivery-primary-timer-secondary.png",
+      "sha256": "0915ff56ed26792003e3e68215a372f6dcabb72ce0a5fe1d4319213ee14942da",
+      "rgb_sha256": "03f3b133edbcad0ccef0b46ddfd21846ca31849d1c29161229dfae46825732b6",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "support-yields-secondary",
+      "file": "support-yields-secondary.png",
+      "sha256": "c6f06026341c7bc62b16a785126db919e7059e69af624151254ae95acbf3dd9a",
+      "rgb_sha256": "a7f1038ee92c94d194ef435be6bc3cf2d8c247f873886c682ee2dff07fefb60e",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "secondary-long-clock",
+      "file": "secondary-long-clock.png",
+      "sha256": "9f1b861149d5d2d0d82e2b65c1274ad6cea42f94889b079e6cefe9abe8218ef5",
+      "rgb_sha256": "828b3e11cc6b6944809dfa9786fd28549e57f7e9ce307dbcddfe6897a9b6d62f",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "secondary-cached",
+      "file": "secondary-cached.png",
+      "sha256": "737d833f51fe66383b4c8a2deccc7d89d25aceb9da10ff88a92729e7c4bbc7ca",
+      "rgb_sha256": "89473ccb861adbf3cb86d64966130b4df6fa8b7f9e17cbaa5ca1c62e4dddd5e0",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    },
+    {
+      "name": "small-scalar-icon-spacing",
+      "file": "small-scalar-icon-spacing.png",
+      "sha256": "7eae9a7de815d4095dfe013a73c2d131773a2ba687addbaf9803cbce5bdf7577",
+      "rgb_sha256": "8113a05d5f52b239e8df6098df89ef59b0875f40bc8ade1bc1e696f309f3958e",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": [
+        {
+          "region": {
+            "x": 10,
+            "y": 135,
+            "width": 40,
+            "height": 16
+          },
+          "has_ink": true
+        },
+        {
+          "region": {
+            "x": 10,
+            "y": 132,
+            "width": 40,
+            "height": 3
+          },
+          "has_ink": false
+        }
+      ]
+    },
+    {
+      "name": "long-provider-identity",
+      "file": "long-provider-identity.png",
+      "sha256": "ff8c3af7fd0ee7bc7c81d79cc37ca83007e5a58c61ee9c74fbefbd3615043e8e",
+      "rgb_sha256": "2315c74d5b7d60de841db242daa57657f7a027a64eab7ae7ea3aa207eff87392",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "capture_delay_seconds": 0.8,
+      "two_configured_readings": true,
+      "region_checks": []
+    }
+  ],
+  "scope": "44 actual ACT2 activity compositions with two configured sample readings, timed expiry and local-clock proofs. All source data is synthetic; elapsed workout is not native Workout integration.",
+  "visual_review": {
+    "reviewed": true,
+    "method": "Direct inspection of raw native frames and a contact sheet retaining each original 200\u00d7228 image; independent renderer review of both role orders, long clocks/units, cached cards, canonical Music and the scalar/image spacing case.",
+    "native_pixels_modified": false
+  }
+}

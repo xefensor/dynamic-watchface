@@ -1,0 +1,90 @@
+{
+  "version": "0.10.0",
+  "checks": [
+    {
+      "name": "timer-primary-music-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "cbf7e566b49b94d75daed05883102776d4f008f5cb464c1be57cc455d011c033"
+    },
+    {
+      "name": "music-primary-timer-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "43c2b0b07e75e720538d5c0ae22db401dc7555fbe4dfe774af96daf55d46d378"
+    },
+    {
+      "name": "two-identified-timers",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "98f76038435608dcf18d71b3cfe42f9f0fbc99458b2da98d6a9ab8a5f222b28a"
+    },
+    {
+      "name": "delivery-primary-timer-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "0915ff56ed26792003e3e68215a372f6dcabb72ce0a5fe1d4319213ee14942da"
+    },
+    {
+      "name": "secondary-cached",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "737d833f51fe66383b4c8a2deccc7d89d25aceb9da10ff88a92729e7c4bbc7ca"
+    },
+    {
+      "name": "support-yields-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": false,
+      "expected_secondary_visible": false,
+      "sha256": "c6f06026341c7bc62b16a785126db919e7059e69af624151254ae95acbf3dd9a"
+    },
+    {
+      "name": "secondary-long-clock",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": false,
+      "expected_secondary_visible": false,
+      "sha256": "9f1b861149d5d2d0d82e2b65c1274ad6cea42f94889b079e6cefe9abe8218ef5"
+    }
+  ],
+  "scope": "Actual captured native pixels; presence checks supplement direct inspection, not semantic OCR or live phone delivery."
+}

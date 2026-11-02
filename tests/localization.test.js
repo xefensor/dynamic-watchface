@@ -97,6 +97,7 @@ test('all custom controls, source states and save outcomes have complete transla
     'sourceEmpty','sourceLoading','sourceReady','sourceUnavailable','sourceDenied','sourceUnsupported',
     'sourceDisabled','sourcePlaying','sourcePaused','sourceIdle','sourceOff','sourceWaiting','sourcePermission',
     'saveSaved','savePending','saveFailed','saveNone','saveSending','contrastHelp','previewSettingsNote','previewCustomHelp','previewTimelineHelp','noExample',
+    'activityPriority','activityPriorityHelp','activityUp','activityDown','activityVisible','activityShow','activityMove','activityMoved','activityUnavailableApp','activityUnavailable',
     'receivedAge','observedAge','readingTemperature','readingFeelsLike','readingHigh','readingLow','readingCondition',
     'readingHumidity','readingRain','readingUv','readingBattery','readingTitle','readingArtist','readingName'];
   for(const language of languages){

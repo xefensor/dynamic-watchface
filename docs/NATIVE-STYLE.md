@@ -5,6 +5,33 @@ context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
 
+## Identified activity cards in 0.10.0
+
+Every activity uses an app identity, a recognizable image and current content.
+The primary image occupies 40×40 at the card’s top left; its app name uses 20px
+text and its main value or 24px text follows beside it. Complete scalar values
+and units can use the full width below the image. Rest, ETA and other meaningful
+roles remain visible. Related support uses 16px text inside the primary card.
+
+The optional secondary has a divider at y176, a 20px image, a 14px app name and
+16px current content. Cached public content places explicit 11px “Last reported
+… ago” beside its identity when both fit. The whole band yields if essential
+primary content, complete values or readable identity cannot coexist. It never
+becomes an anonymous footer or reuses a supporting metric as another activity.
+
+The phone supplies app display metadata and 40px fallback hourglass, note or
+generic symbol after source-revision validation. Native drawing tints a single
+opaque image color to the watch foreground; multicolor album art keeps its
+palette. Static hourglass artwork identifies Timer without inventing progress.
+The ACT2 caption carries the projected app identity; item labels retain metric
+roles. No source property, reserved native byte or alarm state is repurposed.
+
+Canonical Music follows these same cards and Dynamic’s saved provider order.
+The older standalone Music composition described below remains a compatibility
+fallback. The 20 embedded presets now capture canonical Music; separate activity
+fixtures retain legacy fallback coverage. Dynamic’s settings own ordering and
+visibility; the shared library’s pure selector owns no preference storage.
+
 ## First-party references
 
 | Reference | Principle carried into Dynamic |
@@ -70,7 +97,7 @@ uses an 80px clock, 20px date and 36px reading values; 14px labels explain each
 source. Context contracts the clock to 42px while retaining 22px values and
 readable 14px symbols. Timeline Peek uses 26px values and 16px symbols.
 
-Music titles use a fixed 24px size and artists a fixed 20px size. Track length
+The legacy Music fallback uses a fixed 24px title and fixed 20px artists. Track length
 changes wrapping through up to three title lines per page and two artist lines.
 A long received title continues through its remaining pages once, then holds;
 it never loops or changes the type size. Native ink measurements showed
@@ -84,7 +111,7 @@ text mode is retired, including existing saved choices, and sample previews
 have no size selector.
 
 Idle values and labels sit 4px and 6px closer to their symbols than in 0.4.1.
-Artist text uses a quieter secondary treatment while retaining its 20px size.
+Legacy artist text uses a quieter secondary treatment at 20px.
 After native palette rounding, secondary ink falls back to foreground when
 muting would lose 4.5:1 contrast. Accent graphics have a 2:1 visibility guard;
 provider artwork retains its colours.

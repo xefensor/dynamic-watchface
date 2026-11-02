@@ -5,11 +5,17 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 
 ## Product intent
 
-- One typography system: 24px music titles, 20px artists, a 40px artwork tile
-  and a footer bottom at y216. Titles continue once and never loop or shrink.
-- Clock activities use centered Fredoka numerals, a fixed value baseline and
-  their caption directly below. Optional secondary content never displaces the
-  main value or forces unreadable type. Music retains its own fixed footer.
+- Activity cards use an icon, app/provider identity and content in either role:
+  a 40px primary icon with 20px identity and a separated compact band with a
+  20px icon, 14px identity and 16px content. The ACT2 caption carries the host's
+  identity; a datum label keeps meaningful roles such as Rest or ETA, with an
+  exact identity duplicate suppressed. Artwork may fill the icon position.
+- Main clocks use Fredoka numerals; body titles stay at 24px and continue once
+  without looping. The primary's own essential detail determines its layout;
+  an optional secondary never changes its size or position. Hide the whole
+  secondary when its identity, complete clock/value units or provenance cannot
+  fit. Standalone compatibility music retains its 24px title, 20px artist,
+  40px artwork and footer bottom at y216.
 - ACT2 main and supporting items may each be text, a formatted value or an
   independent clock. Any activity can occupy either activity role. Keep
   supporting content, secondary activities, artwork and meters conditional on
@@ -21,8 +27,10 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   lifecycle transition or alarm acknowledgement.
 - Share an age/uncertainty indication only when the items' observation and
   provenance match; preserve independent estimates and pause state. Completed
-  clocks are final values, not paused clocks. Optional terminal results yield
-  to ongoing activity and both generic and compatibility-adapter music.
+  clocks are final values, not paused clocks. The phone ranks all ACT2 cards,
+  including the compatibility Music bridge; native trusts that wire order.
+  Retained cards use explicit Last reported wording and their original age,
+  including the compact header when it has room beside the app identity.
 - Two shared Pebble readings retain their left/right positions. Timeline Peek
   uses the native OS panel rather than a second event renderer.
 - Notification banners and additional vibration default to Off. They do not
@@ -97,13 +105,17 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.0 and Activities 0.2.1 explicitly. Upstream
+- This repository pins Core 0.5.0 and Activities 0.2.2 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 - Version 0.9.0 is a published GitHub development prerelease. Keep its tested
   artifacts, tag and the earlier 0.8.0 download links/bytes available.
   Prior user success on 0.8.0 is useful history, not a physical 0.9.0 check.
 - Version 0.9.1 is a GitHub development prerelease. Preserve published 0.9.0
   artifacts and their original source snapshot while validating the new bytes.
+
+- Version 0.10.0 adds identified primary/secondary cards and Dynamic-local
+  provider preferences. Preserve 0.9.1 and earlier published artifacts/tags.
+  Phone preferences never become new native message keys or private-content cache.
 
 `store/listing.json` is a local publication record, not a Pebble CLI schema.
 GitHub builds remain prereleases. The current official

@@ -98,10 +98,13 @@ test('native capture fixtures preserve all 20 state, format and theme presets us
       assert.equal(core.crc16Xmodem(packet),crc);
     }
     const packet=Buffer.from(preset.bytes.ACTIVITY_DATA);
-    assert.deepEqual(activityRecords(preset.bytes.ACTIVITY_DATA),[]);
+    const cards=activityRecords(preset.bytes.ACTIVITY_DATA);
+    assert.equal(cards.length,preset.state==='music'||preset.state==='notification-summary'?1:0);
+    if(cards.length)assert.equal(cards[0].caption,'Music');
     assert.equal(packet.readUInt32LE(12),42);assert.equal(packet.readUInt32LE(16),index+1);
     assert.deepEqual(preset.preserve,preset.state==='timeline'?[{x:0,y:171,width:200,height:57}]:
-      preset.state==='music'||preset.state==='notification-summary'?[{x:10,y:176,width:40,height:40}]:[]);
+      preset.state==='music'||preset.state==='notification-summary'?
+        [{x:10,y:preset.state==='music'?92:116,width:40,height:40}]:[]);
   }
 });
 
@@ -121,7 +124,10 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
     'clock-primary-clock-secondary','text-primary-running-secondary','unicode-value-body-fallback',
     'value-eta-artwork-meter-dark','timer-one-minute','matching-item-provenance',
     'different-item-provenance','completed-result-music','ongoing-result-music',
-    'timer-acknowledged-idle','timer-acknowledged-music'];
+    'timer-acknowledged-idle','timer-acknowledged-music',
+    'timer-primary-music-secondary','music-primary-timer-secondary','two-identified-timers',
+    'delivery-primary-timer-secondary','support-yields-secondary','secondary-long-clock',
+    'secondary-cached','small-scalar-icon-spacing','long-provider-identity'];
   assert.deepEqual(plan.presets.map(p=>p.name),names);
   for(const [index,preset]of plan.presets.entries()) {
     const packet=Buffer.from(preset.bytes.ACTIVITY_DATA),records=activityRecords(preset.bytes.ACTIVITY_DATA);
@@ -147,7 +153,7 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
   assert.equal(record('timer-running').main.label,record('timer-running').caption);
   assert.equal(record('timer-running').support,null);
   assert.equal(record('timer-one-minute').main.base,36);
-  assert.equal(record('timer-one-minute').caption,'1 min timer');
+  assert.equal(record('timer-one-minute').caption,'Timer');
   const matching=record('matching-item-provenance'),different=record('different-item-provenance');
   assert.equal(matching.main.observedAt,matching.support.observedAt);
   assert.notEqual(different.main.observedAt,different.support.observedAt);
@@ -160,13 +166,16 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
   assert.equal(record('timer-due').main.base,0);
   const pair=activityRecords(find('timer-secondary').bytes.ACTIVITY_DATA);
   assert.equal(pair.length,2);assert.notEqual(pair[0].id,pair[1].id);
-  assert.equal(pair[1].main.base,1040);assert.equal(pair[1].caption,'20 min timer');
+  assert.equal(pair[1].main.base,1040);assert.equal(pair[1].caption,'Timer');
   assert.ok(record('clock-with-image').flags&8);
-  assert.ok(find('clock-long-footer').activity.caption.length>50);
+  assert.equal(find('clock-long-footer').activity.caption,'Timer');
   assert.equal(find('timer-dark').theme,'dark');
   assert.equal(find('timer-long-heading-banner').state,'notification-summary');
   assert.equal(find('timer-long-timeline').state,'timeline');
   assert.equal(record('glucose-numeric').main.text,'6.2 mmol/L');
+  const smallScalar=record('small-scalar-icon-spacing');
+  assert.equal(smallScalar.main.type,2);assert.equal(smallScalar.main.text,'123456789012345678');
+  assert.equal(smallScalar.main.label,'Items');assert.equal(smallScalar.width,40);
   assert.ok(record('elapsed').main.flags&1);
   const meter=record('value-eta-artwork-meter');
   assert.equal(meter.main.type,2);assert.equal(meter.main.text,'72%');
@@ -183,7 +192,7 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
   assert.equal(result.state,3);assert.ok(result.flags&4);assert.equal(result.validUntil,now+60);
   assert.equal(result.main.text,'Finished');
   assert.equal(record('unicode-value-body-fallback').main.text,'6.2 mmol/L');
-  assert.match(record('unicode-value-body-fallback').caption,/Měření/);
+  assert.equal(record('unicode-value-body-fallback').caption,'Glucose');
   const textPrimary=activityRecords(find('text-primary-running-secondary').bytes.ACTIVITY_DATA);
   assert.equal(textPrimary[0].main.type,1);assert.equal(textPrimary[1].main.type,3);
   assert.ok(find('text-primary-running-secondary').verifyClockTick);
@@ -207,10 +216,12 @@ test('installed production C decoder accepts every generated ACT2 capture frame'
 #include <string.h>
 int main(int argc,char **argv) {
   assert(argc>2);const uint32_t now=(uint32_t)strtoul(argv[1],NULL,10);
+  PavState state;pav_state_init(&state,42,true);
   for(int i=2;i<argc;++i) {
     FILE *f=fopen(argv[i],"rb");assert(f);
     uint8_t bytes[PAV_MAX_PACKET_BYTES+1];size_t length=fread(bytes,1,sizeof(bytes),f);fclose(f);
     PavSnapshot snapshot;assert(pav_decode(bytes,length,NULL));assert(pav_decode(bytes,length,&snapshot));
+    if(!pav_state_receive(&state,bytes,length,now)){fprintf(stderr,"State rejected %s\\n",argv[i]);return 1;}
     if(!snapshot.count)continue;
     const PavCard *card=&snapshot.items[0];
     if(strstr(argv[i],"paused-with-running-wall-clock")) {

@@ -32,6 +32,7 @@ module.exports = [
     {type:'text',defaultValue:'Choose slots 1 and 2 in Pebble → Settings → Complications.'},
     {type:'text',defaultValue:'Units come from Pebble and the selected plugin.'},
     {type:'toggle',messageKey:'SHOW_ACTIVITIES',defaultValue:true,label:'Show activity plugins',description:'Compatible activity plugins connect automatically. Manage access permissions in Pebble.'},
+    {type:'text',id:'dynamic-activity-order',defaultValue:'Activity priority'},
     {type:'text',defaultValue:'Clock mark: last-reported activity state. The source app owns tracking and alarms.'},
     {type:'text',defaultValue:'Music & notifications'},
     {type:'toggle',messageKey:'SHOW_MUSIC',defaultValue:true,label:'Show music while playing'},
@@ -59,5 +60,6 @@ module.exports = [
   // Transport components have no preference keys and are never submitted.
   {type:'text',id:'dynamic-settings-data',defaultValue:'{}'},
   {type:'text',id:'dynamic-settings-strings',defaultValue:'{}'},
-  {type:'text',id:'dynamic-preview-assets',defaultValue:'{}'}
+  {type:'text',id:'dynamic-preview-assets',defaultValue:'{}'},
+  {type:'input',messageKey:'__dynamicActivityPreferences',defaultValue:'',attributes:{type:'hidden'}}
 ];
