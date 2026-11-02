@@ -1,0 +1,108 @@
+
+> dynamic-watchface@0.8.0 test
+> python3 scripts/verify-core.py && node --test tests/*.test.js && python3 scripts/test-native.py
+
+Pinned pebble-watchface-core 0.5.0: verified
+Pinned pebble-activities 0.1.2: verified
+✔ ready and named/numeric complication requests refresh the generic coordinator (4.786356ms)
+✔ the coordinator receives saved clock preference and active-watch language (2.445222ms)
+✔ obsolete layout choices are ignored while unrelated appearance settings survive (1.127618ms)
+✔ one text layout ignores saved and incoming legacy text-size choices (14.039213ms)
+✔ queued legacy text-size settings are inert and cannot leave a false pending-save status (2.791314ms)
+✔ invalid layouts and unsupported fields cannot override unrelated visual settings (1.023432ms)
+✔ obsolete weather/unit controls never reach the new complication-only watch UI (0.716355ms)
+✔ boolean settings preserve explicit off and reject malformed values (0.698143ms)
+✔ cancelled or invalid settings do nothing, empty valid settings reconfigure only (0.660262ms)
+✔ settings show complication counts/errors and no hard-coded weather picker (1.767154ms)
+✔ provider error messages are displayed as literal text in Clay settings (1.098977ms)
+✔ complication controls/status follow the active watch language and rebuild after a language change (2.167239ms)
+✔ disabled plugin status is explicit and locale lookup falls back to the phone (2.386446ms)
+✔ settings delivery retries busy transport, then reconfigures once (0.796273ms)
+✔ settings delivery failure is bounded instead of retrying forever (0.664893ms)
+✔ context source defaults and saved named/numeric settings preserve explicit opt-outs (1.624076ms)
+✔ startup and reconnect context requests rebaseline while ordinary requests preserve notification history (0.619726ms)
+✔ phone-only notification and music choices never enter watch packets and apply before theme retries (0.684251ms)
+✔ dynamic source errors use translated framing and literal HTML-escaped diagnostics (1.475772ms)
+✔ Halftone border effects cannot enter Dynamic watch packets (0.841926ms)
+✔ Dynamic uses the installed core API and its own complication cache namespace (0.661605ms)
+✔ accent colors preserve zero and valid named/numeric values (3.65924ms)
+✔ invalid accent colors are omitted while valid page settings still deliver (4.209603ms)
+✔ existing colors and privacy choices remain untouched when opening the rebuilt face (1.334238ms)
+✔ new appearance keys extend the original wire contract without renumbering existing keys (0.094901ms)
+✔ animations deliver explicit on and off through named and numeric settings (5.012381ms)
+✔ malformed animation settings cannot override other valid settings (12.430557ms)
+✔ opening the face and settings retains saved animation opt-outs (4.2031ms)
+✔ missing or malformed saved animation choices retain the enabled new-install default (4.931875ms)
+✔ clock format follows Pebble for new installs and preserves legacy explicit choices (7.580755ms)
+✔ clock format accepts only the three supported numeric choices (6.202087ms)
+✔ failed settings remain pending for reconnect and clear only after watch acknowledgement (0.706352ms)
+✔ an older settings acknowledgement cannot mark a newer save as delivered (0.702021ms)
+✔ startup reapplies validated saved presentation without sending private source preferences (1.902423ms)
+✔ native baseline requests recover presentation even when a reset reuses a token (0.754506ms)
+✔ presentation recovery carries pending values forward and ignores late ACKs across a newer save (1.446689ms)
+✔ settings metadata keeps per-slot property and per-feature permission states distinct (2.27572ms)
+✔ private selected readings never enter settings examples or provider error diagnostics (1.553128ms)
+✔ native system-format replies are cached independently of an explicit clock override (1.738634ms)
+✔ unknown system-format remains explicit metadata instead of inventing a watch preference (1.146347ms)
+✔ settings group appearance, content and recovery in one three-section page (1.148347ms)
+✔ new night palette and haptic controls deliver validated native preferences only (41.098775ms)
+✔ app-only is a phone privacy preference and saved native choices survive opening settings (2.959243ms)
+✔ generic activity discovery starts with the host and follows native session requests (0.766922ms)
+✔ activity preferences remain phone-only and reconfigure before native settings delivery (1.279537ms)
+✔ generic sources respect music opt-outs and reserve notifications for the baseline adapter (1.6676ms)
+✔ ongoing generic activities take priority over music without reordering their sources (0.643516ms)
+✔ soonest running deadline is projected even from the eighth timer slot (0.803287ms)
+✔ clock ordering preserves other provider positions and stable equal deadlines (0.651213ms)
+✔ numeric-only providers get readable main text without overwriting formatted values or source data (0.637367ms)
+✔ watch language wins, with phone/English fallback and Norwegian aliases (0.119371ms)
+✔ en translates every active control and status (0.572411ms)
+✔ cs translates every active control and status (0.285154ms)
+✔ sk translates every active control and status (0.279769ms)
+✔ de translates every active control and status (0.276096ms)
+✔ fr translates every active control and status (0.248225ms)
+✔ es translates every active control and status (0.267967ms)
+✔ it translates every active control and status (0.211202ms)
+✔ pt translates every active control and status (0.224107ms)
+✔ nl translates every active control and status (0.20818ms)
+✔ pl translates every active control and status (0.285251ms)
+✔ da translates every active control and status (0.173401ms)
+✔ sv translates every active control and status (0.188543ms)
+✔ no translates every active control and status (1.736785ms)
+✔ fi translates every active control and status (0.204522ms)
+✔ hu translates every active control and status (0.168895ms)
+✔ ro translates every active control and status (0.165613ms)
+✔ tr translates every active control and status (0.169302ms)
+✔ translation preserves preference identifiers, defaults and schema while cloning (0.432445ms)
+✔ custom settings strings resolve all supported locales and return isolated dictionaries (5.765362ms)
+✔ translation preserves provider values and API identifiers in settings metadata (0.187809ms)
+✔ all custom controls, source states and save outcomes have complete translations (7.998562ms)
+✔ borderless settings expose only applicable controls and preserve privacy defaults (0.514949ms)
+✔ chunky-motion appearance controls are translated without stale panel or shadow promises (1.445086ms)
+✔ the full UX pass has explicit translations and keeps privacy and save meanings separate (2.151808ms)
+✔ app-only privacy, quiet alerts and colour sharing are explicit in every locale (1.9197ms)
+✔ release copy distinguishes extra watchface alerts from system notification ownership (1.706972ms)
+✔ native capture fixtures preserve all 20 state, format and theme presets (5.002534ms)
+✔ capture plans require a current native session and UTC observation time (0.262994ms)
+✔ grouped activity samples cover long clocks, competing content and compact states (7.038932ms)
+✔ offline settings have every native preset and intact 200×228 PNGs (1.720049ms)
+✔ custom preview preserves source artwork and the native Timeline area (0.218091ms)
+ℹ tests 82
+ℹ suites 0
+ℹ pass 82
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 227.814856
+content state: 21312 -> 19896 bytes (host ABI)
+activity-memory.c: PASS
+activity-presentation.c: PASS
+context-effects.c: PASS
+context-presentation.c: PASS
+context-session.c: PASS
+font-assets.c: PASS
+font-raster.c: PASS
+music-layout.c: PASS
+native-reading.c: PASS
+native-settings.c: PASS
+watch-layout.c: PASS

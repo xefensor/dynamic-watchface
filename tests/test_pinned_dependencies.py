@@ -209,6 +209,16 @@ ascent = body_metric_ascent_rows[body_metric_ascent_index[body_metric_index(code
     def test_sdk_notice_audit_checks_exact_reviewed_body_and_permits_only_webpack_footer(self):
         _source, mapped = self.sdk_fixture()
         self.assertTrue(audit.audit_sdk_additions(self.root, mapped)["copyrightNoticePreserved"])
+        # A workspace-local SDK contributes a relative path instead of a bare
+        # source name. Exact reviewed bytes and duplicate detection still apply.
+        mapped["sources"] = ["../sdk/pebble/common/include/_pkjs_shared_additions.js"]
+        self.assertTrue(audit.audit_sdk_additions(self.root, mapped)["reviewedSourceMatches"])
+        mapped["sources"].append("_pkjs_shared_additions.js")
+        mapped["sourcesContent"].append(mapped["sourcesContent"][0])
+        with self.assertRaisesRegex(ValueError, "missing or duplicated"):
+            audit.audit_sdk_additions(self.root, mapped)
+        mapped["sources"] = ["_pkjs_shared_additions.js"]
+        mapped["sourcesContent"] = mapped["sourcesContent"][:1]
         mapped["sourcesContent"][0] += "unexpected();"
         with self.assertRaisesRegex(ValueError, "source-map transform"):
             audit.audit_sdk_additions(self.root, mapped)

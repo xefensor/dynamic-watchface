@@ -2,13 +2,13 @@
   "version": "0.8.0",
   "pbw": {
     "file": "Dynamic-0.8.0.pbw",
-    "sha256": "750072c30c1929973b521cda809a547c81e4008dfe52c9b7bc5fdc53f8061570"
+    "sha256": "a56c198fca4e7b5fcec2e438ecc0d678f8f29cdcc818972332b4fb9fea6f4bd8"
   },
   "native_payload_sha256": {
     "appinfo.json": "05310e049d6e9e73d7b55439761b5794d546aabf11476a5b8a283b419edec8d5",
-    "emery/pebble-app.bin": "0c4cac925e43a84db655397ee5d65a290cc1ede7ee7edec1a6fa22beba59c61d",
+    "emery/pebble-app.bin": "eb7a8dc44f9b87d2094ed60470763a0d3d69d7fec0748f4f1f03d8146813de24",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "646263c0f876a6f977376596658d663e48e4dc588024f2e1942e1aa5457c956d"
+    "emery/manifest.json": "e47090fba0e4e5a41fe5d3456ad3fbfaed770e134756a8dbaaebbbf885ee9bfa"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -102,9 +102,9 @@
     }
   ],
   "native_qa": [
-    "docs/qa/0.8.0/native-previews/previews.json",
-    "docs/qa/0.8.0/activities/activities.json",
-    "docs/qa/0.8.0/bundle-audit.json"
+    "docs/qa/0.8.0/local-recovery/native-previews/previews.json",
+    "docs/qa/0.8.0/local-recovery/activities/activities.json",
+    "docs/qa/0.8.0/local-recovery/bundle-audit.json"
   ],
   "fixture_data": true,
   "scope": "20 native settings samples and 17 generic activity scenarios from the final native payload. Renderer data is illustrative; no physical-watch or live-mobile-app verification.",

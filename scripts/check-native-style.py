@@ -240,7 +240,7 @@ def audit_sdk_additions(root, source_map):
             record["sourceMapSource"] == "_pkjs_shared_additions.js",
             "Review SDK-injected JavaScript provenance for this SDK")
     matches = [content for name, content in zip(source_map["sources"], source_map["sourcesContent"])
-               if name == record["sourceMapSource"]]
+               if PurePosixPath(name).name == record["sourceMapSource"]]
     require(len(matches) == 1, "SDK-injected JavaScript source is missing or duplicated")
     content = matches[0]
     encoded = content.encode("utf-8")

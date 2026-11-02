@@ -1,0 +1,18 @@
+
+up to date in 192ms
+
+up to date in 186ms
+Setting top to                           : /home/xela/Projekty/Pebble/dynamic-watchface 
+Setting out to                           : /home/xela/Projekty/Pebble/dynamic-watchface/build 
+Checking for program 'webpack'           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/node_modules/.bin/webpack 
+Found Pebble SDK for emery in:           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/sdk-core/pebble/emery 
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc 
+Checking for program 'ar'                : arm-none-eabi-ar 
+'configure' finished successfully (0.038s)
+Waf: Entering directory `/home/xela/Projekty/Pebble/dynamic-watchface/build'
+[26/28] Processing merge_js: src/pkjs/config.js src/pkjs/index.js src/pkjs/localization.js src/pkjs/settings-page.js src/pkjs/settings-preview.js -> build/pebble-js-app.js build/pebble-js-app.js.map
+[28/28] Creating app_bundle:  -> build/app_1793637676.pbw
+Waf: Leaving directory `/home/xela/Projekty/Pebble/dynamic-watchface/build'
+'build' finished successfully (0.353s)
+/home/xela/Projekty/Pebble/dynamic-watchface/dist/Dynamic-0.8.0.pbw
+a56c198fca4e7b5fcec2e438ecc0d678f8f29cdcc818972332b4fb9fea6f4bd8

@@ -1,0 +1,272 @@
+{
+  "version": "0.8.0",
+  "session": 2,
+  "source": {
+    "capturedFromCandidatePbwSha256": "f1323335782ec9a901b157d26d122db1a536d6bc5e654b1bde04fff1d85a060b",
+    "candidateSourcePbwSha256": "9f6c6e49c6869ab7f08e050bbfc3adf73f52b3013ff9b34827d04f8370b76dae",
+    "nativePayloadSha256": {
+      "emery/pebble-app.bin": "eb7a8dc44f9b87d2094ed60470763a0d3d69d7fec0748f4f1f03d8146813de24",
+      "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+      "emery/manifest.json": "0bac5438a0153b647bcacd764bf1610e0b1ecc2200e656e9c77ed485ee2aa686"
+    },
+    "timelineSample": "Actual native unobstructed geometry; reserved OS panel, no event payload."
+  },
+  "phone_javascript_executed": false,
+  "candidate_install_unchanged": true,
+  "fixture_encoder": {
+    "core": "0.5.0",
+    "activities": "0.1.2",
+    "core_wire_version": 4,
+    "activity_wire_version": 1
+  },
+  "captures": [
+    {
+      "name": "timer-running",
+      "file": "timer-running.png",
+      "sha256": "315f5d154288143668dc1fb4b52ce737ae976d487471d03ea5504ecd86e870fe",
+      "rgb_sha256": "8cdad5c10ba89bb5c88e41e6a37fb7871837a1a5fe1164bbce900697a20b3759",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-paused",
+      "file": "timer-paused.png",
+      "sha256": "3dc8af8a5ed8843dac050d12b03696b0a528b5c2dc65967322cf779de6e037dd",
+      "rgb_sha256": "6039dba84dcc25491279aa9103f899aadca6ae88172062d8646e5a3dbdc3d06b",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "glucose-numeric",
+      "file": "glucose-numeric.png",
+      "sha256": "ceccaa38665cb40e5a12ec0d1689e3836c5fb150c87c3de5918943daa26e96f4",
+      "rgb_sha256": "d9d26fb8f759d8c68f82d93f589fd9eedb920286bd97935373e5284fc43487b8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "elapsed",
+      "file": "elapsed.png",
+      "sha256": "2a3bda6a8894495ae5d04075ff8125abcc5ffddb18258cc449a2bb5ab0311f43",
+      "rgb_sha256": "19bcfec4a112452ae9127e03aea8f51178a3bd4d525f8ee985eceabe9f026f23",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-heading-banner",
+      "file": "timer-heading-banner.png",
+      "sha256": "fdba548ec38286e1339e931cda5db74a5604675059f43851ccfe9b1a2571abd7",
+      "rgb_sha256": "95bddfc10d0d6f66814616eb7b366ea9ac17fa41d8675ee9b8a36cf7afcacf4b",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-timeline",
+      "file": "timer-timeline.png",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
+      "rgb_sha256": "46fd2964512ee7d61359341aa3f8a4335f18a941fd949e9ef79a1ed7bd8747f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-long",
+      "file": "timer-long.png",
+      "sha256": "2a8566f53172826255bc350e7be5c264fc288db699ef9188571679a752dbf15a",
+      "rgb_sha256": "bf2e3dd7b8e14ba2e13b92f1b0e9667563870dde171e2414bc43963b7a047bce",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-24-hours",
+      "file": "timer-24-hours.png",
+      "sha256": "85df0f27e8556981eaffc8d3484a508c9d35854a2427e586454f5b192d886600",
+      "rgb_sha256": "d62b71618c4e7e2096bc0d72503078f303004114aa9ced638b4bcba9c5d38e81",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-secondary",
+      "file": "timer-secondary.png",
+      "sha256": "9a24e66a6f9b14a3baf5c1255729f75f57b99ce71f944b72fc2514b17980f5ec",
+      "rgb_sha256": "dbcb13d375ef5b6d767d096a6b8f4e95cf6e6275d6bc9b2e92fff74d54721216",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-paused-music",
+      "file": "timer-paused-music.png",
+      "sha256": "8c72e56008f4b5887869f57212bf6329300fbc7a46c6d10dae44f43815d8e667",
+      "rgb_sha256": "a08b0ecdf8d2f1cd5af36b3bfc60e05ec97a624c707ce74170fc8f28aa0ed2cb",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-large-text",
+      "file": "timer-large-text.png",
+      "sha256": "d16ae7609b0867e112ab371fe68aa6bbb5a082e32c3ef68bea94ea44316d1a8e",
+      "rgb_sha256": "3c4e2f3c4ae74696a4309abb3cfb04e44457b1436787d13b1103a6c334c3ad1c",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-long-heading-banner",
+      "file": "timer-long-heading-banner.png",
+      "sha256": "1df66cf3503b4242b19b16fec27a18c2f3ea85f95ed8b87786dcde426b1c5d66",
+      "rgb_sha256": "ad9c76d49f504fa37f408a61a813f82fb12e6be4dec8a2ca8173742095c52460",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "clock-with-image",
+      "file": "clock-with-image.png",
+      "sha256": "f7fb8beeace886686718b3e5ee93afb4d7922328c4a944a1347381e06578616e",
+      "rgb_sha256": "7d09b7ceba280218f4ab9b75952c324f3607d440dc286eb419d0096216fc954a",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "clock-long-footer",
+      "file": "clock-long-footer.png",
+      "sha256": "069a99f92d4b9a9806e46e3e6ba17a131fdcd0502d0a69380dc31292803a3b82",
+      "rgb_sha256": "20835089accbd83e5a8a95844ee427a9516185b73da61e03056154a547a29b12",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-dark",
+      "file": "timer-dark.png",
+      "sha256": "13696d26f0beb14b943ac7ebf7c27644779b2a971899771ddb420a3c91a23a6b",
+      "rgb_sha256": "cb7a479e37323c65bb28f84c17468d081177533971350b7aca9c099f02537107",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-due",
+      "file": "timer-due.png",
+      "sha256": "f259fec8ced3167d1a2f980c6be0974c3d4e280042bd7ea510f5f892da6693f1",
+      "rgb_sha256": "14de148ca117383fba384eb54e195d83db108078f20287e16be6a920155cd06c",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    },
+    {
+      "name": "timer-long-timeline",
+      "file": "timer-long-timeline.png",
+      "sha256": "986e9060b43cabaeeaf28281d840015b58051aee4b032e914bbe8a791c711866",
+      "rgb_sha256": "46fd2964512ee7d61359341aa3f8a4335f18a941fd949e9ef79a1ed7bd8747f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_header_readings_footer_rgb_equal": true,
+      "running_clock_changes_allowed": true,
+      "two_configured_readings": true
+    }
+  ],
+  "scope": "17 actual generic activity layouts with two configured sample readings. Elapsed workout is a plugin fixture, not native Workout integration.",
+  "visual_review": {
+    "reviewed": true,
+    "rgbEqualToRecovered": 16,
+    "captureCount": 17,
+    "differentFrames": [
+      "timer-long-heading-banner.png"
+    ],
+    "method": "All RGB frames compared to recovered captures; representative current frames and the changed long-heading banner reviewed directly. No clipping or layout change found."
+  }
+}

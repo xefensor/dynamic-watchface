@@ -1,5 +1,58 @@
 # Dynamic validation
 
+## Local CLI recovery — 2 November 2026
+
+Dynamic 0.8.0 remains unpublished. GitHub `main` was checked at
+`2ccea6101a84ede7d7ccf7dec6ddffe505767caa`; its newer recovery documentation
+was merged into `recovery/0.8.0-2026-11-02`. The supplied patch passed
+`git apply --check` against its documented 0.7.0 base, and all 224 snapshot
+file hashes matched before changes. Existing releases and tags were preserved.
+
+Fresh local checks pass: exact dependency installation with
+`npm ci --ignore-scripts`, 82 JavaScript tests, 11 strict native suites,
+29 Python release/pinning tests, the SDK 4.33.1 Emery build, permission packaging
+and the package/native-style audit. The audit now accepts SDK source-map entries
+with a directory prefix while still requiring the exact reviewed JavaScript
+bytes and rejecting duplicate entries; its regression checks cover both forms.
+
+The SDK reports a 62,834-byte RAM footprint and 68,238 available heap bytes
+before runtime allocations. The load image is 62,420 bytes; the complete native
+binary, including relocations, is 65,212 bytes. Resources are 246,928 bytes.
+These measurements do not establish runtime heap use or power consumption.
+
+All 20 settings presets and 17 activity scenarios were recaptured on actual
+Emery QEMU over local FIFOs, with phone JavaScript omitted. The captured native
+binary and resource hashes match the final distribution. All 20 settings frames
+and 16 activity frames are RGB-identical to the saved captures; the long-heading
+banner frame was reviewed directly as well. Clock numerals, two readings, fixed
+music footer, long countdown/caption and native Timeline Peek remain intact.
+The generated phone preview assets were rebuilt into the final PBW.
+
+Current evidence is in [native previews](qa/0.8.0/local-recovery/native-previews/previews.json),
+[activity captures](qa/0.8.0/local-recovery/activities/activities.json) and
+[bundle audit](qa/0.8.0/local-recovery/bundle-audit.json).
+`docs/asset-provenance.json` identifies the current candidate and store images.
+Its PBW SHA-256 is
+`a56c198fca4e7b5fcec2e438ecc0d678f8f29cdcc818972332b4fb9fea6f4bd8`.
+The prior 0.8.0 reports below retain their historical scope. Local build metadata,
+linker build identity and source-map paths differ from the recovered PBW; old
+binary hashes have not been relabelled as current verification.
+
+The local SDK uses isolated mutable state and a fixed metadata timestamp for
+the capture/final-build cycle. Local tooling repairs the SDK's string timestamp
+option and redirects its temporary symlink into `/tmp`. The sandbox also denies
+Node's captured synchronous subprocess pipes, so portable tests use a runner
+adapter with temporary files and `--test-isolation=none`. None of these tooling
+adjustments changes the app's C implementation or its approved layout.
+
+After final documentation, store provenance and source packaging, the committed
+candidate is checked with `scripts/github-release.py prepare`. Publication stays
+pending the local workflow. Hardware access was unavailable: physical vibration,
+real Bluetooth loss, live mobile plugin delivery, battery use and Timer/Dynamic
+sharing on the actual phone/watch still require Xef's device checks. No fresh
+Clay browser session is claimed; existing unchanged browser evidence retains its
+original scope.
+
 ## 0.8.0 grouped activity clocks
 
 - 82 JavaScript tests, 11 strict native suites and 29 Python release/pinning
