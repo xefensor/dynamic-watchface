@@ -1,5 +1,25 @@
 # Dynamic validation
 
+## GitHub publication — 3 November 2026
+
+[Dynamic 0.14.0](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.14.0)
+is published as a development prerelease from the tested artifact commit
+`0afe14f1c54802bd687ee32a7d69036802290f99`. Ordinary Git fast-forwarded `main`
+and pushed the settings branch. GitHub's portable checks and
+[release workflow](https://github.com/xefensor/dynamic-watchface/actions/runs/41690239319)
+passed; the workflow published the committed PBW, source ZIP and checksums
+without rebuilding the SDK payloads.
+
+All three published assets were downloaded. The PBW and source ZIP are
+byte-identical to the tested local files; the downloaded checksum file matches
+their SHA-256 values.
+
+The publication follow-up changes download links and release metadata only.
+The release bootstrap keeps identical-version checks tied to the tested source
+commit. Published tags, assets and the source ZIP remain unchanged. The source
+ZIP retains the README as it was at the artifact commit; current download links
+are in the repository README. Device-validation scope remains as recorded below.
+
 ## 0.14.0 settings cleanup — 3 November 2026
 
 The phone settings now has Appearance, Content & priority and Connection & help,

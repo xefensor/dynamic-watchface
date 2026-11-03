@@ -1,7 +1,7 @@
 # Dynamic
 
 A Pebble Time 2 watchface with rounded time, two horizontal readings and
-notification-style activities. The local 0.14.0 candidate cleans up settings and
+notification-style activities. Version 0.14.0 cleans up settings and
 keeps the shared activity renderer. It places one
 compact activity row above the main activity and groups the primary content
 against its bottom context. Music uses title, artwork and artist. Text stays
@@ -9,16 +9,16 @@ still and truncates at its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
-The current release is [**v0.11.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.11.0).
+The current release is [**v0.14.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.14.0).
 It is ready for sideload testing. Pebble appstore submission remains held.
 
 | File | Use |
 | --- | --- |
-| [Dynamic-0.11.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.11.0/Dynamic-0.11.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
-| [Dynamic-0.11.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.11.0/Dynamic-0.11.0-source.zip) | The checked source snapshot and pinned dependencies |
-| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.11.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+| [Dynamic-0.14.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.14.0/Dynamic-0.14.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
+| [Dynamic-0.14.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.14.0/Dynamic-0.14.0-source.zip) | The checked source snapshot and pinned dependencies |
+| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.14.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
 
-The [previous 0.10.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.10.0)
+The [previous 0.11.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.11.0)
 and its artifacts remain available unchanged.
 
 The [earlier 0.8.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0)
@@ -49,7 +49,7 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Plugin activities
 
-The local 0.14.0 candidate prefers `activity/summary` schema 4 through pinned
+Dynamic 0.14.0 prefers `activity/summary` schema 4 through pinned
 Activities 0.4.1. Sources publish either a standard headline with optional detail,
 or media title/artist/artwork. Datums can be text, values or independent clocks.
 Plugins supply meaning; Dynamic chooses layout. Existing schema 1/2/3 providers
@@ -86,7 +86,7 @@ annotation are omitted instead of showing them as current without one.
 
 ## Open Activity shortcut
 
-Install the separate local **Open Activity** helper and assign that same app to
+Install the separate [**Open Activity 0.1.1** helper](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.1) and assign that same app to
 the desired Quick Launch buttons. Its own settings choose Primary or Secondary
 for each supported hold. Dynamic supplies a recent destination pair only after
 native presentation confirmation. Missing, expired or non-openable selected
@@ -99,6 +99,10 @@ watchface guard or cancellation after an app-launch command is sent. Initial
 support assumes one connected watch and opens whole apps; it does not select a
 particular timer or notification inside them. No firmware or phone-app fork is
 required. Dashboard implementation is deferred.
+
+[Timer 0.8.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.8.0)
+publishes timer activities and their Timer destination. Install each companion
+app separately; Dynamic bundles the Activities library, not the watchapps.
 
 The bundled Dynamic plugin serves `navigation/presented_activities`, instance
 `current`, property `hint` as bounded JSON. It stores one overwritten record
