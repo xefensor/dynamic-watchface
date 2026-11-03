@@ -1,7 +1,7 @@
 {
   "name": "dynamic-watchface",
   "author": "Xef",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "scripts": {
     "test": "python3 scripts/verify-core.py && node --test tests/*.test.js && python3 scripts/test-native.py",
     "test:js": "node --test tests/*.test.js",
@@ -16,8 +16,8 @@
   "private": true,
   "dependencies": {
     "@rebble/clay": "^1.0.0",
-    "pebble-watchface-core": "file:vendor/pebble-watchface-core-0.5.0.tgz",
-    "pebble-activities": "file:vendor/pebble-activities-0.3.0.tgz"
+    "pebble-activities": "file:vendor/pebble-activities-0.4.0.tgz",
+    "pebble-watchface-core": "file:vendor/pebble-watchface-core-0.5.0.tgz"
   },
   "pebble": {
     "displayName": "Dynamic",
@@ -80,7 +80,9 @@
       "CONTEXT_STATE",
       "ACTIVITY_DATA",
       "REQUEST_ACTIVITIES",
-      "SHOW_ACTIVITIES"
+      "SHOW_ACTIVITIES",
+      "ACTIVITY_PRESENTED",
+      "REQUEST_PRESENTATION"
     ],
     "resources": {
       "media": [
@@ -139,6 +141,24 @@
           "file": "fonts/RobotoCondensed-Bold.ttf",
           "extended": true,
           "characterRegex": "[\\u0020-\\uFFFF]"
+        }
+      ]
+    },
+    "plugin": {
+      "description": "Recent destination app IDs for Dynamic’s presented activities; no activity content is retained.",
+      "script": "plugin.js",
+      "sources": [
+        {
+          "category": "navigation",
+          "items": [
+            "presented_activities"
+          ],
+          "properties": {
+            "hint": [
+              "longText"
+            ]
+          },
+          "suggestedRefreshIntervalSec": 30
         }
       ]
     }

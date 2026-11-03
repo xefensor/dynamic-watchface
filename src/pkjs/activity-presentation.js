@@ -1,84 +1,73 @@
 'use strict';
 
 var library=require('pebble-activities');
-var view=library.view,wire=library.wire,selection=library.selection;
+var selection=library.selection,wire=library.wire;
 var TIMER='50e9ef12-a5ab-4369-a3b5-3447bfba5151';
-var names={timer:'Timer',music:'Music',workout:'Workout',navigation:'Navigation',notification:'Notification',notifications:'Notifications'};
-
-// Phone-composed 40px standard artwork keeps the native packet and renderer
-// independent of plugin kinds. Native tinting keeps single-ink icons legible.
-function icon(kind){
-  var size=40,pixels=[],i;
-  for(i=0;i<size*size/2;i++){pixels.push(0);}
-  function dot(x,y,value){x=Math.round(x);y=Math.round(y);if(x<0||x>=size||y<0||y>=size){return;}var at=y*20+(x>>1);pixels[at]=x&1?(pixels[at]&240)|value:(pixels[at]&15)|(value<<4);}
-  function circle(cx,cy,r,value){for(var y=Math.floor(cy-r);y<=cy+r;y++){for(var x=Math.floor(cx-r);x<=cx+r;x++){if((x-cx)*(x-cx)+(y-cy)*(y-cy)<=r*r){dot(x,y,value);}}}}
-  function line(x1,y1,x2,y2,width){var n=Math.max(Math.abs(x2-x1),Math.abs(y2-y1));for(var p=0;p<=n;p++){circle(x1+(x2-x1)*p/n,y1+(y2-y1)*p/n,width/2,1);}}
-  if(kind==='timer'){
-    line(10,7,29,7,3);line(10,32,29,32,3);
-    line(12,9,12,12,2);line(27,9,27,12,2);line(12,12,27,27,2);line(27,12,12,27,2);
-    line(12,27,12,30,2);line(27,27,27,30,2);
-    for(var y=25;y<=29;y++){line(20-(y-24),y,19+(y-24),y,1);}
-    line(16,11,23,11,2);
-  }else if(kind==='music'){
-    line(16,11,29,8,4);line(16,11,16,28,3);line(29,8,29,25,3);
-    circle(12,28,4,1);circle(25,25,4,1);
-  }else{
-    // Neutral activity mark; do not guess a timer from a countdown or music
-    // from free text. Unknown kinds use this symbol and their explicit app name.
-    circle(12,12,3,1);circle(27,12,3,1);circle(12,27,3,1);circle(27,27,3,1);
-    line(12,20,27,20,2);line(20,12,20,27,2);
+var MUSIC_SOURCE='00000000-0000-0000-0001-000000000003';
+var MUSIC_APP='1f03293d-47af-4f28-b960-f2b02a6dd757';
+function symbolBitmap(kind){
+  var pixels=[],size=40;
+  for(var i=0;i<800;i++)pixels.push(0);
+  function dot(x,y){x=Math.round(x);y=Math.round(y);if(x<0||x>=40||y<0||y>=40)return;var at=y*20+(x>>1);pixels[at]|=x&1?1:16;}
+  function line(x1,y1,x2,y2,w){var n=Math.max(Math.abs(x2-x1),Math.abs(y2-y1),1);for(var p=0;p<=n;p++)for(var yy=-w;yy<=w;yy++)for(var xx=-w;xx<=w;xx++)if(xx*xx+yy*yy<=w*w)dot(x1+(x2-x1)*p/n+xx,y1+(y2-y1)*p/n+yy);}
+  function circle(cx,cy,r,fill){for(var y=cy-r;y<=cy+r;y++)for(var x=cx-r;x<=cx+r;x++){var d=(x-cx)*(x-cx)+(y-cy)*(y-cy);if(d<=r*r&&(fill||d>=(r-2)*(r-2)))dot(x,y);}}
+  function rect(l,t,r,b){line(l,t,r,t,1);line(r,t,r,b,1);line(r,b,l,b,1);line(l,b,l,t,1);}
+  if(kind===2){circle(20,22,12);line(20,5,20,9,1);line(16,4,24,4,1);line(20,22,20,14,1);}
+  else if(kind===4){rect(6,8,33,29);line(15,29,10,35,1);line(10,35,23,29,1);}
+  else if(kind===5){
+    line(9,7,6,13,2);line(6,13,10,23,2);line(10,23,20,33,2);
+    line(20,33,30,35,2);line(30,35,35,28,2);line(35,28,27,23,2);
+    line(27,23,22,28,2);line(22,28,12,18,2);line(12,18,17,13,2);line(17,13,9,7,2);
   }
+  else if(kind===7){circle(20,7,4);line(20,13,20,25,1);line(8,18,32,18,1);line(20,25,10,35,1);line(20,25,30,35,1);}
+  else if(kind===8){
+    circle(20,9,5,true);circle(20,21,5,true);
+    for(var my=9;my<=21;my++)line(15,my,25,my,1);
+    line(9,15,9,23,1);line(9,23,15,30,1);line(15,30,25,30,1);
+    line(25,30,31,23,1);line(31,23,31,15,1);line(20,30,20,36,1);line(14,36,26,36,1);
+  }
+  else if(kind===9){line(20,5,20,29,1);line(9,20,20,30,1);line(31,20,20,30,1);line(7,35,33,35,1);}
+  else if(kind===10){rect(6,9,34,34);line(20,9,20,21,1);line(6,14,34,14,1);}
   return {width:size,height:size,palette:[0,192],pixels:pixels};
 }
+function media(card){return card.type==='media'||card.kind==='music'||card.presentation===2;}
 function project(input){
-  var card=input&&input.content!==undefined&&library.activity?
-    library.activity.toView(input):view.normalize(input);if(!card){return null;}
-  var identity=wire.text(input.providerName,32)||wire.text(input.appName,32)||names[card.kind]||'Activity';
-  // Simple sources have no required field labels. The wire's nonempty default
-  // is an implementation detail and follows the host's chosen app identity.
-  if(input.sourceFormat===3||input.content!==undefined){
-    if(card.main.label===card.caption){card.main.label=identity;}
-    if(card.support&&card.support.label===card.caption){card.support.label=identity;}
-  }
-  // Compatibility for the native Timer 0.5 compact card, whose configured
-  // duration was repeated in both fields. Arbitrary provider role labels stay.
-  if(card.provider===TIMER&&card.main.label===card.caption){card.main.label=identity;}
-  // Older Music sources used required boilerplate labels and '?' for absent
-  // artist metadata. Clean only that known convention in the presentation copy.
-  if(card.kind==='music'){
-    if(card.main.type==='text'&&card.main.label==='Track'){card.main.label=identity;}
-    if(card.support&&card.support.type==='text'){
-      if(card.support.text.trim()==='?'){
-        card.support=null;if(card.meter&&card.meter.source==='support'){card.meter=null;}
-      }else if(card.support.label==='Artist'){card.support.label=identity;}
+  if(!input||!library.summaryView)return null;
+  var candidate=input;
+  if(input.content!==undefined&&library.activity)candidate=library.activity.toView(input);
+  var card;
+  if(input.type==='standard'||input.type==='media')card=library.summary.toView(input);
+  else if(input.presentation!==undefined)card=library.summaryView.normalize(candidate);
+  else {
+    if(candidate&&candidate.kind==='music'&&candidate.support&&candidate.support.type==='text'&&candidate.support.text.trim()==='?'){
+      candidate=JSON.parse(JSON.stringify(candidate));candidate.support=null;
     }
+    card=library.summaryView.fromLegacy(candidate);
   }
-  card.caption=identity;
-  if(!card.image){card.image=icon(card.kind);}
-  var result=view.normalize(card);
-  if(!result&&card.support){
-    // The main value and role/unit must remain complete. Supporting content is
-    // optional when a full provider identity would exceed ACT2's shared pool.
-    card.support=null;if(card.meter&&card.meter.source==='support'){card.meter=null;}
-    result=view.normalize(card);
+  if(!card)return null;
+  // Timer's native-owner adapter explicitly permits bounded public countdown
+  // predictions. Other saved/uncertain sources need a provenance-aware host.
+  if(card.unconfirmed&&card.provider!==TIMER)return null;
+  if(!card.image&&[2,4,5,7,8,9,10].indexOf(card.identitySymbol)>=0){
+    card.image=symbolBitmap(card.identitySymbol);card=library.summaryView.normalize(card);
+    if(!card)return null;
   }
-  return result;
+  if(!card.openApp&&input.openApp)card.openApp=input.openApp;
+  if(!card.openApp&&card.provider===TIMER)card.openApp={watchAppUuid:TIMER};
+  if(!card.openApp&&card.provider===MUSIC_SOURCE&&media(card))card.openApp={watchAppUuid:MUSIC_APP};
+  if(input.selectionKey)card.selectionKey=input.selectionKey;
+  if(input.providerName)card.providerName=input.providerName;
+  return card;
 }
 function select(cards,prefs,extraMusic){
   var all=(Array.isArray(cards)?cards:[]).slice();
   if(extraMusic){
-    // A dual-convention provider keeps its ACT2 card and UUID preferences. The
-    // builtin key orders only the compatibility card; it must never replace an
-    // app's UUID controls. Hiding the app also hides its compatibility source.
-    // UUID equality is authoritative; track text never establishes identity.
-    var duplicate=all.some(function(card){return card.provider===extraMusic.provider&&card.kind==='music';});
-    if(!duplicate&&selection.normalizePreferences(prefs).hidden.indexOf(extraMusic.provider)<0){all.push(extraMusic);}
+    var duplicate=all.some(function(card){return card.provider===extraMusic.provider&&media(card);});
+    if(!duplicate&&selection.normalizePreferences(prefs).hidden.indexOf(extraMusic.provider)<0)all.push(extraMusic);
   }
-  // Preserve the previous default: ongoing activities, then Music, then opted-in
-  // terminal results. Explicit provider preferences can move Music first.
   all=all.map(function(card,index){return {card:card,index:index};}).sort(function(a,b){
-    var am=a.card.kind==='music',bm=b.card.kind==='music';return am!==bm?(am?1:-1):a.index-b.index;
+    var am=media(a.card),bm=media(b.card);return am!==bm?(am?1:-1):a.index-b.index;
   }).map(function(entry){return entry.card;});
-  return selection.select(all,prefs).map(project).filter(Boolean);
+  return selection.select(all.map(project).filter(Boolean),prefs);
 }
 module.exports={project:project,select:select};

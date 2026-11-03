@@ -1,50 +1,43 @@
 # Design references and motion
 
-Dynamic 0.6.1 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.12.0 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
 
-## Normal and compact activities in 0.11.0
+## Normal and compact summaries in 0.12.0
 
-Plugins publish one content item, optional detail and an optional image through
-Activities 0.3.0. Dynamic chooses normal or compact presentation from the same
-activity. The new public source has no required field labels, main/support slots,
-meters or layout selectors. The former schema 2 source remains compatible;
-its meaningful metric labels and source-derived meters retain their semantics.
+Activities 0.4.0 supplies standard or media summaries. Dynamic chooses either
+role from the same record. The optional secondary occupies exactly one static
+row above the primary, with an optional 16px symbol and complete selected datum.
+Its text truncates from the beginning; an essential value that cannot fit makes
+that optional row yield. Primary content expands when the row is absent.
 
-A normal activity starts with a shallow app header: a 24×24 image at x10 and 16px
-identity at x42. Content starts below the header at x10 and uses the full 180px
-width. Text stays 24px and pages through remaining text once; clocks use centered
-Fredoka numerals at a width-fitting size. Optional 16px detail follows. A short
-truthful last-reported status can share the header when both full strings fit;
-otherwise it has its own quiet line. It never changes the original observation.
+Primary content sits above its context footer at y216. Standard context uses
+an instance name or provider identity. Media uses a 24px title and optional
+40px artwork beside up to two 20px artist lines. A title gets at most three
+lines alone or two with a secondary. Text never scrolls, pages or cycles.
+Useful detail wraps below a standard headline; meaningful value labels sit
+above the value. Clocks keep independent running states and original leases.
 
-A compact activity occupies its own divided band at y176–216, with a 20px image,
-14px app identity and 16px current content. Any activity can use either role.
-Complete values/units, meaningful labels, useful primary detail and provenance
-have priority; the whole optional band yields if they cannot coexist readably.
+ACT3 carries explicit media presentation, identity symbols, compact-datum
+selection, value-direction symbols and a media-item token. Dynamic does not
+infer media from a hidden label convention. Single-ink identity icons follow
+the foreground; media artwork retains its supplied palette, including a
+single-color cover. All media uses this renderer after phone-side adaptation.
 
-The app header does not reserve a permanent image column down the body. In the
-reported Music case, the title wraps across 180px below Music's small header.
-The actual Music adapter supplies unlabeled content/detail; missing optional
-artist values contribute no placeholder row. Compatibility Track/Artist labels
-are normalized only for the known music convention. Rest/ETA and other useful
-provider labels survive; generic plugin text is never guessed to be music.
+A real primary source/run replacement or media-item change can start a bounded
+280ms incoming slide. The renderer retains no outgoing activity copy. Clock
+ticks, lease refreshes, artwork and artist corrections do not start motion.
+The header remains still during an activity-only slide. The Animations setting
+turns local motion off, and native Timeline Peek retains priority.
 
-Artwork is stored once per activity, up to 40×40 in the bounded ACT2 transport,
-and scales into that role's image position. Single-ink icons follow the current
-watch foreground while multicolor album art retains its palette. The static
-hourglass identifies Timer without inventing progress. The source/run, source
-revision, original expiry, lifecycle and private-content clearing remain
-independent of presentation. Normal/compact is a host choice, not a new source
-state or alarm acknowledgement.
-
-The 20 embedded presets invoke the production Music adapter instead of manually
-constructing already-clean labels. Additional native fixtures cover the user's
-long-title/missing-artist case, with/without artwork, normal/compact role swaps,
-values, independently ticking detail and older provider compatibility. Dynamic
-retains its local priority/show-hide preferences; other hosts keep their own.
+The 20 embedded settings presets and additional native summary cases use the
+production encoders. Actual Emery captures separately verify fitting, symbols,
+role promotion and motion. Known public Timer predictions retain original
+validity; arbitrary unconfirmed saved sources are omitted. No Last reported
+line is inserted into the composition. Source lifecycle and native alarm
+ownership remain independent of presentation.
 
 ## First-party references
 
@@ -99,8 +92,8 @@ positions. The Complication Face demo selects slots by data shape.
   footer and briefly reduce the title area instead of taking over the whole face.
   A heading-only banner can retain two title lines with a gap above that footer.
 - **Motion explains priority:** the clock and readings move together as
-  context enters or leaves. A changed primary song title defines a track
-  change. Late artwork/artist metadata and notification icons repaint in
+  context enters or leaves. An explicit media-item token defines a track
+  change; legacy Music derives that token from its received title. Late artwork/artist metadata and notification icons repaint in
   place. A notification burst enters once; rapid replacements are coalesced
   for a stable reading interval instead of repeating its entrance.
 - **Calm resting states:** transitions are bounded and stop when complete.
@@ -111,27 +104,20 @@ uses an 80px clock, 20px date and 36px reading values; 14px labels explain each
 source. Context contracts the clock to 42px while retaining 22px values and
 readable 14px symbols. Timeline Peek uses 26px values and 16px symbols.
 
-The legacy Music fallback uses a fixed 24px title and fixed 20px artists. Track length
-changes wrapping through up to three title lines per page and two artist lines.
-A long received title continues through its remaining pages once, then holds;
-it never loops or changes the type size. Native ink measurements showed
-that 26px cannot reliably fit three title lines above the footer, so 24px
-preserves both readability and the fixed bottom composition. Artwork stays
-40px and shares y216 with the bottom of the artist text. A simple fallback tile
-holds that space when artwork is absent or transparent, so late covers cannot
-move the artist. A pause mark makes the five-second paused-music grace explicit.
-The former Larger
-text mode is retired, including existing saved choices, and sample previews
-have no size selector.
+Media uses fixed 24px titles and 20px artists. Native ink measurements showed
+that 26px cannot reliably fit three title lines above the footer. The final
+fitting line ellipsizes; no continuation state or timer is retained. Artwork is
+optional and stays 40px when present. The former Larger text mode is retired,
+including existing saved choices, and sample previews have no size selector.
 
 Idle values and labels sit 4px and 6px closer to their symbols than in 0.4.1.
-Legacy artist text uses a quieter secondary treatment at 20px.
+Media artist text uses a quieter secondary treatment at 20px.
 After native palette rounding, secondary ink falls back to foreground when
 muting would lose 4.5:1 contrast. Accent graphics have a 2:1 visibility guard;
 provider artwork retains its colours.
 
 Notification sender/title and app identity are separate. The sender is primary,
-with an app icon as context, or a quieter app-name line when its icon is absent.
+with app identity in its quieter bottom context footer.
 Long app names do not reduce sender text size. A banner preserves the music
 footer while its available title lines adjust to the bounded notice heading.
 App-only privacy shows app identity while omitting sender and body. Summary
@@ -208,6 +194,6 @@ artifacts and historical validation remain available.
 Warning ink keeps its amber role only when it has at least 3:1 contrast against
 the quantized watch background; otherwise a visible black/white ink wins.
 Invisible notification artwork uses the generic icon and app-name fallback.
-Music title pages pause under covering system windows and resume the current
-page when the face is visible. These refinements preserve type sizes, the fixed
-artwork/artist footer, and the one-pass title sequence.
+Activity clock work pauses under covering system windows and recomputes when
+the face is visible. Text retains the same static prefix. These refinements
+preserve type sizes and the bottom artwork/artist composition.

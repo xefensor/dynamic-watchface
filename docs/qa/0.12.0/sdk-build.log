@@ -1,0 +1,56 @@
+      |                                                                ^~~~~~~~
+../src/c/dynamic.c:1168:3: note: 'snprintf' output between 5 and 25 bytes into a destination of size 8
+ 1168 |   snprintf(s_numeric_date_buffer,sizeof(s_numeric_date_buffer),"%d.%d.",current->tm_mday,current->tm_mon+1);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[23/24] Linking emery | cprogram: build/src/c/dynamic.c.9.o build/emery/appinfo.auto.c.9.o build/emery/src/resource_ids.auto.c.9.o build/src/message_keys.auto.c.9.o -> build/emery/pebble-app.elf
+/home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/4.33.1/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/../../../../arm-none-eabi/bin/ld: warning: /home/xela/Projekty/Pebble/dynamic-watchface/build/emery/pebble-app.elf has a LOAD segment with RWX permissions
+
+[24/24] Processing emery | memory_usage_report: build/emery/pebble-app.elf build/emery/app_resources.pbpack
+-------------------------------------------------------
+EMERY APP MEMORY USAGE
+Total size of resources:        246928 bytes / 256.0KB
+Total footprint in RAM:         65314 bytes / 128.0KB
+Free RAM available (heap):      65758 bytes
+-------------------------------------------------------
+[25/28] Compiling emery | /home/xela/Projekty/Pebble/dynamic-watchface/build/emery/pebble-app.raw.bin: build/emery/pebble-app.elf -> build/emery/pebble-app.raw.bin
+[27/28] Processing emery | inject-metadata: build/emery/pebble-app.raw.bin build/emery/pebble-app.elf build/emery/app_resources.pbpack -> build/emery/pebble-app.bin
+[28/28] Creating app_bundle:  -> build/dynamic-watchface.pbw
+Waf: Leaving directory `/home/xela/Projekty/Pebble/dynamic-watchface/build'
+'build' finished successfully (1.461s)
+
+Final JS/embedded-preview rebuild:
+
+up to date in 202ms
+
+up to date in 201ms
+Setting top to                           : /home/xela/Projekty/Pebble/dynamic-watchface
+Setting out to                           : /home/xela/Projekty/Pebble/dynamic-watchface/build
+Checking for program 'webpack'           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/node_modules/.bin/webpack
+Found Pebble SDK for emery in:           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/sdk-core/pebble/emery
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc
+Checking for program 'ar'                : arm-none-eabi-ar
+'configure' finished successfully (0.049s)
+Waf: Entering directory `/home/xela/Projekty/Pebble/dynamic-watchface/build'
+[26/28] Processing merge_js: src/common/activity-navigation.js src/pkjs/activity-presentation.js src/pkjs/config.js src/pkjs/index.js src/pkjs/localization.js src/pkjs/settings-page.js src/pkjs/settings-preview.js -> build/pebble-js-app.js build/pebble-js-app.js.map
+[28/28] Creating app_bundle:  -> build/dynamic-watchface.pbw
+Waf: Leaving directory `/home/xela/Projekty/Pebble/dynamic-watchface/build'
+'build' finished successfully (0.427s)
+
+Final invalid-record cleanup JS rebuild:
+
+up to date in 208ms
+
+up to date in 196ms
+Setting top to                           : /home/xela/Projekty/Pebble/dynamic-watchface
+Setting out to                           : /home/xela/Projekty/Pebble/dynamic-watchface/build
+Checking for program 'webpack'           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/node_modules/.bin/webpack
+Found Pebble SDK for emery in:           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/sdk-core/pebble/emery
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc
+Checking for program 'ar'                : arm-none-eabi-ar
+'configure' finished successfully (0.050s)
+Waf: Entering directory `/home/xela/Projekty/Pebble/dynamic-watchface/build'
+[26/28] Processing merge_js: src/common/activity-navigation.js src/pkjs/activity-presentation.js src/pkjs/config.js src/pkjs/index.js src/pkjs/localization.js src/pkjs/settings-page.js src/pkjs/settings-preview.js -> build/pebble-js-app.js build/pebble-js-app.js.map
+[28/28] Creating app_bundle:  -> build/dynamic-watchface.pbw
+Waf: Leaving directory `/home/xela/Projekty/Pebble/dynamic-watchface/build'
+'build' finished successfully (0.438s)

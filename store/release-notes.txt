@@ -1,9 +1,11 @@
-0.11.0 simpler activities and full-width content — GitHub development prerelease
+0.12.0 notification-style summaries and recent activity navigation — local development candidate
 
-Plugins now publish content, optional detail and an image through the simple Activities 0.3.0 API. They do not select normal/compact layouts, arrange multiple labels or build meters. Earlier provider schemas remain compatible.
+Plugins publish standard or media summaries through Activities 0.4.0. Dynamic chooses the layout. Earlier provider schemas remain compatible through phone-side adaptation, with independent clocks and original source validity preserved.
 
-Dynamic's normal activity has a small icon/app header and full-width content below it. Song titles keep readable 24px type. Useful detail follows without Track/Artist boilerplate; missing optional artists stay empty. Clocks keep complete values and units. Compact activities remain separate and identifiable, and any activity can occupy either role.
+Primary content sits above its context footer. Media uses title plus optional artwork and artist. The optional secondary occupies exactly one static row above the primary. Any activity can take either role, and the primary expands when alone. Complete values and units remain intact. Text never scrolls or automatically pages.
 
-Dynamic keeps your existing activity priorities and show/hide choices. Source privacy, expiry, observation age and native Timer alarms retain their ownership. The production Music adapter is used in native validation, including the reported long-title and missing-artist case.
+Dynamic keeps its existing activity priorities and show/hide choices. Real activity or media changes can trigger a short incoming transition; clocks and routine metadata refreshes do not. Timer retains native alarm and state ownership. Uncertain generic saved content is omitted rather than displayed as current.
 
-Core 0.5.0 and Activities 0.3.0 are pinned. Earlier published artifacts and tags remain unchanged. Portable, SDK and emulator evidence is separate from physical-watch/real-phone testing. Pebble appstore submission remains held.
+A bundled read-only source supplies destination app IDs only after native presentation confirmation, capped at 45 seconds and original role/source expiry. The separate Open Activity helper opens the selected recent role from any watchface. No strict preceding-watchface guard, per-timer deep link, Dashboard implementation or platform fork is included.
+
+Core 0.5.0 and Activities 0.4.0 are pinned. Earlier published artifacts and tags remain unchanged. Portable, SDK and emulator evidence is separate from physical-watch/real-phone testing. This candidate has not been pushed or published; Pebble appstore submission remains held.

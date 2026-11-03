@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.12.0
+
+- Adopt Activities 0.4.0 summary schema 4 and explicit ACT3 presentation metadata;
+  preserve older provider conventions through phone-side adaptation.
+- Put one static compact row above the primary. Anchor context at the bottom,
+  with title/artwork/artist for media. Expand primary when secondary is absent.
+- Remove automatic title continuation, fixed app headers and Last reported UI.
+  Preserve complete values, independent clocks and native Timer lease ownership.
+- Use one activity renderer for media and standard content. Add bounded incoming
+  transitions for real activity/media replacements without per-tick motion.
+- Publish a bounded recent destination record after native presentation status
+  for the separate Open Activity helper. Preserve existing keys and append only
+  the two status-channel keys. No Dashboard or fork is required.
+
 ## 0.11.0
 
 - Adopt the simpler activity/live schema 3 contract: content, optional detail

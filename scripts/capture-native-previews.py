@@ -18,6 +18,7 @@ import base64
 import datetime
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import threading
@@ -100,7 +101,9 @@ def capture(pebble,pbw,output,preview=None,appmessage=None):
             tid=service.send_message(target,dictionary)
             if not condition.wait_for(lambda:tid in receipts,timeout=10):raise RuntimeError('AppMessage ACK timed out')
             if not receipts.pop(tid):raise RuntimeError('Watch rejected capture fixture')
+    host_rtc=os.environ.get('PEBBLE_QA_HOST_RTC')=='1'
     def set_time():
+        if host_rtc:return
         pebble.send_packet(TimeMessage(message=SetUTC(unix_time=SAMPLE_TIME,utc_offset=0,tz_name='UTC')))
     def screenshot(path):
         rows=Screenshot(pebble).grab_image()
@@ -119,11 +122,14 @@ def capture(pebble,pbw,output,preview=None,appmessage=None):
             if not condition.wait_for(lambda:bool(sessions),timeout=8):
                 raise RuntimeError('Native session request not received after install')
             session=sessions[-1]
-        plan=fixture_plan(session)
+        plan=fixture_plan(session,now=int(time.time()) if host_rtc else SAMPLE_TIME-1)
         (output/'fixtures.json').write_text(json.dumps(plan,indent=2)+'\n')
         send_data_to_qemu(pebble.transport,QemuBattery(percent=100,charging=False))
         frames={};captures=[]
-        for preset in plan['presets']:
+        actual_presets=[]
+        for preset_index,preset in enumerate(plan['presets']):
+            if host_rtc:preset=fixture_plan(session,now=int(time.time()))['presets'][preset_index]
+            actual_presets.append(preset)
             if any(token!=session for token in sessions):raise RuntimeError('Native session changed during capture')
             set_time()
             send_data_to_qemu(pebble.transport,QemuTimeFormat(is_24_hour=preset['format']==24))
@@ -141,12 +147,14 @@ def capture(pebble,pbw,output,preview=None,appmessage=None):
             png=path.read_bytes()
             frames[preset['name']]={'src':'data:image/png;base64,'+base64.b64encode(png).decode(),
                 'sha256':sha256(png),'preserve':preset['preserve']}
-            captures.append({'name':preset['name'],'file':path.name,'sha256':sha256(png),
+            captures.append({'name':preset['name'],'file':path.name,'fixture_now_utc':preset.get('fixtureNow',plan['now']),'sha256':sha256(png),
                 'rgb_sha256':sha256(pixels),'pixels':[200,228],'native_pixels_modified':False,
                 'settled_native_rgb_equal':True})
             print('Captured '+preset['name'],flush=True)
         if len({row['rgb_sha256'] for row in captures})!=20:
             raise RuntimeError('Expected 20 distinct native state/clock/theme images; inspect captures before embedding')
+        plan['presets']=actual_presets
+        (output/'fixtures.json').write_text(json.dumps(plan,indent=2)+'\n')
         result={'version':version,'source':{'capturedFromCandidatePbwSha256':sha256(native_pbw.read_bytes()),
             'candidateSourcePbwSha256':sha256(pbw.read_bytes()),'nativePayloadSha256':native_hashes,
             'timelineSample':'Actual native unobstructed geometry; reserved OS panel, no event payload.'},'frames':frames}
@@ -154,7 +162,7 @@ def capture(pebble,pbw,output,preview=None,appmessage=None):
             'candidate_source_pbw_sha256':sha256(pbw.read_bytes()),'native_payload_sha256':native_hashes,
             'phone_javascript_executed':False,'fixture_encoder':{'core':plan['coreVersion'],
                 'activities':plan['activitiesVersion'],'core_wire_version':4,'activity_wire_version':plan['activityWireVersion']},
-            'fixture_time_utc':SAMPLE_TIME,'session':session,'captures':captures,
+            'fixture_time_utc':plan['now'],'fixture_time_mode':'host-rtc' if host_rtc else 'fixed-utc','session':session,'captures':captures,
             'scope':'20 actual native Screenshot-service presets; sample data, not live phone/provider verification.',
             'visual_review':{'reviewed':False}}
         # Write assets only after all twenty native captures settle successfully.
@@ -211,7 +219,10 @@ def capture_activities(pebble,session,output,appmessage=None):
     (output/'fixtures.json').write_text(json.dumps(plan,indent=2)+'\n')
     captures=[]
     try:
-        for preset in plan['presets']:
+        actual_presets=[]
+        for preset_index,preset in enumerate(plan['presets']):
+            if host_rtc:preset=fixture_plan(session,now=int(time.time()))['presets'][preset_index]
+            actual_presets.append(preset)
             if changed:raise RuntimeError('Native session changed; repeat the twenty-preview capture first')
             pebble.send_packet(TimeMessage(message=SetUTC(unix_time=SAMPLE_TIME,utc_offset=0,tz_name='UTC')))
             send_data_to_qemu(pebble.transport,QemuTimeFormat(is_24_hour=True))

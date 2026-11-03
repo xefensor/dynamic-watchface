@@ -1,0 +1,46 @@
+{
+  "version": "0.12.0",
+  "result": "PASS",
+  "pbw": {
+    "file": "Dynamic-0.12.0.pbw",
+    "sha256": "335c92d0badda1e39300309f325c98622c503270c2bf5734ec581ecb5b4290b8"
+  },
+  "nativePayloadSha256": {
+    "appinfo.json": "e95bec18abfa2ecc5648b0c0d42f6bbc7715da7bec2b1350a269a9816bc64b3d",
+    "emery/pebble-app.bin": "e7873d579686c31f5d4efaae2940d1ade6b83ea641dbe3d6ebac1cc4d2018544",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "49397f160921ac7a68ea1617819c5296cf0631234e9c5171dd2d783799c0fc76"
+  },
+  "captureBinaryAndResourcesMatch": true,
+  "captureManifestRendererFieldsMatch": true,
+  "captureManifestTimestampOnlyDifference": true,
+  "sdkPayloadsRetained": true,
+  "nativeSizes": {
+    "fileBytes": 67208,
+    "loadedBytes": 64896,
+    "virtualBytes": 65316,
+    "relocationEntries": 578,
+    "relocationBytes": 2312,
+    "processInfoSizeLimit": 65535,
+    "completeBinaryLimit": 131072,
+    "loadedHeadroomBytes": 639,
+    "virtualHeadroomBytes": 219,
+    "linkedElfSectionsMatch": true,
+    "scope": "Loaded image and static extent; this does not measure runtime heap availability."
+  },
+  "resourcesBytes": 246928,
+  "navigationPluginPackaged": true,
+  "nativeSummaryCaptures": 36,
+  "clockFollowups": 20,
+  "nativeSettingsCaptures": 20,
+  "scope": "Exact package/SDK/native-capture identity. Source archive and committed release preparation are checked separately; no deployment or device claim.",
+  "capturedManifest": {
+    "file": "docs/qa/0.12.0/native-previews/captured-native-manifest.json",
+    "sha256": "c385fade0c01bc6503ea9ffe130551ed1639f968f0052840fac0c73a1b360fa0",
+    "ignoredTimestampFields": [
+      "generatedAt",
+      "application.timestamp",
+      "resources.timestamp"
+    ]
+  }
+}

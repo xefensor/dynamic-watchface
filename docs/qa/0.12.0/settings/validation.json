@@ -1,0 +1,257 @@
+{
+  "version": "0.12.0",
+  "actualClay": true,
+  "syntheticFixtures": true,
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "sourceSha256": {
+    "src/pkjs/config.js": "dcea15a983afe8c64bfcc5c331934ac04f8dc8daa51fc22fca0b2c2720fb5690",
+    "src/pkjs/index.js": "60081e9be757cc29434c6ec540725d43a8c80707455977f7db8bbd0f4b841cbf",
+    "src/pkjs/settings-page.js": "f5869a46792575b0f51e4ef85c8ab4c535af658a1da9cec703cd23f5f1fd3f4e",
+    "src/pkjs/localization.js": "4abe1ab54ae07b2999812de2ccf73fb87cb51a5bcb8cfb3b04727b40b3e9ceb4",
+    "src/pkjs/activity-presentation.js": "321ec33da78e9faf4452ec7c6c68bab775b6f04df00615a24f59a7a2e4189c2a",
+    "vendor/ACTIVITIES.json": "3e9be0afbeb7150cc1f4eb4beaef86a0ea4c2c5a501639de9eb0aa6bdf44ddf2",
+    "scripts/check-settings-activities.cjs": "e9933bdc036c3bc2d4ef3b4a2ec89525f0aa95fa4ca21b3005e3c652409512fd"
+  },
+  "results": [
+    {
+      "language": "en",
+      "rows": [
+        "11111111-1111-4111-8111-111111111111",
+        "builtin:music",
+        "22222222-2222-4222-8222-222222222222",
+        "33333333-3333-4333-8333-333333333333",
+        "44444444-4444-4444-8444-444444444444"
+      ],
+      "serialized": {
+        "order": [
+          "11111111-1111-4111-8111-111111111111",
+          "builtin:music",
+          "22222222-2222-4222-8222-222222222222",
+          "33333333-3333-4333-8333-333333333333",
+          "44444444-4444-4444-8444-444444444444"
+        ],
+        "hidden": [
+          "22222222-2222-4222-8222-222222222222",
+          "builtin:music"
+        ]
+      },
+      "realClayResponse": {
+        "BACKGROUND_COLOR": {
+          "value": 16777215
+        },
+        "TEXT_COLOR": {
+          "value": 0
+        },
+        "ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "NIGHT_PALETTE": {
+          "value": false
+        },
+        "NIGHT_BACKGROUND_COLOR": {
+          "value": 0
+        },
+        "NIGHT_TEXT_COLOR": {
+          "value": 16777215
+        },
+        "NIGHT_ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "CLOCK_FORMAT": {
+          "value": 0
+        },
+        "ANIMATIONS": {
+          "value": true
+        },
+        "SHOW_STATUS": {
+          "value": true
+        },
+        "SHOW_ACTIVITIES": {
+          "value": true
+        },
+        "SHOW_MUSIC": {
+          "value": false
+        },
+        "SHOW_NOTIFICATIONS": {
+          "value": false
+        },
+        "NOTIFICATION_PREVIEW": {
+          "value": false
+        },
+        "NOTIFICATION_APP_ONLY": {
+          "value": false
+        },
+        "NOTIFICATION_VIBRATION": {
+          "value": 0
+        },
+        "NOTIFICATION_APPS": {
+          "value": ""
+        },
+        "__dynamicActivityPreferences": {
+          "value": "{\"order\":[\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+        }
+      },
+      "overflow": {
+        "width": 360,
+        "scrollWidth": 360,
+        "buttons": [
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44
+        ]
+      },
+      "checks": [
+        "buttons",
+        "keyboard",
+        "native touch drag",
+        "desktop drag/drop",
+        "order-only dirty state",
+        "Music show/hide",
+        "literal provider names",
+        "retained absent provider",
+        "appended new provider",
+        "actual Clay response persisted by production PKJS",
+        "fresh host restores Music-first order",
+        "actual Clay response restores Timer-first order",
+        "actual Clay response hides Music"
+      ]
+    },
+    {
+      "language": "cs",
+      "rows": [
+        "11111111-1111-4111-8111-111111111111",
+        "builtin:music",
+        "22222222-2222-4222-8222-222222222222",
+        "33333333-3333-4333-8333-333333333333",
+        "44444444-4444-4444-8444-444444444444"
+      ],
+      "serialized": {
+        "order": [
+          "11111111-1111-4111-8111-111111111111",
+          "builtin:music",
+          "22222222-2222-4222-8222-222222222222",
+          "33333333-3333-4333-8333-333333333333",
+          "44444444-4444-4444-8444-444444444444"
+        ],
+        "hidden": [
+          "22222222-2222-4222-8222-222222222222",
+          "builtin:music"
+        ]
+      },
+      "realClayResponse": {
+        "BACKGROUND_COLOR": {
+          "value": 16777215
+        },
+        "TEXT_COLOR": {
+          "value": 0
+        },
+        "ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "NIGHT_PALETTE": {
+          "value": false
+        },
+        "NIGHT_BACKGROUND_COLOR": {
+          "value": 0
+        },
+        "NIGHT_TEXT_COLOR": {
+          "value": 16777215
+        },
+        "NIGHT_ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "CLOCK_FORMAT": {
+          "value": 0
+        },
+        "ANIMATIONS": {
+          "value": true
+        },
+        "SHOW_STATUS": {
+          "value": true
+        },
+        "SHOW_ACTIVITIES": {
+          "value": true
+        },
+        "SHOW_MUSIC": {
+          "value": false
+        },
+        "SHOW_NOTIFICATIONS": {
+          "value": false
+        },
+        "NOTIFICATION_PREVIEW": {
+          "value": false
+        },
+        "NOTIFICATION_APP_ONLY": {
+          "value": false
+        },
+        "NOTIFICATION_VIBRATION": {
+          "value": 0
+        },
+        "NOTIFICATION_APPS": {
+          "value": ""
+        },
+        "__dynamicActivityPreferences": {
+          "value": "{\"order\":[\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+        }
+      },
+      "overflow": {
+        "width": 360,
+        "scrollWidth": 360,
+        "buttons": [
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44
+        ]
+      },
+      "checks": [
+        "buttons",
+        "keyboard",
+        "native touch drag",
+        "desktop drag/drop",
+        "order-only dirty state",
+        "Music show/hide",
+        "literal provider names",
+        "retained absent provider",
+        "appended new provider",
+        "actual Clay response persisted by production PKJS",
+        "fresh host restores Music-first order",
+        "actual Clay response restores Timer-first order",
+        "actual Clay response hides Music"
+      ]
+    }
+  ],
+  "boundary": {
+    "savedAbsentProviderCount": 64,
+    "renderedProviderCount": 64,
+    "allInstalledControlsVisible": true,
+    "musicFirstSavedAndRestored": true
+  },
+  "errors": []
+}

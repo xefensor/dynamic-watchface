@@ -5,45 +5,45 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 
 ## Product intent
 
-- Activity cards have normal and compact host presentations for any provider.
-  Normal uses a shallow 24px image/16px identity header, then full-width content
-  below it; never reserve an empty icon column beside the main content. Compact
-  uses a separate band with 20px image, 14px identity and 16px current content.
-  Artwork may fill either image position. The internal ACT2 caption carries app
-  identity; exact identity labels suppress field prefixes while meaningful
-  compatibility labels such as Rest or ETA remain visible.
-- Main clocks use centered Fredoka numerals; body titles stay left-aligned at
-  24px over the full 180px and continue once without looping. The primary's own
-  essential detail determines its layout; optional detail and its independent
-  provenance yield together if they cannot fit beneath a notification banner.
-  If an extreme compatibility card's own essentials still cannot fit at the
-  readable size, the whole card yields until the brief banner clears.
-  an optional secondary never changes its size or position. Hide the whole
-  secondary when its identity, complete clock/value units or provenance cannot
-  fit. Standalone compatibility music retains its 24px title, 20px artist,
-  40px artwork and footer bottom at y216.
-- ACT2 main and supporting items may each be text, a formatted value or an
-  independent clock. Any activity can occupy either activity role. Keep
-  supporting content, secondary activities, artwork and meters conditional on
-  space; never infer a meter range or truncate essential clock/value units.
-- Preserve per-item observation/expiry and source revision separately from the
-  view sequence. Retained public content needs visible uncertainty and original
-  observation age; unavailable private content clears immediately. Overall
-  activity pause must not freeze a separately running clock. Zero is not a
-  lifecycle transition or alarm acknowledgement.
-- Share an age/uncertainty indication only when the items' observation and
-  provenance match; preserve independent estimates and pause state. Completed
-  clocks are final values, not paused clocks. The phone ranks all ACT2 cards,
-  including the compatibility Music bridge; native trusts that wire order.
-  Retained cards use explicit Last reported wording and their original age.
-  A short normal-card status may share its identity header when both full
-  strings fit; compact provenance retains measured room beside app identity.
-- Two shared Pebble readings retain their left/right positions. Timeline Peek
-  uses the native OS panel rather than a second event renderer.
-- Notification banners and additional vibration default to Off. They do not
-  replace or automatically deduplicate PebbleOS notifications.
-- Music and notification contents stay transient. Source redaction, privacy,
-  disconnection and expiry take priority over animations and queued updates.
+- ACT3 activities use the agreed notification-style composition: primary content
+  above contextual footer, secondary above primary in exactly one static row.
+  The footer ends at y216. Media has title plus optional 40px cover/artist footer;
+  other activities use instance context, falling back to provider identity.
+- Any source can occupy either role. The primary expands when secondary is
+  absent. Compact reduction keeps its selected clock/value structured and full;
+  an essential value that cannot fit causes the optional secondary to yield.
+  Both datums and media artwork remain available for local promotion.
+- Text always starts at its beginning and truncates at the last visible line.
+  Do not scroll, marquee, automatically page or cycle text. Do not restore old
+  title continuation timers, identity headers or Last reported UI.
+- Preserve immutable source/run identity, independent clocks and original
+  observation/validity. Timer's known native adapter may display a bounded public
+  deadline prediction without renewing its observation. Other unconfirmed legacy
+  sources are omitted when their required provenance cannot be displayed.
+- Media presentation, identity symbols, compact selector, semantic directions and
+  media-item visual token are explicit ACT3 fields. Do not infer styling from a
+  private label marker. Legacy source adaptation belongs on the phone.
+- All media uses the shared activity renderer. Keep one bounded render plan and
+  no parallel native Music renderer. Incoming-only 280ms transitions follow run
+  replacement or media item changes; ticks, lease refresh and artist/art arrivals
+  do not start them. Activity clock ticks dirty only the activity layer.
+- Two shared Pebble readings keep their positions. Timeline Peek uses the OS
+  panel. Notification banners retain their existing baseline/privacy policy and
+  default to Off. They do not replace OS notifications.
+- Activity presentation status confirms actual visible original record indices,
+  native session and view/presentation sequences. A small 30-second status refresh
+  maintains the routing lease; clock ticks never write storage or send messages.
+- The bundled read-only navigation source exposes one recent route record for
+  Open Activity. Persist only two destination app UUIDs and session/expiry data,
+  never provider/run IDs, titles, notification text, artwork or content hashes.
+  Validity is capped at 45 seconds and source/role expiry; reads never renew it.
+- Dynamic requests summary display fields and `open_app`, excluding separate
+  `actions` and `entity_ref` descriptors. Interactive hosts may request those
+  capabilities later; this watchface never invokes provider actions.
+- Open Activity means Dynamic's recent Primary/Secondary from any watchface;
+  stock SDK cannot prove the immediately preceding face. No firmware/mobile-app
+  fork, custom mobile build, Dashboard implementation or global Quick Launch
+  remapping is required. Automatic app opening uses the separate helper repo.
 - Phone settings colours are independent of watch colours. Preview controls
   must not silently change saved appearance or notification privacy.
 
@@ -112,7 +112,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.0 and Activities 0.2.2 explicitly. Upstream
+- This repository pins Core 0.5.0 and Activities 0.4.0 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 - Version 0.9.0 is a published GitHub development prerelease. Keep its tested
   artifacts, tag and the earlier 0.8.0 download links/bytes available.
@@ -130,3 +130,10 @@ GitHub builds remain prereleases. The current official
 holds appstore submission. Recheck
 the linked official rule before changing that status; preparing a consistent
 store kit does not publish the app or remove the restriction.
+
+Version 0.12.0 adds the independently callable navigation plugin. Distribution
+packaging must include plugin.js, its manifest source declaration and exact
+source identity, alongside the unchanged SDK native/JS payloads and licences.
+Append ACTIVITY_PRESENTED/REQUEST_PRESENTATION after all existing message keys.
+Native screenshots prove rendering only; real-phone app switching, permissions,
+physical-watch latency and battery remain separate checks.

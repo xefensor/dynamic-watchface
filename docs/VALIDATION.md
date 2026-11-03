@@ -1,5 +1,96 @@
 # Dynamic validation
 
+## 0.12.0 notification-style summaries and recent navigation — 3 November 2026
+
+Dynamic consumes `activity/summary` schema 4 through Activities 0.4.0 and ACT3.
+The exact library source is `9db426c36e591f3db98819b5b05ffd9da2af27b4`;
+Core remains 0.5.0. Standard summaries and explicit media share one native
+renderer. Primary content sits above its context footer, and the optional
+secondary is one static row above it. Media retains its title/artwork/artist
+composition. Both roles preserve independent clocks and original validity.
+Text starts at byte zero and never scrolls, pages or cycles automatically.
+
+The phone projection filters ineligible sources before choosing the two roles.
+Its integration tests cover Dynamic-local priorities, media identity, original
+leases, optional detail, bounded public Timer predictions and omitted generic
+unconfirmed content. Formatted scores and paces stay whole instead of being
+split into an inferred number and unit. Complete essential values take priority
+over optional context; an unreadable secondary yields. The watchface requests
+display/open-app fields without separate action or entity descriptors.
+
+Navigation uses a 24-byte native status after the actual render plan. It
+identifies original source indices, the native session, exact view sequence,
+presentation sequence and a bounded expiry. The phone resolves this against a
+frozen destination mapping. A full legacy notification can identify only the
+fixed Notifications app and retains the original notice expiry; a small banner
+does not displace the underlying activity's route. The persistent record contains
+only destination UUIDs and session/freshness metadata, with at most 45 seconds
+of validity. Expiry, malformed data, privacy changes and disconnection invalidate
+routes; reads cannot renew them. A modest 30-second native heartbeat refreshes
+presentation without per-second phone traffic or storage writes.
+
+Open Activity is a separate app. This integration means **Dynamic's recent
+activity**, even when launched from another watchface. It does not claim a
+strict preceding-watchface guard, cancellation after launch dispatch, a
+particular timer/message deep link or multiple connected watches. The official
+SDK and phone app are used without forks. Dashboard remains deferred.
+
+- **113 JavaScript tests, 13 portable C suites and 40 Python regressions pass.**
+  Navigation tests cover frozen view mappings, original indices after promotion,
+  strict bounds/session checks, expiry, storage failure and no content in hints.
+  Display-only subscription and distinct identity-symbol regressions pass.
+- **SDK 4.33.1 Emery build and complete package/native-style audit pass.**
+  The native virtual image is 65,316 bytes, leaving 219 below 65,535. Loaded
+  bytes are 64,896; the full binary is 67,208 including 2,312 relocation bytes.
+  Resources remain 246,928 bytes. A native startup sample reports a 24,792-byte
+  NativeState allocation and 33,796 bytes free heap after startup. This sample
+  is separate from the SDK's pre-startup figure and proves no worst-case heap,
+  stack high-water or battery claim.
+- **36 actual native summary compositions and 20 settings previews pass.**
+  Light/dark cases include all twelve agreed combinations plus expiry promotion,
+  an independently selected compact clock, long clocks, essential-value overflow
+  and numeric/formatted values with directions. Root and an independent reviewer
+  inspected both final summary contact sheets; settings were also reviewed.
+- **20 no-resend visible-clock follow-ups pass.** Original record index1 becomes
+  primary after local expiry without a new phone frame. A 30-second idle
+  presentation heartbeat passes after multiple prior views, with static text
+  pixels unchanged. The timer is reanchored to each new report, preventing a
+  former view's timer from extending the refresh gap beyond the hint lease.
+- Actual intermediate native captures confirm an incoming media-item transition,
+  a stationary clock/date/readings header, and no transition for a revision/
+  lease refresh or artist-only change. Four full-notification presentations emit
+  trusted status flag1; heading-only banners retain the underlying activity route.
+- Actual offline Clay browser checks pass in EN/CS at 360×800. They exercise
+  touch/desktop dragging, keyboard/buttons, Music visibility, dirty state, real
+  save responses replayed through production PKJS, restored preferences and a
+  64-provider boundary. New light/dark screenshots use the updated native preview.
+- The final distribution preserves SDK native/JS payloads and includes the
+  exact-source navigation plugin plus licenses. Embedded previews and all native
+  captures match the final binary/resources byte for byte. The final SDK
+  manifest differs from capture metadata only in `generatedAt`,
+  `application.timestamp` and `resources.timestamp`; all other fields match.
+- A packaged-script integration fixture passes Timer-primary, Music-secondary
+  and full Notifications routing, one invocation despite duplicate confirmation,
+  empty/expired close behavior and absence of private navigation content. SDK and
+  native messages in this fixture are simulated; it does not prove a phone launch.
+
+Evidence: [checks and logs](qa/0.12.0/checks.json),
+[summary captures and motion](qa/0.12.0/native-summary/summary.json),
+[settings previews](qa/0.12.0/native-previews/previews.json),
+[native notification status](qa/0.12.0/native-previews/presentation-statuses.json),
+[package audit](qa/0.12.0/bundle-audit.json),
+[distribution identity](qa/0.12.0/final-distribution.json),
+[actual Clay checks](qa/0.12.0/settings/README.md) and
+[packaged handoff fixture](qa/0.12.0/packaged-handoff.json).
+
+Final PBW SHA-256:
+`335c92d0badda1e39300309f325c98622c503270c2bf5734ec581ecb5b4290b8`.
+
+Native captures use synthetic source data with phone JavaScript omitted from
+the installation. Portable, bundle and emulator evidence cannot establish
+real-phone plugin delivery, physical-watch latency, alarm behavior or battery
+consumption. Earlier validation sections retain their original release scope.
+
 ## 0.11.0 simple activity API and normal/compact redesign — 3 November 2026
 
 The current source contract is `activity/live` schema 3 through Activities 0.3.0:

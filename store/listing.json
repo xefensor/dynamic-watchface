@@ -1,12 +1,12 @@
 {
   "name": "Dynamic",
   "author": "Xef",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "type": "watchface",
   "target_platforms": [
     "emery"
   ],
-  "short_description": "A clear clock, two Pebble readings, and a shared area for compatible activities, music and notifications.",
+  "short_description": "A clear clock, two Pebble readings, and static primary/secondary summaries for compatible activities and media.",
   "description_file": "description.txt",
   "release_notes_file": "release-notes.txt",
   "source_url": "https://github.com/xefensor/dynamic-watchface",

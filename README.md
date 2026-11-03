@@ -1,11 +1,10 @@
 # Dynamic
 
-A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
-and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.11.0 gives activities a small app header and full-width content,
-with normal and compact views. Plugins publish content, optional detail and an
-image through the simpler Activities API. Reorder or hide apps in Dynamic’s settings. Fredoka clock outlines and Roboto Condensed text keep a consistent face
-as its layout changes. Dynamic is an independent watchface by Xef.
+A Pebble Time 2 watchface with rounded time, two horizontal readings and
+notification-style activities. The local 0.12.0 development candidate places one
+compact activity row above the main activity and anchors useful context at the
+bottom. Music uses title, artwork and artist. Text stays still and truncates at
+its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
@@ -36,7 +35,7 @@ delivery remain separate device checks.
 
 Dynamic uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
 0.5.0 for readings and [Pebble Activities](https://github.com/xefensor/pebble-activities)
-0.3.0 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
+0.4.0 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
 alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Before installing
@@ -49,86 +48,71 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Plugin activities
 
-Compatible providers are discovered automatically when **Plugin activities** is
-enabled. Dynamic prefers the simpler `activity/live` schema 3 source: one piece
-of content, optional detail and an optional image. Content can be text, a value
-or a clock built with the library's helpers. The app identity comes from provider
-metadata. Plugins do not choose a normal/compact layout, position labels or
-construct meters. Existing schema 2 cards and schema 1 sessions remain compatible.
+The local 0.12.0 candidate prefers `activity/summary` schema 4 through pinned
+Activities 0.4.0. Sources publish either a standard headline with optional detail,
+or media title/artist/artwork. Datums can be text, values or independent clocks.
+Plugins supply meaning; Dynamic chooses layout. Existing schema 1/2/3 providers
+remain compatible through phone-side adaptation.
 
-A normal activity has a small icon/app-name header and prominent content across
-the full width below it. Text keeps 24px type and pages once when necessary;
-clock values use rounded numerals. Useful detail follows quietly, without
-redundant field names. Missing optional music artists stay empty. A compact
-activity has a separate divided band, an icon/app name and its own current
-content. Any activity can take either role. Complete values, meaningful metric
-labels and truthful source age take precedence over the optional compact band.
+Dynamic requests display data and an optional destination app. It does not
+request action/entity descriptors or invoke playback and other plugin actions.
 
-In **Content → Activity priority**, drag apps or use their arrow buttons to change
-priority and show or hide each app. The first eligible activity becomes primary
-and the next becomes secondary. Music participates in this same order. Within
-each provider, the soonest running deadline takes priority over its other or
-paused deadlines. Optional completed results yield to ongoing activities.
-Installed compatible providers appear even while idle; newly discovered apps
-append to your saved order. Unavailable apps keep their saved position for when
-they return. These preferences belong to Dynamic, so another watchface or a
-Dashboard app can keep its own order without an extra settings installation.
-Only stable provider identifiers and visibility flags are saved, never song
-names or activity content.
+The secondary is exactly one static row above the primary, optionally led by a
+small symbol. It can contain a live countdown, elapsed time, value or text. The
+primary expands upward when secondary is absent. Its bottom context can be an
+instance name, provider identity, or artwork and artist for media. It is not a
+mandatory icon-plus-app-name heading. Text never scrolls or automatically pages.
+Complete values and units are preserved; an optional compact view yields when
+its essential value cannot fit.
 
-Values use rounded numerals when their glyphs cover the complete supplied text;
-other units and text use the body font. The phone projects an app identity and
-fallback symbol after validating the authoritative source revision. Icons do
-not replace the visible name. Timer uses an hourglass; music can use album art
-or a note; unknown apps use a generic activity icon with their supplied name.
-Retained public content says **Last reported … ago** with the original source
-age. Private data clears on disconnection, expiry or opt-out.
+In **Content → Activity priority**, drag apps or use their arrow buttons to
+reorder and show/hide them. The first eligible activity is primary and the next
+secondary. Music participates in this same list. These are Dynamic's own
+preferences; other apps can keep their own order. Timer uses a recognizable
+hourglass. Media changes use a short one-time transition; clocks and ordinary
+metadata refreshes do not restart motion.
 
-The updated Timer provider publishes a simple countdown and app identity, with
-elapsed time retained inside Timer. Dynamic chooses its normal or compact view. This
-does not remove supporting clocks from other providers. Older
-[Timer 0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
-providers remain compatible and may expose both remaining and elapsed items.
-Start the timer on the watch, open its More options and wait for
-**Shared with phone**, then return to Dynamic. The timer's own PKJS publishes a
-snapshot; its independently callable plugin supplies it to Dynamic afterward.
-The small uncertainty mark and observation age identify **last reported**
-public content: offline pause/cancel changes may not have reached the phone.
-Matching main/support observations share one age/uncertainty indicator; items
-with different observations or explicit estimates keep separate indicators.
-Final completed clocks do not acquire a misleading pause icon. Each item keeps
-its original observation and expiry. Its clock can run or pause
-independently of the other item; a retained supporting item or meter cannot
-outlive the source data it represents. Private content clears when unavailable.
-The originating watchapp owns its native alarm; Dynamic reaching zero does not
-prove that an alarm rang or the timer completed. Dynamic provides no activity
-pause, cancel or other app commands.
+Timer's native app still owns deadlines, saved state and alarms. Its public
+phone snapshot can predict a countdown only through its original validity;
+reaching zero does not prove native completion or acknowledgement. Paused Timer
+visibility keeps its five-minute bound. Acknowledged results disappear when the
+owner's update reaches the phone. Other saved sources requiring a trust
+annotation are omitted instead of showing them as current without one.
 
-This path needs the phone app's plugin support. Existing apps must explicitly
-adopt the convention; installing the library cannot expose another app's private
-state. The built-in Workout app's live session is unavailable through the public
-stock SDK. This release uses stock PebbleOS and includes no firmware fork.
-Generic notification kinds remain reserved in this first Dynamic integration;
-standard notifications continue through the existing privacy and baseline rules.
-The future dashboard is a separate consumer and is not included in this PBW.
+## Open Activity shortcut
 
-[Native timer sample](docs/images/activity-timer.png) ·
-[Native glucose sample](docs/images/activity-glucose.png) ·
-[Native Music sample](docs/images/activity-music.png)
+Install the separate local **Open Activity** helper and assign that same app to
+the desired Quick Launch buttons. Its own settings choose Primary or Secondary
+for each supported hold. Dynamic supplies a recent destination pair only after
+native presentation confirmation. Missing, expired or non-openable selected
+activity makes the helper close; Secondary never silently opens Primary.
 
-These are renderer samples with two configured readings; glucose is illustrative
-plugin data, not a connection to a medical service.
+The shortcut opens **Dynamic's recent activity**, including if launched from
+another watchface shortly afterward. It requires the official phone app's
+plugin support and a connection. Current SDK does not expose a strict previous-
+watchface guard or cancellation after an app-launch command is sent. Initial
+support assumes one connected watch and opens whole apps; it does not select a
+particular timer or notification inside them. No firmware or phone-app fork is
+required. Dashboard implementation is deferred.
+
+The bundled Dynamic plugin serves `navigation/presented_activities`, instance
+`current`, property `hint` as bounded JSON. It stores one overwritten record
+containing destination app IDs and freshness/session metadata, with at most a
+45-second validity. It does not store song/notification contents, occurrence IDs,
+action arguments or history. Source reads cannot renew the record; expired data
+is removed on access. See [privacy](PRIVACY.md) and
+[validation](docs/VALIDATION.md) for the scope of current checks.
 
 ## Layout
 
 ![Idle watchface](docs/images/normal.png)
 ![Normal Music activity](docs/images/activity-music.png)
-![Timer with compact Parcel activity](docs/images/activity-timer.png)
+![Timer with compact Music activity](docs/images/activity-timer.png)
 
 | State | Presentation |
 | --- | --- |
 | Normal | A shortened localized weekday and numeric date, large rounded clock and two equal reading columns |
-| Music/activity | A compact clock and readings above a small app header, full-width content and optional useful detail |
+| Music/activity | A compact clock and readings, one optional secondary row, primary content and a bottom context footer |
 | New notification | A brief source banner reduces the activity area; optional message previews use a bounded panel |
 | Timeline Peek | The face follows Pebble's changing available area, retaining its clock and both readings above the native event panel |
 
@@ -165,10 +149,8 @@ settings. Timeline events remain native rather than being duplicated inside
 the face.
 
 The compact music/notification header stacks the weekday above the date.
-Idle and Timeline Peek use a single-line date. Music normally uses the same
-named activity cards as plugins. The compatibility fallback retains its earlier
-full-width title and bottom-anchored artwork/artist composition when a source
-cannot supply a valid canonical identity.
+Idle and Timeline Peek use a single-line date. All Music sources use the shared
+activity renderer after phone-side adaptation.
 
 Rain-probability percentages can use a 0–100% gauge when the source identifies
 them as precipitation data. Other percentages keep their ordinary reading
@@ -184,37 +166,30 @@ One unified layout gives every installation the same readable hierarchy:
 
 The idle date uses 20px text and reading labels use 14px. Idle reading values
 and labels sit 4px and 6px closer to their symbols, respectively. Music titles stay at
-24px. Canonical Music uses the card’s 16px supporting line; the legacy fallback
-retains 20px artists. Titles wrap through the available measured lines per page. A long received title continues through its remaining pages
-once, then holds the final page; it never loops or selects a smaller font.
-Paging pauses while a system window covers the face and resumes from the current
-page after it closes.
-In the legacy fallback, artists use up to two lines, then an ellipsis. Its 40px
-artwork tile and artist text retain their bottom anchor at y216. Missing or transparent artwork uses a
-simple fallback tile, keeping the artist in the same position while covers
-arrive. A small pause mark appears during the five-second paused-music grace.
-The 24px title size preserves three measured native lines above
-the footer; 26px cannot reliably fit that space.
+24px. Media artists use 20px text, with up to two lines. Titles use up to three
+measured lines when alone and two beside a secondary; overflow ends with an
+ellipsis. Artwork is optional and shares its bottom anchor at y216 with the
+artist. No title continuation or paging timer runs.
 
 With notification previews disabled, a brief app/title banner reduces the
 activity’s available area. A heading-only notice retains readable primary
-content; optional secondary content yields. The legacy music fallback retains
-its fixed footer while reducing the title area.
+content; optional secondary content yields. Media retains its footer while
+reducing the title area.
 Heading-only notices without music leave room for a larger clock and readings.
 The former Larger text preference and preview size selector are retired;
 existing saved choices also use this unified layout.
 
 Short transitions explain changes of priority. A new song title can slide
 inside the music area while the clock and readings stay still. Late covers,
-artist metadata and notification icons update in place. There is no supplied
-track identifier, so a changed primary title defines a new track for motion.
+artist metadata and notification icons update in place. Media item identity
+controls motion; legacy Music uses its received title when no item ID exists.
 A notification burst enters once; updates within it remain in place. The face
 settles after each transition. Turn **Animations** off to disable Dynamic's
 own transitions; the layout still follows native Timeline Peek.
 
 Notification sender/title and app identity remain separate. The sender is the
-primary heading; the app icon normally supplies context. Without an app icon,
-a quieter app-name line appears above the sender. Long app names do not shrink
+primary heading; a quieter app identity sits in the bottom context footer.
+Long app names do not shrink
 the sender. App-only privacy shows the app name/icon and hides both sender and
 message text. Message previews remain bounded, and privacy clearing takes
 priority over completing an outgoing animation.
@@ -306,8 +281,9 @@ time. Core preserves precise public identity even when a reading expires,
 while stale/private value payloads are omitted. Clock and date continue
 without the phone.
 
-Music title and artist each retain up to 128 UTF-8 bytes before layout. Title
-continuation can show only those received bytes, not text omitted by the source.
+The built-in Music adapter retains up to 128 UTF-8 bytes per title and artist
+before layout. Only the fitting prefix is shown; omitted source bytes cannot
+be recovered by the renderer.
 Artwork is optional; the core requests the displayed 40px target, with actual detail
 depending on the source. Obsolete waiting source snapshots are replaced by the
 latest update; settings retain ordered delivery. Music is an information
@@ -343,7 +319,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.11.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.12.0.pbw
 python3 scripts/package-source.py
 ```
 
@@ -355,7 +331,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.11.0.pbw
+pebble install --emulator emery dist/Dynamic-0.12.0.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -390,11 +366,11 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic 0.11.0 pins Core 0.5.0 and Activities 0.3.0. Halftone keeps its own
+Dynamic 0.12.0 pins Core 0.5.0 and Activities 0.4.0. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
 `vendor/pebble-watchface-core-0.5.0.tgz` and
-`vendor/pebble-activities-0.3.0.tgz` are committed, version-pinned Pebble packages.
+`vendor/pebble-activities-0.4.0.tgz` are committed, version-pinned Pebble packages.
 `package-lock.json` records their integrity; `vendor/CORE.json` and
 `vendor/ACTIVITIES.json` record upstream/version/checksum provenance. `npm ci`
 installs these archives; users install only Dynamic's PBW, not a separate

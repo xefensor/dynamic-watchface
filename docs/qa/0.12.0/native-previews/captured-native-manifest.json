@@ -1,0 +1,1 @@
+{"manifestVersion": 2, "generatedAt": 1793722279, "generatedBy": "", "debug": {}, "application": {"timestamp": 1793722278, "sdk_version": {"major": 5, "minor": 106}, "name": "pebble-app.bin", "size": 67208, "crc": 2643359025}, "resources": {"name": "app_resources.pbpack", "timestamp": 1793722278, "size": 246928, "crc": 2697228144}, "type": "application"}

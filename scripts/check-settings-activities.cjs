@@ -32,6 +32,7 @@ function replayHost(initialStorage={}) {
     require:name=>{
       if(name==='message_keys')return keys;
       if(name==='@rebble/clay')return claySandbox.module.exports;
+      if(name==='../common/activity-navigation')return require(root+'/src/common/activity-navigation');
       if(name==='pebble-activities')return {selection:library.selection,
         createContext:()=>({musicActivity:()=>musicCard,configure:()=>{},status:()=>({}),refresh:()=>{},connectionChanged:()=>{}}),
         createActivities:received=>{options=received;return {configure:()=>{},reproject:()=>{},providers:()=>[],status:()=>({}),refresh:()=>{},connectionChanged:()=>{}};}};
@@ -81,6 +82,15 @@ async function run(){
     await send('Emulation.setDeviceMetricsOverride',{width:360,height:800,deviceScaleFactor:1,mobile:true});
     await send('Page.navigate',{url:'file://'+pages[language]});
     for(let i=0;i<100;i++){if(await evaluate('!!document.querySelector(".dynamic-activity-row")'))break;await new Promise(r=>setTimeout(r,50));}
+    if(language==='en') {
+      for(const scheme of ['light','dark']) {
+        await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:scheme}]});
+        await evaluate('document.fonts.ready');
+        const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+        fs.writeFileSync(path.join(output,'appearance-'+scheme+'.png'),Buffer.from(shot.data,'base64'));
+      }
+      await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:'light'}]});
+    }
     const rows=()=>evaluate('Array.from(document.querySelectorAll(".dynamic-activity-row"),r=>r.dataset.provider)');
     assert.deepEqual(await rows(),[timer,'builtin:music',workout,absent,evil]);
     await evaluate('document.querySelectorAll(".dynamic-activity-row")[0].scrollIntoView({block:"center"})');

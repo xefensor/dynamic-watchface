@@ -1,0 +1,41 @@
+{
+  "version": "0.12.0",
+  "result": "PASS",
+  "commands": [
+    {
+      "command": "npm test",
+      "javascriptTests": 113,
+      "portableCSuites": 13,
+      "log": "portable-tests.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "pythonTests": 40,
+      "log": "python-tests.log"
+    },
+    {
+      "command": "pebble build",
+      "sdk": "4.33.1",
+      "platform": "emery",
+      "log": "sdk-build.log"
+    },
+    {
+      "command": "node scripts/check-settings-activities.cjs docs/qa/0.12.0/settings",
+      "actualClayBrowser": true,
+      "languages": [
+        "en",
+        "cs"
+      ],
+      "viewport": [
+        360,
+        800
+      ],
+      "log": "settings/browser-check.log"
+    },
+    {
+      "command": "python3 scripts/check-native-style.py --pbw dist/Dynamic-0.12.0.pbw",
+      "evidence": "bundle-audit.json"
+    }
+  ],
+  "scope": "Local build, portable tests and isolated browser/emulator fixtures; no deployment or real device claims."
+}

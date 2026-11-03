@@ -1,0 +1,38 @@
+{
+  "result": "PASS",
+  "scope": "Packaged Timer PKJS/provider, Dynamic navigation provider and Open Activity PKJS; production Dynamic consumer/projection/navigation loaded from the checked checkout. Simulated SDK/native messages; no real phone/watch launch.",
+  "timerVersion": "0.7.0",
+  "dynamicVersion": "0.12.0",
+  "helperVersion": "0.1.0",
+  "activityFrameBytes": 401,
+  "primaryDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+  "secondaryDestination": "1f03293d-47af-4f28-b960-f2b02a6dd757",
+  "duplicateConfirmationsInvokedOnce": true,
+  "emptyAndExpiredClose": true,
+  "privateNavigationContentAbsent": true,
+  "trustedFullNotificationOpensNotifications": true,
+  "executedPackagedScripts": {
+    "timer": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "79cd2c61b7e5b69a5f7a6216277a9e354c40902d17c44616e5d2cfcb66db47b9"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "eb54fdbac2b65193a0c0c058a93c916ce4f0c29ae6d74d37200bae7e1f5a86e4"
+      }
+    ],
+    "dynamic": [
+      {
+        "file": "plugin.js",
+        "sha256": "53ed77a8b1ec2e0cf5dd6888468731e2789d168e60cc1056d817a2b5a0d90697"
+      }
+    ],
+    "helper": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "a757d1bf20040b95099ad58a904ba0efd2ec4936495de8c0ab92e8b1dc470810"
+      }
+    ]
+  }
+}

@@ -1,18 +1,18 @@
 {
-  "version": "0.11.0",
+  "version": "0.12.0",
   "pbw": {
-    "file": "Dynamic-0.11.0.pbw",
-    "sha256": "991dcc4e9e66ea0dae7d750b37cefa4b7453daaf8779a9a0f41b49618c96c21d"
+    "file": "Dynamic-0.12.0.pbw",
+    "sha256": "335c92d0badda1e39300309f325c98622c503270c2bf5734ec581ecb5b4290b8"
   },
   "native_payload_sha256": {
-    "emery/pebble-app.bin": "49e953864acb9d89065bfb593bcb0ea6b8617556fafdf0599df0feda1d3bd78a",
+    "emery/pebble-app.bin": "e7873d579686c31f5d4efaae2940d1ade6b83ea641dbe3d6ebac1cc4d2018544",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
   },
   "screenshots": [
     {
       "file": "emery_idle.png",
       "source": "docs/images/normal.png",
-      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028",
+      "sha256": "87b0841c56cfb299ae2d7307d4e8111da04213c0e75f7a4f9236a6d1bbe95621",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false
@@ -20,7 +20,7 @@
     {
       "file": "emery_music.png",
       "source": "docs/images/music.png",
-      "sha256": "04ee410074c2b200e155b570fe8e959e51279ab3beb73f279efbbb2fdb9d3df8",
+      "sha256": "9f7ccf788f423c4f6cee62cbd75bb8b674b84d342f01d0b1d0ee0ac693bcff7e",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false
@@ -28,7 +28,7 @@
     {
       "file": "emery_notification_summary.png",
       "source": "docs/images/notification-summary.png",
-      "sha256": "776c389d3c505eeed6d6b906ac472d81114a38fa8fc36c179ee42cbd1347f698",
+      "sha256": "e0696e05fab315a79710148f5256bc2388918d047d42b7e271b214b8da3230ed",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false
@@ -36,7 +36,7 @@
     {
       "file": "emery_notification.png",
       "source": "docs/images/notification.png",
-      "sha256": "41e6f38ff0203c21df7d9e634581a5e03fd309359558534087d887815015a203",
+      "sha256": "86ab9920eb18b23d7939da54b5f6756401d873cc58b9c3320751dd1a92dbbc4a",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false
@@ -44,7 +44,7 @@
     {
       "file": "emery_dark.png",
       "source": "docs/images/dark.png",
-      "sha256": "9d60e761c32f4b15616a6a267e7c3402cd7853d1ec1196ba1b88933d7e6590e0",
+      "sha256": "abb5a2f2d50a1e481a75b9b162c1d0a7d529f274f932b421da7a8d6e78cef5a7",
       "width": 200,
       "height": 228,
       "native_pixels_modified": false

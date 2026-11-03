@@ -43,10 +43,26 @@ notification. The app-name filter controls which banners Dynamic displays; it
 does not replace Pebble's permission controls or system notification settings.
 
 Generic activities stay in transient consumer memory, including after reconnect.
-A public clock may remain explicitly unconfirmed only through its original
+A known public Timer clock may remain a bounded prediction only through its original
 validity; private content clears on disconnection. The separate reference timer
 plugin stores a bounded non-private timer snapshot on the phone. Dynamic does
 not own or read the timer watchapp's native storage.
+
+## Recent activity navigation
+
+The Open Activity integration retains one overwritten routing record on the
+phone: up to two destination watchapp UUIDs, a native session, presentation/view
+sequence numbers and timestamps. It has at most 45 seconds of validity, capped
+by source or role expiry. Only an explicitly confirmed native presentation can
+renew it. Reading the plugin source does not renew it. Expired or invalid records
+are removed on access; expiry is a validity boundary, not a promise of immediate
+physical deletion while no code is running.
+
+This metadata can reveal which apps were recently associated with displayed
+activities. It contains no activity provider/occurrence IDs, title, artist,
+notification body, timer name, artwork, action arguments or content fingerprint.
+There is no routing history. The navigation source is read-only to consumers.
+Dynamic's display content remains transient under the policies above.
 
 ## Other software and support
 

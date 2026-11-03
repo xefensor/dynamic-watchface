@@ -4,6 +4,7 @@ var clayConfig = require('./config');
 var core = require('pebble-watchface-core/readings');
 var activityLibrary = require('pebble-activities');
 var activityPresentation = require('./activity-presentation');
+var navigation = require('../common/activity-navigation').create({storage:localStorage,now:function(){return Date.now();}});
 var createComplications = core.createComplications;
 var createContext = activityLibrary.createContext;
 var createMessageQueue = core.createMessageQueue;
@@ -89,7 +90,7 @@ function contextChanged() {
   if (!context) { return; }
   var card = context.musicActivity();
   // Context also publishes phone battery and notification changes. Only a
-  // changed canonical Music receipt needs another complete ACT2 snapshot.
+  // changed canonical Music receipt needs another complete ACT3 snapshot.
   // Keep the immutable identity/revision/freshness tuple in memory, no text.
   var signature = card ? JSON.stringify([card.provider,card.id,card.revision,card.observedAt,card.validUntil]) : null;
   if (signature === musicProjectionSignature) { return; }
@@ -113,14 +114,34 @@ var context = createContext({
   }
 });
 
+// Dynamic displays summaries and opens apps. Action/entity descriptors belong
+// to interactive hosts; avoid even requesting their separate source fields.
+var activitySourceApi = {};
+if (typeof Pebble.enumeratePlugins === 'function') {
+  activitySourceApi.enumeratePlugins = function() { return Pebble.enumeratePlugins(); };
+}
+if (typeof Pebble.subscribeToSource === 'function') {
+  activitySourceApi.subscribeToSource = function(request) {
+    var display = {};
+    Object.keys(request).forEach(function(key) { display[key] = request[key]; });
+    if (Array.isArray(request.properties)) {
+      display.properties = request.properties.filter(function(property) {
+        return property !== 'actions' && property !== 'entity_ref';
+      });
+    }
+    return Pebble.subscribeToSource(display);
+  };
+}
 var activities = activityLibrary.createActivities({
-  pebble:Pebble,keys:MessageKeys,send:send,nativeFormat:2,
+  pebble:activitySourceApi,keys:MessageKeys,send:send,nativeFormat:3,
+  onView:function(snapshot){navigation.view(snapshot);},
   // Generic notices retain the mature adapter's baseline and interruption
   // policy during this migration. Music follows the same user opt-out.
   acceptActivity:function(activity){
     var kind=String(activity.kind).toLowerCase();
+    var media=activity.type==='media'||activity.presentation===2||kind==='music';
     return enabledSetting('SHOW_ACTIVITIES',true)&&kind!=='notification'&&kind!=='notifications'&&
-      (kind!=='music'||enabledSetting('SHOW_MUSIC',true));
+      (!media||enabledSetting('SHOW_MUSIC',true));
   },
   select:function(cards){
     return activityPresentation.select(cards,activityPreferences(),context.musicActivity());
@@ -153,6 +174,8 @@ function systemClockFormat() {
   } catch (ignored) { return null; }
 }
 Pebble.addEventListener('appmessage', function(event) {
+  var presented=messageValue(event.payload||{},'ACTIVITY_PRESENTED');
+  if(presented!==undefined)navigation.receive(presented);
   var format = messageValue(event.payload || {}, 'CLOCK_FORMAT');
   if (format === 12 || format === 24) {
     // This is the OS format, not the watchface's saved override.
@@ -226,7 +249,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.11.0. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.12.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }

@@ -39,18 +39,18 @@ LEGACY_KEYS = (
     "SHOW_NOTIFICATIONS", "NOTIFICATION_PREVIEW", "NOTIFICATION_APPS",
     "SHOW_STATUS", "PANEL_TRANSITIONS", "ACCENT_COLOR",
 )
-APP_MODULES = {"index.js", "config.js", "localization.js", "settings-page.js", "settings-preview.js", "activity-presentation.js"}
+APP_MODULES = {"index.js", "config.js", "localization.js", "settings-page.js", "settings-preview.js", "activity-presentation.js", "activity-navigation.js"}
 CORE_MODULES = {
     "readings.js", "message-queue.js", "complications.js", "complication-data.js",
 }
 ACTIVITY_MODULES = {
     "index.js", "wire.js", "view.js", "consumer.js", "publisher.js", "selection.js", "activity.js",
-    "adapters/legacy/context.js", "adapters/legacy/complication-data.js",
+    "adapters/legacy/context.js", "adapters/legacy/complication-data.js", "summary.js", "summary-view.js",
 }
 ACTIVITY_RELEASE = {
-    "version": "0.3.0",
-    "sourceCommit": "dad422a3384864966b60acf6dc3e52ddec296a09",
-    "archiveSha256": "882df4cf462d19a14baf7aebacb06c7f0c807a86b183614a6ba95d6a776cc92c",
+    "version": "0.4.0",
+    "sourceCommit": "9db426c36e591f3db98819b5b05ffd9da2af27b4",
+    "archiveSha256": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe",
 }
 PROCESS_INFO_BYTES = 130
 PROCESS_INFO_SIZE_LIMIT = 0xffff
@@ -59,7 +59,7 @@ SDK_PBW_FILES = {
     "appinfo.json", "pebble-js-app.js", "pebble-js-app.js.map",
     "emery/pebble-app.bin", "emery/app_resources.pbpack", "emery/manifest.json",
 }
-PBW_FILES = SDK_PBW_FILES | set(LICENSE_FILES)
+PBW_FILES = SDK_PBW_FILES | set(LICENSE_FILES) | {"plugin.js"}
 LEGACY_ENDPOINTS = (
     "api.open-meteo.com", "api.openweathermap.org", "forecast.weather.gov",
 )
@@ -752,7 +752,7 @@ def audit_preview_identity(root, version, binary, resources):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.11.0", "Review this auditor for a different release version")
+    require(package["version"] == "0.12.0", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and
@@ -761,8 +761,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
     media = settings["resources"].get("media", [])
     require(media and all(item.get("type") == "font" for item in media),
             "Only the declared custom body fonts are expected")
-    require(tuple(settings["messageKeys"]) == LEGACY_KEYS + ("ANIMATIONS", "CLOCK_FORMAT", "NOTIFICATION_VIBRATION", "NIGHT_PALETTE", "NIGHT_BACKGROUND_COLOR", "NIGHT_TEXT_COLOR", "NIGHT_ACCENT_COLOR", "NOTIFICATION_APP_ONLY", "CONTEXT_STATE", "ACTIVITY_DATA", "REQUEST_ACTIVITIES", "SHOW_ACTIVITIES"),
-            "Preserve the 41 existing keys and append the three activity keys")
+    require(tuple(settings["messageKeys"]) == LEGACY_KEYS + ("ANIMATIONS", "CLOCK_FORMAT", "NOTIFICATION_VIBRATION", "NIGHT_PALETTE", "NIGHT_BACKGROUND_COLOR", "NIGHT_TEXT_COLOR", "NIGHT_ACCENT_COLOR", "NOTIFICATION_APP_ONLY", "CONTEXT_STATE", "ACTIVITY_DATA", "REQUEST_ACTIVITIES", "SHOW_ACTIVITIES", "ACTIVITY_PRESENTED", "REQUEST_PRESENTATION"),
+            "Preserve existing keys and append the two navigation status keys")
     keys = {name: 10000 + index for index, name in enumerate(settings["messageKeys"])}
     generated = json.loads((root / "build/js/message_keys.json").read_text())
     require(generated == keys, "Generated JavaScript keys are stale")
@@ -775,7 +775,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
     core, core_sources = read_dependency(root, DEPENDENCIES[0], CORE_MODULES)
     activities, activity_sources = read_dependency(root, DEPENDENCIES[1], ACTIVITY_MODULES)
     require(all(activities[key] == value for key, value in ACTIVITY_RELEASE.items()),
-            "Reviewed ACT2 dependency provenance differs")
+            "Reviewed ACT3 dependency provenance differs")
     licenses = license_payloads(root)
     sdk_pbw = root / "build" / (package["name"] + ".pbw")
     with zipfile.ZipFile(pbw) as release, zipfile.ZipFile(sdk_pbw) as sdk:
@@ -790,6 +790,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         expected = dict(original)
         expected["manifestVersion"] = 2
         expected["usesPermissions"] = settings["usesPermissions"]
+        expected["plugin"] = settings["plugin"]
         require(info == expected, "Permission packaging changed unexpected app metadata")
         require(info["uuid"] == APP_UUID and info["versionLabel"] == package["version"] and
                 info["targetPlatforms"] == ["emery"] and
@@ -813,6 +814,12 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
                 inventory.append({"file": name, "bytes": len(content),
                                   "sha256": sha256(content),
                                   "sourceFile": LICENSE_FILES[name], "sourceByteIdentical": True})
+                continue
+            if name == "plugin.js":
+                require(content == (root/"build/plugin.js").read_bytes(), "Packaged navigation plugin differs")
+                result = subprocess.run([sys.executable, str(root/"scripts/bundle-js.py"), str(root/"src/plugin/index.js"), "/dev/stdout"], capture_output=True, check=True, cwd=root)
+                require(content == result.stdout, "Navigation plugin differs from current source")
+                inventory.append({"file":name,"bytes":len(content),"sha256":sha256(content),"sourceByteIdentical":True})
                 continue
             require(name == "appinfo.json" or content == sdk.read(name),
                     "SDK payload changed while packaging: " + name)
@@ -840,7 +847,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
             "Source map has duplicate modules")
     hosts, modules, activity_modules, xhr, bundled_keys = set(), set(), set(), [], None
     for name, content in zip(source_map["sources"], source_map["sourcesContent"]):
-        if name.startswith("./src/pkjs/"):
+        if name.startswith("./src/pkjs/") or name.startswith("./src/common/"):
             relative = name.removeprefix("./")
             source_matches(content, (root / relative).read_bytes(), name)
             hosts.add(Path(relative).name)
@@ -900,7 +907,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
                              "pbwMessageKeys": len(info["messageKeys"])},
         "manifestVersion": info["manifestVersion"], "usesPermissions": info["usesPermissions"],
         "nativePayloadMatchesSdk": True, "nativeSizes": native_sizes,
-        "activityWireVersion": 2, "customResourceCount": resource_count,
+        "activityWireVersion": 3, "customResourceCount": resource_count,
         "licenseFileCount": len(licenses), "licenseSourceIdentityVerified": True,
         "nativePreviews": preview_identity,
         "bodyFonts": body_fonts, "bodyMetrics": body_metrics, "clockOutlines": clock_outlines,

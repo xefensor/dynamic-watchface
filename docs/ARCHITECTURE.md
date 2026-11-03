@@ -1,7 +1,7 @@
 # Dynamic and the shared libraries
 
-Dynamic 0.9.1 pins Pebble Watchface Core 0.5.0 and Pebble
-Activities 0.2.1. Each PBW embeds its libraries and keeps its UUID, settings and
+Dynamic 0.12.0 pins Pebble Watchface Core 0.5.0 and Pebble
+Activities 0.4.0. Each PBW embeds its libraries and keeps its UUID, settings and
 permission manifest. Halftone retains its own independently adopted pin.
 Neither library is a background app.
 
@@ -11,8 +11,8 @@ Neither library is a background app.
 | --- | --- |
 | Pebble subscriptions, source identity/observation metadata, receipt cache and transport queue | Shared core JavaScript |
 | Packet validation, native snapshots/cache, expiry and reconnect/session state | Shared core C |
-| Activity discovery, schema 1 adaptation, schema 2 normalization and ACT2 projection | Activities JavaScript |
-| ACT2 validation, item visibility, independent clock computation and source/view revision checks | Activities C |
+| Activity discovery, summary schema 4 and legacy adaptation, ACT3 projection | Activities JavaScript |
+| ACT2/ACT3 validation, item visibility, independent clocks and source/view revision checks | Activities C |
 | Clock/date, semantic labels, layout, fonts, artwork and transitions | Dynamic |
 | Native AppMessage dispatcher, SDK services, timers and OS clock-format query | Dynamic host |
 | Settings form, translations, permissions, preview and delivery status | Dynamic host |
@@ -71,29 +71,24 @@ provider text/units/images and meaningful provider labels.
 
 ## Music and notification motion
 
-Music remains anchored from the bottom. The 40px artwork and up to two artist
-lines share visible bottom y216. The footer always reserves its 40px cover tile,
-using a simple fallback when received artwork is absent or transparent. Artist
-position does not change when artwork arrives. The title ends 8px above the
-footer and grows upward through up to three lines per page. Titles stay 24px
-and artists 20px across tracks. A long received title advances through its
-remaining fixed-size pages once and holds the final page; it never loops.
-Artwork or artist corrections preserve continuation progress. Context/privacy
-boundaries prevent obsolete title pages from appearing. A small pause mark
-identifies the existing five-second grace before paused music yields its panel.
+Media context is anchored to bottom y216: optional 40px artwork and up to two
+20px artist lines. The 24px title uses up to three lines alone or two with a
+secondary. Every line starts from the received beginning and ends in a measured
+ellipsis when necessary. There is no continuation state or paging timer. The
+phone adapts legacy Music into this same ACT3 renderer.
 
 Notification title text and app label are separate fields. The sender/title
-keeps the primary heading; an app icon normally supplies context. If no app
-icon is available, a quieter app-name line sits above it. Long app labels do
+keeps the primary heading; an app icon normally supplies context. A quieter app identity
+sits in the bottom context footer. Long app labels do
 not shrink the sender. A summary banner reduces song-title space and retains
 its footer; an extra app-name line may reduce available title lines further.
 A message preview uses a bounded body panel. App-only mode instead places the
 app name in the heading and omits sender, message body and duplicate app label;
 a missing app name may fall back to package identity, never sender text.
 
-Content identity and image refreshes have different motion rules. New primary
-song title text defines a new track because the current source supplies no
-track identifier. A track change slides its content; late artwork or artist
+Content identity and image refreshes have different motion rules. An explicit media-item
+token defines a track; legacy Music derives it from the received title. A track
+change starts a 280ms incoming-only content slide; late artwork or artist
 metadata repaints in place. A notification burst enters once and subsequent
 heading/body/icon changes stay in place. Lease-only refreshes already avoid
 replaying motion. Core coalescing provides a 900ms stable reading interval
@@ -106,9 +101,9 @@ invalidating a source or clearing permissions bypasses that interval.
 Animations stop when settled. The ANIMATIONS preference disables Dynamic's
 transitions. Peek continues to follow every actual unobstructed-area frame,
 including temporary overshoot, retaining the clock and both readings above
-Pebble's event panel. Outgoing rendering snapshots exist only in RAM for a
-bounded transition; expiry, invalidation, disconnection and privacy clearing
-always take priority over completing it.
+Pebble's event panel. Legacy notification snapshots remain transient for their bounded transition.
+Activities retain no outgoing copy. Expiry, invalidation, disconnection and
+privacy clearing always take priority over completing motion.
 
 ## Compatibility and clock-format query
 
@@ -127,102 +122,87 @@ The phone caches the last 12/24 reply separately from saved preferences.
 Settings remain an offline snapshot; Follow Pebble uses the last reported
 style, or labels its illustrative format when none has been received.
 
-## ACT2 activity views
+## ACT3 summary views
 
-Dynamic enables `nativeFormat: 2` in the Activities phone coordinator. It
-prefers an `activity/card` schema 2 source for each provider and otherwise
-adapts that provider's `activity/session` schema 1 source. It does not subscribe
-to both representations of the same provider. Existing music/notification
-compatibility handling remains separate from the generic activity view.
+Dynamic enables `nativeFormat: 3`. The coordinator prefers `activity/summary`
+schema 4, then adapts a provider's older schema 3/2/1 convention. It subscribes
+to one representation per provider. Sources publish standard headline/detail or
+media title/artist/artwork. Dynamic requests display fields and `open_app`,
+excluding the separate `actions` and `entity_ref` properties.
 
-A source supplies one main item and an optional supporting item. Each can be
-text, a provider-formatted value or a clock, with its own nonempty label,
-observation, expiry, retention permission and estimated flag. A clock carries
-its own running state, base seconds and anchor, so two clocks can run or pause
-independently of each other and the activity's overall state. Future anchors
-show the base value as estimated; clocks never subtract negative elapsed time.
-Countdown zero is a due value, not proof of completion or an alarm.
+ACT3 retains main/support typed datums internally, with independent observation,
+expiry, retention, estimated flags and clock arithmetic. A clock's own running
+state is separate from source lifecycle. Countdown zero is a due value, not
+native completion or an alarm acknowledgement. Optional ranges generate a
+meter only from a real referenced value and explicit bounds.
 
-Optional presentation consists of a caption, one artwork image up to 40×40,
-and one progress or level meter. A meter is computed on the phone from the
-referenced value item and an explicit valid minimum/maximum. Native code
-receives the bounded fraction, not an invented range. The meter expires or
-clears with its referenced item. Source kind and raw numeric/unit metadata stay
-on the phone; the native view contains formatted text and clock arithmetic.
+The frame remains at most 2,672 bytes with two records. ACT3 uses a 104-byte
+record header, a shared 304-byte UTF-8 pool and at most 800 packed image bytes
+plus a 16-entry palette per record. Field bounds share the pool; they are not
+simultaneously available capacities. Explicit presentation, identity symbol,
+compact-datum selector, directions, qualifier and an eight-byte media token
+replace renderer inference. The decoder accepts ACT2 compatibility frames too;
+legacy source adaptation remains on the phone rather than linking ACT1.
 
-The ACT2 frame is at most 2,672 bytes with two activity records. Each record
-has a shared 320-byte UTF-8 string pool, main/support text fields bounded to
-192 bytes each, labels to 64 bytes, a caption to 128 bytes, and at most 800
-packed 4bpp image bytes plus its 16-entry palette. These field limits share
-the pool; they are not simultaneously available capacities. Native `PavState`
-is 2,676 bytes on ARM. It validates length, CRC, reserved fields, canonical
-string references, UTF-8, imagery and time relationships before changing state.
-Dynamic links the ACT2 decoder only; legacy source adaptation occurs on the
-phone rather than adding an ACT1 native decoder.
+Provider/run identity and source revision describe lifecycle. A session-bound
+view sequence orders projections. A new view cannot rewrite the source state,
+observation, validity or privacy at the same source revision. Resident older
+revisions are rejected; terminal runs cannot become active under the same ID.
+The phone owns ordering across projection windows. Reconnecting and rendering
+never renew source observations or validity.
 
-Provider/run identity and source revision describe the source lifecycle. A
-separate session-bound view sequence orders projection updates. A new view can
-change presentation bytes at the same source revision, but cannot rewrite that
-revision's source state, observation, validity or privacy. Older source
-revisions are rejected for resident runs; a terminal run cannot become active
-again under the same identity. The phone owns source ordering across projection
-windows. Polling, reconnecting and rerendering never refresh observation times.
+The main datum controls visibility; optional detail expires independently.
+Known public Timer snapshots can predict deadlines only through their original
+native lease. Other unconfirmed sources requiring a trust annotation are
+omitted. Private content clears on disconnect and privacy loss. An explicitly
+allowed terminal result yields to ongoing activities and Music; zero alone
+never creates one.
 
-Main-item validity controls card visibility. Optional support may expire
-earlier without removing the main item. Unavailable public content can remain
-only with that item's explicit retention permission and original validity;
-unavailable private content clears. Retained public items show an uncertainty
-mark and their original observation age. Source-unconfirmed, source-estimated
-and due clocks also remain visibly marked. Pause and uncertainty space is
-reserved before optional text is fitted. An explicit bounded terminal result
-may be displayed only when the source allows it; Dynamic does not infer a
-result from a clock reaching zero.
+Any activity can occupy either role. Dynamic-local priority chooses providers,
+and the shared selector preserves source ordering within a provider. Projection
+filters ineligible records before selection so an omitted source cannot starve
+a valid third candidate. The optional secondary occupies one static row above
+the primary, with a selected complete datum and optional 16px glyph. Optional
+context yields before an essential value; a secondary whose value cannot fit
+is omitted. Whole formatted scores and paces use body text rather than an
+inferred numeric prefix. Directional values reserve their arrow's width.
 
-Matching main/support observations share their uncertainty/age indication when
-the observation timestamp, explicit estimated flag and displayed provenance
-agree. Different item provenance retains separate marks. Pause remains
-independent per item; a final clock in a completed result is not paused.
+Primary content grows upward when alone. Meaningful labels sit above values;
+standard text may have two detail lines. Context ends at y216, using an instance
+name or provider identity, or optional artwork and artist for media. All media
+uses the shared renderer. Native Timeline and notification interruptions retain
+priority. One reusable heap-owned render plan borrows cards instead of copying
+full cards or allocating artwork per frame. A second-boundary timer exists only
+for visible running clocks. Covered/unfocused states suspend clock work.
 
-Any activity can take the primary or secondary role. Within a provider,
-soonest running deadlines precede other or paused deadlines; provider positions
-otherwise remain stable. The renderer chooses a composition from actual item
-types and available space, not from an activity-kind-specific layout ID.
-Numeric pairs use a maximum 48px main value with caption and support below;
-static text pairs retain 24px main text and the established 20px footer.
-Formatted values use Fredoka only when every glyph is supported; other units
-use the body font. Artwork belongs to the primary card. The supporting line,
-secondary activity or music summary and meter appear only when they fit;
-essential clock/value units are never shortened to force a summary into place.
-Notifications and native Timeline Peek retain their existing priority.
-Optional completed results yield to ongoing activities and music. This priority
-also applies to fresh music in the existing compatibility renderer, including
-music under a heading-only notification; an expired/private-rebaselined music
-snapshot cannot hide an otherwise eligible public result.
+## Recent app navigation
 
-One bounded activity plan borrows cards from state and is shared by drawing
-and scheduling. It neither duplicates an artwork buffer nor copies full cards
-per frame. Text continuation resets on provider/run identity as well as changed
-main text. One timer follows the next second boundary only when a visible
-clock actually runs; paused, due or hidden clocks do not keep it alive.
-Retained observation ages update with minute refreshes. Covered/unfocused
-states suspend this work and recompute the plan when visible again.
+After planning actual visible roles, native sends a 24-byte presentation status:
+version, two original record indices, flags, native session, view sequence,
+presentation sequence, UTC report time and earliest role-changing expiry. Flag1
+identifies a full legacy notification, only as the fixed Notifications app;
+small banners preserve the underlying activity route. Motion reports no route
+until the primary is settled. Local expiry/promotion sends new original indices.
+A low-rate timer belongs to the latest report and refreshes after 30 seconds;
+clock ticks do not send messages or write phone storage.
 
-The Timer native bridge carries current-run duration in its public snapshots.
-Its provider explicitly chooses `timerPresentation: 'compact'`: a remaining
-clock whose label is the timer identity, without the inverse elapsed clock.
-Elapsed remains in Timer's detail view; the shared library's default detailed
-projection and unrelated providers retain supporting clocks. A new explicit
-terminal-visibility bridge field lets the source acknowledge a finished run
-without claiming cancellation. Older snapshots remain compatible. Native snapshots
-remain explicitly unconfirmed even after reconnecting. The originating app
-owns pause/cancel truth and its native alarm. Dynamic has no activity command
-pipeline, Dashboard app, firmware extension or access to the built-in Workout
-app's live state.
+The phone freezes app destinations for each exact encoded view. Only matching
+native status can publish a route. Persisted data contains destination UUIDs and
+session/freshness metadata only, capped at 45 seconds, source expiry and native
+role expiry. Reads cannot renew it; invalid/expired records are removed on
+access. Dynamic's bundled read-only `navigation/presented_activities` source
+returns one `current` instance with a bounded `hint.longText` record.
+
+The separate Open Activity app opens the configured recent Primary or Secondary.
+It may run from any watchface. Stock SDK cannot prove the immediately preceding
+face or cancel an already-dispatched app launch. No firmware/mobile fork,
+Dashboard implementation, run-specific deep link or per-watch routing is added.
+Timer's watchapp retains state, pause/cancel truth and native alarm ownership.
 
 ## Pinned dependencies and v4 reading contract
 
 The committed dependencies are `file:vendor/pebble-watchface-core-0.5.0.tgz`
-and `file:vendor/pebble-activities-0.2.1.tgz`. `package-lock.json`,
+and `file:vendor/pebble-activities-0.4.0.tgz`. `package-lock.json`,
 `vendor/CORE.json` and `vendor/ACTIVITIES.json` record their integrity and
 provenance, including exact source commits and archive SHA-256 values.
 Updating either library repository alone does not update installed PBWs. Each
@@ -329,7 +309,7 @@ intermediate transitions check appearance and fitting; browser checks exercise
 actual Clay controls and saving. Emulator/plugin fixtures are separate from
 physical-phone delivery, hardware animation and battery-life verification.
 See [the build-specific validation record](VALIDATION.md).
-The final 0.9.1 package/native-style audit passes against the captured native
+Historical 0.9.1 evidence: its package/native-style audit passed against the captured native
 binary and resources. Its source audit checks the compact weekday table's
 608 native bytes, all 17 locales and 119 abbreviations, Norwegian aliases,
 regional/fallback lookup and exact packaged font coverage. Runtime evidence

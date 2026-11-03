@@ -28,12 +28,13 @@ function fixture(settings = {}, locales = {}) {
   const activityProviders=[];
   const deferred=[];
   const contextRefreshes=[], connections=[],activityRefreshes=[],activityConnections=[];
-  const handlers = {}, deliveries = [], clockQueries = [], urls = [], timers = [];
+  const handlers = {}, deliveries = [], clockQueries = [], urls = [], timers = [], activitySourceRequests=[];
   const status = {available:true,configured:0,ready:0,error:'',slots:[]};
   const contextStatus = {available:true,ready:false,error:''};
   vm.runInNewContext(source, {
     require: name => {
       if (name === 'message_keys') return keys;
+      if (name === '../common/activity-navigation') return require('../src/common/activity-navigation');
       if (name === './config') return require('../src/pkjs/config');
       if (name === './settings-page') return require('../src/pkjs/settings-page');
       if (name === './settings-preview') return require('../src/pkjs/settings-preview');
@@ -78,6 +79,8 @@ function fixture(settings = {}, locales = {}) {
       throw Error('Unexpected dependency '+name);
     },
     Pebble: {
+      enumeratePlugins:()=>[],
+      subscribeToSource:request=>{activitySourceRequests.push(request);return {unsubscribe:()=>{}};},
       getActiveWatchInfo:()=> {if(locales.throwWatchInfo)throw Error('Disconnected');return {language:watchLanguage};},
       addEventListener:(event,fn)=> {handlers[event]=fn;},
       sendAppMessage:(payload,ok,error)=> {if(payload[keys.CLOCK_FORMAT]===255)clockQueries.push(payload);else deliveries.push(payload);if(hold){deferred.push({ok,error});}else if(fail){if(error)error();}else if(ok)ok();},
@@ -90,7 +93,7 @@ function fixture(settings = {}, locales = {}) {
     clearTimeout:id=>{const at=timers.findIndex(timer=>timer.id===id);if(at>=0)timers.splice(at,1);},
     console:{log:()=>{}}
   });
-  return {handlers,deliveries,clockQueries,urls,status,contextStatus,clay,options,contextOptions,activityOptions,timers,contextRefreshes,connections,activityRefreshes,activityConnections,activityConfigured:()=>activityConfigured,
+  return {handlers,deliveries,clockQueries,urls,status,contextStatus,clay,options,contextOptions,activityOptions,activitySourceRequests,timers,contextRefreshes,connections,activityRefreshes,activityConnections,activityConfigured:()=>activityConfigured,
     refreshes:()=>refreshed,configured:()=>configured,settings:()=>JSON.parse(saved),
     contextConfigured:()=>contextConfigured,storage,activityProviders,activityReprojects:()=>activityReprojects,
     setMusic:card=>{musicActivity=card;},
@@ -99,6 +102,16 @@ function fixture(settings = {}, locales = {}) {
 const allItems=f=>f.clay.config.flatMap(section=>[section].concat(section.items || []));
 const item=(f,id)=>allItems(f).find(x=>x.id===id);
 const named=(f,key)=>allItems(f).find(x=>x.messageKey===key);
+
+test('Dynamic requests display and open-app data without action or entity descriptors',()=>{
+  const f=fixture(),request={plugin:TIMER,category:'activity',item:'summary',
+    properties:['schema_version','content','actions','entity_ref','open_app']};
+  const handle=f.activityOptions.pebble.subscribeToSource(request);
+  assert.equal(typeof handle.unsubscribe,'function');
+  assert.deepEqual(Array.from(f.activitySourceRequests[0].properties),['schema_version','content','open_app']);
+  assert.deepEqual(request.properties,['schema_version','content','actions','entity_ref','open_app']);
+  assert.equal(f.activitySourceRequests[0].item,'summary');
+});
 
 test('ready and named/numeric complication requests refresh the generic coordinator',()=>{
   const f=fixture();f.handlers.ready();
@@ -343,7 +356,7 @@ test('new appearance keys extend the original wire contract without renumbering 
     'WEATHER_CONDITION','COMPLICATION_DATA','REQUEST_COMPLICATIONS','CONTEXT_DATA','REQUEST_CONTEXT',
     'SHOW_MUSIC','SHOW_NOTIFICATIONS','NOTIFICATION_PREVIEW','NOTIFICATION_APPS','SHOW_STATUS','PANEL_TRANSITIONS'];
   assert.deepEqual(packageInfo.pebble.messageKeys.slice(0,31),legacy);
-  assert.equal(packageInfo.pebble.messageKeys.length,44);
+  assert.equal(packageInfo.pebble.messageKeys.length,46);
   assert.equal(keys.ACCENT_COLOR,10031);
   assert.equal(keys.ANIMATIONS,10032);
   assert.equal(keys.CLOCK_FORMAT,10033);
@@ -587,7 +600,7 @@ test('app-only is a phone privacy preference and saved native choices survive op
 test('generic activity discovery starts with the host and follows native session requests',()=>{
   const f=fixture();
   assert.equal(f.activityOptions.getSettings().enabled,true);
-  assert.equal(f.activityOptions.nativeFormat,2);
+  assert.equal(f.activityOptions.nativeFormat,3);
   f.handlers.ready();assert.equal(f.activityRefreshes.length,1);
   f.handlers.appmessage({payload:{REQUEST_ACTIVITIES:81}});
   f.handlers.appmessage({payload:{[keys.REQUEST_ACTIVITIES]:82}});
@@ -611,7 +624,7 @@ test('activity preferences remain phone-only and reconfigure before native setti
     assert.equal(f.deliveries[0][keys.TEXT_COLOR],123);
   }
   assert.deepEqual(packageInfo.pebble.messageKeys.slice(41),
-    ['ACTIVITY_DATA','REQUEST_ACTIVITIES','SHOW_ACTIVITIES']);
+    ['ACTIVITY_DATA','REQUEST_ACTIVITIES','SHOW_ACTIVITIES','ACTIVITY_PRESENTED','REQUEST_PRESENTATION']);
 });
 
 test('generic sources respect music opt-outs and reserve notifications for the baseline adapter',()=>{
@@ -744,4 +757,17 @@ test('phone and notification changes do not resend an unchanged Music activity s
   f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:{value:false}})});
   assert.equal(f.activityReprojects(),5,'an explicit settings save still forces re-selection');
   assert.doesNotMatch(JSON.stringify(f.storage),/track|Current/);
+});
+
+test('presented status confirms destination-only navigation metadata for the exact outgoing view',()=>{
+  const f=fixture(),now=Math.floor(Date.now()/1000);
+  const nav=require('../src/common/activity-navigation');
+  f.activityOptions.onView({session:7,sequence:5,cards:[{provider:HEALTH,id:'private-run',title:'private song',validUntil:now+300,openApp:{watchAppUuid:TIMER}}]});
+  assert.equal(f.storage[nav.KEY]||'', '');
+  const bytes=Buffer.alloc(24);bytes[0]=1;bytes[1]=0;bytes[2]=255;
+  bytes.writeUInt32LE(7,4);bytes.writeUInt32LE(5,8);bytes.writeUInt32LE(1,12);bytes.writeUInt32LE(now,16);bytes.writeUInt32LE(now+300,20);
+  f.handlers.appmessage({payload:{[keys.ACTIVITY_PRESENTED]:Array.from(bytes)}});
+  const hint=JSON.parse(f.storage[nav.KEY]);assert.equal(hint.primary.watchAppUuid,TIMER);assert.equal(hint.nativeSession,7);
+  assert.ok(hint.expiresAtMs-hint.presentedAtMs<=45000);assert.doesNotMatch(f.storage[nav.KEY],/private-run|private song|c9e7cb18/);
+  f.activityOptions.onView({session:7,sequence:6,cards:[]});assert.equal(f.storage[nav.KEY]||'', '');
 });
