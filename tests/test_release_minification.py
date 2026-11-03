@@ -75,14 +75,14 @@ const {identifier}=require('./scripts/minify-js.cjs');
 const names=Array.from({length:10000},(_,index)=>identifier.get(index));
 assert.equal(new Set(names).size,names.length);
 assert.ok(names.every(name=>/^[A-Za-z_][A-Za-z_0-9]*$/.test(name)));
-const customFn=vm.runInNewContext(fs.readFileSync(0,'utf8'));
+const input=JSON.parse(fs.readFileSync(0,'utf8'));
+const customFn=vm.runInNewContext(input.custom);
 let expected=0;for(let value=1;value<=180;value++)expected^=value&255;
 assert.equal(customFn(),expected);
 const sandbox={module:{exports:{}},exports:{},localStorage:{getItem(){return null;}},
   Pebble:{platform:'native',addEventListener(){}},
   require(name){if(name==='message_keys')return {};throw Error(name);}};
-const clayBundle=require('node:path').join(require('node:path').dirname(require.resolve('@rebble/clay/package.json')),'dist/js/index.js');
-vm.runInNewContext(fs.readFileSync(clayBundle,'utf8'),sandbox);
+vm.runInNewContext(input.clay,sandbox);
 const Clay=sandbox.module.exports;
 const html=decodeURIComponent(new Clay([],customFn,{autoHandleEvents:false}).generateUrl().split(',').slice(1).join(','));
 assert.ok(!html.includes('$$CUSTOM_FN$$'),'String.replace must not reinsert the custom function placeholder');
@@ -92,7 +92,12 @@ let scripts=0;for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\
 assert.ok(scripts>0);
 console.log('Actual Clay generateUrl and generated script parsing: PASS');
 '''
-        result = subprocess.check_output(['node', '-e', script], cwd=ROOT, input=runtime['pebble-js-app.js'])
+        # A clean npm install contains Clay's SDK archive. Only the Pebble SDK
+        # expands dist/js, so portable CI reads the same reviewed bytes directly.
+        with zipfile.ZipFile(ROOT / 'node_modules/@rebble/clay/dist.zip') as archive:
+            clay = archive.read('js/index.js').decode()
+        inputs = json.dumps({'custom': runtime['pebble-js-app.js'].decode(), 'clay': clay}).encode()
+        result = subprocess.check_output(['node', '-e', script], cwd=ROOT, input=inputs)
         self.assertIn(b'Actual Clay generateUrl', result)
 
     def test_runtime_or_debug_map_tampering_is_rejected(self):
