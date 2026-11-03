@@ -1,0 +1,111 @@
+{
+  "result": "PASS",
+  "scope": "Actual packaged Dynamic PKJS and navigation provider, Timer PKJS/provider and unchanged Open Activity PKJS. In-memory SDK, clocks and native presentation/confirmation messages; no real phone or physical watch.",
+  "versions": {
+    "dynamic": "0.13.0",
+    "timer": "0.7.0",
+    "helper": "0.1.0"
+  },
+  "cases": [
+    {
+      "privacy": "message",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "message",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "summary",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "summary",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "app-only",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "app-only",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    }
+  ],
+  "executedPackagedScripts": {
+    "dynamic": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "fa7d786c653c8f2e906efa410b905ff6dd95ed886f718e069f9a8eeaae79a181"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "90bef7463fe17cdf79d1b40b9f9cbcaf60068314e5a4ea843c48a2cccdcf7940"
+      }
+    ],
+    "timer": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "79cd2c61b7e5b69a5f7a6216277a9e354c40902d17c44616e5d2cfcb66db47b9"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "eb54fdbac2b65193a0c0c058a93c916ce4f0c29ae6d74d37200bae7e1f5a86e4"
+      }
+    ],
+    "helper": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "a757d1bf20040b95099ad58a904ba0efd2ec4936495de8c0ab92e8b1dc470810"
+      }
+    ]
+  }
+}

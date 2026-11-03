@@ -1,0 +1,47 @@
+{
+  "version": "0.13.0",
+  "result": "PASS",
+  "commands": [
+    {
+      "command": "npm test",
+      "javascriptTests": 117,
+      "portableCSuites": 12,
+      "log": "portable-tests.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "pythonTests": 40,
+      "log": "python-tests.log"
+    },
+    {
+      "command": "pebble build",
+      "sdk": "4.33.1",
+      "platform": "emery",
+      "log": "sdk-build.log"
+    },
+    {
+      "command": "python3 scripts/check-native-style.py --pbw dist/Dynamic-0.13.0.pbw",
+      "evidence": "bundle-audit.json"
+    },
+    {
+      "command": "node scripts/check-settings-activities.cjs docs/qa/0.13.0/settings",
+      "actualClayBrowser": true,
+      "languages": [
+        "en",
+        "cs"
+      ],
+      "viewport": [
+        360,
+        800
+      ],
+      "log": "settings-browser.log"
+    }
+  ],
+  "scope": "Local portable tests, SDK/package identity and isolated browser/emulator fixtures. Packaged handoff evidence is separate. No deployment, real-phone or physical-watch claim.",
+  "packagedIntegration": {
+    "evidence": "packaged-handoff.json",
+    "cases": 6,
+    "actualPackagedScripts": true,
+    "scope": "Actual packaged Dynamic PKJS and navigation provider, Timer PKJS/provider and unchanged Open Activity PKJS. In-memory SDK, clocks and native presentation/confirmation messages; no real phone or physical watch."
+  }
+}

@@ -24,7 +24,7 @@ function fixture(settings = {}, locales = {}) {
   let watchLanguage = locales.watch;
   let saved = JSON.stringify(settings);
   const storage = Object.assign({},locales.storage || {});
-  let options, contextOptions, activityOptions, activityConfigured=0, activityReprojects=0, musicActivity=null, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
+  let options, contextOptions, activityOptions, activityConfigured=0, activityReprojects=0, musicActivity=null, notificationActivity=null, clay, fail = false, hold = false, configured = 0, refreshed = 0, contextConfigured = 0, timerId = 0;
   const activityProviders=[];
   const deferred=[];
   const contextRefreshes=[], connections=[],activityRefreshes=[],activityConnections=[];
@@ -73,6 +73,7 @@ function fixture(settings = {}, locales = {}) {
           contextOptions=received;
           return {refresh:value=>contextRefreshes.push(value),configure:()=>contextConfigured++,
             musicActivity:()=>musicActivity,
+            notificationActivity:()=>notificationActivity,
             connectionChanged:(value,token)=>connections.push({value,token}),status:()=>contextStatus};
         }
       };
@@ -97,6 +98,7 @@ function fixture(settings = {}, locales = {}) {
     refreshes:()=>refreshed,configured:()=>configured,settings:()=>JSON.parse(saved),
     contextConfigured:()=>contextConfigured,storage,activityProviders,activityReprojects:()=>activityReprojects,
     setMusic:card=>{musicActivity=card;},
+    setNotification:card=>{notificationActivity=card;},
     fail:value=>{fail=value;},hold:value=>{hold=value;},deferred,watchLanguage:value=>{watchLanguage=value;}};
 }
 const allItems=f=>f.clay.config.flatMap(section=>[section].concat(section.items || []));
@@ -627,12 +629,12 @@ test('activity preferences remain phone-only and reconfigure before native setti
     ['ACTIVITY_DATA','REQUEST_ACTIVITIES','SHOW_ACTIVITIES','ACTIVITY_PRESENTED','REQUEST_PRESENTATION']);
 });
 
-test('generic sources respect music opt-outs and reserve notifications for the baseline adapter',()=>{
+test('generic sources share activity roles while respecting the media opt-out',()=>{
   for(const saved of [{SHOW_MUSIC:false},{[keys.SHOW_MUSIC]:0}]) {
     const f=fixture(saved),accept=f.activityOptions.acceptActivity;
     for(const kind of ['timer','glucose','workout'])assert.equal(accept({kind}),true);
     assert.equal(accept({kind:'music'}),false);
-    for(const kind of ['notification','notifications','Notification'])assert.equal(accept({kind}),false);
+    for(const kind of ['notification','notifications','Notification'])assert.equal(accept({kind}),true);
     f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:true})});
     assert.equal(accept({kind:'music'}),true);
   }
@@ -730,7 +732,7 @@ test('installed idle provider metadata and absent provider preferences reach set
   f.handlers.showConfiguration();
   const metadata=metadataItem(f,'dynamic-settings-data');
   assert.deepEqual(metadata.activityProviders,[{uuid:TIMER,name:'Timer <safe>',item:'activity_view',available:true}]);
-  assert.deepEqual(metadata.activityPreferences,{order:preferences.order,hidden:[absent,'builtin:music']});
+  assert.deepEqual(metadata.activityPreferences,{order:['builtin:notifications',...preferences.order],hidden:[absent,'builtin:music','builtin:notifications']});
   assert.deepEqual(JSON.parse(f.storage['dynamic-activity-preferences-v1']),preferences,'opening settings preserves absent entries');
   assert.match(item(f,'dynamic-settings-data').defaultValue,/Timer &lt;safe&gt;/);
 });
@@ -744,7 +746,7 @@ test('malformed activity preferences are bounded and cannot become native settin
   assert.doesNotMatch(JSON.stringify(f.storage),/Private song|song title|temporary-run/);
 });
 
-test('phone and notification changes do not resend an unchanged Music activity snapshot',()=>{
+test('phone status does not resend unchanged canonical activities while notification changes reproject',()=>{
   const f=fixture(),change=f.contextOptions.onChanged;
   change();change();assert.equal(f.activityReprojects(),0);
   const music=activity({kind:'music',selectionKey:'builtin:music',id:'track',revision:1,private:true});
@@ -754,9 +756,33 @@ test('phone and notification changes do not resend an unchanged Music activity s
   f.setMusic({...music,revision:2});change();assert.equal(f.activityReprojects(),2);
   f.setMusic({...music,revision:2,observedAt:N+1,validUntil:N+3601});change();assert.equal(f.activityReprojects(),3);
   f.setMusic(null);change();change();assert.equal(f.activityReprojects(),4,'clearing Music remains immediate');
+  const notification=activity({kind:'notification',selectionKey:'builtin:notifications',id:'arrival',revision:1,private:true});
+  f.setNotification(notification);change();assert.equal(f.activityReprojects(),5);
+  f.setNotification({...notification});change();assert.equal(f.activityReprojects(),5);
+  f.setNotification({...notification,revision:2,validUntil:N+2});change();assert.equal(f.activityReprojects(),6,'expiry contraction reprojects immediately');
+  f.setNotification(null);change();assert.equal(f.activityReprojects(),7,'expiry/removal restores the underlying activities');
   f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:{value:false}})});
-  assert.equal(f.activityReprojects(),5,'an explicit settings save still forces re-selection');
-  assert.doesNotMatch(JSON.stringify(f.storage),/track|Current/);
+  assert.equal(f.activityReprojects(),8,'an explicit settings save still forces re-selection');
+  assert.doesNotMatch(JSON.stringify(f.storage),/track|Current|arrival/);
+});
+
+test('built-in notifications use either shared role, preserve privacy destinations and migrate into editable priority',()=>{
+  const target='b2cae818-10f8-46df-ad2b-98ad2254a3c1';
+  const f=fixture({SHOW_NOTIFICATIONS:true});
+  assert.equal(f.contextOptions.notificationAsActivity,true);
+  const notice=activity({provider:'9ac26690-204f-46b2-aef2-54d61f57c2d7',kind:'message',
+    id:'arrival',selectionKey:'builtin:notifications',private:true,caption:'Signal',
+    openApp:{watchAppUuid:target},main:{type:'text',text:'Xef'}});
+  f.setNotification(notice);
+  const timer=activity({provider:TIMER,kind:'timer',id:'tea'});
+  assert.deepEqual(Array.from(f.activityOptions.select([timer]),card=>card.id),['arrival','tea']);
+  f.handlers.webviewclosed({response:JSON.stringify({SHOW_NOTIFICATIONS:true,__dynamicActivityPreferences:{value:JSON.stringify({
+    order:[TIMER,'builtin:notifications'],hidden:[]})}})});
+  const selected=f.activityOptions.select([timer]);
+  assert.deepEqual(Array.from(selected,card=>card.id),['tea','arrival']);
+  assert.equal(selected[1].openApp.watchAppUuid,target);
+  f.handlers.webviewclosed({response:JSON.stringify({SHOW_NOTIFICATIONS:false})});
+  assert.deepEqual(Array.from(f.activityOptions.select([timer]),card=>card.id),['tea']);
 });
 
 test('presented status confirms destination-only navigation metadata for the exact outgoing view',()=>{

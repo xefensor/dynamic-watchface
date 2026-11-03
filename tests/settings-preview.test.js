@@ -28,7 +28,7 @@ test('offline settings have every native preset and intact 200×228 PNGs',()=>{
 
 test('custom preview preserves source artwork and the native Timeline area',()=>{
   for(const [key,frame]of Object.entries(preview.frames)){
-    const expected=key.startsWith('music-')||key.startsWith('notification-summary-')?
+    const expected=key.startsWith('music-')?
       [{x:10,y:176,width:40,height:40}]:key.startsWith('timeline-')?
         [{x:0,y:171,width:200,height:57}]:[];
     assert.deepEqual(frame.preserve,expected,key);

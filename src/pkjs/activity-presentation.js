@@ -59,14 +59,21 @@ function project(input){
   if(input.providerName)card.providerName=input.providerName;
   return card;
 }
-function select(cards,prefs,extraMusic){
+function select(cards,prefs,extraMusic,extraNotifications){
   var all=(Array.isArray(cards)?cards:[]).slice();
   if(extraMusic){
     var duplicate=all.some(function(card){return card.provider===extraMusic.provider&&media(card);});
     if(!duplicate&&selection.normalizePreferences(prefs).hidden.indexOf(extraMusic.provider)<0)all.push(extraMusic);
   }
+  if(extraNotifications){
+    var notificationDuplicate=all.some(function(card){return card.selectionKey==='builtin:notifications';});
+    if(!notificationDuplicate&&selection.normalizePreferences(prefs).hidden.indexOf(extraNotifications.provider)<0)all.push(extraNotifications);
+  }
   all=all.map(function(card,index){return {card:card,index:index};}).sort(function(a,b){
-    var am=media(a.card),bm=media(b.card);return am!==bm?(am?1:-1):a.index-b.index;
+    // This is only the stable default. The shared selector applies explicit
+    // Dynamic priorities afterwards, so Notifications can take either role.
+    function rank(card){return card.selectionKey==='builtin:notifications'?0:media(card)?2:1;}
+    return rank(a.card)-rank(b.card)||a.index-b.index;
   }).map(function(entry){return entry.card;});
   return selection.select(all.map(project).filter(Boolean),prefs);
 }

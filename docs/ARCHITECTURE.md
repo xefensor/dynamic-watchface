@@ -1,7 +1,7 @@
 # Dynamic and the shared libraries
 
-Dynamic 0.12.1 pins Pebble Watchface Core 0.5.0 and Pebble
-Activities 0.4.0. Each PBW embeds its libraries and keeps its UUID, settings and
+Dynamic 0.13.0 pins Pebble Watchface Core 0.5.0 and Pebble
+Activities 0.4.1. Each PBW embeds its libraries and keeps its UUID, settings and
 permission manifest. Halftone retains its own independently adopted pin.
 Neither library is a background app.
 
@@ -25,8 +25,9 @@ Halftone's installed renderer/engine are unaffected by this release.
 
 ## Information and presentation
 
-One hierarchy keeps time dominant when idle, song title dominant during music,
-and sender/message dominant during a notice. The two configured reading homes
+One hierarchy keeps time dominant when idle and the selected primary activity's
+content dominant while active. Music and Notifications can occupy either role.
+The two configured reading homes
 remain left and right. Native Timeline Peek owns its lower event panel.
 
 Fredoka outlines provide the clock and temperature/percent numbers and units;
@@ -78,32 +79,33 @@ remains above that block. Every line starts from the received beginning and
 ends in a measured ellipsis when necessary. There is no continuation state or
 paging timer. The phone adapts legacy Music into this same ACT3 renderer.
 
-Notification title text and app label are separate fields. The sender/title
-keeps the primary heading; an app icon normally supplies context. A quieter app identity
-sits in the bottom context footer. Long app labels do
-not shrink the sender. A summary banner reduces song-title space and retains
-its footer; an extra app-name line may reduce available title lines further.
-A message preview uses a bounded body panel. App-only mode instead places the
-app name in the heading and omits sender, message body and duplicate app label;
-a missing app name may fall back to package identity, never sender text.
+The optional legacy Notifications adapter produces an ordinary standard ACT3
+summary, with a sender/title headline, optional body detail, source app image or
+message symbol, app context and fixed Notifications destination. The same
+primary/secondary selector handles it alongside every other activity. A compact
+standard activity retains its context qualifier and chosen datum in one row.
+Notification privacy does not select a special panel, overlay or navigation
+path. App-only mode uses the app name as headline and Notifications as provider
+context, omitting sender/body and avoiding duplicate app names. Missing app
+identity never falls back to private sender text.
 
 Content identity and image refreshes have different motion rules. An explicit media-item
 token defines a track; legacy Music derives it from the received title. A track
 change starts a 280ms incoming-only content slide; late artwork or artist
-metadata repaints in place. A notification burst enters once and subsequent
-heading/body/icon changes stay in place. Lease-only refreshes already avoid
-replaying motion. Core coalescing provides a 900ms stable reading interval
-inside the first notice's deadline: at most three seconds for a summary/app-only
-banner or eight seconds for an actual nonempty message preview. An earlier
-source expiry can shorten either; later body/icon arrival cannot extend it.
+metadata repaints in place. A new notification run uses the same incoming
+activity transition, while heading/body/icon changes within its burst stay in
+place. Lease-only refreshes do not replay motion. Adapter coalescing provides a
+900ms stable reading interval inside the first notice's deadline: at most eight
+seconds in every privacy mode. An earlier source expiry can shorten it; later
+body/icon arrival cannot extend it.
 Removing private content,
 invalidating a source or clearing permissions bypasses that interval.
 
 Animations stop when settled. The ANIMATIONS preference disables Dynamic's
 transitions. Peek continues to follow every actual unobstructed-area frame,
 including temporary overshoot, retaining the clock and both readings above
-Pebble's event panel. Legacy notification snapshots remain transient for their bounded transition.
-Activities retain no outgoing copy. Expiry, invalidation, disconnection and
+Pebble's event panel. Activities retain no outgoing copy. The separate native
+notification renderer and snapshot are removed. Expiry, invalidation, disconnection and
 privacy clearing always take priority over completing motion.
 
 ## Compatibility and clock-format query
@@ -172,9 +174,10 @@ Primary content grows upward when alone. The measured primary block is packed
 against its footer with an 8px gap; meaningful labels, headline, supporting text
 and a range indicator move together. Standard text may have two detail lines.
 Context ends at y216, using an instance name or provider identity, or optional
-artwork and artist for media. All media uses the shared renderer. Native Timeline
-and notification interruptions retain
-priority. One reusable heap-owned render plan borrows cards instead of copying
+artwork and artist for media. Media and Notifications use the shared renderer.
+Native Timeline retains priority. Notifications follows the saved activity
+order; it has no forced overlay priority. One reusable heap-owned render plan
+borrows cards instead of copying
 full cards or allocating artwork per frame. A second-boundary timer exists only
 for visible running clocks. Covered/unfocused states suspend clock work.
 
@@ -182,9 +185,10 @@ for visible running clocks. Covered/unfocused states suspend clock work.
 
 After planning actual visible roles, native sends a 24-byte presentation status:
 version, two original record indices, flags, native session, view sequence,
-presentation sequence, UTC report time and earliest role-changing expiry. Flag1
-identifies a full legacy notification, only as the fixed Notifications app;
-small banners preserve the underlying activity route. Motion reports no route
+presentation sequence, UTC report time and earliest role-changing expiry. Flags
+are zero; the retired special notification flag is rejected. Notifications
+uses the same original record-index mapping in both roles and privacy modes.
+Motion reports no route
 until the primary is settled. Local expiry/promotion sends new original indices.
 A low-rate timer belongs to the latest report and refreshes after 30 seconds;
 clock ticks do not send messages or write phone storage.
@@ -205,7 +209,7 @@ Timer's watchapp retains state, pause/cancel truth and native alarm ownership.
 ## Pinned dependencies and v4 reading contract
 
 The committed dependencies are `file:vendor/pebble-watchface-core-0.5.0.tgz`
-and `file:vendor/pebble-activities-0.4.0.tgz`. `package-lock.json`,
+and `file:vendor/pebble-activities-0.4.1.tgz`. `package-lock.json`,
 `vendor/CORE.json` and `vendor/ACTIVITIES.json` record their integrity and
 provenance, including exact source commits and archive SHA-256 values.
 Updating either library repository alone does not update installed PBWs. Each
@@ -232,24 +236,27 @@ expiry. Private music/notification sources never persist. Image-only public
 readings retain identity but become unavailable when their image is omitted.
 Reloading a cache never renews a lease or observation timestamp.
 
-Two global complication choices feed the readings. A separate fixed five-slot
-context snapshot carries music title/art, artist, notification sender/icon,
-notification body and low phone battery. Its notification record label carries
-app identity separately from sender text. Music/phone confirmation is bounded
-to 120 seconds and paused music has a five-second grace period. Notification
-summary/app-only bursts last at most three seconds and actual message previews
-up to eight seconds; updates do not renew the first notice's deadline. Reconnect
-and startup establish a baseline so old notification shade contents do not replay.
+Two global complication choices feed the readings. Dynamic opts into both
+`musicAsActivity` and `notificationAsActivity`; those private display fields go
+through ACT3 alone. Its compatibility context snapshot suppresses those display
+slots and retains phone status plus the baseline handshake.
+Native defensively clears those four compatibility content slots after receipt.
+Music/phone confirmation is bounded to 120 seconds and paused music has a
+five-second grace period. Notifications uses an eight-second burst in every
+privacy mode, capped by source expiry without renewal on updates. Reconnect and
+startup establish a baseline; no notification activity is exposed until that
+boundary has been acknowledged, preventing old shade contents from replaying.
 
 An optional `CONTEXT_STATE` tuple accompanies the same queued context snapshot:
-exactly nine bytes with little-endian uint32 session token, uint32 burst counter
-and a flags byte whose bit0 indicates retained paused music. Boundary/history
-packets carry event0. A new independent allowed burst increments the counter;
-coalesced text/icon updates retain it. Rebaselining within a native session does
-not reuse event identities. This side tuple leaves the v4 record format intact.
-Native accepts presentation state only with the matching session and accepted
-context snapshot. Vibration additionally requires an open notification gate and
-fresh notice; repeated or older burst identities cannot buzz again. The native
+exactly 13 bytes with little-endian uint32 session token and burst counter, a
+flags byte, and uint32 original notification expiry. It carries no private
+content or source identity. Boundary/history packets carry event0 and expiry0.
+A new independent allowed burst increments the counter; coalesced text/icon
+updates retain it. Rebaselining does not reuse event identities. Native accepts
+the sidecar only with a matching session and accepted context snapshot.
+Vibration additionally requires an acknowledged baseline and unexpired event;
+repeated or older identities cannot buzz again. Quiet/disabled events are
+consumed without deferring them. The native
 Off / Short / Double preference defaults to Off, and Quiet Time suppresses a
 burst without deferring it. The source supplies no native already-alerted flag,
 so this cannot deduplicate the OS's own notification vibration.
@@ -262,7 +269,7 @@ transport acknowledgement. Transient snapshots retain their reconnect epoch.
 
 The phone page uses three groups: Appearance, Content and Connection & help.
 Appearance keeps sample preview and colour/time choices together. Its five
-examples are Idle, Music, Banner, Message and Timeline, independent of feature
+examples are Idle, Music, Summary, Message and Timeline, independent of feature
 and privacy choices. Disabled features receive a nearby note; viewing their
 examples never enables them. There are 20 native presets: five states, two
 clock formats and two themes. Custom recolouring is explicitly approximate
@@ -271,6 +278,11 @@ and preserves provider artwork/OS-owned areas.
 Theme exploration retains the session's Custom palette. Content explains that
 left/right readings follow shared Pebble slots, and source recovery appears
 beside the affected summary. Notification choices explain app/sender visibility.
+Music and Notifications have ordinary priority-list rows. Their established
+source switches remain authoritative; Notifications stays Off on an upgrade.
+If no Notifications position exists, the phone adds it first. Once saved, its
+explicit position wins. Row visibility and notification privacy modes stay in
+sync without changing the user's saved app-only/message choice on re-enable.
 Selected app filters are removable entries, matched by exact case-insensitive
 name/package; they are not validated against installed apps. All new strings
 and controls cover the existing 17 supported locales.

@@ -1,5 +1,79 @@
 # Dynamic validation
 
+## 0.13.0 shared Notifications activities — 3 November 2026
+
+Dynamic now uses Activities 0.4.1, exact source
+`769eabc4b2bb4242a0f2d81ed3575c459d373a4a`, with Core 0.5.0 unchanged.
+The opt-in legacy Notifications adapter creates an ordinary standard ACT3
+summary. Sender/title, optional body, app identity/image and app destination
+follow the same primary/secondary selection and native renderer as other
+activities. Body-free summaries retain the same route. App-only privacy uses
+the app as headline and Notifications as context, avoiding duplicated app text.
+The separate native notification panel and special navigation flag are removed.
+
+Notifications remains Off by default. Its priority-list row and privacy controls
+stay synchronized. An existing order without a Notifications position gains an
+initial first position; saved placement wins. All privacy modes share the same
+eight-second event window, capped by original source expiry. Updates do not
+renew it, and the initial/reconnect baseline is acknowledged before a fresh
+notification is exposed. Optional vibration uses a session/event/expiry sidecar
+without private content and retains Quiet Time, filter and duplicate protections.
+
+- **117 JavaScript tests, 12 portable C suites and 40 Python regressions pass.**
+  Coverage includes ordinary notification roles, hidden preferences, duplicate
+  adapters, explicit ordering, body-independent app routes, migration, strict
+  zero presentation flags, expiry and the bounded vibration sidecar. The removed
+  native notification renderer no longer has a separate portable suite.
+- **SDK 4.33.1 Emery build and complete bundle audit pass.** The virtual image
+  is 62,212 bytes, leaving 3,323 below the 65,535-byte limit. Loaded bytes are
+  61,796 and the complete binary is 64,108, including 2,312 relocation bytes.
+  Resources remain 246,928 bytes. One native startup reports 20,536 bytes of
+  state and 41,156 bytes free heap. This does not measure worst-case runtime
+  heap, stack high-water or battery life.
+- **52 fresh native summary compositions and 20 native settings presets pass.**
+  The notification matrix covers both roles, media/timer combinations, body-free
+  summaries, app-only privacy, missing icons, long text and local notification
+  expiry with promotion. Root and an independent reviewer inspected all 52
+  summary compositions; root reviewed the 20 settings presets. An additional
+  one-line media-title follow-up is preserved with the capture evidence.
+- **24 no-resend clock follow-ups pass**, alongside local expiry promotion,
+  the 30-second idle presentation heartbeat and bounded incoming media motion.
+  Routine lease/revision and late artist changes remain static; the header does
+  not move with an incoming track. Notifications reports ordinary record indices
+  and zero flags in its actual native settings captures.
+- Fresh actual offline Clay checks pass in EN/CS at 360×800. They exercise
+  touch/desktop drag, keyboard/buttons, default Off, Notifications in either
+  saved role, row/privacy synchronization, app-only re-enable, real Clay saves
+  replayed through production PKJS, fresh-host restoration and the 64-provider
+  boundary. Both appearance images use refreshed embedded native previews.
+- Final SDK native/JavaScript payloads are retained. All native captures match
+  the final binary/resources byte for byte. The SDK manifest differs from capture
+  metadata only in `generatedAt`, `application.timestamp` and
+  `resources.timestamp`. Prior version artifacts and evidence remain unchanged.
+- The packaged integration fixture executes the actual Dynamic PKJS/navigation
+  provider, Timer PKJS/provider and unchanged Open Activity PKJS. All six cases
+  pass: three privacy modes in both roles, initial history suppression, correct
+  app destinations, one invocation despite duplicate confirmation, expiry
+  contraction/close, restoration of underlying Timer/Music and no private text
+  in navigation. SDK, clocks and native messages are simulated.
+
+Evidence: [checks and logs](qa/0.13.0/checks.json),
+[summary captures](qa/0.13.0/native-summary/summary.json),
+[native presets](qa/0.13.0/native-previews/previews.json),
+[presentation status](qa/0.13.0/native-previews/presentation-statuses.json),
+[actual Clay checks](qa/0.13.0/settings/README.md),
+[package audit](qa/0.13.0/bundle-audit.json),
+[distribution identity](qa/0.13.0/final-distribution.json) and
+[packaged handoff](qa/0.13.0/packaged-handoff.json).
+
+Final PBW SHA-256:
+`87572673c7ed342139bb27eb5770bfa250ed2c4e36fdaca7e931f85949a11dec`.
+
+Native source data is synthetic and phone JavaScript is omitted from native
+capture installation. Browser and packaged fixtures simulate the SDK/native
+exchange. They establish no real-phone delivery or app switching, physical-watch
+latency, alarm behavior or battery result. No new physical-device check is claimed.
+
 ## 0.12.1 bottom-aligned primary activity content — 3 November 2026
 
 The primary activity's complete measured content block now sits immediately

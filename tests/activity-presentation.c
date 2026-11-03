@@ -88,8 +88,11 @@ int main(void) {
   assert(layout.main.count==3&&layout.footer_point==20);
   build("Track","","","",true,false,false,false,false,false,92,&layout);
   assert(!layout.footer.count&&layout.footer_left==10);
+  build("Petr","","","Messages",false,false,false,true,false,false,92,&alone);
   build("Petr","","I'm downstairs. Ready when you are?","Messages",false,false,false,true,false,false,92,&layout);
   assert(layout.main.count&&layout.support.count&&layout.icon_size==16);
+  assert(layout.point==alone.point&&layout.secondary_baseline==alone.secondary_baseline);
+  assert(layout.footer_baseline[0]==alone.footer_baseline[0]&&layout.icon_top==alone.icon_top);
   build("68%","","","Offline map",false,false,true,true,false,true,92,&layout);
   assert(layout.main.count&&layout.meter);
   build("Dlouhý název se třemi řádky a diakritikou","","","Acme",false,false,false,true,false,false,92,&layout);

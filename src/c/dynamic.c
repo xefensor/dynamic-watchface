@@ -13,7 +13,6 @@
 #include "font_raster.h"
 #include "music_layout.h"
 #include "native_reading.h"
-#include "context_presentation.h"
 #include "context_effects.h"
 #include "native_settings.h"
 
@@ -53,7 +52,7 @@ static Window *s_window;
 static Layer *s_window_layer, *s_background_layer, *s_context_layer;
 static GColor s_background_color, s_text_color, s_accent_color;
 static GColor s_day_colors[3],s_night_colors[3];
-static bool s_night_enabled,s_music_paused;
+static bool s_night_enabled;
 static uint8_t s_vibration;
 static uint32_t s_seen_burst;
 static bool s_use_12_hour,s_app_focused=true;
@@ -68,7 +67,6 @@ typedef struct {
   ComplicationSet legacy_context;
   DynamicContextSession session;
   PavState activities;
-  RenderContext context_from,context_to;
   GPoint clock_path_points[CLOCK_CONTOUR_MAX_POINTS];
   GPath clock_path;
   FontRasterPoint clock_raster_points[CLOCK_GLYPH_MAX_POINTS];
@@ -77,14 +75,11 @@ typedef struct {
   uint8_t clock_coverage[200];
   char activity_identity[PAV_PROVIDER_BYTES+PAV_ID_BYTES+2];
   uint8_t activity_visual[8];
-  bool activity_motion;
   ActivityPlan activity_plan;
   ActivityNavigation navigation;
 } NativeState;
 static NativeState *s_native;
 #define s_core (s_native->core)
-#define s_context_from (s_native->context_from)
-#define s_context_to (s_native->context_to)
 #define s_clock_path_points (s_native->clock_path_points)
 #define s_clock_path (s_native->clock_path)
 #define s_clock_raster_points (s_native->clock_raster_points)
@@ -110,10 +105,9 @@ static const uint32_t s_body_resources[BODY_FONT_COUNT] = {RESOURCE_ID_FONT_BODY
   RESOURCE_ID_FONT_BODY_26,RESOURCE_ID_FONT_BODY_28,RESOURCE_ID_FONT_BODY_32};
 static WatchPose s_pose, s_pose_from, s_pose_target;
 static bool s_pose_ready, s_layout_active, s_slide_active, s_peek_transition;
-static uint32_t s_layout_started, s_slide_started, s_slide_duration;
+static uint32_t s_layout_started, s_slide_started;
 static float s_slide_amount = 1;
-static int s_slide_direction = 1;
-static bool s_private_rebaseline,s_banner_slide;
+static bool s_private_rebaseline;
 static bool s_format_reply_pending,s_outbox_format_only,s_outbox_presentation,s_transport_ready;
 
 static void prv_apply_unobstructed_layout(void);
@@ -122,7 +116,7 @@ static void prv_send_clock_format(void);
 static void prv_schedule_context_expiry(void);
 static void prv_context_expired(void *context);
 static MusicTextMetrics prv_music_measure(void *context,const char *text,int point);
-static void prv_music_reset(void);
+static void prv_activity_reset(void);
 static void prv_apply_colors(void);
 static void prv_activity_clock_schedule(void);
 static void prv_send_presentation(void);
@@ -430,29 +424,18 @@ static uint32_t prv_millis(void) {
   return (uint32_t)seconds*1000u+millis;
 }
 static const PavCard *prv_primary_activity(void) {
-  // Notification interruptions retain their bounded priority; activity order
-  // otherwise comes from the host, including the canonical Music bridge.
-  if(s_context_to.mode==CONTEXT_NOTIFICATION&&!s_context_to.heading_only&&!s_private_rebaseline)return NULL;
   return pav_state_select(&s_activities,(uint32_t)time(NULL),0);
 }
 static WatchPose prv_full_pose(void) {
-  if(prv_primary_activity())return watch_pose_context(s_context_to.mode==CONTEXT_NOTIFICATION);
-  if(s_context_to.mode==CONTEXT_NONE||s_private_rebaseline)return watch_pose_idle();
-  if(s_context_to.heading_only&&!s_context_to.has_music)return watch_pose_summary();
-  return watch_pose_context(s_context_to.mode==CONTEXT_NOTIFICATION);
+  return prv_primary_activity()?watch_pose_context(false):watch_pose_idle();
 }
 static WatchPose prv_current_pose(void) {
   const int height=s_window_layer ? layer_get_unobstructed_bounds(s_window_layer).size.h : 228;
   return watch_pose_at_height(s_pose,height);
 }
-static void prv_redact_context(RenderContext *value) {
-  render_context_redact(value,&s_context,s_phone_connected,s_private_rebaseline,time(NULL));
-}
 static void prv_private_clear(void) {
-  memset(&s_context_from,0,sizeof(s_context_from));
-  memset(&s_context_to,0,sizeof(s_context_to));
-  s_slide_active=false;s_slide_amount=1;s_banner_slide=false;
-  s_music_paused=false;prv_music_reset();memset(&s_native->activity_plan,0,sizeof(s_native->activity_plan));
+  s_slide_active=false;s_slide_amount=1;
+  prv_activity_reset();memset(&s_native->activity_plan,0,sizeof(s_native->activity_plan));
 }
 static void prv_motion_frame(void *context) {
   (void)context;s_motion_timer=NULL;
@@ -463,48 +446,22 @@ static void prv_motion_frame(void *context) {
     if(t>=1) { s_pose=s_pose_target;s_layout_active=false; }
   }
   if(s_slide_active) {
-    s_slide_amount=watch_smooth((now-s_slide_started)/(float)s_slide_duration);
-    if(s_slide_amount>=1) {
-      s_slide_active=false;s_native->activity_motion=false;
-      memset(&s_context_from,0,sizeof(s_context_from));
-    }
+    s_slide_amount=watch_smooth((now-s_slide_started)/280.0f);
+    if(s_slide_amount>=1)s_slide_active=false;
   }
-  prv_redact_context(&s_context_from);prv_redact_context(&s_context_to);
-  if(s_native->activity_motion&&!s_layout_active&&s_context_layer)layer_mark_dirty(s_context_layer);
+  if(s_slide_active&&!s_layout_active&&s_context_layer)layer_mark_dirty(s_context_layer);
   else prv_sync_layers();
   if(s_layout_active || s_slide_active) s_motion_timer=app_timer_register(MOTION_FRAME_MS,prv_motion_frame,NULL);
   else prv_activity_clock_schedule();
 }
 static void prv_cancel_motion(void) {
   if(s_motion_timer) { app_timer_cancel(s_motion_timer);s_motion_timer=NULL; }
-  s_layout_active=false;s_slide_active=false;s_slide_amount=1;s_native->activity_motion=false;
-  memset(&s_context_from,0,sizeof(s_context_from));
+  s_layout_active=false;s_slide_active=false;s_slide_amount=1;
 }
 static void prv_apply_unobstructed_layout(void) {
   if(s_window_layer==NULL) return;
-  const ContextView next=render_context_view(&s_context,s_phone_connected,s_private_rebaseline,time(NULL));
-  const ContextMode previous=s_context_to.mode;
-  const bool content_slide=render_context_should_slide(&s_context_to,&next);
-  prv_redact_context(&s_context_to);prv_redact_context(&s_context_from);
   const bool motion=s_animations_enabled && !s_peek_transition &&
       layer_get_unobstructed_bounds(s_window_layer).size.h>=228;
-  if(!render_context_equal(&s_context_to,&next)) {
-    s_native->activity_motion=false;
-    const ComplicationSlot *old_music=render_context_music(&s_context_to,false);
-    const ComplicationSlot *old_artist=render_context_music(&s_context_to,true);
-    const ComplicationSlot *new_music=next.mode==CONTEXT_MUSIC?next.title:next.music_title;
-    const ComplicationSlot *new_artist=next.mode==CONTEXT_MUSIC?next.subtitle:next.music_artist;
-    s_banner_slide=(s_context_to.heading_only||next.heading_only)&&old_music&&new_music&&
-        render_slot_identity_equal(old_music,new_music)&&old_artist&&
-        render_optional_slot_equal(old_artist,new_artist);
-    s_context_from=s_context_to;render_context_capture(&s_context_to,&next);
-    prv_redact_context(&s_context_from);
-    s_slide_direction=next.mode==CONTEXT_MUSIC && previous==CONTEXT_NOTIFICATION ? -1 : 1;
-    s_slide_duration=next.mode==previous ? 280 : 340;
-    s_slide_active=motion && content_slide;
-    s_slide_amount=s_slide_active ? 0 : 1;s_slide_started=prv_millis();
-    if(!s_slide_active) memset(&s_context_from,0,sizeof(s_context_from));
-  } else render_context_capture(&s_context_to,&next); // A lease confirmation does not replay motion.
   const PavCard *activity=prv_primary_activity();
   char identity[PAV_PROVIDER_BYTES+PAV_ID_BYTES+2]={0};
   if(activity)snprintf(identity,sizeof(identity),"%s|%s",activity->provider,activity->id);
@@ -513,10 +470,9 @@ static void prv_apply_unobstructed_layout(void) {
        (activity->presentation==PAV_PRESENTATION_MEDIA&&
         memcmp(activity->visual_token,s_native->activity_visual,8)));
   if(replaced&&motion) {
-    s_native->activity_motion=true;s_slide_active=true;s_slide_amount=0;
-    s_slide_duration=280;s_slide_started=prv_millis();
+    s_slide_active=true;s_slide_amount=0;s_slide_started=prv_millis();
   }
-  if(!activity){s_native->activity_motion=false;s_native->activity_identity[0]=0;}
+  if(!activity){s_slide_active=false;s_native->activity_identity[0]=0;}
   else {
     memcpy(s_native->activity_identity,identity,sizeof(identity));
     memcpy(s_native->activity_visual,activity->visual_token,8);
@@ -541,7 +497,7 @@ static void prv_sync_layers(void) {
   layer_set_bounds(s_context_layer,GRect(0,0,200,height));
   layer_set_hidden(s_context_layer,height<=0);
   layer_mark_dirty(s_context_layer);
-  if(!(s_native->activity_motion&&s_slide_active&&!s_layout_active))layer_mark_dirty(s_background_layer);
+  if(!(s_slide_active&&!s_layout_active))layer_mark_dirty(s_background_layer);
 }
 static void prv_schedule_context_expiry(void) {
   if(s_context_timer) {app_timer_cancel(s_context_timer);s_context_timer=NULL;}
@@ -825,48 +781,9 @@ static MusicTextMetrics prv_music_measure(void *context,const char *text,int poi
   return (MusicTextMetrics){prv_measure(text,point).w,body_text_ascent(text,point),
       body_text_descent(text,point)};
 }
-static void prv_music_reset(void) {
+static void prv_activity_reset(void) {
   s_native->activity_identity[0]=0;
   memset(s_native->activity_visual,0,sizeof(s_native->activity_visual));
-  s_native->activity_motion=false;
-}
-static void prv_notice_symbol(GContext *ctx,int x,int y,int size) {
-  graphics_context_set_stroke_color(ctx,prv_accent_color());graphics_context_set_stroke_width(ctx,1);
-  graphics_draw_round_rect(ctx,GRect(x,y,size,size-4),3);
-  graphics_draw_line(ctx,GPoint(x+size/2,y+size-4),GPoint(x+3,y+size));
-}
-static int prv_notice_music_top(const ComplicationSlot *title) {
-  (void)title;return 120;
-}
-static void prv_draw_notice_banner(GContext *ctx,const RenderContext *value,int x,int y,bool music) {
-  (void)music;
-  if(!value->heading_only||!context_slot_fresh(&value->title,time(NULL)))return;
-  char text[COMPLICATION_MAX_TEXT_BYTES+5];
-  watch_layout_copy_utf8(value->title.text,text,sizeof(text));prv_ellipsize(text,sizeof(text),16,158);
-  prv_notice_symbol(ctx,x+10,y+96,16);
-  prv_text(ctx,text,16,x+32,y+96+body_text_ascent(text,16),158,s_text_color,GTextAlignmentLeft);
-}
-static void prv_draw_context_value(GContext *ctx,const RenderContext *value,int x,int y) {
-  if(value->mode==CONTEXT_NONE||!context_slot_fresh(&value->title,time(NULL)))return;
-  const ComplicationSlot *title=&value->title,*subtitle=&value->subtitle;
-  if(value->mode==CONTEXT_MUSIC) {
-    return; /* All media is compiled through the shared ACT3 view. */
-  }
-  if(value->heading_only) {
-    prv_draw_notice_banner(ctx,value,x,y,value->has_music);return;
-  }
-  MusicLines lines;int offsets[MUSIC_MAX_LINES];
-  music_wrap(title->text,24,180,1,false,prv_music_measure,NULL,&lines);
-  if(lines.count)prv_text(ctx,lines.text[0],24,x+10,y+96+body_text_ascent(lines.text[0],24),180,s_text_color,GTextAlignmentLeft);
-  if(context_slot_fresh(subtitle,time(NULL))&&(subtitle->flags&COMPLICATION_FLAG_TEXT)) {
-    music_wrap(subtitle->text,20,180,2,false,prv_music_measure,NULL,&lines);
-    music_line_offsets(&lines,20,prv_music_measure,NULL,offsets);
-    for(int i=0;i<lines.count;++i)prv_text(ctx,lines.text[i],20,x+10,y+132+offsets[i],180,s_text_color,GTextAlignmentLeft);
-  }
-  char app[COMPLICATION_MAX_LABEL_BYTES+5];watch_layout_copy_utf8(title->label,app,sizeof(app));
-  prv_ellipsize(app,sizeof(app),16,158);
-  prv_notice_symbol(ctx,x+10,y+200,16);
-  prv_text(ctx,app,16,x+32,y+216-body_text_descent(app,16),158,prv_muted_text(1),GTextAlignmentLeft);
 }
 static MusicTextMetrics prv_activity_clock_measure(void *context,const char *text,int point) {
   (void)context;int ascent=0,descent=0;
@@ -943,7 +860,7 @@ static bool prv_activity_line(const PavCard *card,const PavDatum *datum,uint32_t
   } else prv_ellipsize(text,capacity,16,width);
   return prv_measure(text,16).w<=width;
 }
-static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,ActivityPlan *out) {
+static void prv_prepare_activity(const PavCard *card,uint32_t now,ActivityPlan *out) {
   memset(out,0,sizeof(*out));out->card=card;
   pav_format_item(card,&card->main,now,s_phone_connected,out->main,sizeof(out->main));
   const bool media=card->presentation==PAV_PRESENTATION_MEDIA;
@@ -955,7 +872,7 @@ static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,Ac
         !prv_activity_line(card,&card->support,now,card->support.type==PAV_TEXT?2048:180,
             NULL,out->support,sizeof(out->support)))out->support[0]=0;
   }
-  out->alternate=banner?NULL:pav_state_select(&s_activities,now,1);
+  out->alternate=pav_state_select(&s_activities,now,1);
   if(out->alternate) {
     const PavDatum *datum=activity_compact_datum(out->alternate);
     const unsigned selected=out->alternate->compact_item?1:0;
@@ -969,13 +886,12 @@ static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,Ac
   out->numeric=scalar&&reading_parts(out->main,&out->number)&&activity_simple_unit(out->number.unit)&&
       prv_activity_clock_measure(NULL,out->number.number,26).width>0;
   const bool vector=card->main.type==PAV_CLOCK;
-  const int top=banner?prv_notice_music_top(&s_context_to.title):ACTIVITY_CONTENT_TOP;
   const char *footer=media?(pav_datum_visible(card,&card->support,now,s_phone_connected)?
       pav_text(card,&card->support):""):activity_identity(card);
   activity_layout_build(out->main,out->role,out->support,footer,media,vector,scalar,
       out->alternate!=NULL,(card->flags&PAV_HAS_IMAGE)!=0,
       pav_meter_visible(card,now,s_phone_connected),
-      card->main.type==PAV_TEXT&&card->support.type==PAV_TEXT?20:16,top,prv_music_measure,
+      card->main.type==PAV_TEXT&&card->support.type==PAV_TEXT?20:16,ACTIVITY_CONTENT_TOP,prv_music_measure,
       vector?prv_activity_clock_measure:scalar?prv_activity_value_measure:prv_music_measure,out,&out->layout);
   if(scalar&&card->directions[0]){out->layout.left=50;out->layout.width=140;}
   out->needs_tick=out->layout.main.count&&activity_view_needs_tick(card,
@@ -986,8 +902,7 @@ static void prv_activity_clock_schedule(void) {
   if(card&&s_app_focused&&s_window_layer&&!s_peek_transition&&
       layer_get_unobstructed_bounds(s_window_layer).size.h>=FULL_LAYOUT_HEIGHT&&
       watch_context_visibility(prv_current_pose())>0.72f) {
-    const bool banner=s_context_to.mode==CONTEXT_NOTIFICATION&&s_context_to.heading_only;
-    prv_prepare_activity(card,banner,(uint32_t)time(NULL),&s_native->activity_plan);
+    prv_prepare_activity(card,(uint32_t)time(NULL),&s_native->activity_plan);
     needed=s_native->activity_plan.needs_tick;
   }
   if(!needed&&s_activity_timer){app_timer_cancel(s_activity_timer);s_activity_timer=NULL;}
@@ -1056,11 +971,11 @@ static void prv_activity_symbol(GContext *ctx,unsigned symbol,unsigned direction
     graphics_fill_circle(ctx,GPoint(l,b),size/8);graphics_fill_circle(ctx,GPoint(r,b),size/8);
   }
 }
-static void prv_draw_activity(GContext *ctx,const PavCard *card,int y,bool banner) {
+static void prv_draw_activity(GContext *ctx,const PavCard *card,int y) {
   const uint32_t now=(uint32_t)time(NULL);ActivityPlan *plan=&s_native->activity_plan;
-  prv_prepare_activity(card,banner,now,plan);const ActivityLayout *layout=&plan->layout;
+  prv_prepare_activity(card,now,plan);const ActivityLayout *layout=&plan->layout;
   if(!layout->main.count)return;
-  const int x=s_native->activity_motion&&s_slide_active?prv_round(200*(1-s_slide_amount)):0;
+  const int x=s_slide_active?prv_round(200*(1-s_slide_amount)):0;
   for(int i=0;i<layout->main.count;++i) {
     if(layout->vector)prv_vector(ctx,layout->main.text[i],x+layout->left,
         y+layout->main_baseline[i],layout->point,s_text_color);
@@ -1107,7 +1022,7 @@ static void prv_presentation_refresh(void *context) {
   if(s_app_focused&&s_context_layer)layer_mark_dirty(s_context_layer);
 }
 static void prv_note_presentation(const PavCard *card,bool stable) {
-  uint8_t primary=ACTIVITY_NAV_ABSENT,secondary=ACTIVITY_NAV_ABSENT,flags=0;uint32_t expiry=0;
+  uint8_t primary=ACTIVITY_NAV_ABSENT,secondary=ACTIVITY_NAV_ABSENT;uint32_t expiry=0;
   const uint32_t now=(uint32_t)time(NULL);
   ActivityPlan *plan=&s_native->activity_plan;
   if(stable&&card&&plan->layout.main.count) {
@@ -1122,41 +1037,23 @@ static void prv_note_presentation(const PavCard *card,bool stable) {
       if(datum->valid_until&&datum->valid_until<expiry)expiry=datum->valid_until;
     }
   }
-  if(stable&&!card&&s_context_to.mode==CONTEXT_NOTIFICATION&&!s_context_to.heading_only&&
-      context_slot_fresh(&s_context_to.title,now)) {
-    flags=1;expiry=s_context_to.title.valid_until;
-  }
   if(activity_navigation_update(&s_native->navigation,s_session.token,
-      s_activities.snapshot.view_sequence,primary,secondary,flags,expiry,now)) {
+      s_activities.snapshot.view_sequence,primary,secondary,0,expiry,now)) {
     if(s_presentation_timer){app_timer_cancel(s_presentation_timer);s_presentation_timer=NULL;}
     prv_send_presentation();
   }
-  if((primary!=ACTIVITY_NAV_ABSENT||flags)&&!s_presentation_timer)
+  if(primary!=ACTIVITY_NAV_ABSENT&&!s_presentation_timer)
     s_presentation_timer=app_timer_register(ACTIVITY_NAV_REFRESH_SECONDS*1000,prv_presentation_refresh,NULL);
 }
 static void prv_draw_context(Layer *layer,GContext *ctx) {
-  (void)layer;prv_redact_context(&s_context_from);prv_redact_context(&s_context_to);
-  const WatchPose p=prv_current_pose();
+  (void)layer;const WatchPose p=prv_current_pose();
   const float reveal=watch_smooth((watch_context_visibility(p)-0.72f)/0.28f);
   const int y=-86+prv_round(22*(1-reveal)+65*watch_clamp(p.peek));
   const PavCard *activity=prv_primary_activity();
-  if(activity) {
-    const bool banner=s_context_to.mode==CONTEXT_NOTIFICATION&&s_context_to.heading_only;
-    prv_draw_activity(ctx,activity,y,banner);
-    prv_note_presentation(activity,s_app_focused&&!s_peek_transition&&p.peek<0.01f&&reveal>=0.99f&&
-        !(s_native->activity_motion&&s_slide_active));
-    if(banner)prv_draw_notice_banner(ctx,&s_context_to,0,y,true);
-    return;
-  }
-  memset(&s_native->activity_plan,0,sizeof(s_native->activity_plan));
-  prv_note_presentation(NULL,s_app_focused&&!s_peek_transition&&p.peek<0.01f&&reveal>=0.99f&&!s_slide_active);
-  if(s_slide_active&&s_banner_slide) {
-    prv_draw_notice_banner(ctx,&s_context_from,prv_round(-s_slide_direction*200*s_slide_amount),y,true);
-    prv_draw_notice_banner(ctx,&s_context_to,prv_round(s_slide_direction*200*(1-s_slide_amount)),y,true);
-  } else if(s_slide_active) {
-    prv_draw_context_value(ctx,&s_context_from,prv_round(-s_slide_direction*200*s_slide_amount),y);
-    prv_draw_context_value(ctx,&s_context_to,prv_round(s_slide_direction*200*(1-s_slide_amount)),y);
-  } else prv_draw_context_value(ctx,&s_context_to,0,y);
+  if(activity)prv_draw_activity(ctx,activity,y);
+  else memset(&s_native->activity_plan,0,sizeof(s_native->activity_plan));
+  prv_note_presentation(activity,s_app_focused&&!s_peek_transition&&p.peek<0.01f&&
+      reveal>=0.99f&&!s_slide_active);
 }
 static void prv_update_clock(void) {
   const time_t now=time(NULL);struct tm *current=localtime(&now);if(!current)return;
@@ -1259,7 +1156,7 @@ static void prv_unobstructed_area_will_change(GRect final_area,void *context) {
   (void)context;s_peek_transition=true;
   const int current_height=layer_get_unobstructed_bounds(s_window_layer).size.h;
   prv_cancel_motion();
-  prv_music_reset();
+  prv_activity_reset();
   if(final_area.size.h>=current_height) s_pose=s_pose_target=prv_full_pose();
   prv_sync_layers();
 }
@@ -1337,10 +1234,9 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
     const bool valid=accepted&&state&&state->type==TUPLE_BYTE_ARRAY&&
         context_effects_read(state->value->data,state->length,&effects)&&
         effects.session==s_session.token;
-    s_music_paused=valid&&effects.paused&&context_slot_fresh(&s_context.slots[0],time(NULL));
     if(valid&&!s_session.awaiting_baseline&&!s_private_rebaseline&&
-        context_slot_fresh(&s_context.slots[2],time(NULL))&&
-        context_effects_alert(effects.burst,&s_seen_burst,s_vibration,quiet_time_is_active())) {
+        context_effects_alert(&effects,s_session.token,(uint32_t)time(NULL),
+            &s_seen_burst,s_vibration,quiet_time_is_active())) {
       if(s_vibration==1)vibes_short_pulse();else vibes_double_pulse();
     }
     prv_schedule_context_expiry();

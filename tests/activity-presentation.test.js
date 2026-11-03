@@ -84,3 +84,33 @@ test('unprojectable earlier sources cannot starve a valid secondary',()=>{
   const music=card({provider:'00000000-0000-0000-0001-000000000003',id:'music',kind:'music',selectionKey:'builtin:music',private:true,main:{type:'text',label:'',text:'Song'},support:null});
   assert.deepEqual(presentation.select([stale,timer,music],{}).map(x=>x.id),['timer','music']);
 });
+
+const notification=body=>({...source({id:'notice',type:'standard',name:'Signal',icon:'message',
+  headline:{type:'text',text:'Sam'},...(body?{detail:{type:'text',text:body}}:{})},
+  {provider:'cdb6d497-547a-4940-8026-f7c97ea73a9d',displayName:'Notifications',private:true}),
+  type:'standard',selectionKey:'builtin:notifications',openApp:{watchAppUuid:'b2cae818-10f8-46df-ad2b-98ad2254a3c1'}});
+test('Notifications use ordinary summary fields and routes with and without message text',()=>{
+  const timer=card({provider:T,kind:'timer',support:null});
+  for(const body of ['', 'Meet by the station']){
+    const input=notification(body),before=json(input),selected=presentation.select([timer],{},null,input);
+    assert.equal(selected[0].selectionKey,'builtin:notifications');assert.equal(selected[0].presentation,1);
+    assert.equal(selected[0].caption,'Signal');assert.equal(selected[0].main.text,'Sam');
+    assert.equal(selected[0].support&&selected[0].support.text,body||null);
+    assert.deepEqual(selected[0].openApp,input.openApp);assert.equal(selected[1].provider,T);
+    assert.deepEqual(input,before);
+  }
+});
+test('notification priority can be secondary, hidden or absent just like other activities',()=>{
+  const timer=card({provider:T,kind:'timer',support:null}),notice=notification('Private body');
+  const music=card({provider:'00000000-0000-0000-0001-000000000003',id:'music',kind:'music',selectionKey:'builtin:music',private:true,
+    main:{type:'text',label:'',text:'Song'},support:null});
+  assert.deepEqual(presentation.select([timer],{order:[T,'builtin:notifications','builtin:music']},music,notice).map(x=>x.selectionKey||x.provider),[T,'builtin:notifications']);
+  assert.deepEqual(presentation.select([timer],{order:['builtin:music',T,'builtin:notifications']},music,notice).map(x=>x.selectionKey||x.provider),['builtin:music',T]);
+  assert.deepEqual(presentation.select([timer],{hidden:['builtin:notifications']},music,notice).map(x=>x.selectionKey||x.provider),[T,'builtin:music']);
+  assert.deepEqual(presentation.select([timer],{},music,null).map(x=>x.selectionKey||x.provider),[T,'builtin:music']);
+});
+test('notification adapter duplicates and provider hiding cannot create extra visible content',()=>{
+  const notice=notification('Message');
+  assert.equal(presentation.select([notice],{},null,notice).length,1);
+  assert.deepEqual(presentation.select([],{hidden:[notice.provider]},null,notice),[]);
+});

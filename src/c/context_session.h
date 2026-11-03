@@ -43,6 +43,11 @@ static inline bool dynamic_context_receive(DynamicContextSession *session,
       context_receive(bytes,length,context,&session->awaiting_baseline,
                       context_session_token_matches(marker,session->token));
   if(!valid)memset(context,0,sizeof(*context));
+  else {
+    // Music and every notification use ACT3. This compatibility packet keeps
+    // only phone status and the baseline handshake, never a second UI copy.
+    memset(context->slots,0,4*sizeof(context->slots[0]));
+  }
   return valid;
 }
 static inline uint32_t dynamic_context_prune(ComplicationSet *context,time_t now) {

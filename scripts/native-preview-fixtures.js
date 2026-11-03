@@ -38,6 +38,35 @@ function musicFromSource(now,session,title,artist,artwork) {
   if(!card)throw Error('Production Music adapter rejected native fixture');
   return card;
 }
+function notificationFromSource(now,session,options={}) {
+  let request,sidecar;
+  const client=library.createContext({notificationAsActivity:true,musicAsActivity:true,
+    pebble:{subscribeToSource:value=>{if(value.category==='notifications')request=value;return {unsubscribe(){}};}},
+    keys:{CONTEXT_DATA:'CONTEXT_DATA',CONTEXT_STATE:'CONTEXT_STATE',REQUEST_CONTEXT:'REQUEST_CONTEXT'},
+    now:()=>now*1000,later:()=>1,cancelLater(){},
+    send:(payload,ok)=>{sidecar=payload.CONTEXT_STATE;ok();},
+    getSettings:()=>({showNotifications:true,showMusic:false,showStatus:false,
+      notificationPreview:options.body!==false,notificationAppOnly:options.appOnly===true})});
+  client.refresh(true,session);
+  const envelope={pluginUuid:'9ac26690-204f-46b2-aef2-54d61f57c2d7',
+    validUntilMs:(now+(options.life||120))*1000};
+  request.onData({...envelope,instances:[]});
+  const properties={name:{shortText:{text:options.title||'Xef'}},
+    body:{longText:{text:options.text||'See you at the station!'}},
+    app:{shortText:{text:'Signal'}}};
+  if(options.icon!==false){
+    const pixels=[];
+    for(let y=0;y<24;y++)for(let x=0;x<24;x+=2){
+      const dot=xx=>xx>=4&&xx<20&&y>=4&&y<19?2:1;
+      pixels.push(dot(x)<<4|dot(x+1));
+    }
+    properties.app_icon={image:{width:24,height:24,palette:Buffer.from([0,0xc3,0xff]).toString('base64'),pixels:Buffer.from(pixels).toString('base64')}};
+  }
+  request.onData({...envelope,instances:[{instanceId:'fixture-notification',properties}]});
+  const card=client.notificationActivity();client.stop();
+  if(!card)throw Error('Production notification adapter rejected native fixture');
+  return {card:presentation.project(card),sidecar};
+}
 function fixtures(options) {
   const now=options.now,session=options.session;
   if(!Number.isInteger(now)||now<1||!Number.isInteger(session)||session<2)throw Error('Expected UTC seconds and native session >=2');
@@ -50,7 +79,7 @@ function fixtures(options) {
   let sequence=options.sequence||0;
   for(const theme of ['light','dark'])for(const format of [24,12])for(const state of states) {
     const slots=[];
-    let music=null;
+    let music=null,notice=null;
     if(state==='music'||state==='notification-summary') {
       if(options.legacyMusic) {
         slots[0]=Object.assign(ready('Flower In A Hurricane [from the soundtrack]'),{bitmap:cover()});
@@ -60,14 +89,13 @@ function fixtures(options) {
           'Flower In A Hurricane [from the soundtrack]','Justice, Tame Impala',cover()));
       }
     }
-    if(state==='notification'||state==='notification-summary') {
-      slots[2]=ready('Xef',8);
-      if(state==='notification')slots[3]=ready('See you at the station!',8);
-    }
+    if(state==='notification'||state==='notification-summary')notice=notificationFromSource(now,session,{body:state==='notification'});
     if(music)music.revision=sequence+1;
+    if(notice){notice.card.revision=sequence+1;notice.card.id+='-'+state;}
+    const cards=notice?[notice.card].concat(music?[music]:[]):music?[music]:[];
     const dark=theme==='dark';
     presets.push({name:`${state}-${format}-${theme}`,state,format,theme,fixtureNow:now,
-      preserve:state==='music'||state==='notification-summary'?
+      preserve:state==='music'?
         [{x:10,y:176,width:40,height:40}]:
         state==='timeline'?[{x:0,y:171,width:200,height:57}]:[],
       integers:{BACKGROUND_COLOR:dark?0:0xffffff,TEXT_COLOR:dark?0xffffff:0,
@@ -75,7 +103,8 @@ function fixtures(options) {
         NOTIFICATION_VIBRATION:0,NIGHT_PALETTE:0,REQUEST_CONTEXT:session},
       bytes:{COMPLICATION_DATA:core.packComplications([temperature,rain],now),
         CONTEXT_DATA:core.packComplications(slots,now),
-        ACTIVITY_DATA:activity.encode(music?[music]:[],{session,revision:++sequence,sentAt:now})}});
+        CONTEXT_STATE:notice?notice.sidecar:[session&255,(session>>>8)&255,(session>>>16)&255,(session>>>24)&255,0,0,0,0,0,0,0,0,0],
+        ACTIVITY_DATA:activity.encode(cards,{session,revision:++sequence,sentAt:now})}});
   }
   return {coreVersion:require('pebble-watchface-core/package.json').version,
     activitiesVersion:require('pebble-activities/package.json').version,
@@ -127,10 +156,37 @@ function summaryPresets(options){
       captureDelaySeconds:spec.captureDelaySeconds||0,viewSequence:seq,preserve:[],
       bytes:{...template.bytes,ACTIVITY_DATA:activity.encode(cards,{session,revision:seq,sentAt:now})}});
   }
+  const notifications=[
+    {name:'notification-media',options:{},before:true,other:'music'},
+    {name:'timer-notification',options:{},before:false,other:'timer',verifyClockTick:true},
+    {name:'notification-summary-media',options:{body:false},before:true,other:'music'},
+    {name:'notification-app-only',options:{appOnly:true}},
+    {name:'notification-no-icon',options:{icon:false}},
+    {name:'notification-long-message',options:{title:'Family weekend plans and train tickets',text:'We have arrived downstairs. Bring your jacket and the tickets; the next train leaves in ten minutes.'}},
+    {name:'notification-promotes-timer',options:{life:2},before:true,other:'timer',captureDelaySeconds:3,verifyClockTick:true},
+    {name:'media-notification',options:{body:false},before:false,other:'music'}
+  ];
+  for(const theme of ['light','dark'])for(const spec of notifications){
+    const template=base.presets.find(p=>p.name==='idle-24-'+theme);
+    const notice=notificationFromSource(now,session,spec.options);
+    notice.card.revision=sequence+1;
+    notice.card.id+='-'+spec.name;
+    const other=spec.other==='music'?presentation.project(summary.toView({provider:P,record:music,revision:sequence+1,
+      observedAt:now,validUntil:now+3600,private:true,displayName:'Music'})):
+      spec.other==='timer'?presentation.project(summary.toView({provider:T,record:timer(151),revision:sequence+1,
+        observedAt:now,validUntil:now+3600,private:false,displayName:'Timer'})):null;
+    const cards=other?(spec.before?[notice.card,other]:[other,notice.card]):[notice.card];
+    const seq=++sequence;
+    presets.push({...template,name:spec.name+'-'+theme,state:spec.name,theme,
+      activity:cards[0],activities:cards,viewSequence:seq,preserve:[],verifyClockTick:spec.verifyClockTick===true,
+      captureDelaySeconds:spec.captureDelaySeconds||0,
+      bytes:{...template.bytes,CONTEXT_STATE:notice.sidecar,
+        ACTIVITY_DATA:activity.encode(cards,{session,revision:seq,sentAt:now})}});
+  }
   return {coreVersion:base.coreVersion,activitiesVersion:base.activitiesVersion,activityWireVersion:3,session,now,presets};
 }
 function activityPresets(options){return summaryPresets(options);}
-module.exports={fixtures,activityPresets,summaryPresets,musicFromSource};
+module.exports={fixtures,activityPresets,summaryPresets,musicFromSource,notificationFromSource};
 if(require.main===module) {
   let input='';process.stdin.setEncoding('utf8');process.stdin.on('data',value=>input+=value);
   process.stdin.on('end',()=>{

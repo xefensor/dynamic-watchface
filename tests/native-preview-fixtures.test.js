@@ -25,11 +25,13 @@ function records(value){
 test('twenty native settings states use production ACT3 encoders and retain header controls',()=>{
   const plan=fixtures.fixtures({now:N,session:S});assert.equal(plan.presets.length,20);assert.equal(plan.activityWireVersion,3);
   for(const preset of plan.presets){assert.equal(preset.integers.ANIMATIONS,0);assert.equal(preset.integers.REQUEST_CONTEXT,S);const cards=records(preset.bytes.ACTIVITY_DATA);
-    if(preset.state==='music'||preset.state==='notification-summary'){assert.equal(cards[0].presentation,2);assert.equal(cards[0].support,'Justice, Tame Impala');}
+    if(preset.state==='music'){assert.equal(cards[0].presentation,2);assert.equal(cards[0].support,'Justice, Tame Impala');}
+    if(preset.state==='notification-summary'){assert.equal(cards[0].presentation,1);assert.equal(cards[0].main,'Xef');assert.equal(cards[0].supportType,0);assert.equal(cards[1].presentation,2);}
+    if(preset.state==='notification'){assert.equal(cards[0].presentation,1);assert.equal(cards[0].support,'See you at the station!');}
   }
 });
 test('approved normal and compact activity combinations have light and dark native fixtures',()=>{
-  const plan=fixtures.summaryPresets({now:N,session:S});assert.equal(plan.presets.length,36);
+  const plan=fixtures.summaryPresets({now:N,session:S});assert.equal(plan.presets.length,52);
   const names=['timer-media','media-timer','workout-timer','navigation-media','recording-delivery','download-recording','message-timer','media-alone','timer-alone','long-timer','long-artist','delivery-text'];
   for(const name of names)for(const theme of ['light','dark'])assert.ok(plan.presets.some(x=>x.name===name+'-'+theme));
   for(const preset of plan.presets){assert.equal(records(preset.bytes.ACTIVITY_DATA).length,preset.activities.length);assert.ok(preset.activities.length<=2);}
@@ -38,4 +40,13 @@ test('approved normal and compact activity combinations have light and dark nati
   assert.equal(find('navigation-media')[0].directions&7,2);assert.equal(find('download-recording')[0].presentation,5);
   assert.equal(find('compact-detail-clock')[1].compact,1);assert.equal(find('compact-detail-clock')[1].supportType,3);
   assert.equal(find('local-promotion')[0].validUntil,N+2);assert.equal(find('secondary-unfit-value')[1].mainType,2);assert.equal(find('media-alone')[0].caption,'The Midnight');
+  assert.deepEqual(find('notification-media').map(x=>x.presentation),[1,2]);
+  assert.deepEqual(find('timer-notification').map(x=>x.presentation),[3,1]);
+  assert.equal(find('notification-app-only')[0].main,'Signal');assert.equal(find('notification-app-only')[0].caption,'Notifications');
+  assert.equal(find('notification-promotes-timer')[0].validUntil,N+2);
+  for(const options of [{body:false},{body:true},{appOnly:true}]) {
+    const value=fixtures.notificationFromSource(N,S,options);
+    assert.equal(value.card.validUntil,N+8);assert.equal(value.card.openApp.watchAppUuid,'b2cae818-10f8-46df-ad2b-98ad2254a3c1');
+    assert.equal(value.sidecar.length,13);assert.equal(Buffer.from(value.sidecar).readUInt32LE(9),N+8);
+  }
 });

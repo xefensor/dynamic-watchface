@@ -23,9 +23,16 @@ test('native clearing cannot be undone by an older presentation',()=>{const f=fi
 test('invalid saved records never gain source validity',()=>{const f=fixture();for(const value of ['', 'x'.repeat(513),'bad-json',JSON.stringify({schema:1}),JSON.stringify({schema:2,primary:{watchAppUuid:TIMER}})]){f.storage.setItem(nav.KEY,value);assert.equal(nav.source(f.storage,f.now()).instances.length,0);assert.equal(f.storage.getItem(nav.KEY),null);}});
 test('storage failure does not claim acceptance or log contents',()=>{const f=fixture();f.storage.setItem=()=>{throw Error('unavailable');};f.state.view(view());assert.equal(f.state.receive(status()),false);});
 
-test('only explicit native full-notification status supplies the system Notifications destination',()=>{
-  const f=fixture();f.state.view({session:7,sequence:1,cards:[]});const bytes=status({primary:255,secondary:255});bytes[3]=1;
-  assert.ok(f.state.receive(bytes));const hint=nav.read(f.storage,f.now());
-  assert.equal(hint.primary.watchAppUuid,'b2cae818-10f8-46df-ad2b-98ad2254a3c1');assert.equal(hint.secondary,null);
-  const invalid=status();invalid[3]=1;assert.equal(f.state.receive(invalid),false);
+test('Notifications opens from either shared role without a special native status',()=>{
+  const target='b2cae818-10f8-46df-ad2b-98ad2254a3c1';
+  for(const index of [0,1]) {
+    const f=fixture(),snapshot=view();snapshot.cards[index].openApp={watchAppUuid:target};
+    snapshot.cards[index].validUntil=1793700008;f.state.view(snapshot);
+    assert.ok(f.state.receive(status({expiry:1793700008})));
+    const hint=nav.read(f.storage,f.now());
+    assert.equal(hint[index?'secondary':'primary'].watchAppUuid,target);
+    assert.equal(hint.expiresAtMs,1793700008000);
+  }
+  const f=fixture();f.state.view(view());const invalid=status();invalid[3]=1;
+  assert.equal(f.state.receive(invalid),false);
 });

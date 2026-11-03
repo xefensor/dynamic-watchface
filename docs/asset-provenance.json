@@ -1,14 +1,14 @@
 {
-  "version": "0.12.1",
+  "version": "0.13.0",
   "pbw": {
-    "file": "Dynamic-0.12.1.pbw",
-    "sha256": "0ca9c3835552f9a7353d4b79556833fda31718bb9e166414e2b61c14511e0de7"
+    "file": "Dynamic-0.13.0.pbw",
+    "sha256": "87572673c7ed342139bb27eb5770bfa250ed2c4e36fdaca7e931f85949a11dec"
   },
   "native_payload_sha256": {
-    "appinfo.json": "0963d70a876164097c9a0963a887efe0598d2daed3d4247fcf17290f10238e77",
-    "emery/pebble-app.bin": "e85453253f0d2cfe8e4178e860596521ef59830a86304b4d4e336f22bc00a590",
+    "appinfo.json": "3bea54b6487c9339cb5f6b2a580224468ca9244ff5d233db9fe1a0982670b226",
+    "emery/pebble-app.bin": "6ec2fad1ff771f5b1339ac52418894f4e1c4fb5c143fd9ca05da11165974d756",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "7b23f03faf93e95a870395c62c5b5bd6437f1be740c47f3ef9ac3221080439a7"
+    "emery/manifest.json": "e1d32ff44c179f2098452d0203585a77ecf535c5ccb262b764f3a4a6926af6b1"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -25,22 +25,22 @@
   },
   "activities": {
     "package": "pebble-activities",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "repository": "https://github.com/xefensor/pebble-activities",
-    "artifact": "pebble-activities-0.4.0.tgz",
-    "sha256": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe",
-    "integrity": "sha512-L1PKmeSojO9TMavz48qC5MBrBsEI6UBsPjy+rkgrnJxT6P0IobqYLdVHrdEgMxjydJhN19fFGjx4mc5jDuETdA==",
+    "artifact": "pebble-activities-0.4.1.tgz",
+    "sha256": "c292bbe7ac4aca6c75cebc6fe559cebbc722da072ff90fda085315e72369735b",
+    "integrity": "sha512-pD+5dLbV8RvCWIHeETuxTnGHopSi040+HUcKy1mFJgFljWuz6POPWAsXn2C/TQg5qC+WToCLvDPaBZ/NDXU1uw==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "9db426c36e591f3db98819b5b05ffd9da2af27b4"
+    "source_commit": "769eabc4b2bb4242a0f2d81ed3575c459d373a4a"
   },
   "images": [
     {
       "file": "docs/images/normal.png",
-      "source": "docs/qa/0.12.1/native-previews/idle-24-light.png",
-      "sha256": "742478f6a556da6c17bfacf6a5f0a66ba63e8f330f5404f9ee9c87e40f366678",
+      "source": "docs/qa/0.13.0/native-previews/idle-24-light.png",
+      "sha256": "a12daa892c9ab4a682090d5777117ea5ab476251c25c9d15cc56169825a987b1",
       "pixels": [
         200,
         228
@@ -50,8 +50,8 @@
     },
     {
       "file": "docs/images/music.png",
-      "source": "docs/qa/0.12.1/native-previews/music-24-light.png",
-      "sha256": "121e276053b4b5e6a7624b282705c53f042bbccab41d70410dd0cf10482b637f",
+      "source": "docs/qa/0.13.0/native-previews/music-24-light.png",
+      "sha256": "dd43b2dd1adfa4fd97271c3ce5a60d9a8356752a94cec4db151fa48aa91ab5e7",
       "pixels": [
         200,
         228
@@ -61,8 +61,8 @@
     },
     {
       "file": "docs/images/notification-summary.png",
-      "source": "docs/qa/0.12.1/native-previews/notification-summary-24-light.png",
-      "sha256": "597d46a590a073de25ba8b712f37332decd96630fee76ab37d9121e16dcf77ac",
+      "source": "docs/qa/0.13.0/native-previews/notification-summary-24-light.png",
+      "sha256": "57e451faaa2bdbbf1624f69a0fa34b339020e77046273381344b07397e636231",
       "pixels": [
         200,
         228
@@ -72,8 +72,8 @@
     },
     {
       "file": "docs/images/notification.png",
-      "source": "docs/qa/0.12.1/native-previews/notification-24-light.png",
-      "sha256": "51a0e4eef0e6d9be2378d08107ef4e1fb912f8b3566e218f0464ebd7b5dc6a1c",
+      "source": "docs/qa/0.13.0/native-previews/notification-24-light.png",
+      "sha256": "08ac26c63753eac26f9cc8ae477ccfc94c85427966b79f2dd80299fe00c6d781",
       "pixels": [
         200,
         228
@@ -83,8 +83,8 @@
     },
     {
       "file": "docs/images/dark.png",
-      "source": "docs/qa/0.12.1/native-previews/idle-24-dark.png",
-      "sha256": "c0e2c3d905d4f0de201bbb226a79246ee68db8992469e9c200c0de12de39700b",
+      "source": "docs/qa/0.13.0/native-previews/idle-24-dark.png",
+      "sha256": "0d5d3b8adad5e9d0247d06eda67077914193c1a3fdbf08425c21a2c2f986d451",
       "pixels": [
         200,
         228
@@ -94,8 +94,8 @@
     },
     {
       "file": "docs/images/activity-timer.png",
-      "source": "docs/qa/0.12.1/native-summary/timer-media-light.png",
-      "sha256": "14b19d2e40c26bda891d796466f71ded79157a95e1913c22dd63ae192c3dac37",
+      "source": "docs/qa/0.13.0/native-summary/timer-media-light.png",
+      "sha256": "9258610b6e37a1a345eea46579b3e2fdcd495a1fb53ca56647860cd2d9d4d290",
       "pixels": [
         200,
         228
@@ -105,8 +105,8 @@
     },
     {
       "file": "docs/images/activity-music.png",
-      "source": "docs/qa/0.12.1/native-summary/media-timer-light.png",
-      "sha256": "4d17d26ae30291348d7bffbe7fd84252450ee0b3876a1335bc824a7574d65c61",
+      "source": "docs/qa/0.13.0/native-summary/media-timer-light.png",
+      "sha256": "205675fb7bdf88c64441c2ee67dcd7567b81069170ebf76b5d4ccf06a36bfff2",
       "pixels": [
         200,
         228
@@ -116,8 +116,8 @@
     },
     {
       "file": "docs/images/activity-workout.png",
-      "source": "docs/qa/0.12.1/native-summary/workout-timer-light.png",
-      "sha256": "da7dbea8f4492f5cbbb7c5bc898f22a950ba439b8ca4b57e160b0828ca5abb1b",
+      "source": "docs/qa/0.13.0/native-summary/workout-timer-light.png",
+      "sha256": "b8ed32e47b1923824d2547a0ba45af6c61192ecefba352086aeb0782bc3676fb",
       "pixels": [
         200,
         228
@@ -127,40 +127,39 @@
     },
     {
       "file": "docs/images/settings-light.png",
-      "source": "docs/qa/0.12.0/settings/appearance-light.png",
-      "sha256": "3f0e28474e8df2f53034f98dd4cb20bd156a478c8566ceef983b214e539dfb1b",
+      "source": "docs/qa/0.13.0/settings/appearance-light.png",
+      "sha256": "ab31060a13e284e91a74dfa4b3bd2bad4cd33b34fdf39d94c7942af469a435d4",
       "pixels": [
         360,
         800
       ],
       "native_pixels_modified": false,
-      "kind": "actual Clay browser",
-      "scope": "Unchanged 0.12.0 actual Clay appearance capture; Idle preset and settings behavior are unaffected by 0.12.1 primary activity placement."
+      "kind": "actual Clay browser"
     },
     {
       "file": "docs/images/settings-dark.png",
-      "source": "docs/qa/0.12.0/settings/appearance-dark.png",
-      "sha256": "b0789da87de77bd1519a531c33cc83c8ac22bfe540d01baacaf5ca53e653f174",
+      "source": "docs/qa/0.13.0/settings/appearance-dark.png",
+      "sha256": "e9ef5a7e6f750687ef27c4de4040c890e0119a862bed64db8beae5d38ab1be02",
       "pixels": [
         360,
         800
       ],
       "native_pixels_modified": false,
-      "kind": "actual Clay browser",
-      "scope": "Unchanged 0.12.0 actual Clay appearance capture; Idle preset and settings behavior are unaffected by 0.12.1 primary activity placement."
+      "kind": "actual Clay browser"
     }
   ],
   "native_qa": [
-    "docs/qa/0.12.1/native-previews/previews.json",
-    "docs/qa/0.12.1/native-previews/presentation-statuses.json",
-    "docs/qa/0.12.1/native-summary/summary.json",
-    "docs/qa/0.12.1/bundle-audit.json",
-    "docs/qa/0.12.1/final-distribution.json",
-    "docs/qa/0.12.1/checks.json",
-    "docs/qa/0.12.0/settings/validation.json",
-    "docs/qa/0.12.1/native-previews/captured-native-manifest.json"
+    "docs/qa/0.13.0/native-previews/previews.json",
+    "docs/qa/0.13.0/native-previews/presentation-statuses.json",
+    "docs/qa/0.13.0/native-summary/summary.json",
+    "docs/qa/0.13.0/bundle-audit.json",
+    "docs/qa/0.13.0/final-distribution.json",
+    "docs/qa/0.13.0/checks.json",
+    "docs/qa/0.13.0/settings/validation.json",
+    "docs/qa/0.13.0/packaged-handoff.json",
+    "docs/qa/0.13.0/native-previews/captured-native-manifest.json"
   ],
   "fixture_data": true,
-  "scope": "Fresh 20 actual Emery settings presets,36 light/dark summary compositions,one additional short media title,20 no-resend clock follow-ups,local expiry promotion,30-second idle presentation refresh,and bounded media motion. Root and independent summary visual review passed; root reviewed settings presets. Unchanged EN/CS Clay interactions and Idle appearance images are reused from 0.12.0 with original provenance. Final native binary/resources exactly match captures; SDK manifest renderer fields match with regenerated timestamps only. Synthetic data; no new real-phone or physical-watch delivery,latency or battery proof.",
+  "scope": "20 fresh actual Emery settings presets, 52 light/dark summary compositions, one additional short media title, 24 no-resend clock follow-ups, local expiry promotion including Notifications, a 30-second idle presentation refresh and bounded media motion. Root and independent review passed all 52 summary compositions; root reviewed 20 settings presets. Fresh EN/CS Clay interactions and appearance images exercise ordinary Notifications priorities, visibility/privacy synchronization and production PKJS persistence with simulated SDK coordinators. Final native binary/resources exactly match captures; SDK manifest renderer fields match with regenerated timestamps only. Synthetic data; no real-phone or physical-watch delivery, latency or battery proof.",
   "historical_images": "Other older composites and unused screenshots retain their original validation scope; published archives and tags are unchanged."
 }

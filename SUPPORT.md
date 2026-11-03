@@ -24,20 +24,22 @@ complication slots 1 and 2, and allow the sources you want to use. Source and
 permission availability depend on your Pebble app and plugins.
 
 The clock and date work without a phone. Live readings, music and notification
-banners require their sources. Music is a display; use Pebble's Music app for
+activities require their sources. Music is a display; use Pebble's Music app for
 playback controls. Timeline Peek is the watch's native panel.
 
 ## Plugin activities
 
-Enable Plugin activities in Content and install a provider built for the
-`activity/session` v1 convention. Activity Timer bundles its native watchapp,
-phone bridge and provider. Wait for Shared with phone before leaving the timer.
-A clock mark means last reported; offline changes may be missing. The originating
-watchapp owns its alarm. Include both app versions and sharing status in reports.
+Enable Plugin activities in Content and install a compatible activity provider.
+Dynamic prefers `activity/summary` schema 4 and adapts earlier conventions.
+Timer, Music and Notifications can each be primary or secondary according to
+Dynamic's Activity priority list. Notifications defaults to Off; its row and
+privacy controls stay synchronized. The originating watchapp owns timer state
+and alarms; offline changes may be missing. Include both app versions and source
+sharing status in reports.
 
 ## Notification overlap
 
-Dynamic's optional banners and **additional** vibration do not replace
+Dynamic's optional notification activity and **additional** vibration do not replace
 PebbleOS notifications. If both are enabled, PebbleOS may show or vibrate for
 the same event too. Leave Dynamic's vibration Off when you want only the
 normal system alert. Dynamic's app filter does not change PebbleOS forwarding.

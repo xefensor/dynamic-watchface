@@ -4,7 +4,7 @@
 // switch. Source records, occurrence IDs and private display contents do not.
 var KEY='dynamic-navigation-v1';
 var UUID='cc1281f1-3b4d-45b5-b235-6881b1fd8fbd';
-var LEASE=45000,MAX=4294967295,NOTIFICATIONS='b2cae818-10f8-46df-ad2b-98ad2254a3c1';
+var LEASE=45000,MAX=4294967295;
 function object(value){return value&&typeof value==='object'&&!Array.isArray(value);}
 function integer(value,min,max){return typeof value==='number'&&isFinite(value)&&Math.floor(value)===value&&value>=min&&value<=max;}
 function uuid(value){return typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value)&&value!=='00000000-0000-0000-0000-000000000000';}
@@ -48,18 +48,17 @@ function create(options){
   }
   function u32(bytes,at){return (bytes[at]+bytes[at+1]*256+bytes[at+2]*65536+bytes[at+3]*16777216)>>>0;}
   function receive(bytes){
-    if(!mapping||!bytes||bytes.length!==24||bytes[0]!==1||bytes[3]>1)return false;
+    if(!mapping||!bytes||bytes.length!==24||bytes[0]!==1||bytes[3]!==0)return false;
     for(var i=0;i<bytes.length;i++)if(!integer(bytes[i],0,255))return false;
     var session=u32(bytes,4),sequence=u32(bytes,8),presentation=u32(bytes,12),reported=u32(bytes,16)*1000,until=u32(bytes,20)*1000;
     if(session!==mapping.session||sequence!==mapping.sequence||!presentation||presentation<=lastPresentation)return false;
     var primary=bytes[1],secondary=bytes[2],current=now();
-    if(bytes[3]===1&&(primary!==255||secondary!==255))return false;
     if((primary!==255&&primary>=mapping.cards.length)||(secondary!==255&&secondary>=mapping.cards.length)||
         (secondary!==255&&(primary===255||primary===secondary)))return false;
     lastPresentation=presentation;
-    if(primary===255&&!bytes[3]){remove(storage);return true;}
+    if(primary===255){remove(storage);return true;}
     if(!reported||reported>current+5000||current-reported>=LEASE){remove(storage);return false;}
-    var first=bytes[3]===1?{destination:{watchAppUuid:NOTIFICATIONS},until:until}:mapping.cards[primary];
+    var first=mapping.cards[primary];
     var second=secondary===255?null:mapping.cards[secondary];
     var expires=Math.min(current+LEASE,reported+LEASE,until,first.until,second?second.until:Infinity);
     if(expires<=current||(!first.destination&&(!second||!second.destination))){remove(storage);return true;}

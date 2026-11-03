@@ -215,17 +215,20 @@ module.exports = function() {
     var activityPreferences = data.activityPreferences || {}, activityOrder = [], activityHidden = [];
     var activityProviders = Object.create(null), activityList, activityAnnouncement;
     function providerKey(value) { return typeof value === 'string' &&
-      (value === 'builtin:music' || /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(value)); }
+      (value === 'builtin:music' || value === 'builtin:notifications' || /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(value)); }
     (data.activityProviders || []).forEach(function(provider) {
       if (!provider || !providerKey(provider.uuid)) { return; }
       activityProviders[provider.uuid] = {name:String(provider.name || provider.uuid).slice(0,96),available:provider.available !== false};
     });
+    activityProviders['builtin:notifications'] = {name:t('notificationsSource'),available:true};
     activityProviders['builtin:music'] = {name:t('musicSource'),available:true};
-    var visibleProviderKeys=Object.keys(activityProviders);
+    var visibleProviderKeys=['builtin:notifications'].concat(Object.keys(activityProviders).filter(function(id) {
+      return id !== 'builtin:notifications' && id !== 'builtin:music';
+    }),['builtin:music']);
     var unavailableBudget=Math.max(0,64-visibleProviderKeys.length),unavailableCount=0;
     (Array.isArray(activityPreferences.order) ? activityPreferences.order : []).concat(visibleProviderKeys).forEach(function(id) {
       if (!providerKey(id) || activityOrder.indexOf(id) >= 0) { return; }
-      // Reserve room for installed apps and Music before remembering absent
+      // Reserve room for installed apps and built-ins before remembering absent
       // apps. A full old preference list must never hide current controls.
       if (!activityProviders[id] && unavailableCount++ >= unavailableBudget) { return; }
       activityOrder.push(id);
@@ -233,6 +236,12 @@ module.exports = function() {
     (Array.isArray(activityPreferences.hidden) ? activityPreferences.hidden : []).forEach(function(id) {
       if (providerKey(id) && activityHidden.indexOf(id) < 0) { activityHidden.push(id); }
     });
+    function activityVisibility(id,visible) {
+      activityHidden=activityHidden.filter(function(value) { return value !== id; });
+      if (!visible) { activityHidden.push(id); }
+    }
+    activityVisibility('builtin:music',!!field('SHOW_MUSIC').get());
+    activityVisibility('builtin:notifications',!!field('SHOW_NOTIFICATIONS').get());
     function activityValue() { return {order:activityOrder.slice(),hidden:activityHidden.slice()}; }
     // A hidden Clay field carries phone-only ordering through its serializer.
     // PKJS removes it before numeric AppMessage conversion; no native key exists.
@@ -321,9 +330,13 @@ module.exports = function() {
         toggle.checked=activityHidden.indexOf(id)<0; toggle.setAttribute('aria-label',t('activityShow',{name:activityName(id)}));
         label.appendChild(toggle); label.appendChild(make('span',t('activityVisible'))); row.appendChild(label);
         toggle.addEventListener('change',function() {
-          activityHidden=activityHidden.filter(function(value) { return value !== id; });
-          if (!toggle.checked) { activityHidden.push(id); }
+          activityVisibility(id,toggle.checked);
           if (id === 'builtin:music') { field('SHOW_MUSIC').set(toggle.checked); }
+          if (id === 'builtin:notifications') {
+            field('SHOW_NOTIFICATIONS').set(toggle.checked);
+            noticeMode.value=toggle.checked ? appOnly.get() ? 'app' : preview.get() ? 'preview' : 'summary' : 'off';
+            updateNotifications();
+          }
           syncActivityValue(); row.setAttribute('data-hidden',toggle.checked?'false':'true'); updateDirty(); renderPreview();
         });
         var moves = make('div',null,'dynamic-activity-move');
@@ -504,6 +517,8 @@ module.exports = function() {
     function updateNotifications() {
       var enabled = noticeMode.value !== 'off';
       notification.set(enabled);
+      activityVisibility('builtin:notifications',enabled);
+      syncActivityValue(); renderActivities();
       if (enabled) {
         appOnly.set(noticeMode.value === 'app');
         if (noticeMode.value !== 'app') { preview.set(noticeMode.value === 'preview'); }

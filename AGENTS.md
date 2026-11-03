@@ -27,13 +27,17 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 - Media presentation, identity symbols, compact selector, semantic directions and
   media-item visual token are explicit ACT3 fields. Do not infer styling from a
   private label marker. Legacy source adaptation belongs on the phone.
-- All media uses the shared activity renderer. Keep one bounded render plan and
-  no parallel native Music renderer. Incoming-only 280ms transitions follow run
+- Media and Notifications use the shared activity renderer. Keep one bounded
+  render plan and no parallel native Music or notification renderer.
+  Incoming-only 280ms transitions follow run
   replacement or media item changes; ticks, lease refresh and artist/art arrivals
   do not start them. Activity clock ticks dirty only the activity layer.
 - Two shared Pebble readings keep their positions. Timeline Peek uses the OS
-  panel. Notification banners retain their existing baseline/privacy policy and
-  default to Off. They do not replace OS notifications.
+  panel. Notifications is an ordinary activity in the same priority/show-hide
+  list; it defaults to Off and a saved position wins over the initial first
+  position. Sender/body privacy never chooses a separate layout or route.
+  Keep the original baseline/privacy policy and bounded eight-second event
+  window, capped by source expiry. It does not replace OS notifications.
 - Activity presentation status confirms actual visible original record indices,
   native session and view/presentation sequences. A small 30-second status refresh
   maintains the routing lease; clock ticks never write storage or send messages.
@@ -116,7 +120,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.0 and Activities 0.4.0 explicitly. Upstream
+- This repository pins Core 0.5.0 and Activities 0.4.1 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 - Version 0.9.0 is a published GitHub development prerelease. Keep its tested
   artifacts, tag and the earlier 0.8.0 download links/bytes available.
@@ -141,3 +145,9 @@ source identity, alongside the unchanged SDK native/JS payloads and licences.
 Append ACTIVITY_PRESENTED/REQUEST_PRESENTATION after all existing message keys.
 Native screenshots prove rendering only; real-phone app switching, permissions,
 physical-watch latency and battery remain separate checks.
+
+Version 0.13.0 removes the native notification panel. Notifications use ACT3
+record indices and the normal app-destination mapping in both roles, including
+body-free summaries. Presentation flags are zero; reject the retired special
+notification flag. The 13-byte context-effects sidecar carries only native
+session, event counter, flags and original expiry for optional vibration.

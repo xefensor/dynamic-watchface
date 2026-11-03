@@ -11,9 +11,10 @@ has no analytics, advertising, account service or separate weather server.
 - Compatible activity plugins provide content, optional detail/image and
   clock or numeric fields. Providers control their source permissions and expiry.
 - Music uses the current title, artist, playing state and optional artwork.
-- Optional watchface notification banners use the app identity, sender/title,
+- The optional Notifications activity uses the app identity, sender/title,
   optional message text and optional icon. Notification access is controlled
-  by Pebble and must be allowed explicitly. Banners default to Off.
+  by Pebble and must be allowed explicitly. Notifications defaults to Off and
+  follows the same primary/secondary order as other activities.
 - Phone battery and connection state support the optional status indicators.
 
 Music requires Pebble's `ReadMusic` permission. Notification sources require
@@ -36,11 +37,13 @@ log their text or artwork. They clear on expiry, disconnection or relevant
 privacy changes. Notification history is used to establish a baseline, so it
 is not replayed when the face starts or reconnects.
 
-App-only privacy keeps sender and message text out of watch notification
-packets. Pebble's phone-side notification reader still needs notification
-access, and Dynamic can examine an update locally to tell it from an unchanged
-notification. The app-name filter controls which banners Dynamic displays; it
-does not replace Pebble's permission controls or system notification settings.
+App-only privacy keeps sender and message text out of watch activity packets.
+Summary privacy omits the message body. These choices keep the same layout
+selection and destination app. Pebble's phone-side notification reader still
+needs notification access, and Dynamic can examine an update locally to tell it
+from an unchanged notification. The app-name filter controls which notification
+activities Dynamic displays; it does not replace Pebble's permission controls
+or system notification settings.
 
 Generic activities stay in transient consumer memory, including after reconnect.
 A known public Timer clock may remain a bounded prediction only through its original

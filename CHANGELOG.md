@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.13.0
+
+- Render Notifications through the same ACT3 activity selection, primary and
+  one-row secondary layouts as Timer, Music and other providers. Source app
+  icons and identity stay visible, with or without optional message text.
+- Add Notifications to Dynamic's priority/show-hide list. Preserve its Off
+  default and app-only/summary/message privacy controls. Start it first when no
+  Notifications position has been saved, and respect explicit user ordering.
+- Keep one eight-second notification window across privacy modes, capped by
+  original source expiry. Baselines do not replay history; privacy, expiry and
+  disconnection clear the activity. Source/app-only fallbacks avoid duplicate
+  app headings. Optional vibration retains its own bounded event confirmation.
+- Route both notification roles through ordinary native presentation status
+  and Open Activity metadata, including summaries without message text. Remove
+  the separate native notification panel and its special navigation flag.
+- Pin Activities 0.4.1, retain Core 0.5.0 and refresh native/browser previews,
+  package identity and local sideload materials. Prior artifacts remain intact.
+
 ## 0.12.1
 
 - Bottom-align the whole primary activity group with its context footer.

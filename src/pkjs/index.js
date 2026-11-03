@@ -80,25 +80,32 @@ function activityPreferences() {
   var value;
   try { value = JSON.parse(localStorage.getItem(ACTIVITY_PREFERENCES_KEY)); } catch (ignored) {}
   var result = activityLibrary.selection.normalizePreferences(value);
-  // Keep the established music switch authoritative for upgrades and saves.
-  result.hidden = result.hidden.filter(function(id) { return id !== 'builtin:music'; });
+  // Existing source/privacy switches remain authoritative for both built-ins.
+  result.hidden = result.hidden.filter(function(id) { return id !== 'builtin:music' && id !== 'builtin:notifications'; });
   if (!enabledSetting('SHOW_MUSIC', true)) { result.hidden.push('builtin:music'); }
+  if (!enabledSetting('SHOW_NOTIFICATIONS', false)) { result.hidden.push('builtin:notifications'); }
+  // Existing preferences predate this row. New arrivals lead by default until
+  // the user saves an explicit Notifications position in Dynamic's own order.
+  if (result.order.indexOf('builtin:notifications') < 0) {
+    result.order = ['builtin:notifications'].concat(result.order).slice(0,64);
+  }
   return result;
 }
-var musicProjectionSignature = null;
+var contextProjectionSignature = '[null,null]';
 function contextChanged() {
   if (!context) { return; }
-  var card = context.musicActivity();
-  // Context also publishes phone battery and notification changes. Only a
-  // changed canonical Music receipt needs another complete ACT3 snapshot.
-  // Keep the immutable identity/revision/freshness tuple in memory, no text.
-  var signature = card ? JSON.stringify([card.provider,card.id,card.revision,card.observedAt,card.validUntil]) : null;
-  if (signature === musicProjectionSignature) { return; }
-  musicProjectionSignature = signature;
+  // Reproject only a changed canonical receipt. Battery/status traffic does
+  // not resend a complete activity view; these RAM signatures contain no text.
+  var signature = JSON.stringify([context.musicActivity(),
+    typeof context.notificationActivity === 'function' ? context.notificationActivity() : null].map(function(card) {
+      return card ? [card.provider,card.id,card.revision,card.observedAt,card.validUntil] : null;
+    }));
+  if (signature === contextProjectionSignature) { return; }
+  contextProjectionSignature = signature;
   if (activities) { activities.reproject(); }
 }
 var context = createContext({
-  pebble: Pebble, keys: MessageKeys, send: send, musicAsActivity:true,
+  pebble: Pebble, keys: MessageKeys, send: send, musicAsActivity:true,notificationAsActivity:true,
   now: function() { return Date.now(); },
   later: function(callback, delay) { return setTimeout(callback, delay); },
   cancelLater: function(timer) { clearTimeout(timer); },
@@ -135,16 +142,17 @@ if (typeof Pebble.subscribeToSource === 'function') {
 var activities = activityLibrary.createActivities({
   pebble:activitySourceApi,keys:MessageKeys,send:send,nativeFormat:3,
   onView:function(snapshot){navigation.view(snapshot);},
-  // Generic notices retain the mature adapter's baseline and interruption
-  // policy during this migration. Music follows the same user opt-out.
+  // All generic providers share the same roles. Built-in privacy/source
+  // controls are handled by their adapters and selection preferences.
   acceptActivity:function(activity){
     var kind=String(activity.kind).toLowerCase();
     var media=activity.type==='media'||activity.presentation===2||kind==='music';
-    return enabledSetting('SHOW_ACTIVITIES',true)&&kind!=='notification'&&kind!=='notifications'&&
+    return enabledSetting('SHOW_ACTIVITIES',true)&&
       (!media||enabledSetting('SHOW_MUSIC',true));
   },
   select:function(cards){
-    return activityPresentation.select(cards,activityPreferences(),context.musicActivity());
+    return activityPresentation.select(cards,activityPreferences(),context.musicActivity(),
+      typeof context.notificationActivity === 'function' ? context.notificationActivity() : null);
   },
   now:function(){return Date.now();},
   later:function(callback,delay){return setTimeout(callback,delay);},
@@ -153,7 +161,7 @@ var activities = activityLibrary.createActivities({
   // is a host filter so music and idle-provider discovery remain available.
   getSettings:function(){return {enabled:true,
     providers:enabledSetting('SHOW_ACTIVITIES',true)?undefined:[],
-    disabledProviders:activityPreferences().hidden.filter(function(id){return id!=='builtin:music';})};}
+    disabledProviders:activityPreferences().hidden.filter(function(id){return id!=='builtin:music'&&id!=='builtin:notifications';})};}
 });
 
 function requestContextSession(attempt) {
@@ -249,7 +257,7 @@ Pebble.addEventListener('showConfiguration', function() {
       } else if (issue && status.message) { issue += ' · ' + status.message; }
       // Clay text fields support HTML. Source diagnostics remain literal text,
       // including provider-supplied error messages and category/item names.
-      item.defaultValue = escapeHtml('Dynamic 0.12.1. ' + summary +
+      item.defaultValue = escapeHtml('Dynamic 0.13.0. ' + summary +
         (issue ? ' · ' + t('complicationsError', {error: issue}) : ''));
     });
   }

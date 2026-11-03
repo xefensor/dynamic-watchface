@@ -260,7 +260,7 @@ test('app-only privacy, quiet alerts and colour sharing are explicit in every lo
 });
 
 
-test('release copy distinguishes extra watchface alerts from system notification ownership',()=>{
+test('notification activity copy shares roles and preserves system notification ownership',()=>{
   const keys=['watchfaceBanners','notificationsHelp','notificationVibration','vibrationHelp',
     'previewPalette','previewDay','previewQuietTime','previewPaletteHelp'];
   for(const language of languages){
@@ -283,9 +283,12 @@ test('release copy distinguishes extra watchface alerts from system notification
     assert.equal(localization.t('Notification vibration',language),strings.notificationVibration,language+': old configuration label');
     assert.equal(localization.t('Allow notification access in Pebble. Only new notifications appear.',language),strings.notificationsHelp,language+': old configuration help');
   }
-  assert.equal(localization.t('watchfaceBanners','en'),'Watchface banners');
+  assert.equal(localization.t('watchfaceBanners','en'),'Notification activity');
+  assert.equal(localization.t('previewBanner','en'),'Summary');
   assert.equal(localization.t('notificationVibration','en'),'Additional vibration');
-  assert.match(localization.t('notificationsHelp','en'),/same message twice/);
+  assert.match(localization.t('notificationsHelp','en'),/same activity priority and primary\/secondary layouts/);
+  assert.match(localization.t('notificationsHelp','en'),/system notifications remain separate/);
+  assert.doesNotMatch(visible(config).join('\n'),/banner/i);
   assert.match(localization.t('vibrationHelp','en'),/Turn this off if Pebble already vibrates/);
   assert.match(localization.t('previewPaletteHelp','en'),/^Preview only/);
   assert.doesNotMatch(localization.t('notificationsHelp','en'),/replaces|disables|turns off/i);

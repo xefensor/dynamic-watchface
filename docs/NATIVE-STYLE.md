@@ -1,13 +1,13 @@
 # Design references and motion
 
-Dynamic 0.12.1 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.13.0 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
 
-## Normal and compact summaries in 0.12.1
+## Normal and compact summaries in 0.13.0
 
-Activities 0.4.0 supplies standard or media summaries. Dynamic chooses either
+Activities 0.4.1 supplies standard or media summaries. Dynamic chooses either
 role from the same record. The optional secondary occupies exactly one static
 row above the primary, with an optional 16px symbol and complete selected datum.
 Its text truncates from the beginning; an essential value that cannot fit makes
@@ -90,10 +90,10 @@ positions. The Complication Face demo selects slots by data shape.
 - **Space follows the task:** the compact header stacks weekday/date while
   keeping both horizontal readings. Music's artwork and up to two artist
   lines stay anchored to the bottom; a full-width title grows upward through
-  up to three lines with an 8px gap above the footer. Notifications keep their
-  source heading and optional bounded body. Summary banners retain the music
-  footer and briefly reduce the title area instead of taking over the whole face.
-  A heading-only banner can retain two title lines with a gap above that footer.
+  up to three lines with an 8px gap above the footer. Notifications use the same
+  standard primary content or single secondary row as other activities. Their
+  source app identity remains visible with or without optional body text, and
+  Music can occupy either role alongside them.
 - **Motion explains priority:** the clock and readings move together as
   context enters or leaves. An explicit media-item token defines a track
   change; legacy Music derives that token from its received title. Late artwork/artist metadata and notification icons repaint in
@@ -119,13 +119,14 @@ After native palette rounding, secondary ink falls back to foreground when
 muting would lose 4.5:1 contrast. Accent graphics have a 2:1 visibility guard;
 provider artwork retains its colours.
 
-Notification sender/title and app identity are separate. The sender is primary,
-with app identity in its quieter bottom context footer.
-Long app names do not reduce sender text size. A banner preserves the music
-footer while its available title lines adjust to the bounded notice heading.
-App-only privacy shows app identity while omitting sender and body. Summary
-bursts get at most three seconds and actual message previews eight; later
-updates never extend the first notice's deadline. Optional Short / Double
+Notification sender/title and app identity are separate. In primary, sender/title
+sits above its quieter app context footer. In secondary, the standard qualifier
+and selected datum share one row. Source artwork and generated message symbols
+use the common image path. Long app names do not reduce sender text size.
+App-only privacy shows app identity with Notifications as provider context while
+omitting sender/body. Every privacy mode gets at most eight seconds; an earlier
+source expiry can shorten it, and later updates never extend the first notice's
+deadline. Optional Short / Double
 vibration defaults to Off, uses the same app filter and respects watch Quiet
 Time. It announces a new burst once, not each replacement or redraw.
 

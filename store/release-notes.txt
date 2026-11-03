@@ -1,9 +1,9 @@
-0.12.1 bottom-aligned primary activity content — local development candidate
+0.13.0 shared Notifications activities — local development candidate
 
-The complete primary activity groups at the bottom directly above its context footer. Short media titles end 8px above artwork/artist. Standard labels, headline, supporting text and range indicators move together with the same footer gap. Spare space stays above the content. The secondary retains its existing one-row position.
+Notifications now uses the same primary and one-row secondary layouts as Timer, Music and compatible activity plugins. Source app identity and images remain visible, with optional message text in the standard detail area. App-only privacy avoids duplicate app headings. Both roles can open the Notifications app through Open Activity, including summaries without a body.
 
-This is a native placement change. Typography, wrapping, activity sources, priorities, clocks, expiry, Timer and the separate Open Activity helper keep their existing behavior. Core 0.5.0 and Activities 0.4.0 remain pinned.
+Reorder or show/hide Notifications in Dynamic’s existing Activity priority list. It remains Off by default. Its initial position is first when no Notifications position has been saved; explicit user order wins. The visibility row and privacy controls stay synchronized, retaining app-only privacy when re-enabled.
 
-Fresh native light/dark summaries, the one-line media example and all native settings presets were reviewed. Portable tests, SDK build, package identity and native capture checks pass. Unchanged phone-settings interaction evidence is reused explicitly from 0.12.0.
+Every notification privacy mode shares one eight-second event window, capped by source expiry. Baselines do not replay history; late updates do not extend the event. Privacy, disconnection and expiry clear it. Optional additional vibration keeps its filter, Quiet Time and duplicate protections.
 
-Earlier artifacts and tags remain unchanged. This candidate has no new physical-watch or real-phone result, and has not been pushed or published. Pebble appstore submission remains held.
+Activities 0.4.1 is pinned; Core remains 0.5.0. Native, portable, SDK, package and browser checks are recorded separately from real-phone or physical-watch testing. Earlier artifacts remain unchanged. This candidate is prepared locally, with no public store submission; the plugin-preview hold remains.
