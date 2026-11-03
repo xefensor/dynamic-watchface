@@ -1,10 +1,10 @@
 # Dynamic
 
 A Pebble Time 2 watchface with rounded time, two horizontal readings and
-notification-style activities. The local 0.12.0 development candidate places one
-compact activity row above the main activity and anchors useful context at the
-bottom. Music uses title, artwork and artist. Text stays still and truncates at
-its end. Dynamic is an independent watchface by Xef.
+notification-style activities. The local 0.12.1 development candidate places one
+compact activity row above the main activity and groups the primary content
+against its bottom context. Music uses title, artwork and artist. Text stays
+still and truncates at its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
@@ -48,7 +48,7 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Plugin activities
 
-The local 0.12.0 candidate prefers `activity/summary` schema 4 through pinned
+The local 0.12.1 candidate prefers `activity/summary` schema 4 through pinned
 Activities 0.4.0. Sources publish either a standard headline with optional detail,
 or media title/artist/artwork. Datums can be text, values or independent clocks.
 Plugins supply meaning; Dynamic chooses layout. Existing schema 1/2/3 providers
@@ -59,9 +59,11 @@ request action/entity descriptors or invoke playback and other plugin actions.
 
 The secondary is exactly one static row above the primary, optionally led by a
 small symbol. It can contain a live countdown, elapsed time, value or text. The
-primary expands upward when secondary is absent. Its bottom context can be an
-instance name, provider identity, or artwork and artist for media. It is not a
-mandatory icon-plus-app-name heading. Text never scrolls or automatically pages.
+primary expands upward when secondary is absent. Its headline, optional detail
+and value labels form a bottom-aligned group immediately above its footer.
+Its bottom context can be an instance name, provider identity, or artwork and
+artist for media. It is not a mandatory icon-plus-app-name heading. Text never
+scrolls or automatically pages.
 Complete values and units are preserved; an optional compact view yields when
 its essential value cannot fit.
 
@@ -168,8 +170,10 @@ The idle date uses 20px text and reading labels use 14px. Idle reading values
 and labels sit 4px and 6px closer to their symbols, respectively. Music titles stay at
 24px. Media artists use 20px text, with up to two lines. Titles use up to three
 measured lines when alone and two beside a secondary; overflow ends with an
-ellipsis. Artwork is optional and shares its bottom anchor at y216 with the
-artist. No title continuation or paging timer runs.
+ellipsis. The title sits immediately above the artwork/artist footer, leaving
+an 8px gap. Artwork is optional and shares its bottom anchor at y216 with the
+artist. Short titles leave the unused space above the primary group. No title
+continuation or paging timer runs.
 
 With notification previews disabled, a brief app/title banner reduces the
 activity’s available area. A heading-only notice retains readable primary
@@ -319,7 +323,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.12.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.12.1.pbw
 python3 scripts/package-source.py
 ```
 
@@ -331,7 +335,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.12.0.pbw
+pebble install --emulator emery dist/Dynamic-0.12.1.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -366,7 +370,7 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic 0.12.0 pins Core 0.5.0 and Activities 0.4.0. Halftone keeps its own
+Dynamic 0.12.1 pins Core 0.5.0 and Activities 0.4.0. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
 `vendor/pebble-watchface-core-0.5.0.tgz` and

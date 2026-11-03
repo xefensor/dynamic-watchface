@@ -1,11 +1,11 @@
 # Design references and motion
 
-Dynamic 0.12.0 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.12.1 uses a chunky digital clock and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
 
-## Normal and compact summaries in 0.12.0
+## Normal and compact summaries in 0.12.1
 
 Activities 0.4.0 supplies standard or media summaries. Dynamic chooses either
 role from the same record. The optional secondary occupies exactly one static
@@ -13,8 +13,11 @@ row above the primary, with an optional 16px symbol and complete selected datum.
 Its text truncates from the beginning; an essential value that cannot fit makes
 that optional row yield. Primary content expands when the row is absent.
 
-Primary content sits above its context footer at y216. Standard context uses
-an instance name or provider identity. Media uses a 24px title and optional
+Primary content is bottom-aligned as one group above its context footer at
+y216. Headline, labels, supporting text and an optional range indicator keep
+their internal spacing and leave an 8px gap above a present footer. Short
+content leaves spare space above the group. Standard context uses an instance
+name or provider identity. Media uses a 24px title and optional
 40px artwork beside up to two 20px artist lines. A title gets at most three
 lines alone or two with a secondary. Text never scrolls, pages or cycles.
 Useful detail wraps below a standard headline; meaningful value labels sit

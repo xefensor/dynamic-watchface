@@ -1,5 +1,62 @@
 # Dynamic validation
 
+## 0.12.1 bottom-aligned primary activity content — 3 November 2026
+
+The primary activity's complete measured content block now sits immediately
+above its footer. Media title ink ends 8px above artwork/artist. Standard labels,
+headline, supporting text and range indicators move together, with the same
+footer gap. Short content leaves spare space above the group. The secondary
+keeps its existing independent row, and typography/wrapping capacities are unchanged.
+
+This patch changes native placement only. It keeps Core 0.5.0, Activities 0.4.0,
+source metadata, priorities, native clocks, activity expiry and Open Activity
+navigation behavior unchanged. The 0.12.0 artifacts and evidence below remain
+historical.
+
+- **113 JavaScript tests and 13 portable C suites pass.** Layout regressions
+  assert the complete primary block's bottom edge and spacing with and without
+  a secondary, including media, labels, supporting text and range indicators.
+- **SDK 4.33.1 Emery build and complete bundle audit pass.** The virtual image
+  is 65,348 bytes, leaving 187 below the 65,535-byte limit. Loaded bytes are
+  64,928 and the complete binary is 67,240, including 2,312 relocation bytes.
+  Resources are 246,928 bytes. Native startup reports a 24,792-byte state
+  allocation and 33,764 bytes free heap. These are static/startup measurements,
+  not worst-case heap, stack or battery measurements.
+- **36 fresh native summary compositions and 20 native settings presets pass.**
+  Root and an independent reviewer inspected the light/dark summary sheets and
+  the additional one-line `Home` media title. Root reviewed all settings presets.
+  They show spare space above short primary content, with the footer and compact
+  secondary keeping their existing positions.
+- **20 no-resend clock follow-ups, local expiry promotion and the 30-second
+  idle presentation heartbeat pass.** Intermediate native captures also confirm
+  incoming media motion, a stationary clock/date/readings header, and no motion
+  for routine revision/lease or artist-only updates. Four full-notification
+  presets emit their trusted presentation status.
+- The final PBW preserves the SDK native/JavaScript payloads. Captured native
+  binary/resources match it byte for byte. The SDK-generated manifest differs
+  only in `generatedAt`, `application.timestamp` and `resources.timestamp`.
+  Embedded native previews and the store screenshots use the refreshed captures.
+- The prior 0.12.0 actual EN/CS Clay interaction checks are reused because the
+  settings logic is unchanged. The two browser appearance images retain their
+  original 0.12.0 provenance; their Idle watch preview is unaffected by activity
+  placement. The 0.12.0 Python and packaged phone/native integration fixtures
+  retain their original scope and are not claimed as new runs for this patch.
+
+Evidence: [checks and logs](qa/0.12.1/checks.json),
+[summary captures and motion](qa/0.12.1/native-summary/summary.json),
+[settings presets](qa/0.12.1/native-previews/previews.json),
+[notification status](qa/0.12.1/native-previews/presentation-statuses.json),
+[package audit](qa/0.12.1/bundle-audit.json),
+[distribution identity](qa/0.12.1/final-distribution.json) and the unchanged
+[0.12.0 Clay checks](qa/0.12.0/settings/README.md).
+
+Final PBW SHA-256:
+`0ca9c3835552f9a7353d4b79556833fda31718bb9e166414e2b61c14511e0de7`.
+
+Native captures use synthetic data with phone JavaScript omitted. Prior user
+success on 0.12.0 is not a physical-watch check of 0.12.1. This candidate has no
+new real-phone delivery, physical-watch, latency or battery result.
+
 ## 0.12.0 notification-style summaries and recent navigation — 3 November 2026
 
 Dynamic consumes `activity/summary` schema 4 through Activities 0.4.0 and ACT3.

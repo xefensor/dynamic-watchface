@@ -9,6 +9,10 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   above contextual footer, secondary above primary in exactly one static row.
   The footer ends at y216. Media has title plus optional 40px cover/artist footer;
   other activities use instance context, falling back to provider identity.
+- Keep the complete primary block bottom-aligned directly above its footer,
+  with an 8px gap when a footer is present. Move standard value labels, headline,
+  detail and range indicator together. Media title ink ends above the cover/artist
+  footer. Spare space stays above the block; the secondary keeps its own position.
 - Any source can occupy either role. The primary expands when secondary is
   absent. Compact reduction keeps its selected clock/value structured and full;
   an essential value that cannot fit causes the optional secondary to yield.

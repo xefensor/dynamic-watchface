@@ -85,7 +85,7 @@ static inline void activity_layout_build(const char *main,const char *role,
       music_wrap(main,24,180,count,false,measure,context,&out->main);
       const int height=music_line_offsets(&out->main,24,measure,context,out->main_baseline);
       if(content_top+height<=limit) {
-        for(int i=0;i<out->main.count;++i)out->main_baseline[i]+=content_top;
+        for(int i=0;i<out->main.count;++i)out->main_baseline[i]+=limit-height;
         return;
       }
     }
@@ -119,8 +119,7 @@ static inline void activity_layout_build(const char *main,const char *role,
     }
     watch_layout_copy_utf8(main,out->main.text[0],MUSIC_TEXT_BYTES);
     out->main.count=1;out->main.complete=true;
-    const int ink_top=content_top+(main_limit-content_top-value.ascent-value.descent)/2;
-    out->main_baseline[0]=ink_top+value.ascent;
+    out->main_baseline[0]=content_top+value.ascent;
     if(vector)out->left=10+(180-value.width)/2;
     main_bottom=out->main_baseline[0]+value.descent;
   } else {
@@ -142,5 +141,11 @@ static inline void activity_layout_build(const char *main,const char *role,
     main_bottom=out->support_baseline[last]+measure(context,out->support.text[last],support_point).descent;
   }
   out->meter=meter&&main_bottom+8<=limit;
-  out->meter_top=main_bottom+4;
+  /* Pack the whole primary block above its footer; the optional secondary
+   * retains its own fixed top position. Font and wrapping capacity stay fixed. */
+  const int shift=limit-main_bottom-(out->meter?8:0);
+  for(int i=0;i<out->main.count;++i)out->main_baseline[i]+=shift;
+  for(int i=0;i<out->support.count;++i)out->support_baseline[i]+=shift;
+  if(out->role_baseline)out->role_baseline+=shift;
+  out->meter_top=main_bottom+4+shift;
 }

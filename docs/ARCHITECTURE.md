@@ -1,6 +1,6 @@
 # Dynamic and the shared libraries
 
-Dynamic 0.12.0 pins Pebble Watchface Core 0.5.0 and Pebble
+Dynamic 0.12.1 pins Pebble Watchface Core 0.5.0 and Pebble
 Activities 0.4.0. Each PBW embeds its libraries and keeps its UUID, settings and
 permission manifest. Halftone retains its own independently adopted pin.
 Neither library is a background app.
@@ -73,9 +73,10 @@ provider text/units/images and meaningful provider labels.
 
 Media context is anchored to bottom y216: optional 40px artwork and up to two
 20px artist lines. The 24px title uses up to three lines alone or two with a
-secondary. Every line starts from the received beginning and ends in a measured
-ellipsis when necessary. There is no continuation state or paging timer. The
-phone adapts legacy Music into this same ACT3 renderer.
+secondary. Its measured title block ends 8px above the footer; spare space
+remains above that block. Every line starts from the received beginning and
+ends in a measured ellipsis when necessary. There is no continuation state or
+paging timer. The phone adapts legacy Music into this same ACT3 renderer.
 
 Notification title text and app label are separate fields. The sender/title
 keeps the primary heading; an app icon normally supplies context. A quieter app identity
@@ -167,10 +168,12 @@ context yields before an essential value; a secondary whose value cannot fit
 is omitted. Whole formatted scores and paces use body text rather than an
 inferred numeric prefix. Directional values reserve their arrow's width.
 
-Primary content grows upward when alone. Meaningful labels sit above values;
-standard text may have two detail lines. Context ends at y216, using an instance
-name or provider identity, or optional artwork and artist for media. All media
-uses the shared renderer. Native Timeline and notification interruptions retain
+Primary content grows upward when alone. The measured primary block is packed
+against its footer with an 8px gap; meaningful labels, headline, supporting text
+and a range indicator move together. Standard text may have two detail lines.
+Context ends at y216, using an instance name or provider identity, or optional
+artwork and artist for media. All media uses the shared renderer. Native Timeline
+and notification interruptions retain
 priority. One reusable heap-owned render plan borrows cards instead of copying
 full cards or allocating artwork per frame. A second-boundary timer exists only
 for visible running clocks. Covered/unfocused states suspend clock work.

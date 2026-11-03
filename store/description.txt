@@ -1,6 +1,6 @@
 Dynamic keeps the time and your two Pebble readings visible while making room for compatible activities, music and notifications.
 
-The large rounded clock settles into a compact header when an activity is showing. Primary content sits above its context at the bottom. An optional secondary activity occupies exactly one static row above it, with a small identifying symbol when available. Timer uses an hourglass and a countdown. Music has its own title, artwork and artist composition.
+The large rounded clock settles into a compact header when an activity is showing. Primary content groups at the bottom above its context footer, leaving spare space above shorter content. An optional secondary activity occupies exactly one static row above it, with a small identifying symbol when available. Timer uses an hourglass and a countdown. Music has its own title, artwork and artist composition.
 
 Compatible activity plugins publish standard or media summaries. Content can contain text, values or independent clocks; plugins supply meaning and Dynamic chooses the layout. Any activity can occupy either role. The primary expands when there is no secondary. Text starts at its beginning, truncates to the available space and never scrolls or automatically pages.
 
@@ -16,4 +16,4 @@ Optional watchface notification banners can show only the app, an app/sender sum
 
 Dynamic targets Pebble Time 2. Live readings use Pebble's plugin system; Android is required for music and notification integration. The clock and date continue without the phone. Use Pebble's Music app for playback controls.
 
-Version 0.12.0 is prepared locally for sideload testing with the plugin preview. Public store submission remains on hold.
+Version 0.12.1 is prepared locally for sideload testing with the plugin preview. Public store submission remains on hold.

@@ -1,0 +1,30 @@
+{
+  "version": "0.12.1",
+  "result": "PASS",
+  "commands": [
+    {
+      "command": "npm test",
+      "javascriptTests": 113,
+      "portableCSuites": 13,
+      "log": "portable-tests.log"
+    },
+    {
+      "command": "pebble build",
+      "sdk": "4.33.1",
+      "platform": "emery",
+      "log": "sdk-build.log"
+    },
+    {
+      "command": "python3 scripts/check-native-style.py --pbw dist/Dynamic-0.12.1.pbw",
+      "evidence": "bundle-audit.json"
+    }
+  ],
+  "reusedEvidence": [
+    {
+      "version": "0.12.0",
+      "evidence": "../0.12.0/settings/README.md",
+      "reason": "Phone settings logic unchanged; original Clay interaction and Idle appearance checks retained."
+    }
+  ],
+  "scope": "Fresh portable tests, SDK build and package audit plus isolated native rendering fixtures. Prior Python and packaged handoff checks retain 0.12.0 scope. No deployment, real-phone or physical-watch claim."
+}

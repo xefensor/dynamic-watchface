@@ -35,12 +35,21 @@ static void check(ActivityLayout *layout,bool secondary,int top) {
     assert(layout->support_baseline[i]>=bottom+6);
     bottom=layout->support_baseline[i]+measure(NULL,layout->support.text[i],layout->support_point).descent;
   }
+  if(layout->meter) {
+    assert(layout->meter_top==bottom+4);
+    bottom=layout->meter_top+4;
+  }
+  int footer_top=216;
   for(int i=0;i<layout->footer.count;++i) {
     const MusicTextMetrics m=measure(NULL,layout->footer.text[i],layout->footer_point);
     assert(layout->footer_baseline[i]-m.ascent>=bottom);
+    if(layout->footer_baseline[i]-m.ascent<footer_top)footer_top=layout->footer_baseline[i]-m.ascent;
     assert(layout->footer_baseline[i]+m.descent<=216);
     assert(m.width<=layout->footer_width);
   }
+  if((layout->media&&layout->footer_left==60)||(!layout->media&&layout->footer.count))
+    if(layout->icon_top<footer_top)footer_top=layout->icon_top;
+  assert(bottom==footer_top-(footer_top<216?8:0));
   assert(layout->icon_top+layout->icon_size==216);
   if(secondary)assert(layout->secondary_baseline>=top+4&&layout->secondary_baseline<top+26);
 }
@@ -48,6 +57,10 @@ static void build(const char *main,const char *role,const char *support,const ch
     bool media,bool vector,bool scalar,bool secondary,bool image,bool meter,int top,ActivityLayout *layout) {
   activity_layout_build(main,role,support,footer,media,vector,scalar,secondary,image,meter,!media&&!vector&&!scalar?20:16,top,
       measure,vector?clock_measure:measure,NULL,layout);check(layout,secondary,top);
+  if(role[0]&&!media&&layout->main.count) {
+    const MusicTextMetrics ink=(vector?clock_measure:measure)(NULL,layout->main.text[0],layout->point);
+    assert(layout->main_baseline[0]-ink.ascent==layout->role_baseline+measure(NULL,role,14).descent+4);
+  }
 }
 int main(void) {
   ActivityLayout layout,alone;
@@ -58,7 +71,9 @@ int main(void) {
   assert(layout.footer.count==1&&layout.footer_baseline[0]>layout.main_baseline[0]);
   assert(!strcmp(layout.main.text[0],"00:36"));
   build("00:36","","","Tea",false,true,false,false,false,false,92,&alone);
-  assert(alone.main_baseline[0]<layout.main_baseline[0]||alone.point>layout.point);
+  assert(alone.point>=layout.point);
+  assert(alone.main_baseline[0]+clock_measure(NULL,"00:36",alone.point).descent==
+      layout.main_baseline[0]+clock_measure(NULL,"00:36",layout.point).descent);
   const char *clocks[]={"00:00","59:59","1:14:56","24:00:00","1193046:28:15"};
   for(unsigned i=0;i<sizeof(clocks)/sizeof(clocks[0]);++i){
     build(clocks[i],"","","Timer",false,true,false,true,false,false,92,&layout);

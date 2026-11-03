@@ -1,0 +1,1398 @@
+{
+  "version": "0.12.1",
+  "candidatePbwSha256": "7ccf60bed9f1e9eead9240f010aca2fc8a08909fc4ed50368fce4df1788a69cc",
+  "nativePayloadSha256": {
+    "emery/pebble-app.bin": "e85453253f0d2cfe8e4178e860596521ef59830a86304b4d4e336f22bc00a590",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "93d14d5903f2c138aa3fc421c523dd2e68bf69a4225bc816f854d8a0b7a3444a"
+  },
+  "environment": "Actual isolated Emery QEMU over local FIFOs",
+  "phoneJavascriptExecuted": false,
+  "syntheticSourceData": true,
+  "activityWireVersion": 3,
+  "captures": [
+    {
+      "name": "timer-media-light",
+      "file": "timer-media-light.png",
+      "sha256": "14b19d2e40c26bda891d796466f71ded79157a95e1913c22dd63ae192c3dac37",
+      "rgbSha256": "e6a91dbb4123eac6a4b7dfe436493d042e58e4f5f121e3c0cf378cc004abf939",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 101,
+        "presentationSequence": 1,
+        "reportedAt": 1793723756,
+        "expiresAt": 1793727356
+      },
+      "clockTick": {
+        "file": "timer-media-light-tick.png",
+        "sha256": "d2c1dcfbfa66e4b0f1d23ef541ee3764de54219419d84ecd81cd00959daa685e",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.592
+      }
+    },
+    {
+      "name": "media-timer-light",
+      "file": "media-timer-light.png",
+      "sha256": "4d17d26ae30291348d7bffbe7fd84252450ee0b3876a1335bc824a7574d65c61",
+      "rgbSha256": "40a979e530d6d8d0d2ae7dc8a51f89ab10c0eba7e1db30858a50a1232590f2b0",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 102,
+        "presentationSequence": 2,
+        "reportedAt": 1793723758,
+        "expiresAt": 1793727358
+      },
+      "clockTick": {
+        "file": "media-timer-light-tick.png",
+        "sha256": "bc2d8237a10f54f803bcd81c497b69ae865524866d38f4fbcc8eda6794d19827",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.191
+      }
+    },
+    {
+      "name": "workout-timer-light",
+      "file": "workout-timer-light.png",
+      "sha256": "da7dbea8f4492f5cbbb7c5bc898f22a950ba439b8ca4b57e160b0828ca5abb1b",
+      "rgbSha256": "23069b3759fde6f76f19f126e820a4e907cc6e81e397492d09ef9dba2b65a8a3",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 103,
+        "presentationSequence": 3,
+        "reportedAt": 1793723760,
+        "expiresAt": 1793727359
+      },
+      "clockTick": {
+        "file": "workout-timer-light-tick.png",
+        "sha256": "bd93d038fbbc5534d0e9406dfdb370dcbf132abe2d90a1abce796e5eceee89bb",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.189
+      }
+    },
+    {
+      "name": "navigation-media-light",
+      "file": "navigation-media-light.png",
+      "sha256": "0c927262e71bc4cacaa5673c42ee8c419c98ce9f2c90b8ab186a2cf72f9d46e6",
+      "rgbSha256": "a32fbda106ea6083e77c5615c702e61c35547634e547ff908f95003b99bfdd95",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 104,
+        "presentationSequence": 4,
+        "reportedAt": 1793723762,
+        "expiresAt": 1793727361
+      }
+    },
+    {
+      "name": "recording-delivery-light",
+      "file": "recording-delivery-light.png",
+      "sha256": "fbbea359f2add19472a89774db61cf7136fab61786d8a364c727ef8145b9a277",
+      "rgbSha256": "259f1e9c73eb479d8537d81b2af19d2854f9ac2b1db3ad11de1ada4024e434c8",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 105,
+        "presentationSequence": 5,
+        "reportedAt": 1793723762,
+        "expiresAt": 1793727362
+      },
+      "clockTick": {
+        "file": "recording-delivery-light-tick.png",
+        "sha256": "4d777bcbaf628408077c7d66482bd52f7d96c11fc6da47666d36c047b133df68",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.593
+      }
+    },
+    {
+      "name": "download-recording-light",
+      "file": "download-recording-light.png",
+      "sha256": "9123ce219200ccab243e0e8802f4d2e25ccb7cf6e549ce0e38a80107a1919734",
+      "rgbSha256": "3d3374ff7812865063fb7f62e23b7d4dec9294aa7e883ce8f9ec180814b1e411",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 106,
+        "presentationSequence": 6,
+        "reportedAt": 1793723763,
+        "expiresAt": 1793727363
+      },
+      "clockTick": {
+        "file": "download-recording-light-tick.png",
+        "sha256": "3a1034c412729238fa4b7e02a04779b1371d7b9091e4ebdbef6fdc64ae7d35c5",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.593
+      }
+    },
+    {
+      "name": "message-timer-light",
+      "file": "message-timer-light.png",
+      "sha256": "c2ab8417d2f8221dc80dd6de65d03a891c1f42de0eda6bb2f678cd22f8031c95",
+      "rgbSha256": "dff008a473a0b607e3b303023ff41fe5cf815ee1a2127cb9c42f73755829d61b",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 107,
+        "presentationSequence": 7,
+        "reportedAt": 1793723765,
+        "expiresAt": 1793727365
+      },
+      "clockTick": {
+        "file": "message-timer-light-tick.png",
+        "sha256": "53dfd8551a6aeebd9a937d88432e7cb56f096f52381b81dc60c8753d1556d52a",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.187
+      }
+    },
+    {
+      "name": "media-alone-light",
+      "file": "media-alone-light.png",
+      "sha256": "fbbe0c04e23387cd81160c081b030945961b8294379802777127c3a552d67fdd",
+      "rgbSha256": "cdef8f71abf366c60aa9e43f66ce713a279329a7ef6a895fb2dc28ce5bd042a4",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 108,
+        "presentationSequence": 8,
+        "reportedAt": 1793723767,
+        "expiresAt": 1793727367
+      }
+    },
+    {
+      "name": "timer-alone-light",
+      "file": "timer-alone-light.png",
+      "sha256": "60235679018266f80e7c60a3854e7ca0c222c231375f093ec66fb192a83e9d38",
+      "rgbSha256": "cf120c57ca76363d5cd31a88dcf4592255b3ea0fadab0e24270eba60dbde4fc0",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 109,
+        "presentationSequence": 9,
+        "reportedAt": 1793723767,
+        "expiresAt": 1793727367
+      },
+      "clockTick": {
+        "file": "timer-alone-light-tick.png",
+        "sha256": "29d99ee43c4c21b1a08daeda244a3509d8180fcb839d92e5ce8298937c41ff30",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.592
+      }
+    },
+    {
+      "name": "long-timer-light",
+      "file": "long-timer-light.png",
+      "sha256": "35fedb6c56faf084154c0af6f5763e1c1a56dafd481c9dcf9617e13bc7c018ce",
+      "rgbSha256": "ed66fc8f35e7148fa58c92072a496afce993366b393447cb12b04ad3b42a2a3c",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 110,
+        "presentationSequence": 10,
+        "reportedAt": 1793723769,
+        "expiresAt": 1793727369
+      },
+      "clockTick": {
+        "file": "long-timer-light-tick.png",
+        "sha256": "dfc8cd23526f18aaab708a0d4f2a993e2e1f5e9fcbf4434f7274bd1ad7c863c7",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.183
+      }
+    },
+    {
+      "name": "long-artist-light",
+      "file": "long-artist-light.png",
+      "sha256": "f62fa67f4f2d90824033d026832f2c0e7e52a5d2a2666ecde767a7fa4d53cc2b",
+      "rgbSha256": "7165ba71d8f7679af7d8d6856f91be08f624f4ff942c97a861835e32beb0e6c1",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 111,
+        "presentationSequence": 11,
+        "reportedAt": 1793723771,
+        "expiresAt": 1793727370
+      },
+      "clockTick": {
+        "file": "long-artist-light-tick.png",
+        "sha256": "9d0dfba2a71bb53f11c012d4705c34be199134d1fff592d9e3a638fa8ed98935",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.189
+      }
+    },
+    {
+      "name": "delivery-text-light",
+      "file": "delivery-text-light.png",
+      "sha256": "becd3fd82ff10d9c3be50ee0670bb8aac5055d5f6b44722547fa9753b0ac08c6",
+      "rgbSha256": "8293c92d7c6b2ce2f74daa55fc7215abb640385abfa7f71d93324d842c87b51b",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 112,
+        "presentationSequence": 12,
+        "reportedAt": 1793723772,
+        "expiresAt": 1793727372
+      }
+    },
+    {
+      "name": "local-promotion-light",
+      "file": "local-promotion-light.png",
+      "sha256": "fbbe0c04e23387cd81160c081b030945961b8294379802777127c3a552d67fdd",
+      "rgbSha256": "cdef8f71abf366c60aa9e43f66ce713a279329a7ef6a895fb2dc28ce5bd042a4",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 1,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 113,
+        "presentationSequence": 14,
+        "reportedAt": 1793723775,
+        "expiresAt": 1793727373
+      }
+    },
+    {
+      "name": "compact-detail-clock-light",
+      "file": "compact-detail-clock-light.png",
+      "sha256": "f01d8ab6e4d70fc33cb0db105158e44ed70cd1e9cbe60dae1f3afbdece98256c",
+      "rgbSha256": "b14a0a7c7e8fd115fba094327011aa013cec4bb3a57ea9436db374a11bb6b055",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 114,
+        "presentationSequence": 15,
+        "reportedAt": 1793723776,
+        "expiresAt": 1793727376
+      },
+      "clockTick": {
+        "file": "compact-detail-clock-light-tick.png",
+        "sha256": "7b812818d251cdc76f8a59bd4b6f567469122983ad9acd14a55258855250ad24",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.595
+      }
+    },
+    {
+      "name": "secondary-long-clock-light",
+      "file": "secondary-long-clock-light.png",
+      "sha256": "32a4cc33dcf58e555e71db988b9dedef702a8317226b763f1eb928ed10c09514",
+      "rgbSha256": "614fb3d96cebf94bb7a260704b232ca0cf5230bc3735062e085ea426fd8d71d9",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 115,
+        "presentationSequence": 16,
+        "reportedAt": 1793723778,
+        "expiresAt": 1793727378
+      }
+    },
+    {
+      "name": "secondary-unfit-value-light",
+      "file": "secondary-unfit-value-light.png",
+      "sha256": "fbbe0c04e23387cd81160c081b030945961b8294379802777127c3a552d67fdd",
+      "rgbSha256": "cdef8f71abf366c60aa9e43f66ce713a279329a7ef6a895fb2dc28ce5bd042a4",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 116,
+        "presentationSequence": 17,
+        "reportedAt": 1793723778,
+        "expiresAt": 1793727378
+      }
+    },
+    {
+      "name": "direction-long-value-light",
+      "file": "direction-long-value-light.png",
+      "sha256": "10f448528013078f89b8db1b8308a79619cad40dfc138aaee597fefc0113a0ee",
+      "rgbSha256": "fe29e00603651ee27d621637ce91edf2f495b80cea902c25275c5c5c4166a5e3",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 117,
+        "presentationSequence": 18,
+        "reportedAt": 1793723779,
+        "expiresAt": 1793727379
+      }
+    },
+    {
+      "name": "direction-formatted-value-light",
+      "file": "direction-formatted-value-light.png",
+      "sha256": "4940acefb8c712e8fbc37e6af0c1058d9a478092034daac285a4dc9799d70294",
+      "rgbSha256": "266023ee202cdccb46dc5a77bbfec7462d8b07950d15ce7c238315418becf565",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 118,
+        "presentationSequence": 19,
+        "reportedAt": 1793723780,
+        "expiresAt": 1793727380
+      }
+    },
+    {
+      "name": "timer-media-dark",
+      "file": "timer-media-dark.png",
+      "sha256": "b7c17f3e3a8289e50c860abd858cd100959ac01295c7c582af69acbdf61c40c0",
+      "rgbSha256": "cb352e38bd261f2cabba5ff5c859a83aba1c4c84214b7701de849f0d346186e9",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 119,
+        "presentationSequence": 20,
+        "reportedAt": 1793723780,
+        "expiresAt": 1793727380
+      },
+      "clockTick": {
+        "file": "timer-media-dark-tick.png",
+        "sha256": "36c6c3f6b135ad50db6b9df801a14c8bcd0ceb693c9a5e6a04788314f2a63e49",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.591
+      }
+    },
+    {
+      "name": "media-timer-dark",
+      "file": "media-timer-dark.png",
+      "sha256": "c5ecedd3d282e6e6c128e0145901f22ee53f1e498b5599cbc6365989a528e377",
+      "rgbSha256": "7afbc80ff6c8df96e23259cb50b2c1bc3ddb8d84576c9ad11ed11cfd11178a9f",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 120,
+        "presentationSequence": 21,
+        "reportedAt": 1793723782,
+        "expiresAt": 1793727382
+      },
+      "clockTick": {
+        "file": "media-timer-dark-tick.png",
+        "sha256": "844092dfed653d850583fde975fc7171b8a442dbc2e07255cd149b622ceb8a94",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.187
+      }
+    },
+    {
+      "name": "workout-timer-dark",
+      "file": "workout-timer-dark.png",
+      "sha256": "e4a33a592c1c552717ba868e962c0de84c4de4173951c6a2d5ac6f1b4be66e67",
+      "rgbSha256": "f683db7e108935fc138650def5733eca18a92adc84af2eb786e9159ab22dad7e",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 121,
+        "presentationSequence": 22,
+        "reportedAt": 1793723784,
+        "expiresAt": 1793727383
+      },
+      "clockTick": {
+        "file": "workout-timer-dark-tick.png",
+        "sha256": "ce8609fc84e8b3061912d400103405f92692c12ff714ec380c0257ca437a2f0d",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.183
+      }
+    },
+    {
+      "name": "navigation-media-dark",
+      "file": "navigation-media-dark.png",
+      "sha256": "8677f5bce1cd50b462fffbb02e0125841be9b4b73768258bdad690ca6ee0241c",
+      "rgbSha256": "380b5406e1cb33775cab59621bbe99008416b0cfd0036bfae2098326e311d706",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 122,
+        "presentationSequence": 23,
+        "reportedAt": 1793723785,
+        "expiresAt": 1793727385
+      }
+    },
+    {
+      "name": "recording-delivery-dark",
+      "file": "recording-delivery-dark.png",
+      "sha256": "a4f1712fd9d4c481a6d5c846ef8710e8f67be3e1d45f34078f0591dc86453273",
+      "rgbSha256": "371c8e639e3461f46640928b4c3c91861bcbd00bad9943a8fe3723b266dee94f",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 123,
+        "presentationSequence": 24,
+        "reportedAt": 1793723786,
+        "expiresAt": 1793727386
+      },
+      "clockTick": {
+        "file": "recording-delivery-dark-tick.png",
+        "sha256": "bc50af98b7e5d161decb9b70a06d3fbef37ea7e90b4a8ef851652275b9172ab2",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.593
+      }
+    },
+    {
+      "name": "download-recording-dark",
+      "file": "download-recording-dark.png",
+      "sha256": "d7d4f2d32eca7979a297db24170994d3c3f872d0f4a5befcc05efe85ced557a3",
+      "rgbSha256": "7ca31fc8de9e43c9831698ecdad001a5137926e8d23e8ac3f5ee2882576213cd",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 124,
+        "presentationSequence": 25,
+        "reportedAt": 1793723787,
+        "expiresAt": 1793727387
+      },
+      "clockTick": {
+        "file": "download-recording-dark-tick.png",
+        "sha256": "26366ae68e751edf8c915230d119a26b49b92ca865d570146fc22c542e87fb8c",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.591
+      }
+    },
+    {
+      "name": "message-timer-dark",
+      "file": "message-timer-dark.png",
+      "sha256": "328ef38d37afbb459307b68aecc24a397b9cdcf1ff11055d6b302de07672f2a9",
+      "rgbSha256": "1a539bf5e4b43a7c479eeba8bb46e3dc08b1987ce0073fa9607a382c80a54b19",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 125,
+        "presentationSequence": 26,
+        "reportedAt": 1793723789,
+        "expiresAt": 1793727389
+      },
+      "clockTick": {
+        "file": "message-timer-dark-tick.png",
+        "sha256": "0360d434a508324e66e684c3738a743803b8f0a89450f263faf99cfa8932dcb1",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.184
+      }
+    },
+    {
+      "name": "media-alone-dark",
+      "file": "media-alone-dark.png",
+      "sha256": "6ad70828cafee7a6922fc4bbb34c77b1d8e5c680a4935db638a3983901cdd69a",
+      "rgbSha256": "9a1dfe283e7e16048ed91902161737b379fe6909b627cb977a8f2938b3a1d7df",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 126,
+        "presentationSequence": 27,
+        "reportedAt": 1793723791,
+        "expiresAt": 1793727391
+      }
+    },
+    {
+      "name": "timer-alone-dark",
+      "file": "timer-alone-dark.png",
+      "sha256": "04a02a5a2c5cf7448547f33488c36b54ad560b4eedb46e2ba6d3e6d6bf38b899",
+      "rgbSha256": "96d588ac2ed518bad88a8b2e994c5a65eeae56d40eaec7638c2ce9f49a620e7a",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 127,
+        "presentationSequence": 28,
+        "reportedAt": 1793723791,
+        "expiresAt": 1793727391
+      },
+      "clockTick": {
+        "file": "timer-alone-dark-tick.png",
+        "sha256": "170f7f5a89ae6a819bf4f11af8b67ff20b74f8a9e858b552e03088fa5f12ca68",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.594
+      }
+    },
+    {
+      "name": "long-timer-dark",
+      "file": "long-timer-dark.png",
+      "sha256": "dd09d48c494c70350dc595e3a3afee3c0d2f69bf05b66ea74c22001ae9f86cd4",
+      "rgbSha256": "6f9caba8e76c7c9e0cf5bcef7adc0063c18d75747de04431d7f09b17a9407938",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 128,
+        "presentationSequence": 29,
+        "reportedAt": 1793723793,
+        "expiresAt": 1793727393
+      },
+      "clockTick": {
+        "file": "long-timer-dark-tick.png",
+        "sha256": "10c67fd5abc53d1e27d751dd9a10e2db455bd225fb7843055e7c7fd624283806",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.18
+      }
+    },
+    {
+      "name": "long-artist-dark",
+      "file": "long-artist-dark.png",
+      "sha256": "152ddc76cf4cf2b04b71b6c08eed1219fe2f4c4fd9fedd6139844007ec6caf19",
+      "rgbSha256": "e552cbaca4def5c6a1cac19a1e79599572cadb31efba10df8010bdaa012c7356",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 129,
+        "presentationSequence": 30,
+        "reportedAt": 1793723795,
+        "expiresAt": 1793727394
+      },
+      "clockTick": {
+        "file": "long-artist-dark-tick.png",
+        "sha256": "cd276f56a79879e7966bc91edcf00664f0599a5ae7da8605586f2cef98d3e8c5",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 1.199
+      }
+    },
+    {
+      "name": "delivery-text-dark",
+      "file": "delivery-text-dark.png",
+      "sha256": "b39efbe68ad57815b5c36937dec6ed05381974c767eecf6343df2c714fb821d1",
+      "rgbSha256": "57d9d61851ad8ea38975f13bb8d9bd65e735ede2f43fc786a591ca5e00d975a0",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 130,
+        "presentationSequence": 31,
+        "reportedAt": 1793723796,
+        "expiresAt": 1793727396
+      }
+    },
+    {
+      "name": "local-promotion-dark",
+      "file": "local-promotion-dark.png",
+      "sha256": "6ad70828cafee7a6922fc4bbb34c77b1d8e5c680a4935db638a3983901cdd69a",
+      "rgbSha256": "9a1dfe283e7e16048ed91902161737b379fe6909b627cb977a8f2938b3a1d7df",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 1,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 131,
+        "presentationSequence": 33,
+        "reportedAt": 1793723799,
+        "expiresAt": 1793727397
+      }
+    },
+    {
+      "name": "compact-detail-clock-dark",
+      "file": "compact-detail-clock-dark.png",
+      "sha256": "753e56dbbeb5e7b72574cf87ddfb8a603909e46d75d0142c52dc7f62cbfe1588",
+      "rgbSha256": "cd10f587a789f73c7b0ed2afecda2d6f3ad6d2cf21615d90d1c2c9925ece588f",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 132,
+        "presentationSequence": 34,
+        "reportedAt": 1793723800,
+        "expiresAt": 1793727400
+      },
+      "clockTick": {
+        "file": "compact-detail-clock-dark-tick.png",
+        "sha256": "8668834f952ef08f0e3c96c834c4c6ea3f3b2dd58652a1d0a9c6ae2f7d9e5c50",
+        "fixtureResent": false,
+        "activityPixelsChanged": true,
+        "waitSeconds": 0.6
+      }
+    },
+    {
+      "name": "secondary-long-clock-dark",
+      "file": "secondary-long-clock-dark.png",
+      "sha256": "568851dc8eade88f37efbf64f68400a47346796cc1cf7a7acfa5ff2f7c709373",
+      "rgbSha256": "6fe55ff77e9c183bf191dde70b7baa4ab09509053e96663ef1394b875047baef",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 1,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 133,
+        "presentationSequence": 35,
+        "reportedAt": 1793723802,
+        "expiresAt": 1793727402
+      }
+    },
+    {
+      "name": "secondary-unfit-value-dark",
+      "file": "secondary-unfit-value-dark.png",
+      "sha256": "6ad70828cafee7a6922fc4bbb34c77b1d8e5c680a4935db638a3983901cdd69a",
+      "rgbSha256": "9a1dfe283e7e16048ed91902161737b379fe6909b627cb977a8f2938b3a1d7df",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 134,
+        "presentationSequence": 36,
+        "reportedAt": 1793723802,
+        "expiresAt": 1793727402
+      }
+    },
+    {
+      "name": "direction-long-value-dark",
+      "file": "direction-long-value-dark.png",
+      "sha256": "c28d02dd032a857e811daa21b90bc9c42ebaeeec7eb3ca9957c966182b827c66",
+      "rgbSha256": "25c1734128a175267212b6e3617761d47b56ec0f408f23e8b631361f01aadb6a",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 135,
+        "presentationSequence": 37,
+        "reportedAt": 1793723803,
+        "expiresAt": 1793727403
+      }
+    },
+    {
+      "name": "direction-formatted-value-dark",
+      "file": "direction-formatted-value-dark.png",
+      "sha256": "0a4bf1d27a59b2bdb79a2f821837683db6689a92fbba69dbd362e4fc7a8d164f",
+      "rgbSha256": "e6c5c04a70b2669f9086dc252eebb403bf770bda6fc8910966cbe87392414ec4",
+      "nativePixelsModified": false,
+      "presentedStatus": {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 136,
+        "presentationSequence": 38,
+        "reportedAt": 1793723804,
+        "expiresAt": 1793727404
+      }
+    }
+  ],
+  "nativeStatuses": [
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 101,
+      "presentationSequence": 1,
+      "reportedAt": 1793723756,
+      "expiresAt": 1793727356
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 102,
+      "presentationSequence": 2,
+      "reportedAt": 1793723758,
+      "expiresAt": 1793727358
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 103,
+      "presentationSequence": 3,
+      "reportedAt": 1793723760,
+      "expiresAt": 1793727359
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 104,
+      "presentationSequence": 4,
+      "reportedAt": 1793723762,
+      "expiresAt": 1793727361
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 105,
+      "presentationSequence": 5,
+      "reportedAt": 1793723762,
+      "expiresAt": 1793727362
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 106,
+      "presentationSequence": 6,
+      "reportedAt": 1793723763,
+      "expiresAt": 1793727363
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 107,
+      "presentationSequence": 7,
+      "reportedAt": 1793723765,
+      "expiresAt": 1793727365
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 108,
+      "presentationSequence": 8,
+      "reportedAt": 1793723767,
+      "expiresAt": 1793727367
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 109,
+      "presentationSequence": 9,
+      "reportedAt": 1793723767,
+      "expiresAt": 1793727367
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 110,
+      "presentationSequence": 10,
+      "reportedAt": 1793723769,
+      "expiresAt": 1793727369
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 111,
+      "presentationSequence": 11,
+      "reportedAt": 1793723771,
+      "expiresAt": 1793727370
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 112,
+      "presentationSequence": 12,
+      "reportedAt": 1793723772,
+      "expiresAt": 1793727372
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 113,
+      "presentationSequence": 13,
+      "reportedAt": 1793723773,
+      "expiresAt": 1793723775
+    },
+    {
+      "schema": 1,
+      "primary": 1,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 113,
+      "presentationSequence": 14,
+      "reportedAt": 1793723775,
+      "expiresAt": 1793727373
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 114,
+      "presentationSequence": 15,
+      "reportedAt": 1793723776,
+      "expiresAt": 1793727376
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 115,
+      "presentationSequence": 16,
+      "reportedAt": 1793723778,
+      "expiresAt": 1793727378
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 116,
+      "presentationSequence": 17,
+      "reportedAt": 1793723778,
+      "expiresAt": 1793727378
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 117,
+      "presentationSequence": 18,
+      "reportedAt": 1793723779,
+      "expiresAt": 1793727379
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 118,
+      "presentationSequence": 19,
+      "reportedAt": 1793723780,
+      "expiresAt": 1793727380
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 119,
+      "presentationSequence": 20,
+      "reportedAt": 1793723780,
+      "expiresAt": 1793727380
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 120,
+      "presentationSequence": 21,
+      "reportedAt": 1793723782,
+      "expiresAt": 1793727382
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 121,
+      "presentationSequence": 22,
+      "reportedAt": 1793723784,
+      "expiresAt": 1793727383
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 122,
+      "presentationSequence": 23,
+      "reportedAt": 1793723785,
+      "expiresAt": 1793727385
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 123,
+      "presentationSequence": 24,
+      "reportedAt": 1793723786,
+      "expiresAt": 1793727386
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 124,
+      "presentationSequence": 25,
+      "reportedAt": 1793723787,
+      "expiresAt": 1793727387
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 125,
+      "presentationSequence": 26,
+      "reportedAt": 1793723789,
+      "expiresAt": 1793727389
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 126,
+      "presentationSequence": 27,
+      "reportedAt": 1793723791,
+      "expiresAt": 1793727391
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 127,
+      "presentationSequence": 28,
+      "reportedAt": 1793723791,
+      "expiresAt": 1793727391
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 128,
+      "presentationSequence": 29,
+      "reportedAt": 1793723793,
+      "expiresAt": 1793727393
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 129,
+      "presentationSequence": 30,
+      "reportedAt": 1793723795,
+      "expiresAt": 1793727394
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 130,
+      "presentationSequence": 31,
+      "reportedAt": 1793723796,
+      "expiresAt": 1793727396
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 131,
+      "presentationSequence": 32,
+      "reportedAt": 1793723797,
+      "expiresAt": 1793723799
+    },
+    {
+      "schema": 1,
+      "primary": 1,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 131,
+      "presentationSequence": 33,
+      "reportedAt": 1793723799,
+      "expiresAt": 1793727397
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 132,
+      "presentationSequence": 34,
+      "reportedAt": 1793723800,
+      "expiresAt": 1793727400
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 133,
+      "presentationSequence": 35,
+      "reportedAt": 1793723802,
+      "expiresAt": 1793727402
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 134,
+      "presentationSequence": 36,
+      "reportedAt": 1793723802,
+      "expiresAt": 1793727402
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 135,
+      "presentationSequence": 37,
+      "reportedAt": 1793723803,
+      "expiresAt": 1793727403
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 136,
+      "presentationSequence": 38,
+      "reportedAt": 1793723804,
+      "expiresAt": 1793727404
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 136,
+      "presentationSequence": 39,
+      "reportedAt": 1793723834,
+      "expiresAt": 1793727404
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 4026,
+      "presentationSequence": 40,
+      "reportedAt": 1793723834,
+      "expiresAt": 1793727434
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 5001,
+      "presentationSequence": 41,
+      "reportedAt": 1793723835,
+      "expiresAt": 1793727494
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 5002,
+      "presentationSequence": 42,
+      "reportedAt": 1793723835,
+      "expiresAt": 0
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 5002,
+      "presentationSequence": 43,
+      "reportedAt": 1793723835,
+      "expiresAt": 1793727494
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 5003,
+      "presentationSequence": 44,
+      "reportedAt": 1793723835,
+      "expiresAt": 1793727494
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 5004,
+      "presentationSequence": 45,
+      "reportedAt": 1793723836,
+      "expiresAt": 1793727494
+    }
+  ],
+  "visualReview": {
+    "reviewed": true,
+    "files": [
+      "review-light.png",
+      "review-dark.png",
+      "short-media-title.png"
+    ],
+    "compositions": 36,
+    "result": "PASS",
+    "scope": "Exact native200\u00d7228Emery captures; bottom-groupedcontent andfooter spacing inspected, includingone-linesong. No physicalwatch.",
+    "reviewers": [
+      "root",
+      "independent-library-agent"
+    ]
+  },
+  "result": "PASS",
+  "numericRuntimeLogs": [
+    {
+      "timestamp": 1793723756,
+      "message": "Native state 24792 bytes; free heap 33764"
+    }
+  ],
+  "idleHeartbeat": {
+    "result": "PASS",
+    "fixtureResent": false,
+    "minimumNativeSeconds": 30,
+    "staticActivityPixelsUnchanged": true,
+    "file": "idle-heartbeat.png",
+    "sha256": "55a534bbc2cd75e9dac3d021085a8ab29bdd2cc87dcff29ad54760d7ae594540"
+  },
+  "motionDiagnostics": {
+    "ackMilliseconds": 47.33,
+    "firstScreenshotCompleteMilliseconds": 175.17,
+    "moving": {
+      "file": "motion-track-mid.png",
+      "sha256": "ee6a4afa241c8d311a55e6a1424b211c58dba98f8f656af4cf3884f891d1c186"
+    },
+    "settled": {
+      "file": "motion-track-settled.png",
+      "sha256": "35b2dd917dfd95e8f945f52da028f1f7a9f6ce7561c3314f756f6dd4d38228cd"
+    },
+    "nativeStatuses": [
+      {
+        "schema": 1,
+        "primary": 255,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 5002,
+        "presentationSequence": 42,
+        "reportedAt": 1793723835,
+        "expiresAt": 0
+      },
+      {
+        "schema": 1,
+        "primary": 0,
+        "secondary": 255,
+        "flags": 0,
+        "session": 2,
+        "viewSequence": 5002,
+        "presentationSequence": 43,
+        "reportedAt": 1793723835,
+        "expiresAt": 1793727494
+      }
+    ]
+  },
+  "animationProof": {
+    "result": "PASS",
+    "routineRefreshStatic": true,
+    "trackChangeMovesPrimary": true,
+    "headerPixelsUnchanged": true,
+    "lateArtistStatic": true,
+    "baseline": {
+      "file": "motion-baseline.png",
+      "sha256": "7013b27437cbc541b39f566127e0562489e5139062016afc2bc75bb6a094c9d9"
+    },
+    "routine": {
+      "file": "motion-routine.png",
+      "sha256": "7013b27437cbc541b39f566127e0562489e5139062016afc2bc75bb6a094c9d9"
+    },
+    "moving": {
+      "file": "motion-track-mid.png",
+      "sha256": "ee6a4afa241c8d311a55e6a1424b211c58dba98f8f656af4cf3884f891d1c186"
+    },
+    "settled": {
+      "file": "motion-track-settled.png",
+      "sha256": "35b2dd917dfd95e8f945f52da028f1f7a9f6ce7561c3314f756f6dd4d38228cd"
+    },
+    "lateArtist": {
+      "file": "motion-late-artist.png",
+      "sha256": "8a17d8f4ec25a60d3f0e4b7a1405b7bad1fbb25a2224a741545f864ebfa74d33"
+    }
+  },
+  "shortMediaTitle": {
+    "file": "short-media-title.png",
+    "sha256": "9e821e114bcdcb4dbe0a184acef0130054991d4c860254c780884b3878c2e41b"
+  },
+  "scope": "Actual candidate native compositions, local clock ticks, role promotion and presentation-status messages. Synthetic sources; no real phone, physical watch or battery measurement."
+}

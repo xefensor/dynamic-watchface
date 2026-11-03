@@ -1,0 +1,291 @@
+{
+  "version": "0.12.1",
+  "pbw_sha256": "3d9bdaf0831302a900d10d5d06e29d42b1ee79701511af2f17b92e59bb4eaf51",
+  "candidate_source_pbw_sha256": "7ccf60bed9f1e9eead9240f010aca2fc8a08909fc4ed50368fce4df1788a69cc",
+  "native_payload_sha256": {
+    "emery/pebble-app.bin": "e85453253f0d2cfe8e4178e860596521ef59830a86304b4d4e336f22bc00a590",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "93d14d5903f2c138aa3fc421c523dd2e68bf69a4225bc816f854d8a0b7a3444a"
+  },
+  "phone_javascript_executed": false,
+  "fixture_encoder": {
+    "core": "0.5.0",
+    "activities": "0.4.0",
+    "core_wire_version": 4,
+    "activity_wire_version": 3
+  },
+  "fixture_time_utc": 1793723757,
+  "fixture_time_mode": "host-rtc",
+  "session": 2,
+  "captures": [
+    {
+      "name": "idle-24-light",
+      "file": "idle-24-light.png",
+      "fixture_now_utc": 1793723757,
+      "sha256": "742478f6a556da6c17bfacf6a5f0a66ba63e8f330f5404f9ee9c87e40f366678",
+      "rgb_sha256": "cf4cbaf00a0e6a0dc20508626892a2bc4ac6469ede40a096d16bb03df3652522",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-24-light",
+      "file": "music-24-light.png",
+      "fixture_now_utc": 1793723758,
+      "sha256": "121e276053b4b5e6a7624b282705c53f042bbccab41d70410dd0cf10482b637f",
+      "rgb_sha256": "12fb892a6bb8c4f88d82b95a867c0fa3d0462ce5a11194e760aa6dcfd1f923f8",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-24-light",
+      "file": "notification-summary-24-light.png",
+      "fixture_now_utc": 1793723759,
+      "sha256": "597d46a590a073de25ba8b712f37332decd96630fee76ab37d9121e16dcf77ac",
+      "rgb_sha256": "1b69787455105659bb3fe56fbdee83572f9e334ea7801dbc081be649e30d6236",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-24-light",
+      "file": "notification-24-light.png",
+      "fixture_now_utc": 1793723761,
+      "sha256": "51a0e4eef0e6d9be2378d08107ef4e1fb912f8b3566e218f0464ebd7b5dc6a1c",
+      "rgb_sha256": "cd0b1ad82c9e1fe8297ca853ab3ae2fa65631cc75a8b8ee4bfd2929a8899150a",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-24-light",
+      "file": "timeline-24-light.png",
+      "fixture_now_utc": 1793723762,
+      "sha256": "1c13a860269576fb93b4cd45626e3f30ca609f925269dd589fc7712f8a9c11ba",
+      "rgb_sha256": "4485e4d09efb43f0ca9c04a87eddbdf2e0b4c6b68a0a9018037347c1196afdb7",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "idle-12-light",
+      "file": "idle-12-light.png",
+      "fixture_now_utc": 1793723763,
+      "sha256": "bcf280e26a1ec4cae6458cd7f7030686ddc2444d82a5a24e293a9b47b48ec723",
+      "rgb_sha256": "796d46a080cdf455926e49b72edf372b3ee55bf89609d99e3309cdeaa653460d",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-12-light",
+      "file": "music-12-light.png",
+      "fixture_now_utc": 1793723764,
+      "sha256": "81b327f11c4148f3a67b847d6bdb2426116a730323e1eadf9d6f6ed4dad5918c",
+      "rgb_sha256": "e2061bf250e1051cc68a56fe7b5845644ce293c6f73493bc7092ebb0a1de7dbb",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-12-light",
+      "file": "notification-summary-12-light.png",
+      "fixture_now_utc": 1793723766,
+      "sha256": "b25cebdff15e03f7bd5d16bda1f071b83c1df7083c3580f0672eb2c495ada47c",
+      "rgb_sha256": "6743e45e1b11e6ae9d1f717d964869a656ff7777bf4d0cc0f2889655ada0703e",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-12-light",
+      "file": "notification-12-light.png",
+      "fixture_now_utc": 1793723767,
+      "sha256": "28282b9ace8916c6beae23bedc11a3ac46ddddb4c2662f8a6bd79744e3fc9c6c",
+      "rgb_sha256": "e3eceb21c44a4b0a4a0f08de12a3407586bf46fb650f124800966fdff583c0c4",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-12-light",
+      "file": "timeline-12-light.png",
+      "fixture_now_utc": 1793723768,
+      "sha256": "020d3b8ff03813a7d90f6c016cd23b397f04fd655346e3ac30a6c19559535e25",
+      "rgb_sha256": "f8bdf5c8cded8c5f79ac21a55ae6470ee5255c69b2266e1133b5f79251f3e20b",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "idle-24-dark",
+      "file": "idle-24-dark.png",
+      "fixture_now_utc": 1793723769,
+      "sha256": "c0e2c3d905d4f0de201bbb226a79246ee68db8992469e9c200c0de12de39700b",
+      "rgb_sha256": "25427e73aba7af5c0151fc4bade5be35ef5f955e60fd0845bfa437afb2641bed",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-24-dark",
+      "file": "music-24-dark.png",
+      "fixture_now_utc": 1793723770,
+      "sha256": "e6c9ffa0f83a7aeef02cd91e34b46b6984808051b9070049e8115978ce25b783",
+      "rgb_sha256": "c88c61951991fcc126923f801782de30c7c526e70c28f7ab95298bfcad66685e",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-24-dark",
+      "file": "notification-summary-24-dark.png",
+      "fixture_now_utc": 1793723772,
+      "sha256": "e96b5a3821e8613eaa5edf26eabd94d67bede6d11edfab8781616bbd0ec67397",
+      "rgb_sha256": "a040457e5d1299aebe2c398f34a79c9d647bd996b1ffcd86fc9f03f69ec308d2",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-24-dark",
+      "file": "notification-24-dark.png",
+      "fixture_now_utc": 1793723773,
+      "sha256": "7fab0e9ae7f6beace215e7ed65f54c82adbaa41b9a91f23baf5f5868ba40d484",
+      "rgb_sha256": "246aed9a0459a2fe8fa29af4b4217d1f28f66a649d4ca692bd2cd9009af24775",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-24-dark",
+      "file": "timeline-24-dark.png",
+      "fixture_now_utc": 1793723774,
+      "sha256": "14b2680480e52ef4cfe2b22db5916380b8b911ef0c5909b06c71f6b37a241940",
+      "rgb_sha256": "707290cb6269b90941bb42b28a359738f63c1c97860339ec31744b029c7724f5",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "idle-12-dark",
+      "file": "idle-12-dark.png",
+      "fixture_now_utc": 1793723775,
+      "sha256": "4420a07abb32fcd55eca816140422a53333e859019008a32ee71ba725602ed35",
+      "rgb_sha256": "ed821bb8de06d52c221ad9946f74bae8fb2c97fcdd6ffb82502462ddee0129f0",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-12-dark",
+      "file": "music-12-dark.png",
+      "fixture_now_utc": 1793723777,
+      "sha256": "3b4444c81048159168fec612f6b68a5a5f1c11784bd02410f3c02898d87186dd",
+      "rgb_sha256": "62636bec7b8de481d7abcb90f0ec0c37c170492c1534a7264adef963e11c43ff",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-12-dark",
+      "file": "notification-summary-12-dark.png",
+      "fixture_now_utc": 1793723778,
+      "sha256": "de67e8eb2735058cd97cabd4cd60d8d9a91efa386c8565dd9c0b713f86087882",
+      "rgb_sha256": "2527f2c2ed4f71e6d299d9031e559d8ef6efe430071850b9b1b650d58853fe69",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-12-dark",
+      "file": "notification-12-dark.png",
+      "fixture_now_utc": 1793723779,
+      "sha256": "2106153885d3159344ac018bed2242948bb9bc61a69875db00e69a405944e75e",
+      "rgb_sha256": "7a20506ad1670a9541da180102ea9b4da28849553f55b0c6c6c5231d33d01ea9",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-12-dark",
+      "file": "timeline-12-dark.png",
+      "fixture_now_utc": 1793723780,
+      "sha256": "521deb9b33b58008774acd61e9ae7b2b931f295eca19d2d139f8634548a29c1f",
+      "rgb_sha256": "7e758633863fe9f516b96f91c4b9e98177cd149639b3474bea39f29728457a2c",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    }
+  ],
+  "scope": "20 actual native Screenshot-service presets; sample data, not live phone/provider verification.",
+  "visual_review": {
+    "reviewed": true,
+    "reviewer": "root",
+    "file": "review-settings.png",
+    "captures": 20,
+    "result": "PASS",
+    "scope": "Actualnative settingspresets,bothformats/themes."
+  }
+}

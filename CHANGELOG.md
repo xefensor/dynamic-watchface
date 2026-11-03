@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.1
+
+- Bottom-align the whole primary activity group with its context footer.
+  Media titles sit directly above artwork/artist; standard labels, values,
+  supporting text and range indicators move together above their footer.
+- Keep the existing 8px footer gap, typography, wrapping limits and optional
+  secondary row position. Short content leaves spare space above the group.
+- Refresh the affected native previews and local package evidence. Source APIs,
+  activity priority, clock ownership and app navigation retain their 0.12.0 behavior.
+
 ## 0.12.0
 
 - Adopt Activities 0.4.0 summary schema 4 and explicit ACT3 presentation metadata;

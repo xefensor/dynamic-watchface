@@ -1,0 +1,53 @@
+{
+  "version": "0.12.1",
+  "result": "PASS",
+  "pbw": {
+    "file": "Dynamic-0.12.1.pbw",
+    "sha256": "0ca9c3835552f9a7353d4b79556833fda31718bb9e166414e2b61c14511e0de7"
+  },
+  "nativePayloadSha256": {
+    "appinfo.json": "0963d70a876164097c9a0963a887efe0598d2daed3d4247fcf17290f10238e77",
+    "emery/pebble-app.bin": "e85453253f0d2cfe8e4178e860596521ef59830a86304b4d4e336f22bc00a590",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "7b23f03faf93e95a870395c62c5b5bd6437f1be740c47f3ef9ac3221080439a7"
+  },
+  "captureBinaryAndResourcesMatch": true,
+  "captureManifestRendererFieldsMatch": true,
+  "captureManifestTimestampOnlyDifference": true,
+  "sdkPayloadsRetained": true,
+  "nativeSizes": {
+    "fileBytes": 67240,
+    "loadedBytes": 64928,
+    "virtualBytes": 65348,
+    "relocationEntries": 578,
+    "relocationBytes": 2312,
+    "processInfoSizeLimit": 65535,
+    "completeBinaryLimit": 131072,
+    "loadedHeadroomBytes": 607,
+    "virtualHeadroomBytes": 187,
+    "linkedElfSectionsMatch": true,
+    "scope": "Loaded image and static extent; this does not measure runtime heap availability."
+  },
+  "resourcesBytes": 246928,
+  "navigationPluginPackaged": true,
+  "nativeSummaryCaptures": 36,
+  "additionalShortMediaTitleCaptures": 1,
+  "clockFollowups": 20,
+  "nativeSettingsCaptures": 20,
+  "nativeStartup": {
+    "stateBytes": 24792,
+    "freeHeapBytes": 33764,
+    "source": "native-summary/summary.json numericRuntimeLogs",
+    "scope": "One native startup sample, not worst-case runtime memory or stack high-water."
+  },
+  "scope": "Exact final package, SDK payload and native capture identity. Phone settings browser evidence is reused from unchanged 0.12.0. Source archive and committed release preparation are checked separately. No deployment, real-phone or physical-watch claim.",
+  "capturedManifest": {
+    "file": "docs/qa/0.12.1/native-previews/captured-native-manifest.json",
+    "sha256": "93d14d5903f2c138aa3fc421c523dd2e68bf69a4225bc816f854d8a0b7a3444a",
+    "ignoredTimestampFields": [
+      "generatedAt",
+      "application.timestamp",
+      "resources.timestamp"
+    ]
+  }
+}

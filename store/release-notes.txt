@@ -1,11 +1,9 @@
-0.12.0 notification-style summaries and recent activity navigation — local development candidate
+0.12.1 bottom-aligned primary activity content — local development candidate
 
-Plugins publish standard or media summaries through Activities 0.4.0. Dynamic chooses the layout. Earlier provider schemas remain compatible through phone-side adaptation, with independent clocks and original source validity preserved.
+The complete primary activity groups at the bottom directly above its context footer. Short media titles end 8px above artwork/artist. Standard labels, headline, supporting text and range indicators move together with the same footer gap. Spare space stays above the content. The secondary retains its existing one-row position.
 
-Primary content sits above its context footer. Media uses title plus optional artwork and artist. The optional secondary occupies exactly one static row above the primary. Any activity can take either role, and the primary expands when alone. Complete values and units remain intact. Text never scrolls or automatically pages.
+This is a native placement change. Typography, wrapping, activity sources, priorities, clocks, expiry, Timer and the separate Open Activity helper keep their existing behavior. Core 0.5.0 and Activities 0.4.0 remain pinned.
 
-Dynamic keeps its existing activity priorities and show/hide choices. Real activity or media changes can trigger a short incoming transition; clocks and routine metadata refreshes do not. Timer retains native alarm and state ownership. Uncertain generic saved content is omitted rather than displayed as current.
+Fresh native light/dark summaries, the one-line media example and all native settings presets were reviewed. Portable tests, SDK build, package identity and native capture checks pass. Unchanged phone-settings interaction evidence is reused explicitly from 0.12.0.
 
-A bundled read-only source supplies destination app IDs only after native presentation confirmation, capped at 45 seconds and original role/source expiry. The separate Open Activity helper opens the selected recent role from any watchface. No strict preceding-watchface guard, per-timer deep link, Dashboard implementation or platform fork is included.
-
-Core 0.5.0 and Activities 0.4.0 are pinned. Earlier published artifacts and tags remain unchanged. Portable, SDK and emulator evidence is separate from physical-watch/real-phone testing. This candidate has not been pushed or published; Pebble appstore submission remains held.
+Earlier artifacts and tags remain unchanged. This candidate has no new physical-watch or real-phone result, and has not been pushed or published. Pebble appstore submission remains held.
