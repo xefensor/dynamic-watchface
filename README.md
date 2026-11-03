@@ -1,7 +1,8 @@
 # Dynamic
 
 A Pebble Time 2 watchface with rounded time, two horizontal readings and
-notification-style activities. The local 0.13.0 development candidate places one
+notification-style activities. The local 0.14.0 candidate cleans up settings and
+keeps the shared activity renderer. It places one
 compact activity row above the main activity and groups the primary content
 against its bottom context. Music uses title, artwork and artist. Text stays
 still and truncates at its end. Dynamic is an independent watchface by Xef.
@@ -48,7 +49,7 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Plugin activities
 
-The local 0.13.0 candidate prefers `activity/summary` schema 4 through pinned
+The local 0.14.0 candidate prefers `activity/summary` schema 4 through pinned
 Activities 0.4.1. Sources publish either a standard headline with optional detail,
 or media title/artist/artwork. Datums can be text, values or independent clocks.
 Plugins supply meaning; Dynamic chooses layout. Existing schema 1/2/3 providers
@@ -67,7 +68,7 @@ scrolls or automatically pages.
 Complete values and units are preserved; an optional compact view yields when
 its essential value cannot fit.
 
-In **Content → Activity priority**, drag apps or use their arrow buttons to
+In **Content & priority → Activity priority**, drag apps or use their arrow buttons to
 reorder and show/hide them. The first eligible activity is primary and the next
 secondary. Music and Notifications participate in this same list. Notifications
 defaults to Off; when first enabled, its initial priority is first. A saved
@@ -210,8 +211,9 @@ priority over completing an outgoing animation.
    shared Pebble choices and can affect other faces using those slots. Dynamic
    retains their left/right positions and the selected provider's units.
 3. Open Dynamic's **Appearance** group. Try the independent Idle, Music,
-   Summary, Message and Timeline examples without changing any content or
-   privacy preference. The 20 native samples cover five states, two clock
+   Title only, Message and Timeline examples without changing any content or
+   privacy preference. Section shortcuts reach Content and Connection & help
+   without changing browser history. The 20 native samples cover five states, two clock
    formats and two themes. They are layout/colour examples, not live data.
 4. Choose Light / Dark / Custom, accent and Follow Pebble / 12-hour / 24-hour.
    Returning to Custom restores that session's custom palette. Follow Pebble
@@ -221,9 +223,12 @@ priority over completing an outgoing animation.
    Time palette. A colour preset code such as `DYN1-FFFFFF-000000-55AAFF` shares
    only background, text and accent colours; importing it changes no content,
    privacy, app-filter or vibration preference.
-5. In **Content**, check the shared reading summaries and adjacent recovery
+5. In **Content & priority**, check the shared reading summaries and adjacent recovery
    help, then choose plugin activities, reorder or hide activity apps, and choose
-   Music and Notifications visibility in the same priority list. A normal summary can
+   Music and Notifications visibility in the same priority list. The plugin switch
+   affects only installed activity plugins and explains disabled rows. Music and
+   Notifications remain independent. Enable Notifications in the list to choose
+   its details; hiding it retains its privacy choice. A normal summary can
    include a sender or notification title; App-only hides the sender and body.
    Message previews are optional. Viewing a sample does not enable that feature;
    a nearby note identifies disabled examples.
@@ -326,7 +331,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.13.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.14.0.pbw
 python3 scripts/package-source.py
 ```
 
@@ -338,7 +343,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.13.0.pbw
+pebble install --emulator emery dist/Dynamic-0.14.0.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -373,7 +378,7 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic 0.13.0 pins Core 0.5.0 and Activities 0.4.1. Halftone keeps its own
+Dynamic 0.14.0 pins Core 0.5.0 and Activities 0.4.1. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
 `vendor/pebble-watchface-core-0.5.0.tgz` and

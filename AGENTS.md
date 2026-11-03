@@ -151,3 +151,12 @@ record indices and the normal app-destination mapping in both roles, including
 body-free summaries. Presentation flags are zero; reject the retired special
 notification flag. The 13-byte context-effects sidecar carries only native
 session, event counter, flags and original expiry for optional vibration.
+
+Version 0.14.0 changes phone settings only. Keep Appearance, Content & priority
+and Connection & help with nonsticky focus/scroll shortcuts that do not change
+browser history. The activity list owns Music/Notifications visibility; the
+three notification detail choices retain their saved privacy state while hidden.
+SHOW_ACTIVITIES affects generic plugins only; disabled rows explain that state
+without rewriting saved order/visibility. Preserve all preference keys and default
+privacy. Reused 0.13 native activity captures must retain their historical origin;
+20 fresh 0.14 native previews and current Clay source hashes are separate evidence.

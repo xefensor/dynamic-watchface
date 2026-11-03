@@ -1,0 +1,19 @@
+{
+  "version": "0.14.0",
+  "reference": "Dynamic-0.13.0.pbw",
+  "nativeSourceUnchanged": true,
+  "binaryEqualExcludingVerifiedMetadata": true,
+  "excludedProcessHeader": [
+    0,
+    130
+  ],
+  "excludedAlignmentAndGnuBuildId": [
+    130,
+    168
+  ],
+  "normalizedBinarySha256": "1e1dbbdb25ad7868a6ba975deab4b6f0fd0ba86b11f9b7b8d566207c451e3f84",
+  "resourcesIdentical": true,
+  "referenceBinarySha256": "6ec2fad1ff771f5b1339ac52418894f4e1c4fb5c143fd9ca05da11165974d756",
+  "candidateBinarySha256": "a4354db9ced24509b3ac5fcbe4f67d8ee83392d07cc23d46ff07d9137929bb14",
+  "scope": "Exact unchanged native C and payload comparison excluding verified process metadata/build ID. Reuse0.13 activity layouts, motion and clock evidence; new0.14 native presets separately captured."
+}

@@ -8,8 +8,8 @@ Keep private notification text out of reports and screenshots.
 
 ## Downloads and verification
 
-Use the current [v0.8.0 GitHub prerelease](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0)
-or browse [all releases](https://github.com/xefensor/dynamic-watchface/releases).
+Browse the [published GitHub releases](https://github.com/xefensor/dynamic-watchface/releases).
+The local 0.14.0 settings candidate has its own validation record.
 Download the PBW and `SHA256SUMS.txt`; the source ZIP is for building or inspecting
 the checked snapshot. Verify the files you downloaded with
 `sha256sum --ignore-missing -c SHA256SUMS.txt`, or download both PBW and source
@@ -29,11 +29,17 @@ playback controls. Timeline Peek is the watch's native panel.
 
 ## Plugin activities
 
-Enable Plugin activities in Content and install a compatible activity provider.
+Open **Content & priority**, enable **Show activity plugins** and install a
+compatible activity provider. This switch affects plugin activities only; Music
+and Notifications have their own visibility checkboxes in the same priority list.
+Disabled plugin rows retain their saved positions and visibility preferences.
 Dynamic prefers `activity/summary` schema 4 and adapts earlier conventions.
 Timer, Music and Notifications can each be primary or secondary according to
 Dynamic's Activity priority list. Notifications defaults to Off; its row and
-privacy controls stay synchronized. The originating watchapp owns timer state
+privacy controls stay synchronized. Enable it in the list to choose app-only,
+sender/title or message detail. Hiding it preserves the last privacy choice.
+The section shortcuts reach Content and Connection & help; Save applies changes.
+The originating watchapp owns timer state
 and alarms; offline changes may be missing. Include both app versions and source
 sharing status in reports.
 

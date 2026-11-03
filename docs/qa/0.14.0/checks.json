@@ -1,0 +1,62 @@
+{
+  "version": "0.14.0",
+  "result": "PASS",
+  "commands": [
+    {
+      "command": "npm test",
+      "javascriptTests": 118,
+      "portableCSuites": 12,
+      "log": "portable-tests.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "pythonTests": 40,
+      "log": "python-tests.log"
+    },
+    {
+      "command": "pebble build",
+      "sdk": "4.33.1",
+      "platform": "emery",
+      "log": "sdk-build.log"
+    },
+    {
+      "command": "python3 scripts/check-native-style.py --pbw dist/Dynamic-0.14.0.pbw",
+      "evidence": "bundle-audit.json"
+    },
+    {
+      "command": "node scripts/check-settings-activities.cjs docs/qa/0.14.0/settings",
+      "actualClayBrowser": true,
+      "languages": [
+        "en",
+        "cs"
+      ],
+      "viewportWidths": [
+        320,
+        360
+      ],
+      "viewportHeight": 800,
+      "evidence": "settings/validation.json",
+      "sourceLocales": 17
+    }
+  ],
+  "freshNativeSettingsEvidence": "native-previews/previews.json",
+  "historicalNativeActivityEvidence": {
+    "file": "../0.13.0/native-summary/summary.json",
+    "normalizedIdentity": "native-identity.json",
+    "reused": true
+  },
+  "scope": "Local portable tests, SDK/package identity and isolated browser/emulator fixtures. Cross-app UX evidence is separate. No deployment, real-phone or physical-watch claim.",
+  "packagedIntegration": {
+    "evidence": "packaged-handoff.json",
+    "cases": 6,
+    "actualPackagedScripts": true,
+    "versions": {
+      "dynamic": "0.14.0",
+      "timer": "0.8.0",
+      "helper": "0.1.1"
+    },
+    "coldSettingsSaveAndReopen": true,
+    "swappedShortcutMappingsHonored": true,
+    "scope": "Actual packaged Dynamic PKJS/navigation provider, Timer PKJS/provider and Open Activity PKJS/config plugin, including saved shortcut mappings. In-memory SDK, clocks and native presentation/confirmation messages; no real phone or physical watch."
+  }
+}

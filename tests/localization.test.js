@@ -191,7 +191,7 @@ test('chunky-motion appearance controls are translated without stale panel or sh
     assert.equal(localization.t('shadow',language),'shadow');
   }
   assert.doesNotMatch(visible(config).join('\n'),/information panel color|Panel text|bolder time digits/);
-  assert.equal(localization.t('animationsHelp','en'),'Short transitions when music or notifications change.');
+  assert.equal(localization.t('animationsHelp','en'),'Short transitions when activities change.');
 });
 
 
@@ -284,7 +284,7 @@ test('notification activity copy shares roles and preserves system notification 
     assert.equal(localization.t('Allow notification access in Pebble. Only new notifications appear.',language),strings.notificationsHelp,language+': old configuration help');
   }
   assert.equal(localization.t('watchfaceBanners','en'),'Notification activity');
-  assert.equal(localization.t('previewBanner','en'),'Summary');
+  assert.equal(localization.t('previewBanner','en'),'Title only');
   assert.equal(localization.t('notificationVibration','en'),'Additional vibration');
   assert.match(localization.t('notificationsHelp','en'),/same activity priority and primary\/secondary layouts/);
   assert.match(localization.t('notificationsHelp','en'),/system notifications remain separate/);
@@ -292,4 +292,24 @@ test('notification activity copy shares roles and preserves system notification 
   assert.match(localization.t('vibrationHelp','en'),/Turn this off if Pebble already vibrates/);
   assert.match(localization.t('previewPaletteHelp','en'),/^Preview only/);
   assert.doesNotMatch(localization.t('notificationsHelp','en'),/replaces|disables|turns off/i);
+});
+
+test('settings cleanup removes obsolete copy and translates the shared priority and privacy controls',()=>{
+  const active=visible(config).join('\n');
+  assert.doesNotMatch(active,/Clock mark|last-reported|Music & notifications|Both shrink above music/);
+  assert.deepEqual(config.filter(item=>item.type==='section').map(item=>item.items[0].defaultValue),
+    ['Appearance','Content & priority','Connection & help']);
+  for(const language of languages) {
+    const strings=localization.settingsStrings(language);
+    for(const key of ['content','previewBanner','animationsHelp','activitiesHelp','notificationDetails','notificationDisabledHelp','activityPluginsOffHelp']) {
+      assert.ok(strings[key].trim(),language+': '+key);
+      if(language!=='en')assert.notEqual(strings[key],localization.t(key,'en'),language+': '+key);
+      assert.equal(localization.t(localization.t(key,'en'),language),strings[key]);
+    }
+    assert.equal(strings.activityStateHelp,undefined);
+    const translated=items(localization.translateConfig(config,language));
+    assert.equal(translated.find(item=>item.id==='dynamic-notification-mode').defaultValue,strings.notificationDetails);
+    assert.equal(translated.find(item=>item.id==='dynamic-notification-disabled').defaultValue,strings.notificationDisabledHelp);
+  }
+  assert.match(localization.t('activitiesHelp','en'),/Music and Notifications have their own switches/);
 });

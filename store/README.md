@@ -1,6 +1,6 @@
 # Dynamic publication kit
 
-**Status: 0.13.0 prepared locally; Pebble appstore submission is held.** Pebble's
+**Status: 0.14.0 prepared locally; Pebble appstore submission is held.** Pebble's
 [plugin-preview guide](https://developer.repebble.com/guides/plugins/preview/)
 is the recorded reason for retaining the submission hold.
 Earlier published releases retain their own checked PBW/source downloads. This kit does not submit or
@@ -14,7 +14,7 @@ avoid claiming live-phone or hardware checks that have not been performed.
 ## Assets
 
 The five `emery_*.png` files are raw **200×228** watch captures. They contain no
-frame, labels or invented UI. Idle, Music, Summary, Message and a dark appearance
+frame, labels or invented UI. Idle, Music, Title only, Message and a dark appearance
 show the actual native renderer with synthetic fixture data. The dark capture
 uses the same verified renderer as the final PBW. Native Timeline geometry is
 covered in the validation evidence; its empty emulator event panel is not a
@@ -49,7 +49,7 @@ has allowed public submission.
 
 ## Frozen release and current documentation
 
-The 0.13.0 package and asset manifest identify this local candidate; earlier
+The 0.14.0 package and asset manifest identify this local candidate; earlier
 published versions retain their own original source and artifacts.
 Later documentation-only changes on `main` do not rewrite those published
 packages, hashes or tags. Regenerate the kit/source snapshot while preparing a

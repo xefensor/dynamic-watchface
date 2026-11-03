@@ -1,9 +1,9 @@
-0.13.0 shared Notifications activities — local development candidate
+0.14.0 clearer settings — local development candidate
 
-Notifications now uses the same primary and one-row secondary layouts as Timer, Music and compatible activity plugins. Source app identity and images remain visible, with optional message text in the standard detail area. App-only privacy avoids duplicate app headings. Both roles can open the Notifications app through Open Activity, including summaries without a body.
+Settings now has section shortcuts for Appearance, Content & priority and Connection & help. The shortcuts work with touch and keyboard without changing browser history, and Save stays within reach.
 
-Reorder or show/hide Notifications in Dynamic’s existing Activity priority list. It remains Off by default. Its initial position is first when no Notifications position has been saved; explicit user order wins. The visibility row and privacy controls stay synchronized, retaining app-only privacy when re-enabled.
+Use the activity list to show or hide Music and Notifications. Notification details have three privacy choices after enabling the activity; hiding it keeps its previous choice. The activity-plugin switch leaves Music and Notifications independent and explains disabled plugin rows without changing your saved order or visibility.
 
-Every notification privacy mode shares one eight-second event window, capped by source expiry. Baselines do not replay history; late updates do not extend the event. Privacy, disconnection and expiry clear it. Optional additional vibration keeps its filter, Quiet Time and duplicate protections.
+Obsolete clock-mark copy and repeated setup/status text are removed. The title-only preview is named clearly, controls have larger touch targets, and all 17 languages remain covered.
 
-Activities 0.4.1 is pinned; Core remains 0.5.0. Native, portable, SDK, package and browser checks are recorded separately from real-phone or physical-watch testing. Earlier artifacts remain unchanged. This candidate is prepared locally, with no public store submission; the plugin-preview hold remains.
+The native watchface renderer, activity protocols and library pins are unchanged from 0.13.0. Twenty fresh native previews and real Clay browser interactions are checked separately from real-phone and physical-watch behavior. Earlier archives remain unchanged. This candidate is prepared locally with no public store submission; the plugin-preview hold remains.

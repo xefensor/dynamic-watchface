@@ -1,5 +1,68 @@
 # Dynamic validation
 
+## 0.14.0 settings cleanup — 3 November 2026
+
+The phone settings now has Appearance, Content & priority and Connection & help,
+with three nonsticky section shortcuts and a fixed Save area. Music and
+Notifications use one visibility checkbox each in the activity list. Notifications
+has three separate privacy choices; hiding it preserves both its app-only and
+body preferences. The plugin master switch leaves both built-ins independent,
+explains disabled plugin rows, and preserves saved positions and per-app choices.
+The obsolete activity clock-mark claim, redundant setup/status text and duplicate
+Notifications Off choice are removed. The title-only sample is labelled accurately.
+
+- **118 JavaScript tests, 12 portable C suites and 40 Python regressions pass.**
+  Active controls and new copy are covered in all 17 locales. The schema, native
+  message keys, Core 0.5.0 and Activities 0.4.1 pins are unchanged.
+- **Actual offline Clay browser checks pass at 320 and 360 pixels wide.** EN/CS
+  interactions cover native touch and desktop drag, keyboard/buttons, preserved
+  priority, hidden Notifications reopened in app-only mode, independent plugin
+  visibility, focus retention and the 64-provider boundary. Real Enter-key
+  section jumps move focus without changing the URL hash or browser history.
+  Save remains visible and control targets are at least 44px. Page evaluations
+  fail on JavaScript exceptions. The actual Clay save responses are replayed
+  through production PKJS with simulated SDK coordinators; opening saved hidden
+  settings does not create an unsaved change.
+- **SDK 4.33.1 Emery build and complete bundle audit pass.** The virtual image
+  remains 62,212 bytes, leaving 3,323 below the process-info limit. Loaded bytes
+  are 61,796, the complete binary is 64,108, and resources are 246,928 bytes.
+  These are static image sizes, not runtime heap, stack or battery measurements.
+- **20 fresh native settings presets are visually reviewed and pass.** They
+  cover the five sample states, two clock formats and light/dark themes. The
+  final binary/resources match those captures exactly; only SDK manifest
+  timestamp fields differ. Embedded settings previews and the five store
+  screenshots use these new captures. The final browser images use the updated
+  previews and current source hashes.
+- Native C is unchanged from 0.13.0. Resources are byte-identical and the native
+  renderer binary matches after excluding verified process-header and GNU
+  build-ID metadata. The **52 activity compositions, 24 clock follow-ups,
+  additional short media title, local expiry promotion, idle presentation refresh
+  and bounded motion checks from 0.13.0 are reused as historical evidence**;
+  they are not presented as new runs. The three activity product images retain
+  their explicit 0.13.0 origins.
+- **Six fresh packaged cross-app cases pass** with Dynamic 0.14.0, Timer 0.8.0
+  and Open Activity 0.1.1. The fixture executes the final packaged PKJS/providers
+  across three notification privacy modes and both roles. It also saves and
+  reopens the helper's settings in a cold context and confirms swapped Up/Down
+  mappings, correct destinations, expiry contraction/close, one invocation per
+  confirmation, suppressed history, underlying Timer/Music restoration and no
+  private content in navigation. SDK, clocks and native messages are simulated.
+
+Evidence: [checks and logs](qa/0.14.0/checks.json),
+[actual Clay checks](qa/0.14.0/settings/README.md),
+[native presets](qa/0.14.0/native-previews/previews.json),
+[native identity comparison](qa/0.14.0/native-identity.json),
+[package audit](qa/0.14.0/bundle-audit.json) and
+[final distribution identity](qa/0.14.0/final-distribution.json), plus
+[packaged cross-app handoff](qa/0.14.0/packaged-handoff.json).
+
+Final PBW SHA-256:
+`3e68889f805736e578e49e8fef34387f48279e3b293c3a8fddd6633458cc367a`.
+
+Browser and native fixtures use synthetic source data and simulated SDK/native
+exchange. No new real-phone delivery, Quick Launch hold, physical-watch latency,
+alarm or battery result is claimed. Earlier archives and evidence remain intact.
+
 ## 0.13.0 shared Notifications activities — 3 November 2026
 
 Dynamic now uses Activities 0.4.1, exact source

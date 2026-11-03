@@ -553,7 +553,7 @@ test('settings group appearance, content and recovery in one three-section page'
   const f=fixture();f.handlers.showConfiguration();
   const sections=f.clay.config.filter(x=>x.type==='section');
   assert.equal(sections.length,3);
-  assert.deepEqual(sections.map(x=>x.items[0].defaultValue),['Appearance','Content','Connection & help']);
+  assert.deepEqual(sections.map(x=>x.items[0].defaultValue),['Appearance','Content & priority','Connection & help']);
 });
 
 

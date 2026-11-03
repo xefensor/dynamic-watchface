@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.14.0
+
+- Clean up settings into Appearance, Content & priority, and Connection & help,
+  with three keyboard-accessible section shortcuts and a fixed Save area.
+- Use the activity list as the single visibility control for Music and
+  Notifications. Keep notification detail choices separate and preserve saved
+  app-only/body preferences while hidden and after reopening settings.
+- Explain that the activity-plugin switch leaves Music and Notifications
+  independent. Show why generic rows are disabled without changing saved order
+  or per-app visibility. Remove the obsolete activity clock-mark claim and
+  redundant reading/status copy; label the title-only preview accurately.
+- Retain all preference keys, defaults, 17 locales, activity protocols and the
+  0.13.0 native renderer. Refresh the actual Clay checks, 20 native preview assets,
+  package provenance and local sideload materials. Earlier archives stay intact.
+
 ## 0.13.0
 
 - Render Notifications through the same ACT3 activity selection, primary and

@@ -1,6 +1,7 @@
 # Design references and motion
 
-Dynamic 0.13.0 uses a chunky digital clock and a composition that makes room for
+Dynamic 0.14.0 retains the 0.13.0 native renderer. It uses a chunky digital clock
+and a composition that makes room for
 context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
@@ -135,7 +136,11 @@ daytime colours afterward. Both palettes retain the same contrast fallbacks and
 geometry; the change does not create another text or layout mode.
 
 The settings page follows the same principles: one page with Appearance,
-Content and Connection & help. Safe layout/colour samples are independent of
+Content & priority and Connection & help. Three nonsticky section shortcuts move
+focus without adding browser history. Music and Notifications have one visibility
+control each in the priority list. Notification details preserve their saved
+privacy mode while hidden. The plugin master switch explains disabled generic
+rows without changing their saved order or visibility. Safe samples are independent of
 privacy settings. The Save area describes draft versus last delivery, theme
 exploration is reversible, source ownership/recovery is explicit and app filters
 are visible individual entries. Read-only OS clock-style queries support

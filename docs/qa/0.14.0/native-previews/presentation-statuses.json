@@ -1,0 +1,183 @@
+{
+  "result": "PASS",
+  "nativeStatuses": [
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 2,
+      "presentationSequence": 1,
+      "reportedAt": 1793727195,
+      "expiresAt": 1793727314
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 3,
+      "presentationSequence": 2,
+      "reportedAt": 1793727196,
+      "expiresAt": 1793727204
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 4,
+      "presentationSequence": 3,
+      "reportedAt": 1793727197,
+      "expiresAt": 1793727205
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 4,
+      "presentationSequence": 4,
+      "reportedAt": 1793727198,
+      "expiresAt": 0
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 7,
+      "presentationSequence": 5,
+      "reportedAt": 1793727201,
+      "expiresAt": 1793727321
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 8,
+      "presentationSequence": 6,
+      "reportedAt": 1793727202,
+      "expiresAt": 1793727210
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 9,
+      "presentationSequence": 7,
+      "reportedAt": 1793727203,
+      "expiresAt": 1793727211
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 9,
+      "presentationSequence": 8,
+      "reportedAt": 1793727204,
+      "expiresAt": 0
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 12,
+      "presentationSequence": 9,
+      "reportedAt": 1793727207,
+      "expiresAt": 1793727327
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 13,
+      "presentationSequence": 10,
+      "reportedAt": 1793727208,
+      "expiresAt": 1793727216
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 14,
+      "presentationSequence": 11,
+      "reportedAt": 1793727209,
+      "expiresAt": 1793727217
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 14,
+      "presentationSequence": 12,
+      "reportedAt": 1793727211,
+      "expiresAt": 0
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 17,
+      "presentationSequence": 13,
+      "reportedAt": 1793727213,
+      "expiresAt": 1793727333
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 18,
+      "presentationSequence": 14,
+      "reportedAt": 1793727214,
+      "expiresAt": 1793727222
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 19,
+      "presentationSequence": 15,
+      "reportedAt": 1793727216,
+      "expiresAt": 1793727223
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 19,
+      "presentationSequence": 16,
+      "reportedAt": 1793727217,
+      "expiresAt": 0
+    }
+  ],
+  "legacyNotificationFlagsAbsent": true,
+  "scope": "Actual candidate native status messages during the twenty synthetic native settings presets. No phone source or app launch."
+}

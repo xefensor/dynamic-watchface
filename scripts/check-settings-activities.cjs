@@ -48,9 +48,10 @@ function replayHost(initialStorage={}) {
   return {storage,save:response=>handlers.webviewclosed({response:JSON.stringify(response)}),
     selected:()=>Array.from(options.select([timerCard]),card=>card.kind),deliveries};
 }
-for(const scenario of ['en','cs','bounded']){
-  const language=scenario==='bounded'?'en':scenario;
-  const saved={SHOW_MUSIC:true,SHOW_ACTIVITIES:true,SHOW_NOTIFICATIONS:false};
+for(const scenario of ['en','cs','bounded','off-app']){
+  const language=['bounded','off-app'].includes(scenario)?'en':scenario;
+  const saved=scenario==='off-app'?{SHOW_MUSIC:false,SHOW_ACTIVITIES:false,SHOW_NOTIFICATIONS:false,NOTIFICATION_APP_ONLY:true,NOTIFICATION_PREVIEW:true}:
+    {SHOW_MUSIC:true,SHOW_ACTIVITIES:true,SHOW_NOTIFICATIONS:false};
   const sandbox={module:{exports:{}},exports:{},require:name=>{if(name==='message_keys')return keys;throw Error(name);},
     Pebble:{platform:'test',getActiveWatchInfo:()=>({language}),getAccountToken:()=>'',getWatchToken:()=>'',addEventListener:()=>{}},
     localStorage:{getItem:()=>JSON.stringify(saved)},console};
@@ -77,13 +78,26 @@ async function run(){
   await new Promise((resolve,reject)=>{socket.onopen=resolve;socket.onerror=reject;});
   socket.onmessage=message=>{const data=JSON.parse(message.data);if(data.id){const waiter=pending.get(data.id);pending.delete(data.id);data.error?waiter.reject(data.error):waiter.resolve(data.result);}else events.push(data);};
   const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});
-  const evaluate=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result.value;
+  const evaluate=async expression=>{const result=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw new Error(result.result.description||result.exceptionDetails.text);return result.result.value;};
+  const capture=async name=>{await evaluate('new Promise(resolve=>setTimeout(resolve,250))');const image=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(output,name+'.png'),Buffer.from(image.data,'base64'));};
   await send('Page.enable');await send('Runtime.enable');
   const results=[];
   for(const language of ['en','cs']){
     await send('Emulation.setDeviceMetricsOverride',{width:360,height:800,deviceScaleFactor:1,mobile:true});
     await send('Page.navigate',{url:'file://'+pages[language]});
     for(let i=0;i<100;i++){if(await evaluate('!!document.querySelector(".dynamic-activity-row")'))break;await new Promise(r=>setTimeout(r,50));}
+    assert.deepEqual(await evaluate('Array.from(document.querySelectorAll(".dynamic-section-nav button"),button=>button.textContent)'),
+      ['appearance','content','helpConnection'].map(key=>localization.t(key,language)));
+    const initialNavigation=await evaluate('({hash:location.hash,length:history.length})');
+    for(const section of [1,2,0]) {
+      await evaluate('document.querySelectorAll(".dynamic-section-nav button")['+section+'].focus()');
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r',unmodifiedText:'\r'});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+      assert.equal(await evaluate('document.activeElement.id'),'dynamic-section-heading-'+section);
+      assert.deepEqual(await evaluate('({hash:location.hash,length:history.length})'),initialNavigation);
+      assert.equal(await evaluate('(()=>{const box=document.querySelector(".component-submit button").getBoundingClientRect();return box.top>=0&&box.bottom<=innerHeight;})()'),true);
+    }
+    await evaluate('window.scrollTo(0,0)');
     if(language==='en') {
       for(const scheme of ['light','dark']) {
         await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:scheme}]});
@@ -98,6 +112,21 @@ async function run(){
     const notificationRow='Array.from(document.querySelectorAll(".dynamic-activity-row")).find(r=>r.dataset.provider==="builtin:notifications")';
     const notificationToggle=()=>evaluate(notificationRow+'.querySelector("input").checked');
     assert.equal(await notificationToggle(),false,'Notifications preserve the Off default');
+    assert.deepEqual(await evaluate('Array.from(document.getElementById("dynamic-notification-mode-select").options,o=>o.value)'),['app','summary','preview']);
+    assert.equal(await evaluate('window.__testClay.getItemById("dynamic-notification-mode").$element[0].hidden'),true,'privacy details are hidden while Notifications are off');
+    assert.equal(await evaluate('window.__testClay.getItemById("dynamic-notification-disabled").$element[0].hidden'),false);
+    assert.equal(await evaluate('window.__testClay.getItemById("context-status").$element[0].hidden'),true,'duplicate context summary is hidden');
+    assert.equal(await evaluate('document.body.innerText.includes("Clock mark")'),false);
+    const pluginMaster=async enabled=>evaluate('window.__testClay.getItemByMessageKey("SHOW_ACTIVITIES").set('+enabled+')');
+    const beforeMaster=await evaluate('window.__testClay.serialize().__dynamicActivityPreferences.value');
+    await pluginMaster(false);
+    assert.equal(await evaluate('Array.from(document.querySelectorAll(".dynamic-activity-row")).filter(r=>!r.dataset.provider.startsWith("builtin:")).every(r=>r.querySelector("input").disabled&&r.dataset.disabled==="true")'),true);
+    assert.equal(await evaluate('Array.from(document.querySelectorAll(".dynamic-activity-row")).filter(r=>r.dataset.provider.startsWith("builtin:")).some(r=>r.querySelector("input").disabled)'),false);
+    assert.equal(await evaluate('window.__testClay.serialize().__dynamicActivityPreferences.value'),beforeMaster,'master switch preserves saved per-app order/visibility');
+    await evaluate('window.__testClay.getItemByMessageKey("SHOW_ACTIVITIES").$element[0].scrollIntoView({block:"start"})');
+    await capture('plugins-off-'+language);
+    await pluginMaster(true);
+    assert.equal(await evaluate('Array.from(document.querySelectorAll(".dynamic-activity-row input")).some(input=>input.disabled)'),false);
     await evaluate('document.querySelectorAll(".dynamic-activity-row")[0].scrollIntoView({block:"center"})');
     const touch=await evaluate('Array.from(document.querySelectorAll(".dynamic-activity-row")).slice(0,2).map(r=>{const box=r.querySelector(".dynamic-activity-handle").getBoundingClientRect();return {x:box.x+box.width/2,y:box.y+box.height/2};})');
     await send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touch[0]]});
@@ -128,8 +157,10 @@ async function run(){
     assert.equal(JSON.parse(host.storage['clay-settings']).__dynamicActivityPreferences,undefined);
     assert.ok(host.deliveries.every(payload=>payload.NaN===undefined&&payload.__dynamicActivityPreferences===undefined));
     assert.doesNotMatch(host.storage['dynamic-activity-preferences-v1'],/Example|track|tea|onerror/);
-    await evaluate(notificationRow+'.querySelector("input").click()');
+    await evaluate('(()=>{const input='+notificationRow+'.querySelector("input");input.focus();input.click();})()');
     assert.equal(await notificationToggle(),true);
+    assert.equal(await evaluate('document.activeElement.closest(".dynamic-activity-row").dataset.provider'),'builtin:notifications','checkbox focus survives the privacy block update');
+    assert.equal(await evaluate('window.__testClay.getItemById("dynamic-notification-mode").$element[0].hidden'),false);
     assert.equal(await evaluate('document.getElementById("dynamic-notification-mode-select").value'),'summary');
     const notificationsSecondResponse=await evaluate('window.__testClay.serialize()');
     assert.equal(notificationsSecondResponse.SHOW_NOTIFICATIONS.value,true);
@@ -144,21 +175,47 @@ async function run(){
     assert.equal((await evaluate('window.__testClay.serialize()')).NOTIFICATION_PREVIEW.value,true);
     await setNoticeMode('app');
     assert.equal((await evaluate('window.__testClay.serialize()')).NOTIFICATION_APP_ONLY.value,true);
-    await setNoticeMode('off');assert.equal(await notificationToggle(),false,'privacy Off also hides the activity row');
+    await evaluate('window.__testClay.getItemById("dynamic-notification-mode").$element[0].scrollIntoView({block:"start"})');
+    await capture('notification-details-'+language);
+    await evaluate(notificationRow+'.querySelector("input").click()');
+    assert.equal(await notificationToggle(),false,'activity row is the single Notifications visibility control');
+    assert.equal(await evaluate('window.__testClay.getItemById("dynamic-notification-mode").$element[0].hidden'),true);
     await evaluate(notificationRow+'.querySelector("input").click()');
     assert.equal(await evaluate('document.getElementById("dynamic-notification-mode-select").value'),'app','re-enabling preserves app-only privacy');
     const appOnlyResponse=await evaluate('window.__testClay.serialize()');
     host.save(appOnlyResponse);assert.deepEqual(host.selected(),['message','timer'],'privacy does not select a separate layout or role');
     await evaluate(notificationRow+'.querySelector("input").click()');
-    assert.equal(await evaluate('document.getElementById("dynamic-notification-mode-select").value'),'off');
+    assert.equal(await evaluate('document.getElementById("dynamic-notification-mode-select").value'),'app','hidden notifications retain app-only privacy');
     const hiddenResponse=await evaluate('window.__testClay.serialize()');host.save(hiddenResponse);assert.deepEqual(host.selected(),['timer']);
     const overflow=await evaluate('({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,buttons:Array.from(document.querySelectorAll(".dynamic-activity-row button"),b=>b.getBoundingClientRect().height)})');
     assert.ok(overflow.scrollWidth<=overflow.width);assert.ok(overflow.buttons.every(h=>h>=44));
-    await evaluate('document.querySelector("#dynamic-activity-order").scrollIntoView({block:"center"})');
+    await evaluate('window.__testClay.getItemById("dynamic-activity-order").$element[0].scrollIntoView({block:"center"})');
     const screenshot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
     fs.writeFileSync(path.join(output,language+'.png'),Buffer.from(screenshot.data,'base64'));
-    results.push({language,rows:await rows(),serialized:preferences,realClayResponse:serialized,notificationResponses:{secondary:notificationsSecondResponse,primary:notificationsFirstResponse,appOnly:appOnlyResponse,hidden:hiddenResponse},overflow,checks:['buttons','keyboard','native touch drag','desktop drag/drop','order-only dirty state','Music show/hide','Notifications default Off','Notifications primary/secondary priority saved and restored','Notifications visibility and privacy mode synchronized','re-enable retains app-only privacy','literal provider names','retained absent provider','appended new provider','actual Clay response persisted by production PKJS','fresh host restores Music-first order','actual Clay response restores Timer-first order','actual Clay response hides Music']});
+    await evaluate('window.__testClay.getItemById("dynamic-source-status").$element[0].scrollIntoView({block:"start"})');
+    await capture('connection-'+language);
+    results.push({language,rows:await rows(),serialized:preferences,realClayResponse:serialized,notificationResponses:{secondary:notificationsSecondResponse,primary:notificationsFirstResponse,appOnly:appOnlyResponse,hidden:hiddenResponse},overflow,checks:['buttons','keyboard','native touch drag','desktop drag/drop','order-only dirty state','Music show/hide','Notifications default Off','three privacy modes with no duplicate Off','master switch preserves order and does not disable built-ins','checkbox focus retained','Notifications primary/secondary priority saved and restored','Notifications visibility and privacy mode synchronized','re-enable retains app-only privacy','literal provider names','retained absent provider','appended new provider','actual Clay response persisted by production PKJS','fresh host restores Music-first order','actual Clay response restores Timer-first order','actual Clay response hides Music']});
   }
+  await send('Emulation.setDeviceMetricsOverride',{width:320,height:800,deviceScaleFactor:1,mobile:true});
+  await send('Page.navigate',{url:'file://'+pages['off-app']});
+  for(let i=0;i<100;i++){if(await evaluate('!!document.querySelector(".dynamic-activity-row")'))break;await new Promise(r=>setTimeout(r,50));}
+  assert.equal(await evaluate('document.getElementById("dynamic-notification-mode-select").value'),'app');
+  assert.equal(await evaluate('Array.from(document.querySelectorAll(".dynamic-section-nav button"),button=>button.getBoundingClientRect()).every(box=>box.width>=44&&box.height>=44)'),true);
+  await evaluate('document.querySelectorAll(".dynamic-section-nav button")[1].click()');
+  assert.equal(await evaluate('document.activeElement.id'),'dynamic-section-heading-1');
+  assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true);
+  assert.equal(await evaluate('window.__testClay.getItemById("dynamic-notification-mode").$element[0].hidden'),true);
+  assert.equal(await evaluate('document.querySelector(".dynamic-save-state").textContent'),localization.t('saveNone','en'),'opening saved hidden/app-only settings is not a change');
+  const notificationToggleExpression='Array.from(document.querySelectorAll(".dynamic-activity-row")).find(r=>r.dataset.provider==="builtin:notifications").querySelector("input")';
+  await evaluate(notificationToggleExpression+'.click()');
+  let reopened=await evaluate('window.__testClay.serialize()');
+  assert.equal(reopened.SHOW_ACTIVITIES.value,false);assert.equal(reopened.SHOW_NOTIFICATIONS.value,true);
+  assert.equal(reopened.NOTIFICATION_APP_ONLY.value,true);assert.equal(reopened.NOTIFICATION_PREVIEW.value,true,'app-only retains saved body preference without exposing it');
+  await evaluate('window.__testClay.getItemById("dynamic-notification-mode").$element[0].scrollIntoView({block:"start"})');
+  assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true);await capture('reopened-app-only-320');
+  await evaluate(notificationToggleExpression+'.click()');reopened=await evaluate('window.__testClay.serialize()');
+  assert.equal(reopened.SHOW_NOTIFICATIONS.value,false);assert.equal(reopened.NOTIFICATION_APP_ONLY.value,true);
+  await send('Emulation.setDeviceMetricsOverride',{width:360,height:800,deviceScaleFactor:1,mobile:true});
   await send('Page.navigate',{url:'file://'+pages.bounded});
   for(let i=0;i<100;i++){if(await evaluate('document.querySelectorAll(".dynamic-activity-row").length===64'))break;await new Promise(r=>setTimeout(r,50));}
   const boundedRows=await evaluate('Array.from(document.querySelectorAll(".dynamic-activity-row"),r=>r.dataset.provider)');
@@ -168,7 +225,9 @@ async function run(){
   const boundedResponse=await evaluate('window.__testClay.serialize()');
   assert.equal(JSON.parse(boundedResponse.__dynamicActivityPreferences.value).order[0],'builtin:music');
   const boundedHost=replayHost();boundedHost.save(boundedResponse);assert.deepEqual(boundedHost.selected(),['music','timer']);
-  const boundary={savedAbsentProviderCount:64,renderedProviderCount:boundedRows.length,allInstalledControlsVisible:true,musicFirstSavedAndRestored:true};
+  const boundary={savedAbsentProviderCount:64,renderedProviderCount:boundedRows.length,allInstalledControlsVisible:true,musicFirstSavedAndRestored:true,
+    sectionNavigation:{labelsFromSections:true,keyboardEnter:true,focusTarget:true,noHistoryOrHashChanges:true,saveAlwaysVisible:true,touchTargets44px:true},
+    reopenedSavedPrivacy:{viewportWidth:320,notificationsRemainHidden:true,appOnlyRetained:true,savedBodyPreferenceRetained:true,genericMasterRemainsOff:true,noInitialDirtyState:true,noHorizontalOverflow:true}};
   const sourceSha256=Object.fromEntries(['src/pkjs/config.js','src/pkjs/index.js','src/pkjs/settings-page.js','src/pkjs/localization.js','src/pkjs/activity-presentation.js','vendor/ACTIVITIES.json','scripts/check-settings-activities.cjs'].map(file=>[file,crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex')]));
   fs.writeFileSync(path.join(output,'validation.json'),JSON.stringify({version,actualClay:true,syntheticFixtures:true,viewport:{width:360,height:800},sourceSha256,results,boundary,errors:events.filter(e=>e.method==='Runtime.exceptionThrown')},null,2)+'\n');
   assert.equal(events.filter(e=>e.method==='Runtime.exceptionThrown').length,0);

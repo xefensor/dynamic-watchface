@@ -2918,103 +2918,86 @@ var ACTIVITY_MESSAGES = {
   "en": {
     "showActivities": "Show activity plugins",
     "activitiesHelp": "Compatible activity plugins connect automatically. Manage access permissions in Pebble.",
-    "activityStateHelp": "Clock mark: last-reported activity state. The source app owns tracking and alarms.",
     "activitiesSource": "Activity plugins"
   },
   "cs": {
     "showActivities": "Zobrazovat pluginy aktivit",
     "activitiesHelp": "Kompatibilní pluginy aktivit se připojí automaticky. Přístupová oprávnění spravujte v Pebble.",
-    "activityStateHelp": "Značka hodin: poslední nahlášený stav aktivity. Měření a budíky zajišťuje zdrojová aplikace.",
     "activitiesSource": "Pluginy aktivit"
   },
   "sk": {
     "showActivities": "Zobrazovať pluginy aktivít",
     "activitiesHelp": "Kompatibilné pluginy aktivít sa pripoja automaticky. Prístupové oprávnenia spravujte v Pebble.",
-    "activityStateHelp": "Značka hodín: posledný nahlásený stav aktivity. Meranie a budíky zabezpečuje zdrojová aplikácia.",
     "activitiesSource": "Pluginy aktivít"
   },
   "de": {
     "showActivities": "Aktivitätsplugins anzeigen",
     "activitiesHelp": "Kompatible Aktivitätsplugins verbinden sich automatisch. Zugriffsrechte werden in Pebble verwaltet.",
-    "activityStateHelp": "Uhrsymbol: zuletzt gemeldeter Aktivitätsstatus. Die Quell-App übernimmt Aufzeichnung und Alarme.",
     "activitiesSource": "Aktivitätsplugins"
   },
   "fr": {
     "showActivities": "Afficher les plugins d’activité",
     "activitiesHelp": "Les plugins d’activité compatibles se connectent automatiquement. Gérez les autorisations dans Pebble.",
-    "activityStateHelp": "Symbole d’horloge : dernier état reçu. L’application source assure le suivi et les alarmes.",
     "activitiesSource": "Plugins d’activité"
   },
   "es": {
     "showActivities": "Mostrar plugins de actividad",
     "activitiesHelp": "Los plugins de actividad compatibles se conectan automáticamente. Gestiona los permisos en Pebble.",
-    "activityStateHelp": "Símbolo de reloj: último estado recibido. La aplicación de origen gestiona el seguimiento y las alarmas.",
     "activitiesSource": "Plugins de actividad"
   },
   "it": {
     "showActivities": "Mostra plugin attività",
     "activitiesHelp": "I plugin attività compatibili si collegano automaticamente. Gestisci le autorizzazioni in Pebble.",
-    "activityStateHelp": "Simbolo orologio: ultimo stato ricevuto. L’app di origine gestisce registrazione e allarmi.",
     "activitiesSource": "Plugin attività"
   },
   "pt": {
     "showActivities": "Mostrar plugins de atividade",
     "activitiesHelp": "Os plugins de atividade compatíveis ligam-se automaticamente. Gere as permissões no Pebble.",
-    "activityStateHelp": "Símbolo de relógio: último estado recebido. A aplicação de origem gere o registo e os alarmes.",
     "activitiesSource": "Plugins de atividade"
   },
   "nl": {
     "showActivities": "Activiteitsplugins tonen",
     "activitiesHelp": "Compatibele activiteitsplugins verbinden automatisch. Beheer toegangsrechten in Pebble.",
-    "activityStateHelp": "Kloksymbool: laatst gemelde activiteitstoestand. De bronapp verzorgt metingen en alarmen.",
     "activitiesSource": "Activiteitsplugins"
   },
   "pl": {
     "showActivities": "Pokaż wtyczki aktywności",
     "activitiesHelp": "Zgodne wtyczki aktywności łączą się automatycznie. Uprawnieniami zarządzaj w Pebble.",
-    "activityStateHelp": "Symbol zegara: ostatnio zgłoszony stan aktywności. Aplikacja źródłowa odpowiada za pomiary i alarmy.",
     "activitiesSource": "Wtyczki aktywności"
   },
   "da": {
     "showActivities": "Vis aktivitetsplugins",
     "activitiesHelp": "Kompatible aktivitetsplugins forbindes automatisk. Administrer adgangstilladelser i Pebble.",
-    "activityStateHelp": "Ursymbol: senest rapporterede aktivitetsstatus. Kildeappen styrer registrering og alarmer.",
     "activitiesSource": "Aktivitetsplugins"
   },
   "sv": {
     "showActivities": "Visa aktivitetsplugin",
     "activitiesHelp": "Kompatibla aktivitetsplugin ansluts automatiskt. Hantera åtkomstbehörigheter i Pebble.",
-    "activityStateHelp": "Klocksymbol: senast rapporterade aktivitetsstatus. Källappen sköter registrering och larm.",
     "activitiesSource": "Aktivitetsplugin"
   },
   "fi": {
     "showActivities": "Näytä toimintolisäosat",
     "activitiesHelp": "Yhteensopivat toimintolisäosat yhdistetään automaattisesti. Hallitse käyttöoikeuksia Pebblessä.",
-    "activityStateHelp": "Kellomerkki: viimeksi ilmoitettu toiminnan tila. Lähdesovellus vastaa seurannasta ja hälytyksistä.",
     "activitiesSource": "Toimintolisäosat"
   },
   "no": {
     "showActivities": "Vis aktivitetsprogramtillegg",
     "activitiesHelp": "Kompatible aktivitetsprogramtillegg kobles til automatisk. Administrer tilgangstillatelser i Pebble.",
-    "activityStateHelp": "Klokkesymbol: sist rapporterte aktivitetsstatus. Kildeappen styrer registrering og alarmer.",
     "activitiesSource": "Aktivitetsprogramtillegg"
   },
   "hu": {
     "showActivities": "Tevékenységbővítmények megjelenítése",
     "activitiesHelp": "A kompatibilis tevékenységbővítmények automatikusan csatlakoznak. Az engedélyeket a Pebble-ben kezelheted.",
-    "activityStateHelp": "Órajel: a legutóbb jelentett tevékenységállapot. A forrásalkalmazás végzi a követést és a riasztást.",
     "activitiesSource": "Tevékenységbővítmények"
   },
   "ro": {
     "showActivities": "Afișează pluginurile de activitate",
     "activitiesHelp": "Pluginurile de activitate compatibile se conectează automat. Gestionează permisiunile în Pebble.",
-    "activityStateHelp": "Simbolul ceasului: ultima stare raportată. Aplicația sursă gestionează înregistrarea și alarmele.",
     "activitiesSource": "Pluginuri de activitate"
   },
   "tr": {
     "showActivities": "Etkinlik eklentilerini göster",
     "activitiesHelp": "Uyumlu etkinlik eklentileri otomatik bağlanır. Erişim izinlerini Pebble’da yönet.",
-    "activityStateHelp": "Saat simgesi: son bildirilen etkinlik durumu. Kaynak uygulama takibi ve alarmları yönetir.",
     "activitiesSource": "Etkinlik eklentileri"
   }
 };
@@ -3047,6 +3030,30 @@ Object.keys(ACTIVITY_PRIORITY_MESSAGES).forEach(function(language) {
     MESSAGES[language][key]=ACTIVITY_PRIORITY_MESSAGES[language][index];
   });
 });
+var SETTINGS_CLEANUP_MESSAGES = {
+  en:['Content & priority','Title only','Short transitions when activities change.','Show activities from installed plugins. Music and Notifications have their own switches in the list below.','Notification details','Enable Notifications in the activity list to change its details.','Turn on activity plugins to show this app.'],
+  cs:['Obsah a pořadí','Jen titulek','Krátké přechody při změně aktivit.','Zobrazuje aktivity nainstalovaných pluginů. Hudba a Oznámení mají vlastní přepínače v seznamu níže.','Podrobnosti oznámení','Podrobnosti upravíte po zapnutí Oznámení v seznamu aktivit.','Pro zobrazení této aplikace zapněte pluginy aktivit.'],
+  sk:['Obsah a poradie','Iba nadpis','Krátke prechody pri zmene aktivít.','Zobrazuje aktivity nainštalovaných pluginov. Hudba a Oznámenia majú vlastné prepínače v zozname nižšie.','Podrobnosti oznámení','Podrobnosti upravíte po zapnutí Oznámení v zozname aktivít.','Na zobrazenie tejto aplikácie zapnite pluginy aktivít.'],
+  de:['Inhalte & Reihenfolge','Nur Titel','Kurze Übergänge bei Aktivitätswechseln.','Aktivitäten installierter Plugins anzeigen. Musik und Mitteilungen haben eigene Schalter in der Liste unten.','Mitteilungsdetails','Aktiviere Mitteilungen in der Aktivitätsliste, um die Details zu ändern.','Aktiviere Aktivitätsplugins, um diese App anzuzeigen.'],
+  fr:['Contenu et priorité','Titre seul','Transitions courtes lors des changements d’activité.','Affiche les activités des plugins installés. Musique et Notifications ont leurs propres commandes dans la liste ci-dessous.','Détails des notifications','Activez Notifications dans la liste des activités pour modifier les détails.','Activez les plugins d’activité pour afficher cette application.'],
+  es:['Contenido y prioridad','Solo título','Transiciones breves al cambiar las actividades.','Muestra actividades de los plugins instalados. Música y Notificaciones tienen sus propios interruptores en la lista inferior.','Detalles de notificaciones','Activa Notificaciones en la lista de actividades para cambiar sus detalles.','Activa los plugins de actividad para mostrar esta aplicación.'],
+  it:['Contenuti e priorità','Solo titolo','Brevi transizioni quando cambiano le attività.','Mostra le attività dei plugin installati. Musica e Notifiche hanno interruttori propri nell’elenco sotto.','Dettagli notifiche','Attiva Notifiche nell’elenco delle attività per modificarne i dettagli.','Attiva i plugin attività per mostrare questa app.'],
+  pt:['Conteúdo e prioridade','Só título','Transições curtas quando as atividades mudam.','Mostra atividades dos plugins instalados. Música e Notificações têm os seus próprios interruptores na lista abaixo.','Detalhes das notificações','Ative Notificações na lista de atividades para alterar os detalhes.','Ative os plugins de atividade para mostrar esta aplicação.'],
+  nl:['Inhoud en prioriteit','Alleen titel','Korte overgangen bij wijzigingen in activiteiten.','Toon activiteiten van geïnstalleerde plugins. Muziek en Meldingen hebben eigen schakelaars in de lijst hieronder.','Meldingsdetails','Schakel Meldingen in de activiteitenlijst in om de details te wijzigen.','Schakel activiteitsplugins in om deze app te tonen.'],
+  pl:['Treść i kolejność','Tylko tytuł','Krótkie przejścia przy zmianie aktywności.','Pokazuje aktywności zainstalowanych wtyczek. Muzyka i Powiadomienia mają osobne przełączniki na liście poniżej.','Szczegóły powiadomień','Włącz Powiadomienia na liście aktywności, aby zmienić ich szczegóły.','Włącz wtyczki aktywności, aby pokazać tę aplikację.'],
+  da:['Indhold og rækkefølge','Kun titel','Korte overgange, når aktiviteter ændres.','Vis aktiviteter fra installerede plugins. Musik og Notifikationer har egne kontakter på listen nedenfor.','Notifikationsdetaljer','Slå Notifikationer til på aktivitetslisten for at ændre detaljerne.','Slå aktivitetsplugins til for at vise denne app.'],
+  sv:['Innehåll och ordning','Bara rubrik','Korta övergångar när aktiviteter ändras.','Visa aktiviteter från installerade plugin. Musik och Aviseringar har egna reglage i listan nedan.','Aviseringsdetaljer','Aktivera Aviseringar i aktivitetslistan för att ändra detaljerna.','Aktivera aktivitetsplugin för att visa den här appen.'],
+  no:['Innhold og rekkefølge','Bare tittel','Korte overganger når aktiviteter endres.','Vis aktiviteter fra installerte programtillegg. Musikk og Varsler har egne brytere i listen nedenfor.','Varseldetaljer','Slå på Varsler i aktivitetslisten for å endre detaljene.','Slå på aktivitetsprogramtillegg for å vise denne appen.'],
+  fi:['Sisältö ja järjestys','Vain otsikko','Lyhyet siirtymät toimintojen vaihtuessa.','Näytä asennettujen lisäosien toiminnot. Musiikilla ja Ilmoituksilla on omat kytkimensä alla olevassa luettelossa.','Ilmoitusten tiedot','Ota Ilmoitukset käyttöön toimintoluettelossa muuttaaksesi tietoja.','Ota toimintolisäosat käyttöön näyttääksesi tämän sovelluksen.'],
+  hu:['Tartalom és sorrend','Csak cím','Rövid átmenetek a tevékenységek változásakor.','A telepített bővítmények tevékenységeinek megjelenítése. A Zene és az Értesítések külön kapcsolót kap az alábbi listában.','Értesítések részletei','A részletek módosításához kapcsold be az Értesítéseket a tevékenységlistában.','Az alkalmazás megjelenítéséhez kapcsold be a tevékenységbővítményeket.'],
+  ro:['Conținut și prioritate','Doar titlul','Tranziții scurte când se schimbă activitățile.','Arată activitățile pluginurilor instalate. Muzica și Notificările au comutatoare proprii în lista de mai jos.','Detalii notificări','Activează Notificări în lista de activități pentru a modifica detaliile.','Activează pluginurile de activitate pentru a afișa această aplicație.'],
+  tr:['İçerik ve öncelik','Yalnızca başlık','Etkinlikler değiştiğinde kısa geçişler.','Yüklü eklentilerin etkinliklerini gösterir. Müzik ve Bildirimler için aşağıdaki listede ayrı anahtarlar vardır.','Bildirim ayrıntıları','Ayrıntıları değiştirmek için etkinlik listesinde Bildirimleri açın.','Bu uygulamayı göstermek için etkinlik eklentilerini açın.']
+};
+Object.keys(SETTINGS_CLEANUP_MESSAGES).forEach(function(language) {
+  ['content','previewBanner','animationsHelp','activitiesHelp','notificationDetails','notificationDisabledHelp','activityPluginsOffHelp'].forEach(function(key,index) {
+    MESSAGES[language][key]=SETTINGS_CLEANUP_MESSAGES[language][index];
+  });
+});
 var LANGUAGES = Object.keys(MESSAGES);
 var LITERALS = Object.create(null);
 Object.keys(MESSAGES.en).forEach(function(key) { LITERALS[MESSAGES.en[key]] = key; });
@@ -3058,6 +3065,10 @@ Object.keys(LEGACY_LITERALS).forEach(function(text) { LITERALS[text] = LEGACY_LI
   ['Saved on phone. Reconnect and save again to update the watch.','saveFailed'],
   ['App and title','notificationSummary'],
   ['Notification vibration','notificationVibration'],
+  ['Content','content'],
+  ['Notification details','notificationDetails'],
+  ['Enable Notifications in the activity list to change its details.','notificationDisabledHelp'],
+  ['Short transitions when music or notifications change.','animationsHelp'],
   ['Watchface banners','watchfaceBanners'],
   ['Allow notification access in Pebble. Only new notifications appear.','notificationsHelp'],
   ['One vibration per new notification burst. Respects Quiet Time and your app filter. Pebble may also vibrate for the same notification.','vibrationHelp']

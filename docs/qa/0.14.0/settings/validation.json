@@ -1,0 +1,752 @@
+{
+  "version": "0.14.0",
+  "actualClay": true,
+  "syntheticFixtures": true,
+  "viewport": {
+    "width": 360,
+    "height": 800
+  },
+  "sourceSha256": {
+    "src/pkjs/config.js": "ab93d43fbb3545b2ce3afdc6ebc2a89e57084b74ee26cfcec34cb29e9036cab5",
+    "src/pkjs/index.js": "ea7856c36b097cc32df2950c0cc03b0fb29178bbe2de04c9066fa6fa67bc1b8a",
+    "src/pkjs/settings-page.js": "a60d30d2b30977545e894603f001bbabfc8557311b302219d6aae38afea7fc57",
+    "src/pkjs/localization.js": "de389cb243c4b0d3c4742e2335040828dada001539d8d073da3532a37cac0a00",
+    "src/pkjs/activity-presentation.js": "be43e2384711e9c066081e3e6dce2de740b3d67b474494008cbbdbbec32bc674",
+    "vendor/ACTIVITIES.json": "ca0fca5e83cff322958fb4087385922fe35fb0b5612365144dcf14b2a8c93fea",
+    "scripts/check-settings-activities.cjs": "42651f76651035b86d3f35212acbbc5d923c66dd350ea8a0310ebcf2b2ab5be7"
+  },
+  "results": [
+    {
+      "language": "en",
+      "rows": [
+        "builtin:notifications",
+        "11111111-1111-4111-8111-111111111111",
+        "builtin:music",
+        "22222222-2222-4222-8222-222222222222",
+        "33333333-3333-4333-8333-333333333333",
+        "44444444-4444-4444-8444-444444444444"
+      ],
+      "serialized": {
+        "order": [
+          "11111111-1111-4111-8111-111111111111",
+          "builtin:music",
+          "builtin:notifications",
+          "22222222-2222-4222-8222-222222222222",
+          "33333333-3333-4333-8333-333333333333",
+          "44444444-4444-4444-8444-444444444444"
+        ],
+        "hidden": [
+          "22222222-2222-4222-8222-222222222222",
+          "builtin:notifications",
+          "builtin:music"
+        ]
+      },
+      "realClayResponse": {
+        "BACKGROUND_COLOR": {
+          "value": 16777215
+        },
+        "TEXT_COLOR": {
+          "value": 0
+        },
+        "ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "NIGHT_PALETTE": {
+          "value": false
+        },
+        "NIGHT_BACKGROUND_COLOR": {
+          "value": 0
+        },
+        "NIGHT_TEXT_COLOR": {
+          "value": 16777215
+        },
+        "NIGHT_ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "CLOCK_FORMAT": {
+          "value": 0
+        },
+        "ANIMATIONS": {
+          "value": true
+        },
+        "SHOW_STATUS": {
+          "value": true
+        },
+        "SHOW_ACTIVITIES": {
+          "value": true
+        },
+        "SHOW_MUSIC": {
+          "value": false
+        },
+        "SHOW_NOTIFICATIONS": {
+          "value": false
+        },
+        "NOTIFICATION_PREVIEW": {
+          "value": false
+        },
+        "NOTIFICATION_APP_ONLY": {
+          "value": false
+        },
+        "NOTIFICATION_VIBRATION": {
+          "value": 0
+        },
+        "NOTIFICATION_APPS": {
+          "value": ""
+        },
+        "__dynamicActivityPreferences": {
+          "value": "{\"order\":[\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"builtin:notifications\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:notifications\",\"builtin:music\"]}"
+        }
+      },
+      "notificationResponses": {
+        "secondary": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": true
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": false
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": false
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"builtin:notifications\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+          }
+        },
+        "primary": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": true
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": false
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": false
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"builtin:notifications\",\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+          }
+        },
+        "appOnly": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": true
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": true
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": true
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"builtin:notifications\",\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+          }
+        },
+        "hidden": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": false
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": true
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": true
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"builtin:notifications\",\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\",\"builtin:notifications\"]}"
+          }
+        }
+      },
+      "overflow": {
+        "width": 360,
+        "scrollWidth": 360,
+        "buttons": [
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44
+        ]
+      },
+      "checks": [
+        "buttons",
+        "keyboard",
+        "native touch drag",
+        "desktop drag/drop",
+        "order-only dirty state",
+        "Music show/hide",
+        "Notifications default Off",
+        "three privacy modes with no duplicate Off",
+        "master switch preserves order and does not disable built-ins",
+        "checkbox focus retained",
+        "Notifications primary/secondary priority saved and restored",
+        "Notifications visibility and privacy mode synchronized",
+        "re-enable retains app-only privacy",
+        "literal provider names",
+        "retained absent provider",
+        "appended new provider",
+        "actual Clay response persisted by production PKJS",
+        "fresh host restores Music-first order",
+        "actual Clay response restores Timer-first order",
+        "actual Clay response hides Music"
+      ]
+    },
+    {
+      "language": "cs",
+      "rows": [
+        "builtin:notifications",
+        "11111111-1111-4111-8111-111111111111",
+        "builtin:music",
+        "22222222-2222-4222-8222-222222222222",
+        "33333333-3333-4333-8333-333333333333",
+        "44444444-4444-4444-8444-444444444444"
+      ],
+      "serialized": {
+        "order": [
+          "11111111-1111-4111-8111-111111111111",
+          "builtin:music",
+          "builtin:notifications",
+          "22222222-2222-4222-8222-222222222222",
+          "33333333-3333-4333-8333-333333333333",
+          "44444444-4444-4444-8444-444444444444"
+        ],
+        "hidden": [
+          "22222222-2222-4222-8222-222222222222",
+          "builtin:notifications",
+          "builtin:music"
+        ]
+      },
+      "realClayResponse": {
+        "BACKGROUND_COLOR": {
+          "value": 16777215
+        },
+        "TEXT_COLOR": {
+          "value": 0
+        },
+        "ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "NIGHT_PALETTE": {
+          "value": false
+        },
+        "NIGHT_BACKGROUND_COLOR": {
+          "value": 0
+        },
+        "NIGHT_TEXT_COLOR": {
+          "value": 16777215
+        },
+        "NIGHT_ACCENT_COLOR": {
+          "value": 5614335
+        },
+        "CLOCK_FORMAT": {
+          "value": 0
+        },
+        "ANIMATIONS": {
+          "value": true
+        },
+        "SHOW_STATUS": {
+          "value": true
+        },
+        "SHOW_ACTIVITIES": {
+          "value": true
+        },
+        "SHOW_MUSIC": {
+          "value": false
+        },
+        "SHOW_NOTIFICATIONS": {
+          "value": false
+        },
+        "NOTIFICATION_PREVIEW": {
+          "value": false
+        },
+        "NOTIFICATION_APP_ONLY": {
+          "value": false
+        },
+        "NOTIFICATION_VIBRATION": {
+          "value": 0
+        },
+        "NOTIFICATION_APPS": {
+          "value": ""
+        },
+        "__dynamicActivityPreferences": {
+          "value": "{\"order\":[\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"builtin:notifications\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:notifications\",\"builtin:music\"]}"
+        }
+      },
+      "notificationResponses": {
+        "secondary": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": true
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": false
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": false
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"builtin:notifications\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+          }
+        },
+        "primary": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": true
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": false
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": false
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"builtin:notifications\",\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+          }
+        },
+        "appOnly": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": true
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": true
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": true
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"builtin:notifications\",\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\"]}"
+          }
+        },
+        "hidden": {
+          "BACKGROUND_COLOR": {
+            "value": 16777215
+          },
+          "TEXT_COLOR": {
+            "value": 0
+          },
+          "ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "NIGHT_PALETTE": {
+            "value": false
+          },
+          "NIGHT_BACKGROUND_COLOR": {
+            "value": 0
+          },
+          "NIGHT_TEXT_COLOR": {
+            "value": 16777215
+          },
+          "NIGHT_ACCENT_COLOR": {
+            "value": 5614335
+          },
+          "CLOCK_FORMAT": {
+            "value": 0
+          },
+          "ANIMATIONS": {
+            "value": true
+          },
+          "SHOW_STATUS": {
+            "value": true
+          },
+          "SHOW_ACTIVITIES": {
+            "value": true
+          },
+          "SHOW_MUSIC": {
+            "value": false
+          },
+          "SHOW_NOTIFICATIONS": {
+            "value": false
+          },
+          "NOTIFICATION_PREVIEW": {
+            "value": true
+          },
+          "NOTIFICATION_APP_ONLY": {
+            "value": true
+          },
+          "NOTIFICATION_VIBRATION": {
+            "value": 0
+          },
+          "NOTIFICATION_APPS": {
+            "value": ""
+          },
+          "__dynamicActivityPreferences": {
+            "value": "{\"order\":[\"builtin:notifications\",\"11111111-1111-4111-8111-111111111111\",\"builtin:music\",\"22222222-2222-4222-8222-222222222222\",\"33333333-3333-4333-8333-333333333333\",\"44444444-4444-4444-8444-444444444444\"],\"hidden\":[\"22222222-2222-4222-8222-222222222222\",\"builtin:music\",\"builtin:notifications\"]}"
+          }
+        }
+      },
+      "overflow": {
+        "width": 360,
+        "scrollWidth": 360,
+        "buttons": [
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44,
+          46.4375,
+          44,
+          44
+        ]
+      },
+      "checks": [
+        "buttons",
+        "keyboard",
+        "native touch drag",
+        "desktop drag/drop",
+        "order-only dirty state",
+        "Music show/hide",
+        "Notifications default Off",
+        "three privacy modes with no duplicate Off",
+        "master switch preserves order and does not disable built-ins",
+        "checkbox focus retained",
+        "Notifications primary/secondary priority saved and restored",
+        "Notifications visibility and privacy mode synchronized",
+        "re-enable retains app-only privacy",
+        "literal provider names",
+        "retained absent provider",
+        "appended new provider",
+        "actual Clay response persisted by production PKJS",
+        "fresh host restores Music-first order",
+        "actual Clay response restores Timer-first order",
+        "actual Clay response hides Music"
+      ]
+    }
+  ],
+  "boundary": {
+    "savedAbsentProviderCount": 64,
+    "renderedProviderCount": 64,
+    "allInstalledControlsVisible": true,
+    "musicFirstSavedAndRestored": true,
+    "sectionNavigation": {
+      "labelsFromSections": true,
+      "keyboardEnter": true,
+      "focusTarget": true,
+      "noHistoryOrHashChanges": true,
+      "saveAlwaysVisible": true,
+      "touchTargets44px": true
+    },
+    "reopenedSavedPrivacy": {
+      "viewportWidth": 320,
+      "notificationsRemainHidden": true,
+      "appOnlyRetained": true,
+      "savedBodyPreferenceRetained": true,
+      "genericMasterRemainsOff": true,
+      "noInitialDirtyState": true,
+      "noHorizontalOverflow": true
+    }
+  },
+  "errors": []
+}
