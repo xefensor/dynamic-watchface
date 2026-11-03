@@ -1,7 +1,7 @@
 # Dynamic
 
 A Pebble Time 2 watchface with rounded time, two horizontal readings and
-notification-style activities. The local 0.16.0 optimization candidate reduces
+notification-style activities. Version 0.16.0 reduces
 rendering work, memory and package size while preserving the layouts. It places one
 compact activity row above the main activity and groups the primary content
 against its bottom context. Music uses title, artwork and artist. Text stays
@@ -9,21 +9,23 @@ still and truncates at its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
-Local optimization candidate: [Dynamic-0.16.0.pbw](dist/Dynamic-0.16.0.pbw),
-[buildable source](dist/Dynamic-0.16.0-source.zip) and
-[developer debugging files](dist/Dynamic-0.16.0-debug.zip).
-[Optimization review](docs/OPTIMIZATION-REVIEW.md) records measurements and checks.
-It has not been pushed or published.
-
-
-The previous published release is [**v0.15.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.15.0).
+The current release is [**v0.16.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.16.0).
 It is ready for sideload testing. Pebble appstore submission remains held.
 
 | File | Use |
 | --- | --- |
-| [Dynamic-0.15.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.15.0/Dynamic-0.15.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
-| [Dynamic-0.15.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.15.0/Dynamic-0.15.0-source.zip) | The checked source snapshot and pinned dependencies |
-| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.15.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+| [Dynamic-0.16.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.16.0/Dynamic-0.16.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
+| [Dynamic-0.16.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.16.0/Dynamic-0.16.0-source.zip) | Checked source snapshot and pinned dependencies |
+| [Dynamic-0.16.0-debug.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.16.0/Dynamic-0.16.0-debug.zip) | Original scripts and chained maps for debugging |
+| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.16.0/SHA256SUMS.txt) | Verify downloads with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+
+The [optimization review](docs/OPTIMIZATION-REVIEW.md) records measured sizes and
+validation. The release tag freezes artifact commit
+[`e05d564`](https://github.com/xefensor/dynamic-watchface/commit/e05d564bff9d96ad5a1fa953032ee6fc6fd9519a).
+Later documentation updates preserve the published archives and tag.
+
+The [previous 0.15.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.15.0)
+and its artifacts remain available unchanged.
 
 The [previous 0.14.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.14.0)
 and its artifacts remain available unchanged.
@@ -98,7 +100,7 @@ annotation are omitted instead of showing them as current without one.
 
 ## Open Activity shortcut
 
-Install the separate [**Open Activity 0.1.4** helper](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.4) and assign that same app to
+Install the separate [**Open Activity 0.1.5** helper](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.5) and assign that same app to
 the desired Quick Launch shortcuts. Its two settings choose one shortcut for
 Primary and one for Secondary, from supported taps, holds and combinations.
 Dynamic supplies a recent destination pair only after
@@ -113,7 +115,7 @@ support assumes one connected watch and opens whole apps; it does not select a
 particular timer or notification inside them. No firmware or phone-app fork is
 required. Dashboard implementation is deferred.
 
-[Timer 0.9.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.9.0)
+[Timer 0.10.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
 publishes timer activities and their Timer destination. Install each companion
 app separately; Dynamic bundles the Activities library, not the watchapps.
 

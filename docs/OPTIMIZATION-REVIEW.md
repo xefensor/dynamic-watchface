@@ -1,6 +1,6 @@
 # Dynamic 0.16.0 optimization review
 
-This local candidate preserves the approved layouts, static text, artwork,
+This release preserves the approved layouts, static text, artwork,
 bottom-aligned primary content, one-row secondary and bounded transitions.
 Published 0.15.0 assets and tags remain unchanged. The complete suite review
 is also recorded in the workspace's optimization validation folder.
@@ -103,3 +103,12 @@ peak stack/heap, phone cold-start latency and physical battery gains remain
 device measurements. Additional glyph/framebuffer caches would consume RAM;
 the Timer raster profile records work without pretending host timings justify
 that extra allocation.
+
+## GitHub publication
+
+Published as development prerelease v0.16.0 from artifact commit
+`e05d564bff9d96ad5a1fa953032ee6fc6fd9519a`. A clean-npm CI fix reads the
+stock Clay SDK archive directly in the regression test; PBW and debug bytes
+remain those validated above. Published files and tags stay unchanged under
+this documentation follow-up. Repeat preparation against the frozen snapshot
+with `--commit e05d564bff9d96ad5a1fa953032ee6fc6fd9519a`.
