@@ -1,0 +1,245 @@
+{
+  "version": "0.11.0",
+  "checks": [
+    {
+      "name": "timer-primary-music-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "d8b91c91fd274777da19cbfc20d65d90f64a4ca6d61f295fdcb59e7bebbbcfa7"
+    },
+    {
+      "name": "music-primary-timer-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "ad2cfdef0b8b0d6ece4612d10373468c7fadad0afc04578ac3da2eaf7c1dd060"
+    },
+    {
+      "name": "two-identified-timers",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "2a29172e1416c92902e9b6c4258b7e137f0d7154936c82efb45bf4d406e06fcb"
+    },
+    {
+      "name": "delivery-primary-timer-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "7cf365f80a3e1cd679a437eb4648e0b09eb79600bc8ec0f9677607eee96bc4e4"
+    },
+    {
+      "name": "secondary-cached",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "05bcd719328b1b4a56eda736f18530497f579dbf83dc2be7d28a6d32c6338e4c"
+    },
+    {
+      "name": "support-yields-secondary",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": false,
+      "expected_secondary_visible": false,
+      "sha256": "f9d3bfc90c08be8e35add2e6db262535e6fe1a9dc49e48688d2194f5f9829dd3"
+    },
+    {
+      "name": "secondary-long-clock",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": false,
+      "expected_secondary_visible": false,
+      "sha256": "392a0bc885eedffeda92b42170aa5b29fe96720019d997a74385f3eb6c93b002"
+    },
+    {
+      "name": "simple-timer-normal-delivery-compact",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "5cb35039492f3e7253e9ff0a55f0627ead8ffd1670a80a2c15f8134695c47254"
+    },
+    {
+      "name": "simple-delivery-normal-timer-compact",
+      "region": [
+        40,
+        198,
+        190,
+        216
+      ],
+      "has_ink": true,
+      "expected_secondary_visible": true,
+      "sha256": "2473242e6d5c422439efc8711e1fbc4b0feafe160b1fee0f72d251594c78e9a9"
+    }
+  ],
+  "clock_content_checks": [
+    {
+      "name": "two-independent-clocks",
+      "clock_content_regions_changed": [
+        [
+          10,
+          120,
+          190,
+          160
+        ],
+        [
+          10,
+          175,
+          190,
+          190
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "paused-with-running-wall-clock",
+      "clock_content_regions_changed": [
+        [
+          10,
+          175,
+          190,
+          190
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "clock-primary-clock-secondary",
+      "clock_content_regions_changed": [
+        [
+          10,
+          120,
+          190,
+          160
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "text-primary-running-secondary",
+      "clock_content_regions_changed": [
+        [
+          40,
+          198,
+          190,
+          216
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "timer-primary-music-secondary",
+      "clock_content_regions_changed": [
+        [
+          10,
+          120,
+          190,
+          160
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "music-primary-timer-secondary",
+      "clock_content_regions_changed": [
+        [
+          40,
+          198,
+          190,
+          216
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "simple-timer-normal-delivery-compact",
+      "clock_content_regions_changed": [
+        [
+          10,
+          120,
+          190,
+          160
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "simple-delivery-normal-timer-compact",
+      "clock_content_regions_changed": [
+        [
+          40,
+          198,
+          190,
+          216
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    },
+    {
+      "name": "simple-workout-detail-clock",
+      "clock_content_regions_changed": [
+        [
+          10,
+          120,
+          190,
+          160
+        ],
+        [
+          10,
+          175,
+          190,
+          190
+        ]
+      ],
+      "fixture_resent": false,
+      "age_header_excluded": true
+    }
+  ],
+  "scope": "Actual native pixels supplement direct inspection. Specific clock regions exclude source-age headers; synthetic source data, not live phone transport."
+}

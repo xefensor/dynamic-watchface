@@ -1,9 +1,9 @@
-0.10.0 identified activities — GitHub development prerelease
+0.11.0 simpler activities and full-width content — GitHub development prerelease
 
-Every activity has an app name, icon and current content. The primary is prominent; the optional secondary sits in its own divided band. Timer uses an hourglass and one countdown. Any compatible activity can occupy either role.
+Plugins now publish content, optional detail and an image through the simple Activities 0.3.0 API. They do not select normal/compact layouts, arrange multiple labels or build meters. Earlier provider schemas remain compatible.
 
-Reorder or show/hide activity apps in Dynamic’s Content settings. Music follows the same order as plugins. Compatible installed apps appear while idle; unavailable apps keep their saved position. Preferences stay in Dynamic, and other apps can choose their own order.
+Dynamic's normal activity has a small icon/app header and full-width content below it. Song titles keep readable 24px type. Useful detail follows without Track/Artist boilerplate; missing optional artists stay empty. Clocks keep complete values and units. Compact activities remain separate and identifiable, and any activity can occupy either role.
 
-Meaningful metric labels, complete units, independent supporting items and explicit original-observation age remain intact. Essential primary content takes precedence over the optional secondary band. Private music stays transient and clears on disconnection or opt-out.
+Dynamic keeps your existing activity priorities and show/hide choices. Source privacy, expiry, observation age and native Timer alarms retain their ownership. The production Music adapter is used in native validation, including the reported long-title and missing-artist case.
 
-Core 0.5.0 and Activities 0.2.2 are pinned independently. Existing Timer 0.5.0 works with this watchface. Earlier published artifacts and tags remain unchanged. Portable, SDK and native-emulator checks are documented separately from real-phone or physical-watch checks. Pebble appstore submission remains held.
+Core 0.5.0 and Activities 0.3.0 are pinned. Earlier published artifacts and tags remain unchanged. Portable, SDK and emulator evidence is separate from physical-watch/real-phone testing. Pebble appstore submission remains held.

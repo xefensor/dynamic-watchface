@@ -2,23 +2,23 @@
 
 A Pebble Time 2 watchface with chunky rounded time, two horizontal readings
 and a layout that moves to make room for music, notifications and Timeline
-Peek. Version 0.10.0 gives activities clear app identities and separate primary
-and secondary cards. Reorder or hide activity apps in Dynamic’s own settings.
-Activities can combine related items, artwork and a source-derived meter. Fredoka clock outlines and Roboto Condensed text keep a consistent face
+Peek. Version 0.11.0 gives activities a small app header and full-width content,
+with normal and compact views. Plugins publish content, optional detail and an
+image through the simpler Activities API. Reorder or hide apps in Dynamic’s settings. Fredoka clock outlines and Roboto Condensed text keep a consistent face
 as its layout changes. Dynamic is an independent watchface by Xef.
 
 ## Download
 
-The current release is [**v0.10.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.10.0).
+The current release is [**v0.11.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.11.0).
 It is ready for sideload testing. Pebble appstore submission remains held.
 
 | File | Use |
 | --- | --- |
-| [Dynamic-0.10.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.10.0/Dynamic-0.10.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
-| [Dynamic-0.10.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.10.0/Dynamic-0.10.0-source.zip) | The checked source snapshot and pinned dependencies |
-| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.10.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+| [Dynamic-0.11.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.11.0/Dynamic-0.11.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
+| [Dynamic-0.11.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.11.0/Dynamic-0.11.0-source.zip) | The checked source snapshot and pinned dependencies |
+| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.11.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
 
-The [previous 0.9.1 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.9.1)
+The [previous 0.10.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.10.0)
 and its artifacts remain available unchanged.
 
 The [earlier 0.8.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0)
@@ -36,7 +36,7 @@ delivery remain separate device checks.
 
 Dynamic uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
 0.5.0 for readings and [Pebble Activities](https://github.com/xefensor/pebble-activities)
-0.2.2 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
+0.3.0 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
 alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Before installing
@@ -50,23 +50,21 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 ## Plugin activities
 
 Compatible providers are discovered automatically when **Plugin activities** is
-enabled (the default). Dynamic prefers `activity/card` schema 2 and adapts an
-existing `activity/session` schema 1 provider when needed. A provider describes
-one main item and an optional supporting item, each containing text, a formatted
-value or its own clock. It can also supply a caption, artwork up to 40×40 and a
-meter derived from an explicit source value and range. It does not choose a
-watchface-specific layout.
+enabled. Dynamic prefers the simpler `activity/live` schema 3 source: one piece
+of content, optional detail and an optional image. Content can be text, a value
+or a clock built with the library's helpers. The app identity comes from provider
+metadata. Plugins do not choose a normal/compact layout, position labels or
+construct meters. Existing schema 2 cards and schema 1 sessions remain compatible.
 
-Every activity shows its app name, an icon or artwork, and current content.
-The primary card has a 40px image and prominent clock, value or text. The
-optional secondary card has a divider, 20px image, app name and its own current
-content. Any kind of activity can occupy either role. A related supporting
-item stays inside its primary card; it is never presented as another app.
-Complete clock values, units and meaningful labels such as Rest or ETA retain
-priority over the optional secondary card. If they cannot coexist legibly, the
-whole secondary band yields.
+A normal activity has a small icon/app-name header and prominent content across
+the full width below it. Text keeps 24px type and pages once when necessary;
+clock values use rounded numerals. Useful detail follows quietly, without
+redundant field names. Missing optional music artists stay empty. A compact
+activity has a separate divided band, an icon/app name and its own current
+content. Any activity can take either role. Complete values, meaningful metric
+labels and truthful source age take precedence over the optional compact band.
 
-In **Content → Activity order**, drag apps or use their arrow buttons to change
+In **Content → Activity priority**, drag apps or use their arrow buttons to change
 priority and show or hide each app. The first eligible activity becomes primary
 and the next becomes secondary. Music participates in this same order. Within
 each provider, the soonest running deadline takes priority over its other or
@@ -86,8 +84,8 @@ or a note; unknown apps use a generic activity icon with their supplied name.
 Retained public content says **Last reported … ago** with the original source
 age. Private data clears on disconnection, expiry or opt-out.
 
-The updated Timer provider explicitly chooses a compact activity: remaining
-time and the timer's identity, with elapsed time retained inside Timer. This
+The updated Timer provider publishes a simple countdown and app identity, with
+elapsed time retained inside Timer. Dynamic chooses its normal or compact view. This
 does not remove supporting clocks from other providers. Older
 [Timer 0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
 providers remain compatible and may expose both remaining and elapsed items.
@@ -115,20 +113,23 @@ standard notifications continue through the existing privacy and baseline rules.
 The future dashboard is a separate consumer and is not included in this PBW.
 
 [Native timer sample](docs/images/activity-timer.png) ·
-[Native glucose sample](docs/images/activity-glucose.png)
+[Native glucose sample](docs/images/activity-glucose.png) ·
+[Native Music sample](docs/images/activity-music.png)
 
 These are renderer samples with two configured readings; glucose is illustrative
 plugin data, not a connection to a medical service.
 
 ## Layout
 
-![Normal, music, notification and Timeline Peek states](docs/images/layout-states.png)
+![Idle watchface](docs/images/normal.png)
+![Normal Music activity](docs/images/activity-music.png)
+![Timer with compact Parcel activity](docs/images/activity-timer.png)
 
 | State | Presentation |
 | --- | --- |
 | Normal | A shortened localized weekday and numeric date, large rounded clock and two equal reading columns |
-| Music | A compact clock/header and both readings sit above a title that grows upward from a bottom-anchored artist/artwork footer |
-| New notification | A brief source banner preserves the music footer; optional message previews use a bounded panel |
+| Music/activity | A compact clock and readings above a small app header, full-width content and optional useful detail |
+| New notification | A brief source banner reduces the activity area; optional message previews use a bounded panel |
 | Timeline Peek | The face follows Pebble's changing available area, retaining its clock and both readings above the native event panel |
 
 New installs use a white page, black text and a Picton Blue accent. Saved page,
@@ -342,7 +343,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.10.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.11.0.pbw
 python3 scripts/package-source.py
 ```
 
@@ -354,7 +355,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.10.0.pbw
+pebble install --emulator emery dist/Dynamic-0.11.0.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -389,11 +390,11 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic 0.10.0 pins Core 0.5.0 and Activities 0.2.2. Halftone keeps its own
+Dynamic 0.11.0 pins Core 0.5.0 and Activities 0.3.0. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
 `vendor/pebble-watchface-core-0.5.0.tgz` and
-`vendor/pebble-activities-0.2.2.tgz` are committed, version-pinned Pebble packages.
+`vendor/pebble-activities-0.3.0.tgz` are committed, version-pinned Pebble packages.
 `package-lock.json` records their integrity; `vendor/CORE.json` and
 `vendor/ACTIVITIES.json` record upstream/version/checksum provenance. `npm ci`
 installs these archives; users install only Dynamic's PBW, not a separate

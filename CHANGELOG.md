@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.11.0
+
+- Adopt the simpler activity/live schema 3 contract: content, optional detail
+  and optional image. Plugin developers do not arrange labels, add meters or
+  choose watchface layouts. Existing activity/card and session providers remain
+  compatible through Activities 0.3.0.
+- Redesign normal activities with a small app/icon header and full-width main
+  content below it. Song titles keep 24px type and readable wrapping instead of
+  sitting in a narrow column beside the image. Clocks use the full value area.
+- Render useful detail without boilerplate Track/Artist prefixes; omit missing
+  optional artist metadata. Preserve meaningful Rest/ETA labels from existing
+  providers, complete values/units and original last-reported age.
+- Keep compact activities in a distinct named band. Any activity can take
+  either role, following Dynamic's existing saved priority and visibility.
+- Validate the actual production Music adapter in native fixture generation,
+  including the reported long-title/missing-artist case. Preserve clock, expiry,
+  privacy, source revision and native Timer ownership across the simpler API.
+- Pin Activities 0.3.0; keep Core 0.5.0. GitHub development prerelease for
+  sideload testing. Earlier published assets/tags remain unchanged.
+
 ## 0.10.0
 
 - Give every activity a visible app identity and icon. The primary card has

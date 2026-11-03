@@ -8,7 +8,7 @@ has no analytics, advertising, account service or separate weather server.
 - The first two Pebble complication choices provide the readings on the face.
   Their providers may use a network service or location according to their own
   settings and permissions. Dynamic has no direct weather HTTP client.
-- Compatible activity plugins provide main/footer text, optional artwork and
+- Compatible activity plugins provide content, optional detail/image and
   clock or numeric fields. Providers control their source permissions and expiry.
 - Music uses the current title, artist, playing state and optional artwork.
 - Optional watchface notification banners use the app identity, sender/title,

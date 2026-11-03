@@ -5,32 +5,46 @@ context. It is an independent watchface by Xef. Pebble's watchfaces, plugin
 examples and design guidance inform its visual language; Dynamic owns its
 layout, type choices and transitions.
 
-## Identified activity cards in 0.10.0
+## Normal and compact activities in 0.11.0
 
-Every activity uses an app identity, a recognizable image and current content.
-The primary image occupies 40×40 at the card’s top left; its app name uses 20px
-text and its main value or 24px text follows beside it. Complete scalar values
-and units can use the full width below the image. Rest, ETA and other meaningful
-roles remain visible. Related support uses 16px text inside the primary card.
+Plugins publish one content item, optional detail and an optional image through
+Activities 0.3.0. Dynamic chooses normal or compact presentation from the same
+activity. The new public source has no required field labels, main/support slots,
+meters or layout selectors. The former schema 2 source remains compatible;
+its meaningful metric labels and source-derived meters retain their semantics.
 
-The optional secondary has a divider at y176, a 20px image, a 14px app name and
-16px current content. Cached public content places explicit 11px “Last reported
-… ago” beside its identity when both fit. The whole band yields if essential
-primary content, complete values or readable identity cannot coexist. It never
-becomes an anonymous footer or reuses a supporting metric as another activity.
+A normal activity starts with a shallow app header: a 24×24 image at x10 and 16px
+identity at x42. Content starts below the header at x10 and uses the full 180px
+width. Text stays 24px and pages through remaining text once; clocks use centered
+Fredoka numerals at a width-fitting size. Optional 16px detail follows. A short
+truthful last-reported status can share the header when both full strings fit;
+otherwise it has its own quiet line. It never changes the original observation.
 
-The phone supplies app display metadata and 40px fallback hourglass, note or
-generic symbol after source-revision validation. Native drawing tints a single
-opaque image color to the watch foreground; multicolor album art keeps its
-palette. Static hourglass artwork identifies Timer without inventing progress.
-The ACT2 caption carries the projected app identity; item labels retain metric
-roles. No source property, reserved native byte or alarm state is repurposed.
+A compact activity occupies its own divided band at y176–216, with a 20px image,
+14px app identity and 16px current content. Any activity can use either role.
+Complete values/units, meaningful labels, useful primary detail and provenance
+have priority; the whole optional band yields if they cannot coexist readably.
 
-Canonical Music follows these same cards and Dynamic’s saved provider order.
-The older standalone Music composition described below remains a compatibility
-fallback. The 20 embedded presets now capture canonical Music; separate activity
-fixtures retain legacy fallback coverage. Dynamic’s settings own ordering and
-visibility; the shared library’s pure selector owns no preference storage.
+The app header does not reserve a permanent image column down the body. In the
+reported Music case, the title wraps across 180px below Music's small header.
+The actual Music adapter supplies unlabeled content/detail; missing optional
+artist values contribute no placeholder row. Compatibility Track/Artist labels
+are normalized only for the known music convention. Rest/ETA and other useful
+provider labels survive; generic plugin text is never guessed to be music.
+
+Artwork is stored once per activity, up to 40×40 in the bounded ACT2 transport,
+and scales into that role's image position. Single-ink icons follow the current
+watch foreground while multicolor album art retains its palette. The static
+hourglass identifies Timer without inventing progress. The source/run, source
+revision, original expiry, lifecycle and private-content clearing remain
+independent of presentation. Normal/compact is a host choice, not a new source
+state or alarm acknowledgement.
+
+The 20 embedded presets invoke the production Music adapter instead of manually
+constructing already-clean labels. Additional native fixtures cover the user's
+long-title/missing-artist case, with/without artwork, normal/compact role swaps,
+values, independently ticking detail and older provider compatibility. Dynamic
+retains its local priority/show-hide preferences; other hosts keep their own.
 
 ## First-party references
 

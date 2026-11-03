@@ -1,14 +1,14 @@
 {
-  "version": "0.10.0",
+  "version": "0.11.0",
   "pbw": {
-    "file": "Dynamic-0.10.0.pbw",
-    "sha256": "2c0c182c57b6f5a855d3bbaa718e83fa8613258a7e1e9f97a984222dd496a506"
+    "file": "Dynamic-0.11.0.pbw",
+    "sha256": "991dcc4e9e66ea0dae7d750b37cefa4b7453daaf8779a9a0f41b49618c96c21d"
   },
   "native_payload_sha256": {
-    "appinfo.json": "df1b207cfe6d85b4f63c7bafebcb2ce1b966eb47f239491ef10eb3f22dfa7b9b",
-    "emery/pebble-app.bin": "e9f151b351608025bfc11b34655ebeafb9a81ca6f9fe695076c66e15f9304741",
+    "appinfo.json": "96555a7241a7b5af429ee98e525802fb6c282de73f1cddd63a4525ecdf8d3e4f",
+    "emery/pebble-app.bin": "49e953864acb9d89065bfb593bcb0ea6b8617556fafdf0599df0feda1d3bd78a",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "b3b4a984033743d09e2e755f832ee19072f1a09fd0c168979f6ab206f38a87a9"
+    "emery/manifest.json": "5276a4fa5e86b00e8dca4c1263dc16be62bc0a80dbfb260f4d927fd5d81971bf"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -25,16 +25,16 @@
   },
   "activities": {
     "package": "pebble-activities",
-    "version": "0.2.2",
+    "version": "0.3.0",
     "repository": "https://github.com/xefensor/pebble-activities",
-    "artifact": "pebble-activities-0.2.2.tgz",
-    "sha256": "7a1d82c151dd11c6d036218fd1732f8e2174ff8a1c9ed6846798ea8513edb726",
-    "integrity": "sha512-42eDcBF8gITGNd+AA6Cj32nSKKVUNrFsu/htxVuTNqU01biE1UDogoDGimngNr/4uXZzAP7ccgTfGX0fxAgNeg==",
+    "artifact": "pebble-activities-0.3.0.tgz",
+    "sha256": "882df4cf462d19a14baf7aebacb06c7f0c807a86b183614a6ba95d6a776cc92c",
+    "integrity": "sha512-LTd0qxBP/chd6ZNEkTlo2xggSKd1AVeNKtkLTU3ztejfTEXBTp1XpQqEbMrytgMLlw/agbiPgW6TQ0ev1TmUZQ==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "645b781919673e1da421e1a594312f181983ebc9"
+    "source_commit": "dad422a3384864966b60acf6dc3e52ddec296a09"
   },
   "images": [
     {
@@ -48,7 +48,7 @@
     },
     {
       "file": "docs/images/music.png",
-      "sha256": "06ed351b138935d43c0b51a3f1b16e70aac4d5c1f2b7b825e235f91cac0b90ec",
+      "sha256": "04ee410074c2b200e155b570fe8e959e51279ab3beb73f279efbbb2fdb9d3df8",
       "pixels": [
         200,
         228
@@ -57,7 +57,7 @@
     },
     {
       "file": "docs/images/notification-summary.png",
-      "sha256": "15d1e90c3d1b75986933b4488c0fb0bad8d3ebeaa18a2e97ffaa5ca06a36f0ac",
+      "sha256": "776c389d3c505eeed6d6b906ac472d81114a38fa8fc36c179ee42cbd1347f698",
       "pixels": [
         200,
         228
@@ -75,7 +75,7 @@
     },
     {
       "file": "docs/images/dark.png",
-      "sha256": "28adfbf6b902dcc3d255a954aa9c76a36b8876965c87353d9abd3e7217629fb2",
+      "sha256": "9d60e761c32f4b15616a6a267e7c3402cd7853d1ec1196ba1b88933d7e6590e0",
       "pixels": [
         200,
         228
@@ -84,7 +84,7 @@
     },
     {
       "file": "docs/images/activity-timer.png",
-      "sha256": "cbf7e566b49b94d75daed05883102776d4f008f5cb464c1be57cc455d011c033",
+      "sha256": "5cb35039492f3e7253e9ff0a55f0627ead8ffd1670a80a2c15f8134695c47254",
       "pixels": [
         200,
         228
@@ -93,7 +93,16 @@
     },
     {
       "file": "docs/images/activity-glucose.png",
-      "sha256": "c301943a93d65c55c086506b301c9a6bf1838f2ec1015f29c145eabd958207cf",
+      "sha256": "773c162ac74bf3e7be86801cf866c3431ea433d504ab12e56ab89c51dfefa947",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false
+    },
+    {
+      "file": "docs/images/activity-music.png",
+      "sha256": "a0fa67f8336ca5f4aca3eee72c2361fa0e3bd378ddda537e52863e1b12937879",
       "pixels": [
         200,
         228
@@ -102,14 +111,14 @@
     }
   ],
   "native_qa": [
-    "docs/qa/0.10.0/native/native-previews/previews.json",
-    "docs/qa/0.10.0/native/activities/activities.json",
-    "docs/qa/0.10.0/native/bundle-audit.json",
-    "docs/qa/0.10.0/native/role-visibility.json",
-    "docs/qa/0.10.0/native/final-distribution.json",
-    "docs/qa/0.10.0/settings/validation.json"
+    "docs/qa/0.11.0/native/native-previews/previews.json",
+    "docs/qa/0.11.0/native/activities/activities.json",
+    "docs/qa/0.11.0/native/bundle-audit.json",
+    "docs/qa/0.11.0/native/role-visibility.json",
+    "docs/qa/0.11.0/native/final-distribution.json",
+    "docs/qa/0.11.0/settings/validation.json"
   ],
   "fixture_data": true,
-  "scope": "20 native settings presets, 44 native activity compositions and six no-resend local-clock follow-ups; raw images inspected, both role orders and cached/hidden secondary regions checked. Actual EN/CS Clay pages tested with touch, drag/drop, keyboard, save and restored production PKJS preferences. Captured/final native binary and resources match. Synthetic sources; no physical-watch or real-phone plugin verification.",
-  "historical_images": "Other composites and older settings screenshots retain their earlier release scope in VALIDATION.md."
+  "scope": "20 native previews,52 activity scenarios and9 no-resend local-clock follow-ups. The actual production Music adapter supplies preview/user-title fixture data; API roundtrips supply simple activity fixtures. Raw images inspected; role visibility and specific clock-content changes verified. Actual EN/CS Clay tests cover save and restored preferences. Captured/final native binary/resources match. All sources synthetic; no real-phone/physical-watch delivery proof.",
+  "historical_images": "Older composites/settings images retain their earlier release scope in VALIDATION.md."
 }

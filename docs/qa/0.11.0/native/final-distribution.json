@@ -1,0 +1,12 @@
+{
+  "file": "Dynamic-0.11.0.pbw",
+  "sha256": "991dcc4e9e66ea0dae7d750b37cefa4b7453daaf8779a9a0f41b49618c96c21d",
+  "native_payload_sha256": {
+    "appinfo.json": "96555a7241a7b5af429ee98e525802fb6c282de73f1cddd63a4525ecdf8d3e4f",
+    "emery/pebble-app.bin": "49e953864acb9d89065bfb593bcb0ea6b8617556fafdf0599df0feda1d3bd78a",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "5276a4fa5e86b00e8dca4c1263dc16be62bc0a80dbfb260f4d927fd5d81971bf"
+  },
+  "captured_native_binary_and_resources_equal": true,
+  "native_application_timestamp": 1793663575
+}

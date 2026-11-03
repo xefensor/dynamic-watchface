@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const os=require('node:os');
 const path=require('node:path');
 const {spawnSync}=require('node:child_process');
-const {fixtures,activityPresets}=require('../scripts/native-preview-fixtures');
+const {fixtures,activityPresets,musicFromSource}=require('../scripts/native-preview-fixtures');
 const core=require('pebble-watchface-core').wire;
 const library=require('pebble-activities');
 const activities=library.view;
@@ -104,7 +104,7 @@ test('native capture fixtures preserve all 20 state, format and theme presets us
     assert.equal(packet.readUInt32LE(12),42);assert.equal(packet.readUInt32LE(16),index+1);
     assert.deepEqual(preset.preserve,preset.state==='timeline'?[{x:0,y:171,width:200,height:57}]:
       preset.state==='music'||preset.state==='notification-summary'?
-        [{x:10,y:preset.state==='music'?92:116,width:40,height:40}]:[]);
+        [{x:10,y:preset.state==='music'?92:116,width:24,height:24}]:[]);
   }
 });
 
@@ -127,7 +127,10 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
     'timer-acknowledged-idle','timer-acknowledged-music',
     'timer-primary-music-secondary','music-primary-timer-secondary','two-identified-timers',
     'delivery-primary-timer-secondary','support-yields-secondary','secondary-long-clock',
-    'secondary-cached','small-scalar-icon-spacing','long-provider-identity'];
+    'secondary-cached','small-scalar-icon-spacing','long-provider-identity',
+    'simple-music-user-title','simple-music-user-title-dark','simple-music-title-artist-artwork',
+    'simple-timer-normal-delivery-compact','simple-delivery-normal-timer-compact',
+    'simple-workout-detail-clock','simple-value-detail','simple-unknown-app'];
   assert.deepEqual(plan.presets.map(p=>p.name),names);
   for(const [index,preset]of plan.presets.entries()) {
     const packet=Buffer.from(preset.bytes.ACTIVITY_DATA),records=activityRecords(preset.bytes.ACTIVITY_DATA);
@@ -203,6 +206,18 @@ test('legacy activity cases and new two-item cases use bounded immutable source 
   assert.deepEqual(before.expectInk,after.expectBlank);
   const later=activityPresets({session:42,now,sequence:128});
   assert.equal(Buffer.from(later.presets[0].bytes.ACTIVITY_DATA).readUInt32LE(16),129);
+});
+
+test('native music fixtures exercise production adapter labels and the reported missing-artist case',()=>{
+  const now=1793538300;
+  const actual=musicFromSource(now,42,'Better Than The Cyberpunk Soundtrack','?',null);
+  assert.equal(actual.sourceFormat,3);
+  assert.equal(actual.main.text,'Better Than The Cyberpunk Soundtrack');
+  assert.equal(actual.main.label,'Music');assert.equal(actual.support,null);
+  const known=musicFromSource(now,42,'Genesis','Justice',null);
+  assert.equal(known.support.text,'Justice');assert.equal(known.support.label,'Music');
+  assert.equal(known.observedAt,now);assert.equal(known.validUntil,now+120);
+  assert.equal(known.private,true);
 });
 
 test('installed production C decoder accepts every generated ACT2 capture frame',()=>{

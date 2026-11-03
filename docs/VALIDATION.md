@@ -1,5 +1,75 @@
 # Dynamic validation
 
+## 0.11.0 simple activity API and normal/compact redesign — 3 November 2026
+
+The current source contract is `activity/live` schema 3 through Activities 0.3.0:
+content, optional detail and optional image. Plugins do not arrange mandatory
+field labels, build main/support trees, define meters or select layouts. Dynamic
+chooses normal or compact form. The existing schema 1/2 sources remain compatible,
+with their useful semantic labels and independent clock/expiry behavior retained.
+The native transport remains ACT2. Core remains 0.5.0; the exact Activities source
+is `dad422a3384864966b60acf6dc3e52ddec296a09`.
+
+- **98 JavaScript tests, 12 portable C suites and 40 Python regressions pass.**
+  New projection tests cover implicit label suppression after installed app-name
+  resolution, preserved Rest/ETA semantics and compatibility Music cleanup.
+  The native fixture producer invokes the actual production Music adapter,
+  including the reported long-title prefix and '?' artist case. New simple
+  activities roundtrip through their production source serializer/parser.
+- **SDK 4.33.1 Emery build and final package/native-style audit pass.** A clean
+  SDK build includes the exact pinned simple API, source consumer and Music
+  adapter in the compiled JavaScript. The static virtual image is 64,908 bytes,
+  leaving 627 below 65,535. Loaded bytes are 64,488; the complete binary is 66,792
+  including 2,304 relocation bytes. Resources remain 246,928 bytes. These figures
+  do not measure runtime heap, stack high-water or power use.
+- **20 native previews and 52 activity compositions pass** on Emery QEMU.
+  The normal card has a 24px image/16px identity header and full 180px body below;
+  text stays 24px, while values use width-fitting centered numerals. Compact
+  activities remain a separate named band. Missing optional metadata produces
+  no placeholder row. Short provenance can share a measured header; longer
+  truthful status remains separate. Tight notification banners hide optional
+  detail or the whole unreadable card until the banner clears.
+- All raw frames were hash-verified and inspected at their original 200×228
+  pixels in a contact sheet; independent review covered all eight new simple
+  cases, banners, long clocks, units, artwork, independent clocks and provenance.
+  User-title samples include a synthetic continuation after the visible prefix;
+  they are source fixtures, not a claim to know the screenshot's full song name.
+- **Nine no-resend local-clock follow-ups pass.** Post-capture pixel checks
+  compare actual main/detail/compact clock regions with source-age headers
+  excluded. Both independent clocks change where expected, and a paused main
+  retains its separately running detail. Role-region checks verify visible
+  Timer/Parcel swaps and whole-band hiding for essential detail or wide values.
+- Actual offline Clay checks pass in EN/CS at 360×800: touch/desktop dragging,
+  keyboard/buttons, Music visibility, dirty/save states, 64-entry unavailable-app
+  boundary and real save responses replayed through production PKJS with
+  simulated SDK coordinators. Existing Dynamic-local priority and visibility
+  storage remain independent of other hosts. All 17 locales retain controls.
+- Embedded previews were regenerated from the native candidate. The final
+  rebuild uses application timestamp `1793663575`; final native binary/resources
+  match the captured renderer byte for byte. Fonts, licenses, message keys,
+  dependencies and the five-image held store kit pass their exact checks.
+  Prior 0.10.0 and earlier published artifacts/tags remain unchanged.
+
+Evidence: [native previews](qa/0.11.0/native/native-previews/previews.json),
+[activity captures](qa/0.11.0/native/activities/activities.json),
+[role/clock pixel checks](qa/0.11.0/native/role-visibility.json),
+[final package audit](qa/0.11.0/native/bundle-audit.json),
+[distribution identity](qa/0.11.0/native/final-distribution.json) and
+[actual settings-page checks](qa/0.11.0/settings/README.md).
+The [simple plugin API specification](https://github.com/xefensor/pebble-activities/blob/main/docs/ACTIVITY-SPECIFICATION.md)
+defines the developer contract; older advanced schemas are compatibility paths.
+
+Final PBW SHA-256:
+`991dcc4e9e66ea0dae7d750b37cefa4b7453daaf8779a9a0f41b49618c96c21d`.
+
+This GitHub development prerelease is for sideload testing. Native screenshots
+use synthetic data and omit phone JS during capture; packaged JS/source and
+browser checks are separate. Physical-watch appearance, live phone/plugin
+transport, vibration and battery remain device checks. Timer 0.6.0 adopts the
+simple publishing source while its native code/resources retain their previous
+implementation; its own validation records exact metadata-excluded identity.
+No Dashboard app or global priority service is included. Store submission stays held.
+
 ## 0.10.0 identified cards and Dynamic-local priority — 3 November 2026
 
 Every activity now carries an app name, image and current content. The optional

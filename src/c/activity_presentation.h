@@ -52,14 +52,15 @@ static inline bool activity_view_needs_tick(const PavCard *card,bool support_vis
 // Both roles carry the same identity and content. The optional second card
 // always has its own band; primary detail never becomes another activity.
 enum { ACTIVITY_SECONDARY_TOP=176, ACTIVITY_SECONDARY_LEFT=40,
-       ACTIVITY_SECONDARY_WIDTH=150, ACTIVITY_PRIMARY_ICON=40,
+       ACTIVITY_SECONDARY_WIDTH=150, ACTIVITY_PRIMARY_ICON=24,
+       ACTIVITY_PRIMARY_IDENTITY_LEFT=42, ACTIVITY_PRIMARY_IDENTITY_WIDTH=148,
        ACTIVITY_SECONDARY_ICON=20 };
 typedef struct {
   MusicLines main;
   int main_baseline[MUSIC_MAX_LINES];
   int point,left,width,identity_baseline,role_baseline,status_baseline;
   int support_baseline,support_status_baseline,meter_top;
-  bool vector,secondary,support,meter;
+  bool vector,secondary,support,meter,header_status;
 } ActivityLayout;
 
 static inline void activity_status_text(const PavDatum *datum,uint8_t marks,
@@ -108,14 +109,15 @@ static inline void activity_layout_build(const char *identity,const char *main,c
     main="Open app for details";scalar=false;
   }
   memset(out,0,sizeof(*out));out->vector=vector;
-  const MusicTextMetrics heading=measure(context,identity,20);
-  out->identity_baseline=top+heading.ascent;
-  const int content_top=top+heading.ascent+heading.descent+5;
+  const MusicTextMetrics heading=measure(context,identity,16);
+  out->identity_baseline=top+(ACTIVITY_PRIMARY_ICON-heading.ascent-heading.descent)/2+heading.ascent;
+  out->header_status=status[0]&&heading.width+6+measure(context,status,11).width<=ACTIVITY_PRIMARY_IDENTITY_WIDTH;
+  const int content_top=top+ACTIVITY_PRIMARY_ICON+4;
   int bottom=0;
   // These passes fit the primary's own essentials. A secondary never changes
   // its type size, title wrapping or independent supporting value.
   for(int pass=0;pass<3;++pass) {
-    out->left=60;out->width=130;
+    out->left=10;out->width=180;
     if(vector||scalar) {
       const int clocks[]={48,40,32,26},values[]={32,28,24,20,16,14};
       const int *points=vector?clocks:values;
@@ -123,14 +125,12 @@ static inline void activity_layout_build(const char *identity,const char *main,c
       MusicTextMetrics value={0};
       for(unsigned i=(unsigned)pass;i<count;++i) {
         out->point=points[i];value=(vector?clock_measure:measure)(context,main,out->point);
-        if(value.width<=130)break;
+        if(value.width<=180)break;
       }
-      if(value.width>130){out->left=10;out->width=180;}
-      int start=content_top;
-      if(out->left==10&&start<top+44)start=top+44;
+      if(vector)out->left=10+(180-value.width)/2;
       watch_layout_copy_utf8(main,out->main.text[0],MUSIC_TEXT_BYTES);
       out->main.count=1;out->main.complete=true;out->main.consumed=strlen(main);
-      out->main_baseline[0]=start+value.ascent;
+      out->main_baseline[0]=content_top+value.ascent;
       bottom=out->main_baseline[0]+value.descent;
     } else {
       out->point=24;
@@ -139,14 +139,27 @@ static inline void activity_layout_build(const char *identity,const char *main,c
       bottom=content_top+music_line_offsets(&out->main,24,measure,context,out->main_baseline);
       for(int i=0;i<out->main.count;++i)out->main_baseline[i]+=content_top;
     }
-    if(bottom<top+ACTIVITY_PRIMARY_ICON)bottom=top+ACTIVITY_PRIMARY_ICON;
     out->role_baseline=activity_line_baseline(role,14,&bottom,measure,context);
-    out->status_baseline=activity_line_baseline(status,11,&bottom,measure,context);
+    out->status_baseline=out->header_status?out->identity_baseline:
+        activity_line_baseline(status,11,&bottom,measure,context);
+    const int essential_bottom=bottom;
     out->support_baseline=activity_line_baseline(support,16,&bottom,measure,context);
     out->support_status_baseline=activity_line_baseline(support_status,11,&bottom,measure,context);
     if(bottom+(meter?8:0)<=MUSIC_BOTTOM)break;
+    if(pass==2) {
+      // The optional detail and its independent provenance travel together.
+      // A tight notification banner must not clip either beneath the display.
+      out->support_baseline=out->support_status_baseline=0;bottom=essential_bottom;
+      if(bottom>MUSIC_BOTTOM) {
+        // Extreme compatibility labels can make even one fixed-size text
+        // line plus its provenance taller than a banner's remaining area.
+        // Let that whole card yield until the banner clears.
+        out->main.count=0;return;
+      }
+    }
   }
-  out->support=support&&support[0];out->meter=meter&&bottom+8<=MUSIC_BOTTOM;
+  out->support=out->support_baseline!=0;
+  out->meter=meter&&(!support[0]||out->support)&&bottom+8<=MUSIC_BOTTOM;
   out->meter_top=bottom+4;
   out->secondary=secondary&&bottom+(out->meter?8:0)+4<=ACTIVITY_SECONDARY_TOP;
 }

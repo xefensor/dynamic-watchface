@@ -44,13 +44,13 @@ CORE_MODULES = {
     "readings.js", "message-queue.js", "complications.js", "complication-data.js",
 }
 ACTIVITY_MODULES = {
-    "index.js", "wire.js", "view.js", "consumer.js", "publisher.js", "selection.js",
+    "index.js", "wire.js", "view.js", "consumer.js", "publisher.js", "selection.js", "activity.js",
     "adapters/legacy/context.js", "adapters/legacy/complication-data.js",
 }
 ACTIVITY_RELEASE = {
-    "version": "0.2.2",
-    "sourceCommit": "645b781919673e1da421e1a594312f181983ebc9",
-    "archiveSha256": "7a1d82c151dd11c6d036218fd1732f8e2174ff8a1c9ed6846798ea8513edb726",
+    "version": "0.3.0",
+    "sourceCommit": "dad422a3384864966b60acf6dc3e52ddec296a09",
+    "archiveSha256": "882df4cf462d19a14baf7aebacb06c7f0c807a86b183614a6ba95d6a776cc92c",
 }
 PROCESS_INFO_BYTES = 130
 PROCESS_INFO_SIZE_LIMIT = 0xffff
@@ -752,7 +752,7 @@ def audit_preview_identity(root, version, binary, resources):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.10.0", "Review this auditor for a different release version")
+    require(package["version"] == "0.11.0", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and

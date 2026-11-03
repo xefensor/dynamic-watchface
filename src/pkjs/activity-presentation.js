@@ -31,11 +31,28 @@ function icon(kind){
   return {width:size,height:size,palette:[0,192],pixels:pixels};
 }
 function project(input){
-  var card=view.normalize(input);if(!card){return null;}
-  var identity=wire.text(input.providerName,32)||names[card.kind]||'Activity';
+  var card=input&&input.content!==undefined&&library.activity?
+    library.activity.toView(input):view.normalize(input);if(!card){return null;}
+  var identity=wire.text(input.providerName,32)||wire.text(input.appName,32)||names[card.kind]||'Activity';
+  // Simple sources have no required field labels. The wire's nonempty default
+  // is an implementation detail and follows the host's chosen app identity.
+  if(input.sourceFormat===3||input.content!==undefined){
+    if(card.main.label===card.caption){card.main.label=identity;}
+    if(card.support&&card.support.label===card.caption){card.support.label=identity;}
+  }
   // Compatibility for the native Timer 0.5 compact card, whose configured
   // duration was repeated in both fields. Arbitrary provider role labels stay.
   if(card.provider===TIMER&&card.main.label===card.caption){card.main.label=identity;}
+  // Older Music sources used required boilerplate labels and '?' for absent
+  // artist metadata. Clean only that known convention in the presentation copy.
+  if(card.kind==='music'){
+    if(card.main.type==='text'&&card.main.label==='Track'){card.main.label=identity;}
+    if(card.support&&card.support.type==='text'){
+      if(card.support.text.trim()==='?'){
+        card.support=null;if(card.meter&&card.meter.source==='support'){card.meter=null;}
+      }else if(card.support.label==='Artist'){card.support.label=identity;}
+    }
+  }
   card.caption=identity;
   if(!card.image){card.image=icon(card.kind);}
   var result=view.normalize(card);

@@ -1,0 +1,267 @@
+{
+  "version": "0.11.0",
+  "pbw_sha256": "43c339dce0d11dfbddd20ec7bcb79d8c90efa33066c4e35828153607d6b32bc7",
+  "candidate_source_pbw_sha256": "81c892e04cebed06f8310251767f48c8508a3adfc26e8412a2a1912860d20391",
+  "native_payload_sha256": {
+    "emery/pebble-app.bin": "49e953864acb9d89065bfb593bcb0ea6b8617556fafdf0599df0feda1d3bd78a",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "0711eb1cb1736f958f6987fd19504c1cc5ab1654eaea1fcfb7e8e62ed2246579"
+  },
+  "phone_javascript_executed": false,
+  "fixture_encoder": {
+    "core": "0.5.0",
+    "activities": "0.3.0",
+    "core_wire_version": 4,
+    "activity_wire_version": 2
+  },
+  "fixture_time_utc": 1793538300,
+  "session": 2,
+  "captures": [
+    {
+      "name": "idle-24-light",
+      "file": "idle-24-light.png",
+      "sha256": "e58c33789c2877a1f30b3ad354e29da386f5584d9e3cc9d865c49725cd875028",
+      "rgb_sha256": "9c9b67d96a5911e260afa433a5b7568a043957f2f2b0b8a883e39cfee7d1de76",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-24-light",
+      "file": "music-24-light.png",
+      "sha256": "04ee410074c2b200e155b570fe8e959e51279ab3beb73f279efbbb2fdb9d3df8",
+      "rgb_sha256": "0e0c9e779db75a4103d0a08154086932ba803e04e428034eda38169ddeebfd81",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-24-light",
+      "file": "notification-summary-24-light.png",
+      "sha256": "776c389d3c505eeed6d6b906ac472d81114a38fa8fc36c179ee42cbd1347f698",
+      "rgb_sha256": "56a9be4d6460379bfb88d901ed2b2859109642373c6af2952fc97b2bffd07e17",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-24-light",
+      "file": "notification-24-light.png",
+      "sha256": "41e6f38ff0203c21df7d9e634581a5e03fd309359558534087d887815015a203",
+      "rgb_sha256": "77ef441d925da37472286ac32f5ed48684f840f7dbbb06e2e17437b0cc82804f",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-24-light",
+      "file": "timeline-24-light.png",
+      "sha256": "36c91abc9eb76e63e09bba36c4ec76af7b8ab0f7c3f7cf283d3c1a17cd3b6f18",
+      "rgb_sha256": "7e0b4eff02a57df042311ea7e54f9228809172ca302431aeb9778ca2b2fd6026",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "idle-12-light",
+      "file": "idle-12-light.png",
+      "sha256": "6ef6de4fcb53194df1a1e27ce1bf110c2ae8145ac7acfab9530ad33f63da32ab",
+      "rgb_sha256": "6e120e683bed514487ec82631db8a479cef55a7720b236928bfeb5f1baa14c9c",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-12-light",
+      "file": "music-12-light.png",
+      "sha256": "614a5350b8d5959ca49480a88d3e05042808a69c262d8c3fe4ca16284346649a",
+      "rgb_sha256": "c85433f21eb6c7fbab7e10e751c4f1070fca0063dbb79488764b29e01f5124cf",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-12-light",
+      "file": "notification-summary-12-light.png",
+      "sha256": "09d06928cc9a5478f29e800ee8f094bbd070acf2e00b1a9b91bf5db71f396018",
+      "rgb_sha256": "3625f8bfe8783e0a86644aa9b689b1f1254ab9e85b84d93b78bb01037b87664b",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-12-light",
+      "file": "notification-12-light.png",
+      "sha256": "f672f76902e80c3e741dc62ef245a03396dc58162a08b7647bbc4f3e8e4b7bcd",
+      "rgb_sha256": "6e9aa08ae1ad420d5926688c38eb2faac153c5757b1c9da9351b44631ef10e50",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-12-light",
+      "file": "timeline-12-light.png",
+      "sha256": "072e126e640d40a1287e03795448980becba79730496dd6b668f2ec6261359ff",
+      "rgb_sha256": "16b9c5f88f55f26d21155a7abf7265724ffebcd2e6f3b4beb54004f8525637b5",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "idle-24-dark",
+      "file": "idle-24-dark.png",
+      "sha256": "3629d99a35f6628860e95c3ce8e358457e1a16514c2ff04c4a0136bc9a9eb7c3",
+      "rgb_sha256": "817c5536dd2e6b34e71c37ef9d7e226b523f7060d7ae9027b0bc34debb9709fe",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-24-dark",
+      "file": "music-24-dark.png",
+      "sha256": "9d60e761c32f4b15616a6a267e7c3402cd7853d1ec1196ba1b88933d7e6590e0",
+      "rgb_sha256": "806ba5467d111f40c3efb0f2e51774714018ee871f214acb2d79cb39d83deadf",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-24-dark",
+      "file": "notification-summary-24-dark.png",
+      "sha256": "1655b0c6b998eee1fd0bb9a2b8b68788dd41d7a4090c06f471b5edef74090cd3",
+      "rgb_sha256": "ac3c86c7792cb7c6346f2ca0b0e9d71168ea988e3e9751c94b1e1e9fc43071e3",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-24-dark",
+      "file": "notification-24-dark.png",
+      "sha256": "bfb1f322106af5a6b2e3512c2d84e3a66f9284300ad8a0b7a6e9832c356789b5",
+      "rgb_sha256": "a896edb4f94ed42d5f6d82090f6a5ef19584151a15fc36b5a3a56a5654cf3d86",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-24-dark",
+      "file": "timeline-24-dark.png",
+      "sha256": "37df396cd10bd8fa90590c90d61336cf4036408261e7c97697c70c79103b775f",
+      "rgb_sha256": "03b8daece0f754b504221018938e949a0de7a5a05340676861dab2bc4bc0ee95",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "idle-12-dark",
+      "file": "idle-12-dark.png",
+      "sha256": "46f8d15b4f186ae711670524b1f1b7c015cb5b8a72e5c44bef65774e7125b8fa",
+      "rgb_sha256": "d49feb8047db08adbefbb5c5cf0b5b07a134f3c3003685df069fe83b44f1bc10",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "music-12-dark",
+      "file": "music-12-dark.png",
+      "sha256": "aa4187680c0f90a664a5a5b6464e0a660d5c3f6202d5cb482357b13e64692dc3",
+      "rgb_sha256": "21f89c9e777679ddf89dccb3bbe090215fe61566ffc58ef57d65fa9d12eacba4",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-summary-12-dark",
+      "file": "notification-summary-12-dark.png",
+      "sha256": "94ab50da382f11e692cbe00354ed8ad706e35ef96b24877d09b4396212cd24cb",
+      "rgb_sha256": "49991b6d5f7cce713220f8dc78886152c6ed1b7b59f7908c53dd582ad2df4be4",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "notification-12-dark",
+      "file": "notification-12-dark.png",
+      "sha256": "9bc64983ae32060514bd6b53af1b7d3046399bcdc25c7bfb2360ab4a9aedef28",
+      "rgb_sha256": "3cf826120a6cc66fd2679acbbd19d4b3159fab8a0b8ad4b7e0f22ca732568f97",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    },
+    {
+      "name": "timeline-12-dark",
+      "file": "timeline-12-dark.png",
+      "sha256": "730169cdd42535620c6922369a14e261ddfc08e37fde31996ec75fb9e5dd15ca",
+      "rgb_sha256": "48bef7c995b82dbc50800dca913565f8b8953f3d24d8ac30e44e2aab364af72d",
+      "pixels": [
+        200,
+        228
+      ],
+      "native_pixels_modified": false,
+      "settled_native_rgb_equal": true
+    }
+  ],
+  "scope": "20 actual native Screenshot-service presets; sample data, not live phone/provider verification.",
+  "visual_review": {
+    "reviewed": true,
+    "method": "Raw200\u00d7228 images viewed directly and at native size in a contact sheet; independent review of new simple sources, Music user-title case and compatibility clocks/values/provenance.",
+    "native_pixels_modified": false
+  }
+}

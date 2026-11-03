@@ -5,13 +5,19 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 
 ## Product intent
 
-- Activity cards use an icon, app/provider identity and content in either role:
-  a 40px primary icon with 20px identity and a separated compact band with a
-  20px icon, 14px identity and 16px content. The ACT2 caption carries the host's
-  identity; a datum label keeps meaningful roles such as Rest or ETA, with an
-  exact identity duplicate suppressed. Artwork may fill the icon position.
-- Main clocks use Fredoka numerals; body titles stay at 24px and continue once
-  without looping. The primary's own essential detail determines its layout;
+- Activity cards have normal and compact host presentations for any provider.
+  Normal uses a shallow 24px image/16px identity header, then full-width content
+  below it; never reserve an empty icon column beside the main content. Compact
+  uses a separate band with 20px image, 14px identity and 16px current content.
+  Artwork may fill either image position. The internal ACT2 caption carries app
+  identity; exact identity labels suppress field prefixes while meaningful
+  compatibility labels such as Rest or ETA remain visible.
+- Main clocks use centered Fredoka numerals; body titles stay left-aligned at
+  24px over the full 180px and continue once without looping. The primary's own
+  essential detail determines its layout; optional detail and its independent
+  provenance yield together if they cannot fit beneath a notification banner.
+  If an extreme compatibility card's own essentials still cannot fit at the
+  readable size, the whole card yields until the brief banner clears.
   an optional secondary never changes its size or position. Hide the whole
   secondary when its identity, complete clock/value units or provenance cannot
   fit. Standalone compatibility music retains its 24px title, 20px artist,
@@ -29,8 +35,9 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   provenance match; preserve independent estimates and pause state. Completed
   clocks are final values, not paused clocks. The phone ranks all ACT2 cards,
   including the compatibility Music bridge; native trusts that wire order.
-  Retained cards use explicit Last reported wording and their original age,
-  including the compact header when it has room beside the app identity.
+  Retained cards use explicit Last reported wording and their original age.
+  A short normal-card status may share its identity header when both full
+  strings fit; compact provenance retains measured room beside app identity.
 - Two shared Pebble readings retain their left/right positions. Timeline Peek
   uses the native OS panel rather than a second event renderer.
 - Notification banners and additional vibration default to Off. They do not

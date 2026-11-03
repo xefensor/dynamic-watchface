@@ -50,3 +50,23 @@ test('dual-convention Music keeps its app UUID controls and cannot bypass an app
   assert.deepEqual(presentation.select([canonical],{hidden:['builtin:music']},legacy).map(x=>x.id),['canonical']);
   assert.equal(JSON.stringify(canonical),before);
 });
+test('simple API projection follows installed app identity without inventing visible field labels',()=>{
+  const raw={provider:P,id:'simple',appName:'Source name',revision:1,observedAt:N,validUntil:N+600,
+    content:library.activity.countdown({deadline:N+60}),detail:'Collect at desk',private:false};
+  const compiled=library.activity.toView(raw),before=JSON.stringify(compiled);
+  const projected=presentation.project(Object.assign({},compiled,{providerName:'Installed name'}));
+  assert.equal(projected.caption,'Installed name');assert.equal(projected.main.label,'Installed name');
+  assert.equal(projected.support.label,'Installed name');assert.equal(projected.support.text,'Collect at desk');
+  assert.equal(JSON.stringify(compiled),before);
+  const labeled=library.activity.toView(Object.assign({},raw,{content:library.activity.countdown({deadline:N+60,label:'Rest'})}));
+  assert.equal(presentation.project(labeled).main.label,'Rest');
+});
+test('compatibility Music projects useful metadata without Track/Artist placeholders',()=>{
+  const raw=card({kind:'music',private:true,main:{type:'text',label:'Track',text:'Long title'},
+    support:{type:'text',label:'Artist',text:'?'}}),before=JSON.stringify(raw);
+  const result=presentation.project(raw);
+  assert.equal(result.main.label,result.caption);assert.equal(result.support,null);
+  assert.equal(JSON.stringify(raw),before);
+  const known=presentation.project(Object.assign({},raw,{support:{type:'text',label:'Artist',text:'Justice'}}));
+  assert.equal(known.support.text,'Justice');assert.equal(known.support.label,known.caption);
+});

@@ -3,9 +3,11 @@
 // Node-only capture fixture producer. Use the installed production encoders;
 // this module is never imported by the phone or watch application.
 const core=require('pebble-watchface-core').wire;
-const activity=require('pebble-activities').view;
+const library=require('pebble-activities');
+const activity=library.view;
+const simple=library.activity;
 const presentation=require('../src/pkjs/activity-presentation');
-if(!activity)throw Error('Native ACT2 fixtures require the pinned Activities 0.2.2 package');
+if(!activity||!simple)throw Error('Native fixtures require the pinned Activities 0.3.0 package');
 const states=['idle','music','notification-summary','notification','timeline'];
 function cover() {
   const palette=[0xc0,0xff,0xc3,0xcf,0xfc,0xf3,0xf0,0xcc],pixels=[];
@@ -16,6 +18,25 @@ function cover() {
   }
   for(let y=0;y<40;y++)for(let x=0;x<40;x+=2)pixels.push((color(x,y)<<4)|color(x+1,y));
   return {width:40,height:40,palette,pixels,image:true};
+}
+// Exercise the actual production Music adapter, including its optional-field
+// rules. Handwritten clean cards would miss real Track/Artist regressions.
+function musicFromSource(now,session,title,artist,artwork) {
+  let request;
+  const provider='7f635d12-7288-4d10-885d-41ea49f4d5a4';
+  const client=library.createContext({musicAsActivity:true,
+    pebble:{subscribeToSource:value=>{if(value.category==='music')request=value;return {unsubscribe(){}};}},
+    keys:{CONTEXT_DATA:'CONTEXT_DATA',REQUEST_CONTEXT:'REQUEST_CONTEXT'},now:()=>now*1000,
+    later:()=>1,cancelLater(){},send:(_payload,ok)=>ok(),
+    getSettings:()=>({showMusic:true,showStatus:false,showNotifications:false})});
+  client.refresh(true,session);
+  const properties={title:{shortText:{text:title}},artist:{shortText:{text:artist}},playing:{boolean:{value:true}}};
+  if(artwork)properties.artwork={image:{width:artwork.width,height:artwork.height,
+    palette:Buffer.from(artwork.palette).toString('base64'),pixels:Buffer.from(artwork.pixels).toString('base64')}};
+  request.onData({pluginUuid:provider,validUntilMs:(now+120)*1000,instances:[{instanceId:'track',properties}]});
+  const card=client.musicActivity();client.stop();
+  if(!card)throw Error('Production Music adapter rejected native fixture');
+  return card;
 }
 function fixtures(options) {
   const now=options.now,session=options.session;
@@ -35,11 +56,8 @@ function fixtures(options) {
         slots[0]=Object.assign(ready('Flower In A Hurricane [from the soundtrack]'),{bitmap:cover()});
         slots[1]=ready('Justice, Tame Impala');
       } else {
-        music=presentation.project({provider:'7f635d12-7288-4d10-885d-41ea49f4d5a4',
-          providerName:'Music',id:'settings-music',kind:'music',revision:1,state:'active',
-          observedAt:now,validUntil:now+120,private:true,unconfirmed:false,caption:'Music',
-          main:{type:'text',label:'Music',text:'Flower In A Hurricane [from the soundtrack]'},
-          support:{type:'text',label:'Artist',text:'Justice, Tame Impala'},image:cover()});
+        music=presentation.project(musicFromSource(now,session,
+          'Flower In A Hurricane [from the soundtrack]','Justice, Tame Impala',cover()));
       }
     }
     if(state==='notification'||state==='notification-summary') {
@@ -49,7 +67,8 @@ function fixtures(options) {
     const dark=theme==='dark';
     presets.push({name:`${state}-${format}-${theme}`,state,format,theme,
       preserve:state==='music'||state==='notification-summary'?
-        [{x:10,y:options.legacyMusic?176:state==='music'?92:116,width:40,height:40}]:
+        [{x:10,y:options.legacyMusic?176:state==='music'?92:116,
+          width:options.legacyMusic?40:24,height:options.legacyMusic?40:24}]:
         state==='timeline'?[{x:0,y:171,width:200,height:57}]:[],
       integers:{BACKGROUND_COLOR:dark?0:0xffffff,TEXT_COLOR:dark?0xffffff:0,
         ACCENT_COLOR:0x55aaff,ANIMATIONS:0,CLOCK_FORMAT:format,SHOW_STATUS:1,
@@ -77,6 +96,15 @@ function activityPresets(options) {
   const music=card('sample-music','Music',{type:'text',label:'Music',text:'One More Time'},null,
     {provider:'7f635d12-7288-4d10-885d-41ea49f4d5a4',providerName:'Music',selectionKey:'builtin:music',
       kind:'music',private:true,image:cover()});
+  const live=(id,appName,content,detail=null,extra={})=>{
+    const source={provider,id,revision:1,state:'active',observedAt:now,validUntil:now+3600,
+      private:false,appName,content,detail,...extra};
+    const instance=simple.toSourceInstance(source,{iconPixelSize:{w:40,h:40}});
+    const decoded=instance&&simple.sourceCard(instance,source.provider);
+    const compiled=decoded&&simple.toView(decoded);
+    if(!compiled)throw Error('Invalid simple API native fixture: '+id);
+    return compiled;
+  };
   const expires=card('sample-support-expiry','Outdoor walk',clock('Elapsed','elapsed',1830),
     {type:'value',label:'Pulse',value:142,unit:'bpm',validUntil:now+3},
     {meter:{kind:'level',source:'support',min:60,max:180}});
@@ -116,9 +144,9 @@ function activityPresets(options) {
       {type:'value',label:'Charge',value:72,unit:'%',retain:true},null,
       {observedAt:now-300,unconfirmed:true})},
     {name:'support-expiry-before',base:'idle',card:expires,
-      expectInk:[{x:10,y:187,width:180,height:4}]},
+      expectInk:[{x:10,y:195,width:180,height:4}]},
     {name:'support-expiry-after',base:'idle',captureDelaySeconds:4,card:expires,
-      expectBlank:[{x:10,y:187,width:180,height:4}]},
+      expectBlank:[{x:10,y:195,width:180,height:4}]},
     {name:'completed-result',base:'idle',card:card('sample-finished-timer','10 min timer',
       {type:'text',label:'State',text:'Finished',retain:true},
       clock('Elapsed','elapsed',600,{running:false,anchorAt:0}),
@@ -174,10 +202,31 @@ function activityPresets(options) {
     {name:'small-scalar-icon-spacing',base:'idle',card:card('small-scalar','Counter',
       {type:'value',label:'Items',text:'123456789012345678'},null,
       {providerName:'Counter',image:cover()}),
-      expectBlank:[{x:10,y:132,width:40,height:3}],expectInk:[{x:10,y:135,width:40,height:16}]},
+      expectBlank:[{x:10,y:116,width:180,height:4}],expectInk:[{x:10,y:145,width:180,height:22}]},
     {name:'long-provider-identity',base:'idle',card:card('provider-name','Instance',
       {type:'text',label:'Status',text:'Ready'},null,
-      {providerName:'Dlouhý název aplikace s diakritikou',kind:'custom'})}
+      {providerName:'Dlouhý název aplikace s diakritikou',kind:'custom'})},
+    {name:'simple-music-user-title',base:'idle',card:musicFromSource(now,session,
+      'Better Than The Cyberpunk Soundtrack','?',null)},
+    {name:'simple-music-user-title-dark',base:'idle',theme:'dark',card:musicFromSource(now,session,
+      'Better Than The Cyberpunk Soundtrack','?',null)},
+    {name:'simple-music-title-artist-artwork',base:'idle',card:musicFromSource(now,session,
+      'Better Than The Cyberpunk Soundtrack','The Midnight',cover())},
+    {name:'simple-timer-normal-delivery-compact',base:'idle',verifyClockTick:true,cards:[
+      live('simple-countdown','Timer',simple.countdown({deadline:now+25}),null,
+        {provider:'50e9ef12-a5ab-4369-a3b5-3447bfba5151',kind:'timer',unconfirmed:true}),
+      live('simple-parcel-compact','Parcel','At your door')]},
+    {name:'simple-delivery-normal-timer-compact',base:'idle',verifyClockTick:true,cards:[
+      live('simple-parcel-normal','Parcel','At your door'),
+      live('simple-countdown-secondary','Timer',simple.countdown({deadline:now+25}),null,
+        {provider:'50e9ef12-a5ab-4369-a3b5-3447bfba5151',kind:'timer',unconfirmed:true})]},
+    {name:'simple-workout-detail-clock',base:'idle',verifyClockTick:true,card:
+      live('simple-workout','Workout',simple.countdown({deadline:now+80,label:'Rest'}),
+        simple.elapsed({since:now-1458,label:'Elapsed'}),{kind:'workout'})},
+    {name:'simple-value-detail',base:'idle',card:
+      live('simple-charge','Charger',simple.value(72,'%'),simple.countdown({deadline:now+2220,label:'ETA'}))},
+    {name:'simple-unknown-app',base:'idle',card:
+      live('simple-custom','Acme','Ready for collection','Locker 12')}
   ];
   let sequence=options.sequence===undefined?100:options.sequence;
   return {coreVersion:plan.coreVersion,activitiesVersion:plan.activitiesVersion,
@@ -188,7 +237,8 @@ function activityPresets(options) {
         const result=source.main&&typeof source.main==='object'?activity.normalize(source):
           activity.fromLegacy(source,{terminalResults:true,timerPresentation:'compact'});
         if(!result)throw Error('Invalid native activity fixture: '+spec.name);
-        return presentation.project({...result,providerName:source.providerName,selectionKey:source.selectionKey});
+        return presentation.project({...result,providerName:source.providerName,
+          selectionKey:source.selectionKey,sourceFormat:source.sourceFormat});
       });
       return {...base,name:spec.name,activity:cards[0],activities:cards,
         captureDelaySeconds:spec.captureDelaySeconds,verifyClockTick:spec.verifyClockTick===true,
@@ -200,7 +250,7 @@ function activityPresets(options) {
         bytes:{...base.bytes,ACTIVITY_DATA:activity.encode(cards,{session,revision:++sequence,sentAt:now})}};
     })};
 }
-module.exports={fixtures,activityPresets};
+module.exports={fixtures,activityPresets,musicFromSource};
 if(require.main===module) {
   let input='';process.stdin.setEncoding('utf8');process.stdin.on('data',value=>input+=value);
   process.stdin.on('end',()=>{

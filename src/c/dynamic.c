@@ -979,6 +979,7 @@ typedef struct {
   const PavCard *card,*alternate;
   const ComplicationSlot *music;
   ActivityLayout layout;
+  char role[PAV_LABEL_BYTES+5];
   char support[ACTIVITY_LINE_BYTES],secondary[ACTIVITY_LINE_BYTES];
   char status[64],support_status[64],secondary_status[64];
   bool paged,needs_tick;
@@ -1031,6 +1032,8 @@ static bool prv_activity_line(const PavCard *card,const PavDatum *datum,uint32_t
 }
 static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,ActivityPlan *out) {
   memset(out,0,sizeof(*out));out->card=card;
+  watch_layout_copy_utf8(activity_role(card,&card->main),out->role,sizeof(out->role));
+  prv_ellipsize(out->role,sizeof(out->role),14,180);
   const uint8_t marks=activity_status_marks(card,&card->main,now,s_phone_connected,true);
   activity_status_text(&card->main,marks,now,out->status,sizeof(out->status));
   if(pav_datum_visible(card,&card->support,now,s_phone_connected)) {
@@ -1069,7 +1072,7 @@ static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,Ac
   }
   const char *identity=activity_identity(card);
   const int top=banner?prv_notice_music_top(&s_context_to.title):92;
-  activity_layout_build(identity,main,activity_role(card,&card->main),out->support,
+  activity_layout_build(identity,main,out->role,out->support,
       out->status,out->support_status,vector,card->main.type==PAV_VALUE,
       out->alternate||out->music,pav_meter_visible(card,now,s_phone_connected),top,
       prv_music_measure,prv_activity_clock_measure,NULL,&out->layout);
@@ -1078,7 +1081,7 @@ static void prv_prepare_activity(const PavCard *card,bool banner,uint32_t now,Ac
     out->layout.secondary=activity_secondary_fits(name,out->secondary,out->secondary_status,
         prv_music_measure,NULL);
   }
-  out->needs_tick=activity_view_needs_tick(card,out->layout.support,out->alternate,
+  out->needs_tick=out->layout.main.count&&activity_view_needs_tick(card,out->layout.support,out->alternate,
       out->layout.secondary,now,s_phone_connected);
 }
 static void prv_activity_clock_schedule(void) {
@@ -1135,6 +1138,7 @@ static void prv_draw_activity(GContext *ctx,const PavCard *card,int y,bool banne
   const uint32_t now=(uint32_t)time(NULL);
   ActivityPlan plan;prv_prepare_activity(card,banner,now,&plan);
   const ActivityLayout *layout=&plan.layout;
+  if(!layout->main.count)return;
   if(s_app_focused&&plan.paged&&!s_native->music_offset&&
       !layout->main.complete&&layout->main.consumed) {
     const char *text=pav_text(card,&card->main);size_t next=layout->main.consumed;
@@ -1146,15 +1150,19 @@ static void prv_draw_activity(GContext *ctx,const PavCard *card,int y,bool banne
   }
   const int top=banner?prv_notice_music_top(&s_context_to.title):92;
   prv_draw_activity_image(ctx,card,10,y+top,ACTIVITY_PRIMARY_ICON);
-  prv_draw_activity_identity(ctx,activity_identity(card),20,60,y+layout->identity_baseline,130);
+  prv_draw_activity_identity(ctx,activity_identity(card),16,ACTIVITY_PRIMARY_IDENTITY_LEFT,
+      y+layout->identity_baseline,ACTIVITY_PRIMARY_IDENTITY_WIDTH);
+  if(layout->header_status)prv_text(ctx,plan.status,11,ACTIVITY_PRIMARY_IDENTITY_LEFT,
+      y+layout->identity_baseline,ACTIVITY_PRIMARY_IDENTITY_WIDTH,
+      prv_muted_text(1),GTextAlignmentRight);
   for(int i=0;i<layout->main.count;++i) {
     if(layout->vector)prv_vector(ctx,layout->main.text[i],layout->left,
         y+layout->main_baseline[i],layout->point,s_text_color);
     else prv_text(ctx,layout->main.text[i],layout->point,layout->left,
         y+layout->main_baseline[i],layout->width,s_text_color,GTextAlignmentLeft);
   }
-  const char *detail[]={activity_role(card,&card->main),plan.status,plan.support,plan.support_status};
-  const int baseline[]={layout->role_baseline,layout->status_baseline,
+  const char *detail[]={plan.role,plan.status,plan.support,plan.support_status};
+  const int baseline[]={layout->role_baseline,layout->header_status?0:layout->status_baseline,
       layout->support_baseline,layout->support_status_baseline},point[]={14,11,16,11};
   for(unsigned i=0;i<4;++i)if(baseline[i])
     prv_text(ctx,detail[i],point[i],10,y+baseline[i],180,prv_muted_text(1),GTextAlignmentLeft);
