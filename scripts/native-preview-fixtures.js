@@ -8,7 +8,7 @@ const activity=library.summaryView;
 const simple=library.activity;
 const presentation=require('../src/pkjs/activity-presentation');
 if(!activity||!simple)throw Error('Native fixtures require the pinned Activities 0.3.0 package');
-const states=['idle','music','notification-summary','notification','timeline'];
+const states=['idle','music','timer','notification-summary','notification','timeline'];
 function cover() {
   const palette=[0xc0,0xff,0xc3,0xcf,0xfc,0xf3,0xf0,0xcc],pixels=[];
   function color(x,y) {
@@ -80,7 +80,7 @@ function fixtures(options) {
   for(const theme of ['light','dark'])for(const format of [24,12])for(const state of states) {
     const slots=[];
     let music=null,notice=null;
-    if(state==='music'||state==='notification-summary') {
+    if(state==='music'||state==='timer'||state==='notification-summary') {
       if(options.legacyMusic) {
         slots[0]=Object.assign(ready('Flower In A Hurricane [from the soundtrack]'),{bitmap:cover()});
         slots[1]=ready('Justice, Tame Impala');
@@ -92,7 +92,11 @@ function fixtures(options) {
     if(state==='notification'||state==='notification-summary')notice=notificationFromSource(now,session,{body:state==='notification'});
     if(music)music.revision=sequence+1;
     if(notice){notice.card.revision=sequence+1;notice.card.id+='-'+state;}
-    const cards=notice?[notice.card].concat(music?[music]:[]):music?[music]:[];
+    const timer=state==='timer'?presentation.project(library.summary.toView({
+      provider:'50e9ef12-a5ab-4369-a3b5-3447bfba5151',displayName:'Timer',revision:sequence+1,
+      observedAt:now,validUntil:now+660,record:{id:'preview-tea',type:'standard',name:'Tea',icon:'timer',
+        headline:{type:'clock',mode:'countdown',deadline:now+151}}})):null;
+    const cards=notice?[notice.card].concat(music?[music]:[]):timer?[timer,music]:music?[music]:[];
     const dark=theme==='dark';
     presets.push({name:`${state}-${format}-${theme}`,state,format,theme,fixtureNow:now,
       preserve:state==='music'?
@@ -128,6 +132,11 @@ function summaryPresets(options){
     {name:'message-timer',records:[{id:'message',type:'standard',name:'Messages',icon:'message',headline:{type:'text',text:'Petr'},detail:{type:'text',text:'I’m downstairs. Ready when you are?'}},timer()],verifyClockTick:true},
     {name:'media-alone',records:[music]},
     {name:'timer-alone',records:[timer(204)],verifyClockTick:true},
+    {name:'paused-timer-media',records:[{...timer(),state:'paused',headline:{type:'clock',mode:'countdown',seconds:151}},music]},
+    {name:'media-paused-timer',records:[music,{...timer(),state:'paused',headline:{type:'clock',mode:'countdown',seconds:151}}]},
+    {name:'paused-long-clock',records:[music,{...timer(),state:'paused',headline:{type:'clock',mode:'elapsed',seconds:4294967295}}]},
+    {name:'paused-long-label',records:[music,{...timer(),state:'paused',headline:{type:'clock',mode:'countdown',seconds:151,label:'A very long optional timer label'}}]},
+    {name:'paused-long-primary',records:[{...timer(),state:'paused',headline:{type:'clock',mode:'countdown',seconds:151,label:'A very long optional timer label'}},music]},
     {name:'long-timer',records:[timer(45296,'Slow cook'),music],verifyClockTick:true},
     {name:'long-artist',records:[{...music,title:'Flower In A Hurricane [from the soundtrack]',artist:'Justice, Tame Impala'},timer(85,'Pasta')],verifyClockTick:true},
     {name:'delivery-text',records:[delivery,{id:'garage',type:'standard',name:'Garage',headline:{type:'text',text:'Door open'}}]},
@@ -138,6 +147,7 @@ function summaryPresets(options){
     {name:'direction-long-value',records:[{id:'long-route',type:'standard',name:'Maps',icon:'navigation',headline:{type:'value',value:'1234567890123',unit:'mi',symbol:'turn-left'}}]},
     {name:'direction-formatted-value',records:[{id:'fraction-route',type:'standard',name:'Maps',icon:'navigation',headline:{type:'value',value:'¼',unit:'mi',symbol:'turn-right'}}]}
   ];
+  specs.push({name:'paused-value-state-unfit',records:[music,{id:'counter',type:'standard',name:'Counter',icon:'workout',state:'paused',headline:{type:'value',value:'123456789012345678'}}]});
   let sequence=options.sequence||100;
   const presets=[];
   for(const theme of ['light','dark'])for(const spec of specs){

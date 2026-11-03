@@ -740,19 +740,19 @@ def audit_preview_identity(root, version, binary, resources):
     exported = re.search(r"module\.exports\s*=\s*(\{.*\})\s*;\s*$", source, re.S)
     require(exported, "Native preview asset export is missing")
     preview = json.loads(exported.group(1))
-    require(preview["version"] == version and len(preview["frames"]) == 20,
+    require(preview["version"] == version and len(preview["frames"]) == 24,
             "Native preview assets belong to a different release")
     for name, content in (("emery/pebble-app.bin", binary),
                           ("emery/app_resources.pbpack", resources)):
         require(preview["source"]["nativePayloadSha256"][name] == sha256(content),
                 "Native previews belong to a different renderer: " + name)
-    return {"samples": 20, "nativeBinaryAndResourcesMatch": True}
+    return {"samples": 24, "nativeBinaryAndResourcesMatch": True}
 
 
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.14.0", "Review this auditor for a different release version")
+    require(package["version"] == "0.15.0", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and

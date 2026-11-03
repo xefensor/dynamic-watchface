@@ -16,4 +16,4 @@ The optional Notifications activity can show only the app, an app/sender summary
 
 Dynamic targets Pebble Time 2. Live readings use Pebble's plugin system; Android is required for music and notification integration. The clock and date continue without the phone. Use Pebble's Music app for playback controls.
 
-Version 0.14.0 is prepared locally for sideload testing with the plugin preview. Public store submission remains on hold.
+Version 0.15.0 is prepared locally for sideload testing with the plugin preview. Public store submission remains on hold.

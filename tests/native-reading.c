@@ -139,7 +139,10 @@ int main(void) {
     covered(language->forecast);
     covered(language->loading);covered(language->unavailable);covered(language->expired);
     covered(language->first);covered(language->second);
+    assert(language->paused[0]);covered(language->paused);
   }
+  assert(strcmp(reading_language("cs-CZ")->paused,"Pozastaveno")==0);
+  assert(strcmp(reading_language("en")->paused,"Paused")==0);
   assert(strcmp(reading_language("nb-NO")->lang,"no")==0);
   assert(strcmp(reading_language("nn_NO")->lang,"no")==0);
   assert(strcmp(reading_language("xx")->lang,"en")==0);

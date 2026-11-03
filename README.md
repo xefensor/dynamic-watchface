@@ -1,24 +1,24 @@
 # Dynamic
 
 A Pebble Time 2 watchface with rounded time, two horizontal readings and
-notification-style activities. Version 0.14.0 cleans up settings and
-keeps the shared activity renderer. It places one
+notification-style activities. Version 0.15.0 makes paused state clear in either
+role, separates the compact row and simplifies settings. It places one
 compact activity row above the main activity and groups the primary content
 against its bottom context. Music uses title, artwork and artist. Text stays
 still and truncates at its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
-The current release is [**v0.14.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.14.0).
+The current release is [**v0.15.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.15.0).
 It is ready for sideload testing. Pebble appstore submission remains held.
 
 | File | Use |
 | --- | --- |
-| [Dynamic-0.14.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.14.0/Dynamic-0.14.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
-| [Dynamic-0.14.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.14.0/Dynamic-0.14.0-source.zip) | The checked source snapshot and pinned dependencies |
-| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.14.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
+| [Dynamic-0.15.0.pbw](https://github.com/xefensor/dynamic-watchface/releases/download/v0.15.0/Dynamic-0.15.0.pbw) | Install on Pebble Time 2 through your Pebble developer/sideload connection |
+| [Dynamic-0.15.0-source.zip](https://github.com/xefensor/dynamic-watchface/releases/download/v0.15.0/Dynamic-0.15.0-source.zip) | The checked source snapshot and pinned dependencies |
+| [SHA256SUMS.txt](https://github.com/xefensor/dynamic-watchface/releases/download/v0.15.0/SHA256SUMS.txt) | Verify downloaded files with `sha256sum --ignore-missing -c SHA256SUMS.txt` |
 
-The [previous 0.11.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.11.0)
+The [previous 0.14.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.14.0)
 and its artifacts remain available unchanged.
 
 The [earlier 0.8.0 release](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.8.0)
@@ -49,7 +49,7 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Plugin activities
 
-Dynamic 0.14.0 prefers `activity/summary` schema 4 through pinned
+Dynamic 0.15.0 prefers `activity/summary` schema 4 through pinned
 Activities 0.4.1. Sources publish either a standard headline with optional detail,
 or media title/artist/artwork. Datums can be text, values or independent clocks.
 Plugins supply meaning; Dynamic chooses layout. Existing schema 1/2/3 providers
@@ -59,7 +59,8 @@ Dynamic requests display data and an optional destination app. It does not
 request action/entity descriptors or invoke playback and other plugin actions.
 
 The secondary is exactly one static row above the primary, optionally led by a
-small symbol. It can contain a live countdown, elapsed time, value or text. The
+small symbol. A thin divider separates this row from the primary activity. It
+can contain a live countdown, elapsed time, value or text. The
 primary expands upward when secondary is absent. Its headline, optional detail
 and value labels form a bottom-aligned group immediately above its footer.
 Its bottom context can be an instance name, provider identity, or artwork and
@@ -67,6 +68,10 @@ artist for media. It is not a mandatory icon-plus-app-name heading. Text never
 scrolls or automatically pages.
 Complete values and units are preserved; an optional compact view yields when
 its essential value cannot fit.
+
+Paused state follows the watch's language. In the compact row it has priority
+over optional labels and instance detail. If a complete value and its paused
+state cannot fit together, the optional row yields and the primary expands.
 
 In **Content & priority → Activity priority**, drag apps or use their arrow buttons to
 reorder and show/hide them. The first eligible activity is primary and the next
@@ -86,9 +91,10 @@ annotation are omitted instead of showing them as current without one.
 
 ## Open Activity shortcut
 
-Install the separate [**Open Activity 0.1.1** helper](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.1) and assign that same app to
-the desired Quick Launch buttons. Its own settings choose Primary or Secondary
-for each supported hold. Dynamic supplies a recent destination pair only after
+Install the separate [**Open Activity 0.1.4** helper](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.4) and assign that same app to
+the desired Quick Launch shortcuts. Its two settings choose one shortcut for
+Primary and one for Secondary, from supported taps, holds and combinations.
+Dynamic supplies a recent destination pair only after
 native presentation confirmation. Missing, expired or non-openable selected
 activity makes the helper close; Secondary never silently opens Primary.
 
@@ -100,7 +106,7 @@ support assumes one connected watch and opens whole apps; it does not select a
 particular timer or notification inside them. No firmware or phone-app fork is
 required. Dashboard implementation is deferred.
 
-[Timer 0.8.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.8.0)
+[Timer 0.9.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.9.0)
 publishes timer activities and their Timer destination. Install each companion
 app separately; Dynamic bundles the Activities library, not the watchapps.
 
@@ -214,17 +220,18 @@ priority over completing an outgoing animation.
 2. Configure slots 1–2 in the phone app's **Complications** settings. These are
    shared Pebble choices and can affect other faces using those slots. Dynamic
    retains their left/right positions and the selected provider's units.
-3. Open Dynamic's **Appearance** group. Try the independent Idle, Music,
+3. Open Dynamic's **Appearance** group. Try the independent Idle, Music, Timer,
    Title only, Message and Timeline examples without changing any content or
    privacy preference. Section shortcuts reach Content and Connection & help
-   without changing browser history. The 20 native samples cover five states, two clock
+   without changing browser history. The 24 native samples cover six states, two clock
    formats and two themes. They are layout/colour examples, not live data.
 4. Choose Light / Dark / Custom, accent and Follow Pebble / 12-hour / 24-hour.
    Returning to Custom restores that session's custom palette. Follow Pebble
    examples use the last OS format reported by the watch; an unknown format is
    explicitly labelled as an illustrative example. The read-only format query
    never changes the watchface's clock preference. Optionally choose a Quiet
-   Time palette. A colour preset code such as `DYN1-FFFFFF-000000-55AAFF` shares
+   Time palette. Expand **Share colours** for a preset code such as
+   `DYN1-FFFFFF-000000-55AAFF`, which shares
    only background, text and accent colours; importing it changes no content,
    privacy, app-filter or vibration preference.
 5. In **Content & priority**, check the shared reading summaries and adjacent recovery
@@ -242,7 +249,9 @@ priority over completing an outgoing animation.
    app exists on the phone. **Additional vibration** is Off, Short or Double.
    It uses the same app filter and respects the watch's Quiet Time. PebbleOS
    alerts remain independent, so enabling it can produce a second vibration.
-7. The fixed Save area distinguishes unsaved edits from the last delivery.
+7. The Save area distinguishes unsaved edits from the last delivery. It stays
+   fixed in normal phone layouts and joins the page in short/keyboard viewports.
+   Focused fields remain above the visible action area.
    Save stores appearance settings on the phone and sends them to the watch.
    Undelivered settings retry automatically after reconnection. **Connection &
    help** shows the source snapshot and expandable technical details.
@@ -335,7 +344,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.14.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.15.0.pbw
 python3 scripts/package-source.py
 ```
 
@@ -347,7 +356,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.14.0.pbw
+pebble install --emulator emery dist/Dynamic-0.15.0.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -382,7 +391,7 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic 0.14.0 pins Core 0.5.0 and Activities 0.4.1. Halftone keeps its own
+Dynamic 0.15.0 pins Core 0.5.0 and Activities 0.4.1. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
 `vendor/pebble-watchface-core-0.5.0.tgz` and

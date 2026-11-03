@@ -7,7 +7,7 @@ const preview=require('../src/pkjs/settings-preview');
 test('offline settings have every native preset and intact 200×228 PNGs',()=>{
   assert.equal(preview.version,require('../package.json').version);
   const expected=[];
-  for(const state of ['idle','music','notification','notification-summary','timeline'])
+  for(const state of ['idle','music','timer','notification','notification-summary','timeline'])
     for(const format of [12,24])for(const theme of ['light','dark'])
       expected.push(`${state}-${format}-${theme}`);
   assert.deepEqual(Object.keys(preview.frames).sort(),expected.sort());

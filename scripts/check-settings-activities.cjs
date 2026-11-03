@@ -98,6 +98,28 @@ async function run(){
       assert.equal(await evaluate('(()=>{const box=document.querySelector(".component-submit button").getBoundingClientRect();return box.top>=0&&box.bottom<=innerHeight;})()'),true);
     }
     await evaluate('window.scrollTo(0,0)');
+    const paletteBefore=await evaluate('window.__testClay.serialize()');
+    assert.equal(await evaluate('document.querySelector(".dynamic-palette-details").open'),false);
+    assert.equal(await evaluate('document.querySelectorAll(".dynamic-preview-tabs button").length'),6);
+    await evaluate('document.querySelector(".dynamic-preview-tabs button").focus()');
+    for(const [key,want] of [['End',5],['Home',0],['ArrowLeft',5],['ArrowRight',0]]) {
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key,code:key,windowsVirtualKeyCode:{End:35,Home:36,ArrowLeft:37,ArrowRight:39}[key]});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key,code:key,windowsVirtualKeyCode:{End:35,Home:36,ArrowLeft:37,ArrowRight:39}[key]});
+      assert.equal(await evaluate('Array.from(document.querySelectorAll(".dynamic-preview-tabs button")).indexOf(document.activeElement)'),want);
+    }
+    await evaluate('document.querySelectorAll(".dynamic-preview-tabs button")[2].click()');
+    assert.match(await evaluate('document.getElementById("dynamic-preview-canvas").getAttribute("aria-label")'),new RegExp(localization.t('previewTimer',language)));
+    assert.deepEqual(await evaluate('window.__testClay.serialize()'),paletteBefore,'sample selection never changes appearance or privacy');
+    await evaluate('window.scrollTo(0,0)');await capture('timer-preview-'+language);
+    await evaluate('document.querySelector(".dynamic-palette-details summary").focus()');
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r'});
+    await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+    assert.equal(await evaluate('document.querySelector(".dynamic-palette-details").open'),true);
+    await evaluate('document.getElementById("dynamic-palette-input").focus()');
+    await evaluate('new Promise(resolve=>setTimeout(resolve,50))');
+    assert.equal(await evaluate('(()=>{const r=document.getElementById("dynamic-palette-input").getBoundingClientRect();return r.top>=0&&r.bottom<=document.querySelector(".component-submit").getBoundingClientRect().top-12;})()'),true);
+    await capture('share-colours-'+language);
+    await evaluate('document.querySelector(".dynamic-palette-details").open=false;document.querySelectorAll(".dynamic-preview-tabs button")[0].click();window.scrollTo(0,0)');
     if(language==='en') {
       for(const scheme of ['light','dark']) {
         await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:scheme}]});
@@ -171,6 +193,9 @@ async function run(){
     assert.deepEqual(replayHost(host.storage).selected(),['message','timer'],'Notifications priority survives a fresh host');
     const setNoticeMode=async value=>evaluate('(()=>{const mode=document.getElementById("dynamic-notification-mode-select");mode.value='+JSON.stringify(value)+';mode.dispatchEvent(new Event("change",{bubbles:true}));})()');
     await setNoticeMode('preview');
+    await evaluate('(()=>{const field=document.getElementById("dynamic-notification-mode-select");const r=field.getBoundingClientRect();scrollBy(0,r.top-(innerHeight-30));field.focus();})()');
+    await evaluate('new Promise(resolve=>setTimeout(resolve,50))');
+    assert.equal(await evaluate('(()=>{const r=document.getElementById("dynamic-notification-mode-select").getBoundingClientRect();return r.top>=0&&r.bottom<=document.querySelector(".component-submit").getBoundingClientRect().top-12;})()'),true,'select focus stays above fixed Save');
     assert.equal(await notificationToggle(),true);
     assert.equal((await evaluate('window.__testClay.serialize()')).NOTIFICATION_PREVIEW.value,true);
     await setNoticeMode('app');
@@ -228,6 +253,30 @@ async function run(){
   const boundary={savedAbsentProviderCount:64,renderedProviderCount:boundedRows.length,allInstalledControlsVisible:true,musicFirstSavedAndRestored:true,
     sectionNavigation:{labelsFromSections:true,keyboardEnter:true,focusTarget:true,noHistoryOrHashChanges:true,saveAlwaysVisible:true,touchTargets44px:true},
     reopenedSavedPrivacy:{viewportWidth:320,notificationsRemainHidden:true,appOnlyRetained:true,savedBodyPreferenceRetained:true,genericMasterRemainsOff:true,noInitialDirtyState:true,noHorizontalOverflow:true}};
+  const responsive=[];
+  for(const [height,textScale] of [[360,1],[800,2],[360,2]]) {
+    await send('Emulation.setDeviceMetricsOverride',{width:320,height,deviceScaleFactor:1,mobile:true});
+    await send('Page.navigate',{url:'file://'+pages.en});
+    for(let i=0;i<100;i++){if(await evaluate('!!document.querySelector(".dynamic-activity-row")'))break;await new Promise(r=>setTimeout(r,30));}
+    if(textScale===2)await evaluate('(()=>{const sizes=Array.from(document.querySelectorAll("body,body *")).filter(e=>e.getClientRects().length).map(e=>[e,parseFloat(getComputedStyle(e).fontSize)]);sizes.forEach(([e,size])=>e.style.setProperty("font-size",(size*2)+"px","important"));})()');
+    await evaluate('new Promise(resolve=>setTimeout(resolve,150))');
+    await evaluate('document.getElementById("dynamic-theme-select").focus()');
+    await evaluate('new Promise(resolve=>setTimeout(resolve,50))');
+    const layout=await evaluate('(()=>{const input=document.getElementById("dynamic-theme-select"),bar=document.querySelector(".component-submit"),r=input.getBoundingClientRect(),b=bar.getBoundingClientRect(),v=visualViewport;return {height:innerHeight,visualHeight:v.height,scrollWidth:document.documentElement.scrollWidth,width:innerWidth,position:getComputedStyle(bar).position,focusTop:r.top,focusBottom:r.bottom,visibleBottom:getComputedStyle(bar).position==="fixed"?Math.min(v.offsetTop+v.height,b.top)-12:v.offsetTop+v.height-12};})()');
+    assert.ok(layout.scrollWidth<=layout.width,'enlarged text remains horizontally bounded');
+    assert.ok(layout.focusTop>=0&&layout.focusBottom<=layout.visibleBottom,'focused select remains fully visible');
+    if(height<=420)assert.equal(layout.position,'static','short viewports use document-flow actions');
+    responsive.push({textScale,...layout});await capture('responsive-'+height+'-'+textScale+'x');
+  }
+  await send('Emulation.setDeviceMetricsOverride',{width:320,height:800,deviceScaleFactor:1,mobile:true});
+  await send('Page.navigate',{url:'file://'+pages.en});
+  for(let i=0;i<100;i++){if(await evaluate('!!document.querySelector(".dynamic-activity-row")'))break;await new Promise(r=>setTimeout(r,30));}
+  await send('Emulation.setPageScaleFactor',{pageScaleFactor:2});
+  await evaluate('new Promise(resolve=>setTimeout(resolve,150))');
+  const visualOnly=await evaluate('({layoutHeight:innerHeight,visualHeight:visualViewport.height,position:getComputedStyle(document.querySelector(".component-submit")).position})');
+  assert.ok(visualOnly.visualHeight<visualOnly.layoutHeight);assert.equal(visualOnly.position,'static');
+  await send('Emulation.setPageScaleFactor',{pageScaleFactor:1});
+  boundary.responsive={layouts:responsive,visualViewportOnly:visualOnly,scope:'Actual Chromium layout at short heights, doubled computed CSS font sizes and visual-viewport-only browser zoom; not a physical keyboard or OS accessibility-font test.'};
   const sourceSha256=Object.fromEntries(['src/pkjs/config.js','src/pkjs/index.js','src/pkjs/settings-page.js','src/pkjs/localization.js','src/pkjs/activity-presentation.js','vendor/ACTIVITIES.json','scripts/check-settings-activities.cjs'].map(file=>[file,crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex')]));
   fs.writeFileSync(path.join(output,'validation.json'),JSON.stringify({version,actualClay:true,syntheticFixtures:true,viewport:{width:360,height:800},sourceSha256,results,boundary,errors:events.filter(e=>e.method==='Runtime.exceptionThrown')},null,2)+'\n');
   assert.equal(events.filter(e=>e.method==='Runtime.exceptionThrown').length,0);

@@ -160,3 +160,17 @@ SHOW_ACTIVITIES affects generic plugins only; disabled rows explain that state
 without rewriting saved order/visibility. Preserve all preference keys and default
 privacy. Reused 0.13 native activity captures must retain their historical origin;
 20 fresh 0.14 native previews and current Clay source hashes are separate evidence.
+
+Version 0.15.0 adds a one-pixel divider at y114 only while a secondary row is
+actually visible. Paused state follows the existing 17-language native table
+and precedes optional labels/context in both roles. A compact structured value
+and paused state must fit together or the optional row yields; presentation
+confirmation must describe the resulting visible roles. Keep the primary/footer
+anchors, one static row and original lifecycle/leases unchanged.
+
+Phone preview includes Timer+Music, giving six sample states and 24 native
+state/format/theme captures. Share colours is disclosed on demand. Preview tabs
+support Home/End and wrapping arrows. The Save bar reserves its measured height;
+short layout or visual viewports put it into document flow. Use visualViewport
+bounds when available to keep focused inputs/selects visible. Native and phone
+pixels are fresh 0.15 evidence; older evidence remains historical.

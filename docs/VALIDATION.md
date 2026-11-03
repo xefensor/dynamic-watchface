@@ -1,5 +1,71 @@
 # Dynamic validation
 
+## 0.15.0 watchface and settings UX pass — 3 November 2026
+
+The optional secondary row now has a restrained divider at y114, within its
+existing gap. The agreed single static row, bottom-aligned primary content,
+footer/artwork positions and bounded motion remain. Paused is localized in all
+17 watch languages and appears in both roles. It precedes optional labels and
+context; if a compact structured value and paused state cannot fit together,
+the secondary yields and presentation confirmation reports no secondary.
+
+Phone settings adds a real Timer+Music preview, collapses colour-code sharing,
+completes preview Home/End/wrapping-arrow navigation and keeps focused inputs
+and selects visible. Save reserves its actual measured height. Short layout or
+visual viewports put actions in page flow, preserving browser history and phone
+Back behavior. All source, activity-priority, privacy and appearance defaults,
+UUIDs, wire protocols, libraries and preference keys are preserved.
+
+- **119 JavaScript checks, 12 portable C suites and 40 Python regressions pass.**
+  New fixtures cover active/paused roles, pathological compact values and
+  labels, and every locale's Paused glyph coverage. Existing lifecycle,
+  presentation, privacy, settings and release checks remain green.
+- **SDK 4.33.1 Emery build and complete package audit pass.** Loaded image is
+  62,248 bytes and static virtual extent 62,664, leaving 2,871 below the SDK
+  65,535-byte limit. Complete native binary is 64,628 bytes, including 2,380
+  relocation bytes. Resources remain 246,928 bytes. An actual native startup
+  reports NativeState 20,536 bytes and free heap 40,708 bytes; this is one sample,
+  not a runtime peak, stack high-water or battery measurement.
+- **64 actual native compositions and 24 settings presets pass visual review
+  by root and the implementing agent.** Coverage includes both roles/themes,
+  missing artwork, long text/values/units, notifications in each privacy mode,
+  paused state before optional text, complete maximum elapsed clocks and an
+  optional paused value yielding when its required state cannot fit. The final
+  PBW binary/resources exactly match these captures.
+- **24 no-resend local-clock follow-ups pass.** Native expiry promotes the
+  remaining activity with correct confirmed indices. Idle presentation status
+  refreshes after 30 seconds without altering static text pixels. Routine lease
+  refresh and late artist data stay still; a media-item change moves the primary
+  while header pixels remain unchanged. Motion evidence has its own scope and
+  does not measure physical watch animation speed or power.
+- **Actual offline Clay interactions pass in EN/CS at 320/360px.** These cover
+  touch/desktop/keyboard priority ordering, saved privacy restoration, master
+  switch independence, Timer preview without preference changes, collapsed
+  sharing opened by keyboard, six-tab Home/End/arrows and focused select/input
+  visibility. Short 360px heights, doubled computed CSS font sizes and a reduced
+  visual viewport with unchanged 800px layout height pass without horizontal
+  overflow. These browser stress cases do not prove physical keyboard or OS
+  accessibility-font behavior.
+- **Six fresh final packaged cross-app privacy/role cases pass** with Dynamic
+  0.15.0, Timer 0.9.0 and Open Activity 0.1.4. They include 48 saved-role launches,
+  48 expired routes closing and 336 unselected shortcuts closing without a
+  subscription/invocation. SDK, clocks and native messages are simulated.
+
+Evidence: [checks](qa/0.15.0/checks.json), [JS/native tests](qa/0.15.0/tests.log),
+[Python tests](qa/0.15.0/python-tests.log), [package audit](qa/0.15.0/bundle-audit.json),
+[native compositions](qa/0.15.0/native-summary/summary.json),
+[settings presets](qa/0.15.0/native-previews/previews.json),
+[actual Clay](qa/0.15.0/settings/validation.json),
+[final distribution](qa/0.15.0/final-distribution.json) and
+[packaged cross-app handoff](qa/0.15.0/packaged-handoff.json).
+
+Final PBW SHA-256:
+`6501f1ed06a8b0814910e5ed36ec560747585e7af3751ccc5d7904f050bfc195`.
+
+The store kit is refreshed locally and remains held. No appstore submission or
+new real-phone/physical-watch launch, latency, vibration or battery result is
+claimed. Earlier archives, assets, tags and historical evidence are preserved.
+
 ## GitHub publication — 3 November 2026
 
 [Dynamic 0.14.0](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.14.0)

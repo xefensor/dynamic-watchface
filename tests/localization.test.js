@@ -147,6 +147,11 @@ test('all custom controls, source states and save outcomes have complete transla
   assert.equal(localization.t('receivedAge','en'),'Received {age} min ago');
   assert.equal(localization.t('observedAge','en'),'Observed {age} min ago');
 });
+test('Timer preview is named in every supported language',()=>{
+  for(const language of languages)assert.ok(localization.settingsStrings(language).previewTimer.length>0);
+  assert.equal(localization.t('previewTimer','cs'),'Časovač');
+  assert.equal(localization.t('previewTimer','pl'),'Minutnik');
+});
 test('borderless settings expose only applicable controls and preserve privacy defaults',()=>{
   const all=items(config);
   const find=key=>all.find(item=>item.messageKey===key);

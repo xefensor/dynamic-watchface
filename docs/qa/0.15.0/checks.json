@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "version": "0.15.0",
+  "javascriptTests": 119,
+  "nativeSuites": 12,
+  "pythonRegressions": 40,
+  "sdkBuild": "PASS",
+  "packageAudit": "PASS",
+  "nativeCompositions": 64,
+  "nativeSettingsPresets": 24,
+  "nativeClockFollowups": 24,
+  "visualReview": {
+    "root": true,
+    "ux_dynamic": true
+  },
+  "actualClay": "EN/CS320/360light/dark+360pxheight+2xCSStext+visualViewportOnly",
+  "sourcePinsUnchanged": true,
+  "uuidPreferencesAndProtocolsPreserved": true,
+  "crossAppCases": 6,
+  "savedShortcutLaunches": 48,
+  "expiredShortcutClosures": 48,
+  "unselectedShortcutClosures": 336
+}

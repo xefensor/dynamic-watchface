@@ -1,0 +1,88 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  75.2 KiB/s 0:00:00
+N/A%[=                                                    ] 139.7 KiB/s 0:00:00
+N/A%[=                                                    ] 159.1 KiB/s 0:00:00
+N/A%[=                                                    ] 167.1 KiB/s 0:00:00
+N/A%[=                                                    ] 172.3 KiB/s 0:00:00
+N/A%[=                                                    ] 175.8 KiB/s 0:00:00
+N/A%[=                                                    ] 137.0 KiB/s 0:00:00
+N/A%[=                                                    ] 143.5 KiB/s 0:00:00
+N/A%[=                                                    ] 148.5 KiB/s 0:00:00
+N/A%[=                                                    ] 157.8 KiB/s 0:00:00
+N/A%[=                                                    ] 160.5 KiB/s 0:00:00
+N/A%[=                                                    ] 162.8 KiB/s 0:00:00
+N/A%[=                                                    ] 164.5 KiB/s 0:00:00
+N/A%[=                                                    ] 168.6 KiB/s 0:00:01
+N/A%[=                                                    ] 171.9 KiB/s 0:00:01
+N/A%[=                                                    ] 172.9 KiB/s 0:00:01
+N/A%[=                                                    ] 175.3 KiB/s 0:00:01
+N/A%[=                                                    ] 176.0 KiB/s 0:00:01
+N/A%[=                                                    ] 176.6 KiB/s 0:00:01
+N/A%[=                                                    ] 177.1 KiB/s 0:00:01
+N/A%[=                                                    ] 177.6 KiB/s 0:00:01
+N/A%[=                                                    ] 153.0 KiB/s 0:00:01
+Captured timer-media-light
+Captured media-timer-light
+Captured workout-timer-light
+Captured navigation-media-light
+Captured recording-delivery-light
+Captured download-recording-light
+Captured message-timer-light
+Captured media-alone-light
+Captured timer-alone-light
+Captured paused-timer-media-light
+Captured media-paused-timer-light
+Captured paused-long-clock-light
+Captured paused-long-label-light
+Captured paused-long-primary-light
+Captured long-timer-light
+Captured long-artist-light
+Captured delivery-text-light
+Captured local-promotion-light
+Captured compact-detail-clock-light
+Captured secondary-long-clock-light
+Captured secondary-unfit-value-light
+Captured direction-long-value-light
+Captured direction-formatted-value-light
+Captured paused-value-state-unfit-light
+Captured timer-media-dark
+Captured media-timer-dark
+Captured workout-timer-dark
+Captured navigation-media-dark
+Captured recording-delivery-dark
+Captured download-recording-dark
+Captured message-timer-dark
+Captured media-alone-dark
+Captured timer-alone-dark
+Captured paused-timer-media-dark
+Captured media-paused-timer-dark
+Captured paused-long-clock-dark
+Captured paused-long-label-dark
+Captured paused-long-primary-dark
+Captured long-timer-dark
+Captured long-artist-dark
+Captured delivery-text-dark
+Captured local-promotion-dark
+Captured compact-detail-clock-dark
+Captured secondary-long-clock-dark
+Captured secondary-unfit-value-dark
+Captured direction-long-value-dark
+Captured direction-formatted-value-dark
+Captured paused-value-state-unfit-dark
+Captured notification-media-light
+Captured timer-notification-light
+Captured notification-summary-media-light
+Captured notification-app-only-light
+Captured notification-no-icon-light
+Captured notification-long-message-light
+Captured notification-promotes-timer-light
+Captured media-notification-light
+Captured notification-media-dark
+Captured timer-notification-dark
+Captured notification-summary-media-dark
+Captured notification-app-only-dark
+Captured notification-no-icon-dark
+Captured notification-long-message-dark
+Captured notification-promotes-timer-dark
+Captured media-notification-dark

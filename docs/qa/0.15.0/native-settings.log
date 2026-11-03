@@ -1,0 +1,52 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  74.2 KiB/s 0:00:00
+N/A%[=                                                    ] 138.5 KiB/s 0:00:00
+N/A%[=                                                    ] 170.5 KiB/s 0:00:00
+N/A%[=                                                    ] 173.7 KiB/s 0:00:00
+N/A%[=                                                    ] 137.8 KiB/s 0:00:00
+N/A%[=                                                    ] 144.2 KiB/s 0:00:00
+N/A%[=                                                    ] 148.3 KiB/s 0:00:00
+N/A%[=                                                    ] 152.0 KiB/s 0:00:00
+N/A%[=                                                    ] 155.1 KiB/s 0:00:00
+N/A%[=                                                    ] 157.7 KiB/s 0:00:00
+N/A%[=                                                    ] 160.1 KiB/s 0:00:00
+N/A%[=                                                    ] 161.9 KiB/s 0:00:00
+N/A%[=                                                    ] 163.4 KiB/s 0:00:00
+N/A%[=                                                    ] 165.0 KiB/s 0:00:00
+N/A%[=                                                    ] 166.5 KiB/s 0:00:00
+N/A%[=                                                    ] 167.5 KiB/s 0:00:01
+N/A%[=                                                    ] 168.4 KiB/s 0:00:01
+N/A%[=                                                    ] 171.7 KiB/s 0:00:01
+N/A%[=                                                    ] 172.4 KiB/s 0:00:01
+N/A%[=                                                    ] 174.8 KiB/s 0:00:01
+N/A%[=                                                    ] 175.5 KiB/s 0:00:01
+N/A%[=                                                    ] 176.2 KiB/s 0:00:01
+N/A%[=                                                    ] 176.7 KiB/s 0:00:01
+N/A%[=                                                    ] 177.1 KiB/s 0:00:01
+N/A%[=                                                    ] 153.7 KiB/s 0:00:01
+Captured idle-24-light
+Captured music-24-light
+Captured timer-24-light
+Captured notification-summary-24-light
+Captured notification-24-light
+Captured timeline-24-light
+Captured idle-12-light
+Captured music-12-light
+Captured timer-12-light
+Captured notification-summary-12-light
+Captured notification-12-light
+Captured timeline-12-light
+Captured idle-24-dark
+Captured music-24-dark
+Captured timer-24-dark
+Captured notification-summary-24-dark
+Captured notification-24-dark
+Captured timeline-24-dark
+Captured idle-12-dark
+Captured music-12-dark
+Captured timer-12-dark
+Captured notification-summary-12-dark
+Captured notification-12-dark
+Captured timeline-12-dark
+{"result": "PASS", "captures": 24, "legacyNotificationFlagsAbsent": true}

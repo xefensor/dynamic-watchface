@@ -830,10 +830,11 @@ static void prv_activity_append(char *text,size_t capacity,const char *tail) {
   watch_layout_copy_utf8(tail,text+strlen(text),capacity-strlen(text));
 }
 static bool prv_activity_line(const PavCard *card,const PavDatum *datum,uint32_t now,
-    int width,const char *qualifier,char *text,size_t capacity) {
+    int width,const char *state,const char *qualifier,char *text,size_t capacity) {
   text[0]=0;
   if(!pav_format_item(card,datum,now,s_phone_connected,text,capacity))return false;
   const bool essential=datum->type!=PAV_TEXT;
+  if(essential&&state&&state[0])prv_activity_append(text,capacity,state);
   if(essential&&prv_measure(text,16).w>width)return false;
   const char *label=activity_role(card,datum);
   if(label[0]) {
@@ -844,10 +845,15 @@ static bool prv_activity_line(const PavCard *card,const PavDatum *datum,uint32_t
       watch_layout_copy_utf8(value,text+strlen(text),capacity-strlen(text));
     } else prv_activity_append(text,capacity,label);
   }
+  if(!essential&&state&&state[0]) {
+    char value[ACTIVITY_LINE_BYTES];watch_layout_copy_utf8(text,value,sizeof(value));
+    watch_layout_copy_utf8(state,text,capacity);prv_activity_append(text,capacity,value);
+  }
   if(qualifier&&qualifier[0])prv_activity_append(text,capacity,qualifier);
   if(essential) {
     char value[ACTIVITY_LINE_BYTES];
     if(!pav_format_item(card,datum,now,s_phone_connected,value,sizeof(value)))return false;
+    if(state&&state[0])prv_activity_append(value,sizeof(value),state);
     const int value_width=prv_measure(value,16).w;
     if(prv_measure(text,16).w>width) {
       const size_t n=strlen(value);char suffix[ACTIVITY_LINE_BYTES];
@@ -865,12 +871,14 @@ static void prv_prepare_activity(const PavCard *card,uint32_t now,ActivityPlan *
   pav_format_item(card,&card->main,now,s_phone_connected,out->main,sizeof(out->main));
   const bool media=card->presentation==PAV_PRESENTATION_MEDIA;
   if(!media) {
-    watch_layout_copy_utf8(activity_role(card,&card->main),out->role,sizeof(out->role));
-    if(card->source_state==PAV_PAUSED)prv_activity_append(out->role,sizeof(out->role),"Paused");
+    if(card->source_state==PAV_PAUSED) {
+      watch_layout_copy_utf8(reading_language(i18n_get_system_locale())->paused,out->role,sizeof(out->role));
+      prv_activity_append(out->role,sizeof(out->role),activity_role(card,&card->main));
+    } else watch_layout_copy_utf8(activity_role(card,&card->main),out->role,sizeof(out->role));
     prv_ellipsize(out->role,sizeof(out->role),14,180);
     if(pav_datum_visible(card,&card->support,now,s_phone_connected)&&
         !prv_activity_line(card,&card->support,now,card->support.type==PAV_TEXT?2048:180,
-            NULL,out->support,sizeof(out->support)))out->support[0]=0;
+            NULL,NULL,out->support,sizeof(out->support)))out->support[0]=0;
   }
   out->alternate=pav_state_select(&s_activities,now,1);
   if(out->alternate) {
@@ -880,6 +888,7 @@ static void prv_prepare_activity(const PavCard *card,uint32_t now,ActivityPlan *
         ((out->alternate->flags&PAV_HAS_IMAGE)&&out->alternate->presentation!=PAV_PRESENTATION_MEDIA);
     if(!pav_datum_visible(out->alternate,datum,now,s_phone_connected)||
         !prv_activity_line(out->alternate,datum,now,glyph?158:180,
+            out->alternate->source_state==PAV_PAUSED?reading_language(i18n_get_system_locale())->paused:NULL,
             pav_qualifier(out->alternate),out->secondary,sizeof(out->secondary)))out->alternate=NULL;
   }
   const bool scalar=card->main.type==PAV_VALUE;
@@ -1006,6 +1015,9 @@ static void prv_draw_activity(GContext *ctx,const PavCard *card,int y) {
     if(fill)graphics_fill_rect(ctx,GRect(x+11,y+layout->meter_top+1,fill,2),0,GCornerNone);
   }
   if(layout->secondary&&plan->alternate) {
+    graphics_context_set_stroke_color(ctx,prv_muted_text(1));
+    graphics_context_set_stroke_width(ctx,1);
+    graphics_draw_line(ctx,GPoint(10,y+ACTIVITY_SECONDARY_TOP+18),GPoint(190,y+ACTIVITY_SECONDARY_TOP+18));
     const PavCard *other=plan->alternate;const unsigned selected=other->compact_item?1:0;
     const bool bitmap=(other->flags&PAV_HAS_IMAGE)&&other->presentation!=PAV_PRESENTATION_MEDIA&&!other->directions[selected];
     const bool glyph=bitmap||other->directions[selected]||other->identity_symbol;

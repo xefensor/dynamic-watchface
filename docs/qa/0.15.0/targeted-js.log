@@ -1,0 +1,39 @@
+✔ watch language wins, with phone/English fallback and Norwegian aliases (1.822907ms)
+✔ en translates every active control and status (1.10686ms)
+✔ cs translates every active control and status (0.426482ms)
+✔ sk translates every active control and status (0.898294ms)
+✔ de translates every active control and status (0.344099ms)
+✔ fr translates every active control and status (0.365467ms)
+✔ es translates every active control and status (0.336714ms)
+✔ it translates every active control and status (0.287949ms)
+✔ pt translates every active control and status (0.378268ms)
+✔ nl translates every active control and status (0.392375ms)
+✔ pl translates every active control and status (0.631539ms)
+✔ da translates every active control and status (0.186881ms)
+✔ sv translates every active control and status (0.160001ms)
+✔ no translates every active control and status (0.162249ms)
+✔ fi translates every active control and status (0.164702ms)
+✔ hu translates every active control and status (0.160678ms)
+✔ ro translates every active control and status (0.17269ms)
+✔ tr translates every active control and status (0.143153ms)
+✔ translation preserves preference identifiers, defaults and schema while cloning (0.574739ms)
+✔ custom settings strings resolve all supported locales and return isolated dictionaries (6.37737ms)
+✔ translation preserves provider values and API identifiers in settings metadata (0.205992ms)
+✔ all custom controls, source states and save outcomes have complete translations (4.918322ms)
+✔ Timer preview is named in every supported language (2.039731ms)
+✔ borderless settings expose only applicable controls and preserve privacy defaults (0.635641ms)
+✔ chunky-motion appearance controls are translated without stale panel or shadow promises (1.50387ms)
+✔ the full UX pass has explicit translations and keeps privacy and save meanings separate (3.222554ms)
+✔ app-only privacy, quiet alerts and colour sharing are explicit in every locale (3.931178ms)
+✔ notification activity copy shares roles and preserves system notification ownership (2.440868ms)
+✔ settings cleanup removes obsolete copy and translates the shared priority and privacy controls (3.293596ms)
+✔ twenty-four native settings states use production ACT3 encoders and retain header controls (24.469909ms)
+✔ approved normal and compact activity combinations have light and dark native fixtures (37.686363ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 128.307662

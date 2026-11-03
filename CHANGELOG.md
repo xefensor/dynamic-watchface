@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.15.0
+
+- Separate the single secondary activity row with a restrained divider while
+  retaining bottom-aligned primary content, artwork/artist context and static text.
+- Localize Paused in all 17 watch languages and show it in either activity role.
+  Give it priority over optional labels/context; a compact value and paused state
+  that cannot fit together yield the optional row rather than looking active.
+- Add a real native Timer+Music settings preview, with 24 state/format/theme
+  captures. Keep sample selection independent of saved appearance and privacy.
+- Collapse colour-code sharing, complete preview keyboard navigation with
+  Home/End/wrapping arrows, and keep focused inputs/selects visible above Save.
+- Measure the action area's height and put it into page flow in short viewports,
+  including visual-viewport changes, while preserving phone Back/history.
+- Review 64 native compositions, 24 settings captures, actual EN/CS Clay,
+  enlarged text and the final packaged cross-app privacy/shortcut handoff.
+
 ## 0.14.0
 
 - Clean up settings into Appearance, Content & priority, and Connection & help,

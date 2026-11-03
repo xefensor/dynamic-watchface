@@ -1,6 +1,6 @@
 # Dynamic publication kit
 
-**Status: 0.14.0 prepared locally; Pebble appstore submission is held.** Pebble's
+**Status: 0.15.0 prepared locally; Pebble appstore submission is held.** Pebble's
 [plugin-preview guide](https://developer.repebble.com/guides/plugins/preview/)
 is the recorded reason for retaining the submission hold.
 Earlier published releases retain their own checked PBW/source downloads. This kit does not submit or
@@ -49,7 +49,7 @@ has allowed public submission.
 
 ## Frozen release and current documentation
 
-The 0.14.0 package and asset manifest identify this local candidate; earlier
+The 0.15.0 package and asset manifest identify this local candidate; earlier
 published versions retain their own original source and artifacts.
 Later documentation-only changes on `main` do not rewrite those published
 packages, hashes or tags. Regenerate the kit/source snapshot while preparing a

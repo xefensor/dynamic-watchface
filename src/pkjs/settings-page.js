@@ -10,7 +10,7 @@ module.exports = function() {
     ':root{color-scheme:light;--page:#f4f5f7;--card:#fff;--ink:#101216;--muted:#5a6068;--line:#dde1e6;--accent:#145ca3;--field:#f4f5f7;--track:#cad0d6}',
     '@media(prefers-color-scheme:dark){:root{color-scheme:dark;--page:#141618;--card:#212529;--ink:#f6f8fa;--muted:#b8c0c9;--line:#3c444d;--accent:#77bbff;--field:#2a3037;--track:#565f6a}}',
     'html{font-size:16px!important;height:auto;background:var(--page)!important;color:var(--ink)!important}',
-    'body{box-sizing:border-box;height:auto;max-width:512px;margin:0 auto;padding:20px 16px 140px;padding-bottom:calc(140px + env(safe-area-inset-bottom));background:var(--page);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
+    'body{box-sizing:border-box;height:auto;max-width:512px;margin:0 auto;padding:20px 16px 140px;padding-bottom:calc(var(--dynamic-save-height,108px) + 32px + env(safe-area-inset-bottom));background:var(--page);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}',
     '*,*:before,*:after{box-sizing:border-box}',
     // Clay adds component styles after this hook. Scope colour rules to the
     // form so late defaults cannot reintroduce white inputs or orange text.
@@ -65,10 +65,10 @@ module.exports = function() {
     '.dynamic-choice select{display:block;width:100%;margin-top:9px;min-height:44px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:inherit;font-size:15px}',
     '.dynamic-choice select:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}',
     '.dynamic-section-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 16px}',
-    '.dynamic-section-nav button{min-width:0;min-height:44px;width:100%;margin:0;padding:9px 7px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);box-shadow:none;font:600 13px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:none;letter-spacing:0;white-space:normal}',
+    '.dynamic-section-nav button{min-width:0;min-height:44px;width:100%;margin:0;padding:9px 7px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);box-shadow:none;font:600 13px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:none;letter-spacing:0;white-space:normal;overflow-wrap:anywhere}',
     '.dynamic-section-target:focus{outline:2px solid var(--accent);outline-offset:3px}',
     '.dynamic-preview-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 16px}',
-    '.dynamic-preview-tabs button{min-width:0;width:100%;margin:0;text-transform:none;letter-spacing:0;box-shadow:none;min-height:44px;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:600 13px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:normal}',
+    '.dynamic-preview-tabs button{min-width:0;width:100%;margin:0;text-transform:none;letter-spacing:0;box-shadow:none;min-height:44px;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:600 13px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:normal;overflow-wrap:anywhere}',
     '.dynamic-preview-tabs button[aria-selected=true]{background:#145ca3;border-color:#145ca3;color:#fff}',
     '.dynamic-preview-stage{width:212px;max-width:100%;margin:0 auto 14px;border:6px solid #101216;border-radius:12px;overflow:hidden;background:#fff;line-height:0}',
     '.dynamic-preview-stage canvas{display:block;width:200px;height:228px;max-width:100%;image-rendering:pixelated}',
@@ -81,6 +81,7 @@ module.exports = function() {
     '.dynamic-save-state p{margin:0;font-size:12px;line-height:1.3}',
     '.dynamic-save-state:after{display:none!important}',
     '.dynamic-palette-code label{display:block;margin-bottom:7px}',
+    '.dynamic-palette-details summary{min-height:44px;display:list-item;align-content:center;cursor:pointer;color:var(--ink);font-size:15px}',
     '.dynamic-palette-code input{display:block;width:100%;min-height:44px;padding:10px;border:1px solid var(--line);border-radius:8px;font:15px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace}',
     '.dynamic-palette-actions{display:flex;gap:8px;margin-top:9px}',
     '.dynamic-palette-actions button{flex:1;min-width:0;width:auto;margin:0;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;box-shadow:none;background:var(--field);color:var(--ink);font:600 14px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:none;letter-spacing:0}',
@@ -120,16 +121,18 @@ module.exports = function() {
     '.dynamic-health .dynamic-state{text-align:right;max-width:60%}',
     '.dynamic-health-help{font-size:12px!important;margin-top:4px!important}',
     '.dynamic-details{padding:13px 16px;border-top:1px solid var(--line)}',
-    '.dynamic-details summary{min-height:32px;color:var(--ink);font-size:14px;cursor:pointer}',
+    '.dynamic-details summary{min-height:44px;display:list-item;align-content:center;color:var(--ink);font-size:14px;cursor:pointer}',
     '.dynamic-details .component{padding:10px 0!important}',
     '.dynamic-details p{font-size:12px;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}',
     '.dynamic-warning p{color:#a84d00}',
     '@media(prefers-color-scheme:dark){.dynamic-warning p{color:#ffbd77}}',
     '.component-submit{position:fixed;left:0;right:0;bottom:0;max-width:512px;margin:0 auto;padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom));z-index:20;background:var(--page);border-top:1px solid var(--line);box-shadow:0 -6px 18px #00000008}',
     'body.dynamic-picker-open .component-submit{visibility:hidden}',
-    '.component-input input,.dynamic-app-entry input{scroll-margin-bottom:140px}',
+    '.component-input input,.dynamic-app-entry input,select{scroll-margin-bottom:calc(var(--dynamic-save-height,108px) + 16px)}',
     '.component-submit button{display:block;width:100%;min-width:0;min-height:48px;margin:0;padding:12px 16px;border:0;border-radius:12px;background:#145ca3;color:#fff;font:700 16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-transform:none;letter-spacing:0}',
     '.component-submit button:disabled{opacity:.65}',
+    '@media(max-height:420px){.component-submit{position:static;max-width:none;margin:16px 0 0;padding:12px 0;box-shadow:none}body{padding-bottom:24px}}',
+    'body.dynamic-actions-flow{padding-bottom:24px}.dynamic-actions-flow .component-submit{position:static;max-width:none;margin:16px 0 0;padding:12px 0;box-shadow:none}',
     '[hidden]{display:none!important}',
     'a{color:var(--accent)}',
     '@media(max-width:340px){body{padding-left:12px;padding-right:12px}.section>.component{padding-left:12px;padding-right:12px}.dynamic-reading-grid{gap:6px}.dynamic-reading{padding:9px}.component-submit{padding-left:12px;padding-right:12px}}',
@@ -381,7 +384,7 @@ module.exports = function() {
       activityAnnouncement=make('p','','dynamic-activity-announcement'); activityAnnouncement.setAttribute('aria-live','polite'); activityHost.appendChild(activityAnnouncement);
       renderActivities(); show(field('SHOW_MUSIC'),false);
     }
-    activityPluginSwitch.on('change',function() { renderActivities(); updateDirty(); });
+    activityPluginSwitch.on('change',function() { renderActivities(); renderPreview(); updateDirty(); });
     var themeChanging = false;
     var bg = field('BACKGROUND_COLOR'), fg = field('TEXT_COLOR'), accent = field('ACCENT_COLOR');
     var initialTheme = color('BACKGROUND_COLOR') === 0xFFFFFF && color('TEXT_COLOR') === 0 ? 'light' :
@@ -437,7 +440,10 @@ module.exports = function() {
     var paletteHost = node(item('dynamic-palette-code'));
     if (paletteHost) {
       clear(paletteHost); paletteHost.className += ' dynamic-palette-code';
-      var paletteLabel = make('label',t('paletteCode')); paletteLabel.setAttribute('for','dynamic-palette-input'); paletteHost.appendChild(paletteLabel);
+      var paletteDetails=make('details',null,'dynamic-palette-details');
+      paletteDetails.appendChild(make('summary',t('paletteCode')));paletteHost.appendChild(paletteDetails);
+      paletteHost=paletteDetails;
+      var paletteLabel = make('label',t('paletteInput')); paletteLabel.setAttribute('for','dynamic-palette-input'); paletteHost.appendChild(paletteLabel);
       paletteInput = make('input'); paletteInput.id = 'dynamic-palette-input'; paletteInput.type = 'text'; paletteInput.maxLength = 32;
       paletteInput.autocomplete = 'off'; paletteInput.spellcheck = false; paletteInput.setAttribute('autocapitalize','characters');
       paletteInput.setAttribute('aria-label',t('paletteInput')); paletteInput.setAttribute('aria-describedby','dynamic-palette-help dynamic-palette-status');
@@ -606,6 +612,25 @@ module.exports = function() {
     }
     var saveStatus = node(item('dynamic-save-status'));
     var submitHost = document.querySelector('.component-submit');
+    function visibleViewport() {
+      var view=window.visualViewport,top=view?view.offsetTop:0;
+      return {top:top,bottom:top+(view?view.height:window.innerHeight),height:view?view.height:window.innerHeight};
+    }
+    function saveSpace() {
+      if (!submitHost) { return; }
+      document.body.classList.toggle('dynamic-actions-flow',visibleViewport().height<=420);
+      var fixed=window.getComputedStyle(submitHost).position==='fixed';
+      document.documentElement.style.setProperty('--dynamic-save-height',fixed?Math.ceil(submitHost.getBoundingClientRect().height)+'px':'0px');
+    }
+    function focusedVisible(target) {
+      target=target||document.activeElement;
+      if(!target||['INPUT','SELECT'].indexOf(target.tagName)<0||target.type==='checkbox'||target.type==='hidden')return;
+      var viewport=visibleViewport(),rect=target.getBoundingClientRect();
+      var fixed=submitHost&&window.getComputedStyle(submitHost).position==='fixed'&&!document.body.classList.contains('dynamic-picker-open');
+      var bottom=(fixed?Math.min(viewport.bottom,submitHost.getBoundingClientRect().top):viewport.bottom)-12;
+      if(rect.bottom>bottom)window.scrollBy(0,rect.bottom-bottom);
+      else if(rect.top<viewport.top+8)window.scrollBy(0,rect.top-viewport.top-8);
+    }
     if (saveStatus && submitHost) {
       saveStatus.className += ' dynamic-save-state'; saveStatus.setAttribute('role','status'); saveStatus.setAttribute('aria-live','polite');
       submitHost.insertBefore(saveStatus,submitHost.firstChild);
@@ -621,6 +646,7 @@ module.exports = function() {
       if (saveStatus) { clear(saveStatus); saveStatus.appendChild(make('p',t(key))); }
       var button = submitHost && submitHost.querySelector('button');
       if (button) { button.disabled = !dirty && saved !== 'none'; }
+      saveSpace();
     };
     var technical = node(item('complications-status')), context = node(item('context-status'));
     if (technical && context) {
@@ -644,7 +670,7 @@ module.exports = function() {
     if (previewHost) {
       clear(previewHost); previewHost.appendChild(make('h3',t('layoutPreview'),'dynamic-preview-title')); var tabs = make('div',null,'dynamic-preview-tabs'); tabs.setAttribute('role','tablist');
       tabs.setAttribute('aria-label',t('samplePreview'));
-      [['idle','previewIdle'],['music','previewMusic'],['notification-summary','previewBanner'],['notification','previewMessage'],['timeline','previewTimeline']].forEach(function(pair) {
+      [['idle','previewIdle'],['music','previewMusic'],['timer','previewTimer'],['notification-summary','previewBanner'],['notification','previewMessage'],['timeline','previewTimeline']].forEach(function(pair) {
         var button = make('button',t(pair[1])); button.type = 'button'; button.setAttribute('role','tab');
         button.setAttribute('aria-selected',pair[0] === previewState ? 'true' : 'false');
         button.tabIndex = pair[0] === previewState ? 0 : -1; button.setAttribute('aria-controls','dynamic-preview-canvas');
@@ -653,7 +679,12 @@ module.exports = function() {
           renderPreview(); });
         button.addEventListener('keydown',function(event) {
           var shift = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 0;
-          if (shift) { event.preventDefault(); var next = tabs.children[(Array.prototype.indexOf.call(tabs.children,button) + shift + 5) % 5]; next.click(); next.focus(); }
+          var index=Array.prototype.indexOf.call(tabs.children,button),count=tabs.children.length;
+          if(event.key==='Home')index=0;
+          else if(event.key==='End')index=count-1;
+          else if(shift)index=(index+shift+count)%count;
+          else return;
+          event.preventDefault();var next=tabs.children[index];next.click();next.focus();
         }); tabs.appendChild(button);
       });
       previewHost.appendChild(tabs); var stage = make('div',null,'dynamic-preview-stage');
@@ -692,11 +723,12 @@ module.exports = function() {
       var key = sampleState + '-' + format + '-' + (exactTheme || 'light');
       var frame = (assets.frames || {})[key];
       var ctx = canvas.getContext('2d'), serial = ++request;
-      canvas.setAttribute('aria-label',t('samplePreview') + ': ' + t({idle:'previewIdle',music:'previewMusic','notification-summary':'previewBanner',notification:'previewMessage',timeline:'previewTimeline'}[previewState]) +
+      canvas.setAttribute('aria-label',t('samplePreview') + ': ' + t({idle:'previewIdle',music:'previewMusic',timer:'previewTimer','notification-summary':'previewBanner',notification:'previewMessage',timeline:'previewTimeline'}[previewState]) +
         (night.get() ? ' · ' + t(quietPreview ? 'previewQuietTime' : 'previewDay') : ''));
       previewCaption.textContent = t(exactTheme ? 'previewSettingsNote' : 'previewCustomHelp');
       timelineCaption.hidden = previewState !== 'timeline';
       disabledCaption.hidden = !(previewState === 'music' && !field('SHOW_MUSIC').get() ||
+        previewState === 'timer' && (!field('SHOW_ACTIVITIES').get() || !field('SHOW_MUSIC').get()) ||
         previewState === 'notification' && (!notification.get() || noticeMode.value !== 'preview') || previewState === 'notification-summary' && (!notification.get() || noticeMode.value === 'app'));
       formatCaption.hidden = Number(field('CLOCK_FORMAT').get()) !== 0 || Number(assets.systemFormat) === 12 || Number(assets.systemFormat) === 24;
       ctx.fillStyle = css(background); ctx.fillRect(0,0,200,228);
@@ -743,6 +775,10 @@ module.exports = function() {
     updateDirty();
     var form = document.getElementById('main-form');
     if (form) {
+      function resized() {saveSpace();focusedVisible();}
+      saveSpace();window.addEventListener('resize',resized);
+      if(window.visualViewport)window.visualViewport.addEventListener('resize',resized);
+      if(typeof ResizeObserver!=='undefined'&&submitHost)new ResizeObserver(saveSpace).observe(submitHost);
       function saveVisibility() {
         document.body.classList.toggle('dynamic-picker-open',!!document.querySelector('.picker-wrap.show'));
         clay.getItemsByType('color').forEach(function(value) { var element = node(value), opener = element && element.querySelector('label');
@@ -760,10 +796,8 @@ module.exports = function() {
       if (typeof MutationObserver !== 'undefined') { new MutationObserver(saveVisibility).observe(form,{subtree:true,attributes:true,attributeFilter:['class']}); }
       else { document.addEventListener('click',function() { setTimeout(saveVisibility,0); }); }
       form.addEventListener('focusin',function(event) {
-        if (event.target.tagName !== 'INPUT' || event.target.type === 'checkbox' || event.target.type === 'hidden') { return; }
-        setTimeout(function() { var rect = event.target.getBoundingClientRect();
-          if (rect.bottom > window.innerHeight - 140 || rect.top < 0) { event.target.scrollIntoView({block:'center'}); }
-        },0);
+        if (['INPUT','SELECT'].indexOf(event.target.tagName)<0 || event.target.type === 'checkbox' || event.target.type === 'hidden') { return; }
+        setTimeout(function() {focusedVisible(event.target);},0);
       });
       form.addEventListener('submit',function(event) {
       if (notification.get() && appMode.value === 'selected' && !commitApp(true)) { event.preventDefault(); event.stopImmediatePropagation(); return; }

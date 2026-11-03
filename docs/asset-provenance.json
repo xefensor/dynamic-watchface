@@ -1,14 +1,14 @@
 {
-  "version": "0.14.0",
+  "version": "0.15.0",
   "pbw": {
-    "file": "Dynamic-0.14.0.pbw",
-    "sha256": "3e68889f805736e578e49e8fef34387f48279e3b293c3a8fddd6633458cc367a"
+    "file": "Dynamic-0.15.0.pbw",
+    "sha256": "6501f1ed06a8b0814910e5ed36ec560747585e7af3751ccc5d7904f050bfc195"
   },
   "native_payload_sha256": {
-    "appinfo.json": "976f0f623bd35825d0ac51c4f10783064f00d8c9945e527c50af7cb38936f9de",
-    "emery/pebble-app.bin": "a4354db9ced24509b3ac5fcbe4f67d8ee83392d07cc23d46ff07d9137929bb14",
+    "appinfo.json": "661d38a70a5890af8e06e67020d7cc074e377db6470d6c5465f2c10b2e7c5f7c",
+    "emery/pebble-app.bin": "5f72bd33a790dacb74cb7a879d92dce3014608939ebbd89497ab280644acd3c5",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "233883d46d80cbc4a3ddd4529088e496e158d7cac3b3ea4ee08919eddeecbb7f"
+    "emery/manifest.json": "768da39011f4b0e8825b2b47195fac8afd1aed4aabe65bb3b0dc09d85947c18a"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -39,8 +39,8 @@
   "images": [
     {
       "file": "docs/images/normal.png",
-      "source": "docs/qa/0.14.0/native-previews/idle-24-light.png",
-      "sha256": "74e6880ec3b2cff5d03b682374f718b75216b7e053076fb69b185dbec762c723",
+      "source": "docs/qa/0.15.0/native-previews/idle-24-light.png",
+      "sha256": "3a0dd12b0fd37cd52a4729e700525f22cab1df483a58e48f9cb4d6ddb2abe23e",
       "pixels": [
         200,
         228
@@ -50,8 +50,8 @@
     },
     {
       "file": "docs/images/music.png",
-      "source": "docs/qa/0.14.0/native-previews/music-24-light.png",
-      "sha256": "90ee49da6eb2d378a4a562d89b35ce905e730381eddac7319dd908917a6b6864",
+      "source": "docs/qa/0.15.0/native-previews/music-24-light.png",
+      "sha256": "882ab07bffef618be6ec52d3547273e7ccc4c8bd804a366b4c00ae3475d65f77",
       "pixels": [
         200,
         228
@@ -61,8 +61,8 @@
     },
     {
       "file": "docs/images/notification-summary.png",
-      "source": "docs/qa/0.14.0/native-previews/notification-summary-24-light.png",
-      "sha256": "b009be74ecb1cf4392b07eae65f1a1e513883071c8754ae899e2e0b48226a52d",
+      "source": "docs/qa/0.15.0/native-previews/notification-summary-24-light.png",
+      "sha256": "e82642d301a8f26fcff483a740606c8dcaa48497a3565386ddc7bab780794cdf",
       "pixels": [
         200,
         228
@@ -72,8 +72,8 @@
     },
     {
       "file": "docs/images/notification.png",
-      "source": "docs/qa/0.14.0/native-previews/notification-24-light.png",
-      "sha256": "c04524f75e3dd062f28d8672579410657945e49e026d33b7f62f7fed208d51a8",
+      "source": "docs/qa/0.15.0/native-previews/notification-24-light.png",
+      "sha256": "10ca91f9c20c93884819a9bc8068a734b66750d25c67220f79191d68db15f1b8",
       "pixels": [
         200,
         228
@@ -83,8 +83,8 @@
     },
     {
       "file": "docs/images/dark.png",
-      "source": "docs/qa/0.14.0/native-previews/idle-24-dark.png",
-      "sha256": "631d870a861c3b5bfb6fe9875f0659b9cebc34a72fc044fb6ca63bf85cc358d3",
+      "source": "docs/qa/0.15.0/native-previews/idle-24-dark.png",
+      "sha256": "a0055d258e7d615b53ceae8c0fc631c160557b29485628dd8e97072b22975a70",
       "pixels": [
         200,
         228
@@ -94,47 +94,41 @@
     },
     {
       "file": "docs/images/activity-timer.png",
-      "source": "docs/qa/0.13.0/native-summary/timer-media-light.png",
-      "sha256": "9258610b6e37a1a345eea46579b3e2fdcd495a1fb53ca56647860cd2d9d4d290",
+      "source": "docs/qa/0.15.0/native-summary/timer-media-light.png",
+      "sha256": "86614bcced3b1dff00f4d219357766f67b6ffe48d9d06e8ebec284c7690125c3",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot",
-      "reused_from_version": "0.13.0",
-      "reuse_identity": "docs/qa/0.14.0/native-identity.json"
+      "kind": "native Emery screenshot"
     },
     {
       "file": "docs/images/activity-music.png",
-      "source": "docs/qa/0.13.0/native-summary/media-timer-light.png",
-      "sha256": "205675fb7bdf88c64441c2ee67dcd7567b81069170ebf76b5d4ccf06a36bfff2",
+      "source": "docs/qa/0.15.0/native-summary/media-timer-light.png",
+      "sha256": "b27de2fdec34cdf0f893e041b5546e23327d0ca7dbe4790531d1e420cd7997a5",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot",
-      "reused_from_version": "0.13.0",
-      "reuse_identity": "docs/qa/0.14.0/native-identity.json"
+      "kind": "native Emery screenshot"
     },
     {
       "file": "docs/images/activity-workout.png",
-      "source": "docs/qa/0.13.0/native-summary/workout-timer-light.png",
-      "sha256": "b8ed32e47b1923824d2547a0ba45af6c61192ecefba352086aeb0782bc3676fb",
+      "source": "docs/qa/0.15.0/native-summary/workout-timer-light.png",
+      "sha256": "24c4fda9f8a5ab1331a8e07f7de64df614666d0e6bed442a9f2f8078166c8c43",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot",
-      "reused_from_version": "0.13.0",
-      "reuse_identity": "docs/qa/0.14.0/native-identity.json"
+      "kind": "native Emery screenshot"
     },
     {
       "file": "docs/images/settings-light.png",
-      "source": "docs/qa/0.14.0/settings/appearance-light.png",
-      "sha256": "eb39ea0642c3e81ec2f95309b149f4cb5fffeee240e0c0c1a60bd5108a3b59ed",
+      "source": "docs/qa/0.15.0/settings/appearance-light.png",
+      "sha256": "73ec93fe9a65c3c15bc8861b16ecd009569f22a37df993379def8cdb4ad87112",
       "pixels": [
         360,
         800
@@ -144,8 +138,8 @@
     },
     {
       "file": "docs/images/settings-dark.png",
-      "source": "docs/qa/0.14.0/settings/appearance-dark.png",
-      "sha256": "688adf748cdb86f96f373bf8fc6a91d2568579ce374f3e36d61ae4d0702b190f",
+      "source": "docs/qa/0.15.0/settings/appearance-dark.png",
+      "sha256": "91071401788d7e1c2aee913e15973cf1b577367b177e53af503dcb05abf19586",
       "pixels": [
         360,
         800
@@ -155,18 +149,17 @@
     }
   ],
   "native_qa": [
-    "docs/qa/0.14.0/native-previews/previews.json",
-    "docs/qa/0.14.0/native-previews/presentation-statuses.json",
-    "docs/qa/0.14.0/native-identity.json",
-    "docs/qa/0.13.0/native-summary/summary.json",
-    "docs/qa/0.14.0/bundle-audit.json",
-    "docs/qa/0.14.0/final-distribution.json",
-    "docs/qa/0.14.0/checks.json",
-    "docs/qa/0.14.0/settings/validation.json",
-    "docs/qa/0.14.0/native-previews/captured-native-manifest.json",
-    "docs/qa/0.14.0/packaged-handoff.json"
+    "docs/qa/0.15.0/native-previews/previews.json",
+    "docs/qa/0.15.0/native-previews/presentation-statuses.json",
+    "docs/qa/0.15.0/native-previews/captured-native-manifest.json",
+    "docs/qa/0.15.0/native-summary/summary.json",
+    "docs/qa/0.15.0/bundle-audit.json",
+    "docs/qa/0.15.0/final-distribution.json",
+    "docs/qa/0.15.0/checks.json",
+    "docs/qa/0.15.0/settings/validation.json",
+    "docs/qa/0.15.0/packaged-handoff.json"
   ],
   "fixture_data": true,
-  "scope": "20 fresh 0.14 actual Emery settings presets, root visually reviewed, and fresh actual Clay browser interactions at 320/360px with section keyboard jumps, saved privacy restoration, plugin-master independence, touch/desktop priority ordering and the 64-provider boundary. The 0.13 historical 52 activity compositions, 24 clock follow-ups, expiry/motion/idle-status evidence and three product activity images are reused explicitly: native C and resources are unchanged, and the renderer binary is identical after verified process-header/build-ID metadata. Final captured native binary/resources exactly match the final 0.14 PBW. Synthetic data and simulated SDK coordinators; no real-phone or physical-watch delivery, latency or battery proof. Six fresh cross-app privacy/role cases execute the final Dynamic 0.14, Timer 0.8 and Open Activity 0.1.1 packaged scripts, including cold saved shortcut mappings; SDK, clocks and native messages are simulated.",
+  "scope": "Fresh 0.15 evidence:64 actual Emery activity compositions,24 native settings presets,24 no-resend clock followups,expiry/promotion,heartbeat and bounded-motion checks; root and implementer reviewed. Actual EN/CS Clay at320/360px, short360px height, doubled CSS text and visual-viewport-only resize. Final native binary/resources match captures exactly; SDK manifest differs only by verified generation timestamps. Six final packaged cross-app privacy/role cases with Timer0.9 and OpenActivity0.1.4 include48saved launches,48expired closures and336unselected closures. Synthetic sources and simulated SDK/native exchange; no live phone/physical watch, vibration or battery measurement.",
   "historical_images": "Other older composites and unused screenshots retain their original validation scope; published archives and tags are unchanged."
 }
