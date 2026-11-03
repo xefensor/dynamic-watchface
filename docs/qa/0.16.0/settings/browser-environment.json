@@ -1,0 +1,10 @@
+{
+  "isolatedLocalHeadlessBrowser": true,
+  "remoteDebuggingPort": 9229,
+  "protocolVersion": "1.3",
+  "product": "Chrome/156.0.8078.73",
+  "revision": "@2f9a11097447f226133bc1a31c787291a5eeab98",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "jsVersion": "15.6.75.25",
+  "scope": "Actual local Chromium layout and JavaScript with synthetic fixtures; not real mobile hardware or OS font/keyboard behavior."
+}

@@ -21,7 +21,7 @@ static size_t legacy_context(uint8_t *bytes) {
 }
 
 int main(void) {
-  DynamicContextSession state;ComplicationSet content;
+  DynamicContextSession state;WfcPhoneStatus content;
   memset(&content,0xff,sizeof(content));
   dynamic_context_session_init(&state,40);
   assert(state.token==41&&state.rebaseline&&state.awaiting_baseline);
@@ -46,17 +46,17 @@ int main(void) {
   dynamic_context_session_init(&state,CONTEXT_MAX_SESSION_TOKEN);
   assert(state.token==2);
   uint8_t packet[256];const size_t length=legacy_context(packet);
-  assert(context_read(packet,length,&content)&&!strcmp(content.slots[2].text,"Private sender"));
+  ComplicationSet legacy;
+  assert(context_read(packet,length,&legacy)&&!strcmp(legacy.slots[2].text,"Private sender"));
   // Both old and current baseline replies preserve status but never retain a
   // parallel music/notification UI payload, including before the gate opens.
   assert(dynamic_context_receive(&state,&content,true,packet,length,3));
   assert(state.awaiting_baseline);
-  assert(complications_zero((const uint8_t *)content.slots,4*sizeof(content.slots[0])));
-  unsigned percent=0;assert(context_phone_battery(&content.slots[4],101,&percent)&&percent==5);
+  assert(sizeof(content)<=12);
+  assert(wfc_phone_status_fresh(&content,101)&&content.percent==5);
   assert(dynamic_context_receive(&state,&content,true,packet,length,2));
   assert(!state.awaiting_baseline);
-  assert(complications_zero((const uint8_t *)content.slots,4*sizeof(content.slots[0])));
-  assert(context_phone_battery(&content.slots[4],101,&percent)&&percent==5);
+  assert(wfc_phone_status_fresh(&content,101)&&content.percent==5);
   assert(dynamic_context_prune(&content,101)==108);
   assert(dynamic_context_prune(&content,108)==0);
   assert(complications_zero((const uint8_t *)&content,sizeof(content)));

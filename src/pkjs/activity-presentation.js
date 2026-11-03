@@ -1,6 +1,6 @@
 'use strict';
 
-var library=require('pebble-activities');
+var library=require('pebble-activities/host');
 var selection=library.selection,wire=library.wire;
 var TIMER='50e9ef12-a5ab-4369-a3b5-3447bfba5151';
 var MUSIC_SOURCE='00000000-0000-0000-0001-000000000003';

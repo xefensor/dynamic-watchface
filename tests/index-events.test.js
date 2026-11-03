@@ -8,7 +8,7 @@ const shared = require('pebble-watchface-core');
 const activityLibrary = require('pebble-activities');
 const presentationModule = {exports:{}};
 vm.runInNewContext(fs.readFileSync(require.resolve('../src/pkjs/activity-presentation.js'),'utf8'),{
-  module:presentationModule,require:name=>{assert.equal(name,'pebble-activities');return activityLibrary;}
+  module:presentationModule,require:name=>{assert.equal(name,'pebble-activities/host');return activityLibrary;}
 });
 const TIMER='50e9ef12-a5ab-4369-a3b5-3447bfba5151', HEALTH='c9e7cb18-eaf7-4b30-9b09-9a8fae187801',N=1700000000;
 function activity(extra={}) {
@@ -28,11 +28,13 @@ function fixture(settings = {}, locales = {}) {
   const activityProviders=[];
   const deferred=[];
   const contextRefreshes=[], connections=[],activityRefreshes=[],activityConnections=[];
+  const imports=[],storageReads={};
   const handlers = {}, deliveries = [], clockQueries = [], urls = [], timers = [], activitySourceRequests=[];
   const status = {available:true,configured:0,ready:0,error:'',slots:[]};
   const contextStatus = {available:true,ready:false,error:''};
   vm.runInNewContext(source, {
     require: name => {
+      imports.push(name);
       if (name === 'message_keys') return keys;
       if (name === '../common/activity-navigation') return require('../src/common/activity-navigation');
       if (name === './config') return require('../src/pkjs/config');
@@ -61,7 +63,7 @@ function fixture(settings = {}, locales = {}) {
         },
         createMessageQueue: shared.createMessageQueue
       };
-      if (name === 'pebble-activities') return {
+      if (name === 'pebble-activities/host') return {
         selection:activityLibrary.selection,
         createActivities: received=> {
           activityOptions=received;
@@ -88,13 +90,13 @@ function fixture(settings = {}, locales = {}) {
       openURL:url=>urls.push(url)
     },
     navigator:{language:locales.phone || 'en-US'},
-    localStorage:{getItem:key=>key==='clay-settings'?saved:storage[key] || null,
-      setItem:(key,value)=>{if(key==='clay-settings')saved=value;else storage[key]=value;}},
+    localStorage:{getItem:key=>{storageReads[key]=(storageReads[key]||0)+1;return key==='clay-settings'?saved:storage[key] || null;},
+      setItem:(key,value)=>{if(locales.failPreferencesWrite&&key==='dynamic-activity-preferences-v1')throw Error('Storage failed');if(key==='clay-settings')saved=value;else storage[key]=value;}},
     setTimeout:(fn,delay)=>{const id=++timerId;timers.push({fn,delay,id});return id;},
     clearTimeout:id=>{const at=timers.findIndex(timer=>timer.id===id);if(at>=0)timers.splice(at,1);},
     console:{log:()=>{}}
   });
-  return {handlers,deliveries,clockQueries,urls,status,contextStatus,clay,options,contextOptions,activityOptions,activitySourceRequests,timers,contextRefreshes,connections,activityRefreshes,activityConnections,activityConfigured:()=>activityConfigured,
+  return {imports,storageReads,handlers,deliveries,clockQueries,urls,status,contextStatus,get clay(){return clay;},options,contextOptions,activityOptions,activitySourceRequests,timers,contextRefreshes,connections,activityRefreshes,activityConnections,activityConfigured:()=>activityConfigured,
     refreshes:()=>refreshed,configured:()=>configured,settings:()=>JSON.parse(saved),
     contextConfigured:()=>contextConfigured,storage,activityProviders,activityReprojects:()=>activityReprojects,
     setMusic:card=>{musicActivity=card;},
@@ -319,7 +321,7 @@ test('Dynamic uses the installed core API and its own complication cache namespa
   assert.equal(f.options.cacheKey,'dynamic-complications-v1');
   assert.doesNotMatch(source,/require\(['"]\.\/(?:complications|context|message-queue|complication-data)['"]\)/);
   assert.match(source,/require\('pebble-watchface-core\/readings'\)/);
-  assert.match(source,/require\('pebble-activities'\)/);
+  assert.match(source,/require\('pebble-activities\/host'\)/);
 });
 
 
@@ -796,4 +798,26 @@ test('presented status confirms destination-only navigation metadata for the exa
   const hint=JSON.parse(f.storage[nav.KEY]);assert.equal(hint.primary.watchAppUuid,TIMER);assert.equal(hint.nativeSession,7);
   assert.ok(hint.expiresAtMs-hint.presentedAtMs<=45000);assert.doesNotMatch(f.storage[nav.KEY],/private-run|private song|c9e7cb18/);
   f.activityOptions.onView({session:7,sequence:6,cards:[]});assert.equal(f.storage[nav.KEY]||'', '');
+});
+
+
+test('normal activity work defers settings UI and reuses saved preferences',()=>{
+  const f=fixture({SHOW_MUSIC:true});f.handlers.ready();
+  for(let i=0;i<100;i++){f.activityOptions.getSettings();f.activityOptions.acceptActivity(activity());f.activityOptions.select([]);}
+  for(const name of ['@rebble/clay','./config','./settings-page','./settings-preview']) assert.ok(!f.imports.includes(name),name);
+  assert.equal(f.storageReads['clay-settings'],1);
+  assert.equal(f.storageReads['dynamic-activity-preferences-v1'],1);
+  f.handlers.showConfiguration();
+  assert.ok(f.imports.includes('@rebble/clay'));assert.ok(f.imports.includes('./settings-preview'));
+  f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:{value:false}})});
+  assert.equal(f.contextOptions.getSettings().showMusic,false,'save invalidates cached privacy preferences immediately');
+});
+
+test('a partial settings storage failure cannot leave the read cache stale',()=>{
+  const f=fixture({SHOW_MUSIC:true},{failPreferencesWrite:true});
+  assert.equal(f.contextOptions.getSettings().showMusic,true);
+  f.handlers.webviewclosed({response:JSON.stringify({SHOW_MUSIC:{value:false},
+    __dynamicActivityPreferences:{value:JSON.stringify({version:1,order:[],hidden:[]})}})});
+  assert.equal(f.settings().SHOW_MUSIC,false);
+  assert.equal(f.contextOptions.getSettings().showMusic,false);
 });

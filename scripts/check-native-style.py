@@ -24,6 +24,7 @@ import uuid
 import zipfile
 from release_licenses import LICENSE_FILES, license_payloads
 from pinned_dependencies import DEPENDENCIES, verify_dependency
+from release_js import audit_js
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -44,13 +45,13 @@ CORE_MODULES = {
     "readings.js", "message-queue.js", "complications.js", "complication-data.js",
 }
 ACTIVITY_MODULES = {
-    "index.js", "wire.js", "view.js", "consumer.js", "publisher.js", "selection.js", "activity.js",
+    "host.js", "wire.js", "view.js", "consumer.js", "selection.js", "activity.js",
     "adapters/legacy/context.js", "adapters/legacy/complication-data.js", "summary.js", "summary-view.js",
 }
 ACTIVITY_RELEASE = {
-    "version": "0.4.1",
-    "sourceCommit": "769eabc4b2bb4242a0f2d81ed3575c459d373a4a",
-    "archiveSha256": "c292bbe7ac4aca6c75cebc6fe559cebbc722da072ff90fda085315e72369735b",
+    "version": "0.4.2",
+    "sourceCommit": "45e848d7ef84044b465fddc43eeab310bb2c2594",
+    "archiveSha256": "a182681ad59f258bb9a7f865839d59ed8cf76a8a54cdd03264b52a7577ad1ec3",
 }
 PROCESS_INFO_BYTES = 130
 PROCESS_INFO_SIZE_LIMIT = 0xffff
@@ -59,7 +60,7 @@ SDK_PBW_FILES = {
     "appinfo.json", "pebble-js-app.js", "pebble-js-app.js.map",
     "emery/pebble-app.bin", "emery/app_resources.pbpack", "emery/manifest.json",
 }
-PBW_FILES = SDK_PBW_FILES | set(LICENSE_FILES) | {"plugin.js"}
+PBW_FILES = (SDK_PBW_FILES - {"pebble-js-app.js.map"}) | set(LICENSE_FILES) | {"plugin.js"}
 LEGACY_ENDPOINTS = (
     "api.open-meteo.com", "api.openweathermap.org", "forecast.weather.gov",
 )
@@ -752,7 +753,7 @@ def audit_preview_identity(root, version, binary, resources):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.15.0", "Review this auditor for a different release version")
+    require(package["version"] == "0.16.0", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and
@@ -778,7 +779,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
             "Reviewed ACT3 dependency provenance differs")
     licenses = license_payloads(root)
     sdk_pbw = root / "build" / (package["name"] + ".pbw")
-    with zipfile.ZipFile(pbw) as release, zipfile.ZipFile(sdk_pbw) as sdk:
+    debug_pbw = pbw.with_name('Dynamic-' + package['version'] + '-debug.zip')
+    with zipfile.ZipFile(pbw) as release, zipfile.ZipFile(sdk_pbw) as sdk, zipfile.ZipFile(debug_pbw) as debug_archive:
         require(release.testzip() is None and sdk.testzip() is None, "Corrupt PBW archive")
         require(len(release.namelist()) == len(set(release.namelist())) == len(PBW_FILES) and
                 set(release.namelist()) == PBW_FILES and
@@ -807,6 +809,13 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
             actual_resource.setdefault("targetPlatforms", ["emery"])
             require(actual_resource == expected_resource, "Packaged body-font declaration differs")
         inventory = []
+        debug = {name: debug_archive.read(name) for name in debug_archive.namelist()}
+        require(len(debug) == len(debug_archive.namelist()) and debug_archive.testzip() is None,
+                "Corrupt or duplicate JavaScript debug archive")
+        plugin_source = subprocess.run([sys.executable, str(root/"scripts/bundle-js.py"), str(root/"src/plugin/index.js"), "/dev/stdout"], capture_output=True, check=True, cwd=root).stdout
+        require(plugin_source == (root/"build/plugin.js").read_bytes(), "Navigation plugin build differs from current source")
+        javascript = audit_js(root, package['version'], {name: release.read(name) for name in ('pebble-js-app.js', 'plugin.js')},
+                              debug, sdk_code=sdk.read('pebble-js-app.js'), sdk_map=sdk.read('pebble-js-app.js.map'), plugin=plugin_source)
         for name in sorted(PBW_FILES):
             content = release.read(name)
             if name in licenses:
@@ -815,17 +824,11 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
                                   "sha256": sha256(content),
                                   "sourceFile": LICENSE_FILES[name], "sourceByteIdentical": True})
                 continue
-            if name == "plugin.js":
-                require(content == (root/"build/plugin.js").read_bytes(), "Packaged navigation plugin differs")
-                result = subprocess.run([sys.executable, str(root/"scripts/bundle-js.py"), str(root/"src/plugin/index.js"), "/dev/stdout"], capture_output=True, check=True, cwd=root)
-                require(content == result.stdout, "Navigation plugin differs from current source")
-                inventory.append({"file":name,"bytes":len(content),"sha256":sha256(content),"sourceByteIdentical":True})
+            if name in ('plugin.js', 'pebble-js-app.js'):
+                inventory.append({"file":name,"bytes":len(content),"sha256":sha256(content),"exactMinificationVerified":True})
                 continue
             require(name == "appinfo.json" or content == sdk.read(name),
                     "SDK payload changed while packaging: " + name)
-            if name in ("pebble-js-app.js", "pebble-js-app.js.map"):
-                require(content == (root / "build" / name).read_bytes(),
-                        "Selected PBW differs from the current JavaScript build: " + name)
             inventory.append({"file": name, "bytes": len(content),
                               "sha256": sha256(content),
                               "sdkByteIdentical": content == sdk.read(name)})
@@ -837,7 +840,7 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         native_sizes = audit_native_sizes(binary, (root / "build/emery/pebble-app.elf").read_bytes())
         resource_entries = read_resource_pack(resources, len(media))
         resource_count = len(resource_entries)
-        source_map = json.loads(release.read("pebble-js-app.js.map"))
+        source_map = json.loads(debug['sdk/pebble-js-app.js.map'])
         active_js = release.read("pebble-js-app.js").decode("utf-8")
     require(len(source_map["sources"]) == len(source_map["sourcesContent"]),
             "Invalid source map")
@@ -912,6 +915,8 @@ def audit(pbw, root=ROOT, sdk_font_header=None):
         "nativePreviews": preview_identity,
         "bodyFonts": body_fonts, "bodyMetrics": body_metrics, "clockOutlines": clock_outlines,
         "javaScriptPayloadMatchesBuild": True,
+        "javaScriptMinification": javascript,
+        "debugArchiveSha256": sha256(debug_pbw.read_bytes()),
         "sourceSystemFontKeys": font_keys, "nativeSystemFontKeys": linked_keys,
         "sourceFontKeysNotLinked": sorted(set(font_keys) - set(linked_keys)),
         "hostModules": len(hosts),

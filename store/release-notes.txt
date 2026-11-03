@@ -1,9 +1,1 @@
-0.15.0 activity and settings UX pass — development candidate
-
-A thin divider makes the single secondary activity row distinct while the primary content stays grouped above its bottom context. Paused state follows the watch language in either role and takes priority over optional labels. When a complete compact value and its paused state cannot fit, the optional row yields.
-
-The phone preview now includes Timer with Music, using 24 actual native state/format/theme captures. Colour-code sharing is collapsed. Home/End and wrapping arrow keys work across all preview tabs. Sample screens remain independent of saved appearance and notification privacy.
-
-The Save area measures its height, and moves into page flow for short layout or visual viewports. Focused fields remain visible above it. Actual EN/CS Clay, short heights, doubled CSS text and native compositions are reviewed separately from real-phone and physical-watch behavior.
-
-Protocols, library pins, app identity and lifecycle rules remain unchanged. Earlier releases are preserved. This kit does not submit anything to the Pebble appstore; the plugin-preview publication hold remains.
+Dynamic 0.16.0 reduces rendering work, activity memory and download size while preserving the approved layouts, local countdowns, bounded transitions and privacy settings. Developer maps are a separate download. This candidate remains held from public appstore submission during plugin preview.

@@ -1,5 +1,22 @@
 # Dynamic validation
 
+## 0.16.0 optimization pass — 3 November 2026
+
+The [optimization review](OPTIMIZATION-REVIEW.md) records implementation, measured
+sizes and scope. 121 JS tests, 13 portable C suites and 49 Python checks pass;
+SDK/package/font/pin checks pass. New evidence is under `qa/0.16.0/`: 24 native
+presets, 64 compositions, 24 local-clock follow-ups, native routing/expiry/motion,
+24 browser captures, exact minified/serialized Clay behavior, burst-work checks
+and the final optimized cross-app handoff. All 88 native activity comparisons
+match 0.15.0 using explicit clock alternatives. The native executable/resources
+match captured bytes; manifest differences are verified generation timestamps.
+NativeState is 15,288 bytes (previously 20,536), and one startup free-heap sample
+is 46,436 bytes (previously 40,708). Static virtual extent 62,184 remains below
+65,535. Keep these distinct from SDK footprint, peak heap/stack and battery.
+
+This is a local candidate, not a published release or a physical-device check.
+The previous evidence below retains its original historical scope.
+
 ## 0.15.0 watchface and settings UX pass — 3 November 2026
 
 The optional secondary row now has a restrained divider at y114, within its

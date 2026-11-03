@@ -1,0 +1,227 @@
+{
+  "result": "PASS",
+  "nativeStatuses": [
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 2,
+      "presentationSequence": 1,
+      "reportedAt": 1793740075,
+      "expiresAt": 1793740195
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 3,
+      "presentationSequence": 2,
+      "reportedAt": 1793740076,
+      "expiresAt": 1793740196
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 4,
+      "presentationSequence": 3,
+      "reportedAt": 1793740078,
+      "expiresAt": 1793740086
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 5,
+      "presentationSequence": 4,
+      "reportedAt": 1793740079,
+      "expiresAt": 1793740087
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 5,
+      "presentationSequence": 5,
+      "reportedAt": 1793740080,
+      "expiresAt": 0
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 8,
+      "presentationSequence": 6,
+      "reportedAt": 1793740083,
+      "expiresAt": 1793740203
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 9,
+      "presentationSequence": 7,
+      "reportedAt": 1793740084,
+      "expiresAt": 1793740204
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 10,
+      "presentationSequence": 8,
+      "reportedAt": 1793740085,
+      "expiresAt": 1793740093
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 11,
+      "presentationSequence": 9,
+      "reportedAt": 1793740086,
+      "expiresAt": 1793740094
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 11,
+      "presentationSequence": 10,
+      "reportedAt": 1793740088,
+      "expiresAt": 0
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 14,
+      "presentationSequence": 11,
+      "reportedAt": 1793740090,
+      "expiresAt": 1793740210
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 15,
+      "presentationSequence": 12,
+      "reportedAt": 1793740091,
+      "expiresAt": 1793740211
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 16,
+      "presentationSequence": 13,
+      "reportedAt": 1793740093,
+      "expiresAt": 1793740101
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 17,
+      "presentationSequence": 14,
+      "reportedAt": 1793740094,
+      "expiresAt": 1793740102
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 17,
+      "presentationSequence": 15,
+      "reportedAt": 1793740095,
+      "expiresAt": 0
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 20,
+      "presentationSequence": 16,
+      "reportedAt": 1793740098,
+      "expiresAt": 1793740217
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 21,
+      "presentationSequence": 17,
+      "reportedAt": 1793740099,
+      "expiresAt": 1793740219
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 1,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 22,
+      "presentationSequence": 18,
+      "reportedAt": 1793740100,
+      "expiresAt": 1793740108
+    },
+    {
+      "schema": 1,
+      "primary": 0,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 23,
+      "presentationSequence": 19,
+      "reportedAt": 1793740101,
+      "expiresAt": 1793740109
+    },
+    {
+      "schema": 1,
+      "primary": 255,
+      "secondary": 255,
+      "flags": 0,
+      "session": 2,
+      "viewSequence": 23,
+      "presentationSequence": 20,
+      "reportedAt": 1793740103,
+      "expiresAt": 0
+    }
+  ],
+  "legacyNotificationFlagsAbsent": true,
+  "scope": "Actual candidate native status messages during the twenty-four synthetic native settings presets. No phone source or app launch."
+}

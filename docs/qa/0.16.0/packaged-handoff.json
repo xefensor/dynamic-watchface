@@ -1,0 +1,2713 @@
+{
+  "result": "PASS",
+  "scope": "Actual packaged Dynamic PKJS/navigation provider, Timer PKJS/provider and Open Activity PKJS/config plugin, including two role-oriented shortcut choices, each selected from all eight Quick Launch slots, and closure of unselected shortcuts without subscribing. In-memory SDK, clocks and synthetic native presentation/gesture/confirmation messages; no real phone, physical watch or physical Quick Launch claim.",
+  "versions": {
+    "dynamic": "0.16.0",
+    "timer": "0.10.0",
+    "helper": "0.1.5"
+  },
+  "shortcutLaunches": 48,
+  "expiredShortcutAttempts": 48,
+  "unselectedShortcutAttempts": 336,
+  "testedShortcutRoles": {
+    "hold-up": [
+      "primary",
+      "secondary"
+    ],
+    "hold-down": [
+      "primary",
+      "secondary"
+    ],
+    "hold-select": [
+      "primary",
+      "secondary"
+    ],
+    "hold-back": [
+      "primary",
+      "secondary"
+    ],
+    "tap-up": [
+      "primary",
+      "secondary"
+    ],
+    "tap-down": [
+      "primary",
+      "secondary"
+    ],
+    "combo-back-up": [
+      "primary",
+      "secondary"
+    ],
+    "combo-up-down": [
+      "primary",
+      "secondary"
+    ]
+  },
+  "artifacts": {
+    "dynamic": {
+      "path": "dynamic-watchface/dist/Dynamic-0.16.0.pbw",
+      "version": "0.16.0",
+      "sha256": "e1cdd0d1b5fe26fafacd72b20eea071338cf3158bd9630afb1a9dd82229be6ca",
+      "executedScripts": {
+        "pebble-js-app.js": "ed4dfe8fd03aabc52880f44b55afbe85e2c4b1a5e5e0493a57842603879d07f3",
+        "plugin.js": "c3d063daacdd9e2bb7278e1e017800336801c92e5b61db896f8074afdc1e900d"
+      }
+    },
+    "timer": {
+      "path": "pebble-app-timer/dist/Timer-0.10.0.pbw",
+      "version": "0.10.0",
+      "sha256": "24ca3c656b77e260d4a019a32cc80429e23b4aeedb6249631b263b955e947cdb",
+      "executedScripts": {
+        "pebble-js-app.js": "ba9d11d1544d98ce9ad4fd5a24075b81ec786dedd2a5c69507246ce0b2652479",
+        "plugin.js": "27754d1dfacde857a4b402a65a748ee1ad21233954062295463a8d5076ac75cc"
+      }
+    },
+    "helper": {
+      "path": "pebble-app-open-activity/dist/Open-Activity-0.1.5.pbw",
+      "version": "0.1.5",
+      "sha256": "b11a51f9352ad9a6efd5d187a82a8874f92bfc5e7f27e0cc264ce33f58392a06",
+      "executedScripts": {
+        "pebble-js-app.js": "a113c0f450e73f3012f2d3fb59e95c044c7bc6ec5c52c87cf9d66c4521bd448b",
+        "plugin.js": "f44a28e61fb0b0197dc2a472b3a568833d30ddec8fd72efde45888c4969839ba"
+      }
+    }
+  },
+  "cases": [
+    {
+      "privacy": "message",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "allEightRoleShortcutChoicesRespected": true,
+      "unselectedSlotsCloseWithoutSubscribing": true,
+      "shortcutResults": [
+        {
+          "shortcut": "hold-up",
+          "gesture": 1,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-down",
+          "gesture": 1,
+          "button": 3,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-select",
+          "gesture": 1,
+          "button": 2,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-back",
+          "gesture": 1,
+          "button": 0,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-up",
+          "gesture": 2,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-down",
+          "gesture": 2,
+          "button": 3,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-back-up",
+          "gesture": 3,
+          "button": 0,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-up-down",
+          "gesture": 3,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        }
+      ],
+      "allEightExpiredShortcutsClosed": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "message",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "allEightRoleShortcutChoicesRespected": true,
+      "unselectedSlotsCloseWithoutSubscribing": true,
+      "shortcutResults": [
+        {
+          "shortcut": "hold-up",
+          "gesture": 1,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-down",
+          "gesture": 1,
+          "button": 3,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-select",
+          "gesture": 1,
+          "button": 2,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-back",
+          "gesture": 1,
+          "button": 0,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-up",
+          "gesture": 2,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-down",
+          "gesture": 2,
+          "button": 3,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-back-up",
+          "gesture": 3,
+          "button": 0,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-up-down",
+          "gesture": 3,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        }
+      ],
+      "allEightExpiredShortcutsClosed": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "summary",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "allEightRoleShortcutChoicesRespected": true,
+      "unselectedSlotsCloseWithoutSubscribing": true,
+      "shortcutResults": [
+        {
+          "shortcut": "hold-up",
+          "gesture": 1,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-down",
+          "gesture": 1,
+          "button": 3,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-select",
+          "gesture": 1,
+          "button": 2,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-back",
+          "gesture": 1,
+          "button": 0,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-up",
+          "gesture": 2,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-down",
+          "gesture": 2,
+          "button": 3,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-back-up",
+          "gesture": 3,
+          "button": 0,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-up-down",
+          "gesture": 3,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        }
+      ],
+      "allEightExpiredShortcutsClosed": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "summary",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "allEightRoleShortcutChoicesRespected": true,
+      "unselectedSlotsCloseWithoutSubscribing": true,
+      "shortcutResults": [
+        {
+          "shortcut": "hold-up",
+          "gesture": 1,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-down",
+          "gesture": 1,
+          "button": 3,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-select",
+          "gesture": 1,
+          "button": 2,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-back",
+          "gesture": 1,
+          "button": 0,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-up",
+          "gesture": 2,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-down",
+          "gesture": 2,
+          "button": 3,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-back-up",
+          "gesture": 3,
+          "button": 0,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-up-down",
+          "gesture": 3,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        }
+      ],
+      "allEightExpiredShortcutsClosed": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "app-only",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "allEightRoleShortcutChoicesRespected": true,
+      "unselectedSlotsCloseWithoutSubscribing": true,
+      "shortcutResults": [
+        {
+          "shortcut": "hold-up",
+          "gesture": 1,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-down",
+          "gesture": 1,
+          "button": 3,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-select",
+          "gesture": 1,
+          "button": 2,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-back",
+          "gesture": 1,
+          "button": 0,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-up",
+          "gesture": 2,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-down",
+          "gesture": 2,
+          "button": 3,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-back-up",
+          "gesture": 3,
+          "button": 0,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-up-down",
+          "gesture": 3,
+          "button": 1,
+          "selectedRole": "primary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        }
+      ],
+      "allEightExpiredShortcutsClosed": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "app-only",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "allEightRoleShortcutChoicesRespected": true,
+      "unselectedSlotsCloseWithoutSubscribing": true,
+      "shortcutResults": [
+        {
+          "shortcut": "hold-up",
+          "gesture": 1,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-down",
+          "gesture": 1,
+          "button": 3,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-select",
+          "gesture": 1,
+          "button": 2,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "hold-back",
+          "gesture": 1,
+          "button": 0,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-up",
+          "gesture": 2,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "tap-down",
+          "gesture": 2,
+          "button": 3,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-back-up",
+          "gesture": 3,
+          "button": 0,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-up-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        },
+        {
+          "shortcut": "combo-up-down",
+          "gesture": 3,
+          "button": 1,
+          "selectedRole": "secondary",
+          "destination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+          "invocations": 1,
+          "unselected": [
+            {
+              "shortcut": "hold-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-select",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "hold-back",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "tap-down",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            },
+            {
+              "shortcut": "combo-back-up",
+              "closed": true,
+              "subscribed": false,
+              "invocations": 0
+            }
+          ]
+        }
+      ],
+      "allEightExpiredShortcutsClosed": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    }
+  ],
+  "executedPackagedScripts": {
+    "dynamic": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "ed4dfe8fd03aabc52880f44b55afbe85e2c4b1a5e5e0493a57842603879d07f3"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "c3d063daacdd9e2bb7278e1e017800336801c92e5b61db896f8074afdc1e900d"
+      }
+    ],
+    "timer": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "ba9d11d1544d98ce9ad4fd5a24075b81ec786dedd2a5c69507246ce0b2652479"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "27754d1dfacde857a4b402a65a748ee1ad21233954062295463a8d5076ac75cc"
+      }
+    ],
+    "helper": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "a113c0f450e73f3012f2d3fb59e95c044c7bc6ec5c52c87cf9d66c4521bd448b"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "f44a28e61fb0b0197dc2a472b3a568833d30ddec8fd72efde45888c4969839ba"
+      }
+    ]
+  }
+}

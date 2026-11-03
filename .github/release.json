@@ -6,9 +6,11 @@
   "prerelease": true,
   "assets": [
     "dist/Dynamic-{version}.pbw",
-    "dist/Dynamic-{version}-source.zip"
+    "dist/Dynamic-{version}-source.zip",
+    "dist/Dynamic-{version}-debug.zip"
   ],
   "checksums_file": "dist/SHA256SUMS.txt",
+  "javascript_debug_archive": "dist/Dynamic-{version}-debug.zip",
   "app_uuid": "cc1281f1-3b4d-45b5-b235-6881b1fd8fbd",
   "source_archive": {
     "path": "dist/Dynamic-{version}-source.zip",

@@ -1,15 +1,22 @@
 # Dynamic
 
 A Pebble Time 2 watchface with rounded time, two horizontal readings and
-notification-style activities. Version 0.15.0 makes paused state clear in either
-role, separates the compact row and simplifies settings. It places one
+notification-style activities. The local 0.16.0 optimization candidate reduces
+rendering work, memory and package size while preserving the layouts. It places one
 compact activity row above the main activity and groups the primary content
 against its bottom context. Music uses title, artwork and artist. Text stays
 still and truncates at its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
-The current release is [**v0.15.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.15.0).
+Local optimization candidate: [Dynamic-0.16.0.pbw](dist/Dynamic-0.16.0.pbw),
+[buildable source](dist/Dynamic-0.16.0-source.zip) and
+[developer debugging files](dist/Dynamic-0.16.0-debug.zip).
+[Optimization review](docs/OPTIMIZATION-REVIEW.md) records measurements and checks.
+It has not been pushed or published.
+
+
+The previous published release is [**v0.15.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.15.0).
 It is ready for sideload testing. Pebble appstore submission remains held.
 
 | File | Use |
@@ -35,8 +42,8 @@ has portable, SDK, package and native-emulator checks recorded in
 delivery remain separate device checks.
 
 Dynamic uses [Pebble Watchface Core](https://github.com/xefensor/pebble-watchface-core)
-0.5.0 for readings and [Pebble Activities](https://github.com/xefensor/pebble-activities)
-0.4.1 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
+0.5.1 for readings and [Pebble Activities](https://github.com/xefensor/pebble-activities)
+0.4.2 for generic activities and the optional music/notification adapter. Its own UUID, `cc1281f1-3b4d-45b5-b235-6881b1fd8fbd`, allows installation
 alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Before installing
@@ -49,8 +56,8 @@ alongside [Halftone](https://github.com/xefensor/halftone-watchface).
 
 ## Plugin activities
 
-Dynamic 0.15.0 prefers `activity/summary` schema 4 through pinned
-Activities 0.4.1. Sources publish either a standard headline with optional detail,
+Dynamic 0.16.0 prefers `activity/summary` schema 4 through pinned
+Activities 0.4.2. Sources publish either a standard headline with optional detail,
 or media title/artist/artwork. Datums can be text, values or independent clocks.
 Plugins supply meaning; Dynamic chooses layout. Existing schema 1/2/3 providers
 remain compatible through phone-side adaptation.
@@ -344,7 +351,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.15.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.16.0.pbw
 python3 scripts/package-source.py
 ```
 
@@ -356,7 +363,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.15.0.pbw
+pebble install --emulator emery dist/Dynamic-0.16.0.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -391,11 +398,11 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic 0.15.0 pins Core 0.5.0 and Activities 0.4.1. Halftone keeps its own
+Dynamic 0.16.0 pins Core 0.5.1 and Activities 0.4.2. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
-`vendor/pebble-watchface-core-0.5.0.tgz` and
-`vendor/pebble-activities-0.4.1.tgz` are committed, version-pinned Pebble packages.
+`vendor/pebble-watchface-core-0.5.1.tgz` and
+`vendor/pebble-activities-0.4.2.tgz` are committed, version-pinned Pebble packages.
 `package-lock.json` records their integrity; `vendor/CORE.json` and
 `vendor/ACTIVITIES.json` record upstream/version/checksum provenance. `npm ci`
 installs these archives; users install only Dynamic's PBW, not a separate

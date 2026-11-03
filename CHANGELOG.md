@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.16.0
+
+- Reuse one activity plan across scheduling, drawing and bounded motion. Recheck
+  all clock/expiry/locale/session changes and confirm only actually painted roles.
+- Batch bitmap pixels into equal-colour runs and skip unrelated redraws and
+  unchanged native settings writes. Preserve artwork, typography and transitions.
+- Pin Core 0.5.1: validate the complete context packet while retaining only a
+  12-byte phone-status record. Pin Activities 0.4.2 and its narrower host entry.
+- Defer phone settings initialization, cache saved preferences until a settings
+  event, coalesce preview/layout work and reuse preview colour mappings.
+- Minify release JavaScript without expression compression or property mangling;
+  retain original SDK inputs and exact maps in a separate developer debug ZIP.
+- Recheck native compositions, local clocks, routing, settings and final packaged
+  cross-app behavior. Published 0.15.0 files and tags remain unchanged.
+
 ## 0.15.0
 
 - Separate the single secondary activity row with a restrained divider while

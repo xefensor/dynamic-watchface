@@ -11,9 +11,26 @@ const scratch=fs.mkdtempSync(path.join(os.tmpdir(),'dynamic-settings-'));
 fs.mkdirSync(output,{recursive:true});
 const config=require(root+'/src/pkjs/config'),localization=require(root+'/src/pkjs/localization');
 const custom=require(root+'/src/pkjs/settings-page');
+const candidate=path.resolve(process.env.DYNAMIC_QA_PBW || path.join(root,'dist','Dynamic-'+version+'.pbw'));
+const candidateBytes=fs.existsSync(candidate)?fs.readFileSync(candidate):null;
+if(process.env.DYNAMIC_QA_PBW)assert.ok(candidateBytes,'the requested packaged candidate exists');
+const frozenCandidate=path.join(scratch,'candidate.pbw');
+if(candidateBytes)fs.writeFileSync(frozenCandidate,candidateBytes);
+const candidateScript=candidateBytes?execFileSync('unzip',['-p',frozenCandidate,'pebble-js-app.js'],{maxBuffer:8*1024*1024}):null;
+const baselineRef=process.env.DYNAMIC_QA_BASELINE_REF || 'a9d2036f51ac3da2c84b69677c6a8d36aab32df6';
+const baselineSource=candidateScript?(process.env.DYNAMIC_QA_BASELINE_SOURCE?
+  fs.readFileSync(process.env.DYNAMIC_QA_BASELINE_SOURCE,'utf8'):
+  execFileSync('git',['show',baselineRef+':src/pkjs/settings-page.js'],{cwd:root,encoding:'utf8'})):null;
+let referenceRecolor;
+if(baselineSource){
+  const start=baselineSource.indexOf('var pixels = ctx.getImageData(0,0,200,228)'),end=baselineSource.indexOf('ctx.putImageData(pixels,0,0);',start);
+  assert.ok(start>=0&&end>start,'the approved baseline supplies the independent old recoloring implementation');
+  referenceRecolor=baselineSource.slice(start,end+'ctx.putImageData(pixels,0,0);'.length);
+}
 const keys=Object.fromEntries(require(root+'/package.json').pebble.messageKeys.map((key,index)=>[key,index]));
 const timer='11111111-1111-4111-8111-111111111111',workout='22222222-2222-4222-8222-222222222222',absent='33333333-3333-4333-8333-333333333333',evil='44444444-4444-4444-8444-444444444444';
 const pages={};
+const packagedPages={},packagedMetadata={};
 const installedClay=path.join(root,'node_modules/@rebble/clay');
 const bundle=fs.existsSync(path.join(installedClay,'dist/js/index.js')) ? fs.readFileSync(path.join(installedClay,'dist/js/index.js'),'utf8') :
   execFileSync('unzip',['-p',path.join(installedClay,'dist.zip'),'js/index.js'],{encoding:'utf8'});
@@ -35,7 +52,7 @@ function replayHost(initialStorage={}) {
       if(name==='message_keys')return keys;
       if(name==='@rebble/clay')return claySandbox.module.exports;
       if(name==='../common/activity-navigation')return require(root+'/src/common/activity-navigation');
-      if(name==='pebble-activities')return {selection:library.selection,
+      if(name==='pebble-activities/host')return {selection:library.selection,
         createContext:()=>({musicActivity:()=>musicCard,notificationActivity:()=>notificationCard,configure:()=>{},status:()=>({}),refresh:()=>{},connectionChanged:()=>{}}),
         createActivities:received=>{options=received;return {configure:()=>{},reproject:()=>{},providers:()=>[],status:()=>({}),refresh:()=>{},connectionChanged:()=>{}};}};
       if(name==='pebble-watchface-core/readings')return {
@@ -48,6 +65,42 @@ function replayHost(initialStorage={}) {
   return {storage,save:response=>handlers.webviewclosed({response:JSON.stringify(response)}),
     selected:()=>Array.from(options.select([timerCard]),card=>card.kind),deliveries};
 }
+function packagedPage(language){
+  const storage={'clay-settings':JSON.stringify({SHOW_MUSIC:true,SHOW_ACTIVITIES:true,SHOW_NOTIFICATIONS:false}),
+    'dynamic-activity-preferences-v1':JSON.stringify({order:[timer,'builtin:music','builtin:notifications',workout,absent],hidden:[workout]})};
+  const handlers={},urls=[],messages=[],subscriptions=[],logs=[];
+  const source=require(root+'/node_modules/pebble-activities/summary');
+  const Pebble={platform:'test',getActiveWatchInfo:()=>({language}),getAccountToken:()=>'',getWatchToken:()=>'',
+    addEventListener:(name,handler)=>{(handlers[name]||(handlers[name]=[])).push(handler);},
+    sendAppMessage:(payload,ok)=>{messages.push(payload);if(ok)ok();},openURL:url=>urls.push(url),
+    enumeratePlugins:()=>[{uuid:timer,name:'Timer'},{uuid:workout,name:'Workout'},{uuid:evil,name:'<img src=x onerror="window.__xss=true">'}].map(provider=>({...provider,
+      sources:[{category:'activity',items:['summary'],supportsMultiple:true,properties:source.SOURCE_PROPERTIES}]})),
+    subscribeToSource:request=>{subscriptions.push({category:request.category,item:request.item});return {unsubscribe:()=>{}};}};
+  const localStorage={getItem:key=>Object.hasOwn(storage,key)?storage[key]:null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
+  vm.runInNewContext(candidateScript.toString('utf8'),{Pebble,localStorage,navigator:{language},console:{log:message=>logs.push(String(message)),warn:()=>{},error:()=>{}},
+    setTimeout:()=>1,clearTimeout:()=>{}},{filename:'actual-minified-pebble-js-app.js',timeout:10000});
+  assert.ok(handlers.ready&&handlers.showConfiguration,'actual packaged runtime registers lifecycle/configuration events');
+  handlers.ready.forEach(handler=>handler());
+  handlers.showConfiguration.forEach(handler=>handler());
+  assert.equal(urls.length,1,'the actual packaged handler opens one settings page');
+  assert.ok(urls[0].startsWith('data:text/html;charset=utf-8,'));
+  const html=decodeURIComponent(urls[0].slice('data:text/html;charset=utf-8,'.length));
+  assert.match(html,/window\.customFn=/);
+  assert.doesNotMatch(html,/\$\$CUSTOM_FN\$\$/,'Clay replacement-string expansion must not corrupt the serialized custom function');
+  // Expose the real browser Clay instance without replacing or rewriting the
+  // serialized minified custom function. The original page bytes are hashed.
+  const hook='customFn.call(clayConfig, minified);';
+  assert.equal(html.split(hook).length,2,'expected one stock Clay invocation');
+  const exposed=html.replace(hook,'window.__testClay=clayConfig;'+hook);
+  const file=path.join(scratch,'packaged-settings-'+language+'.html');fs.writeFileSync(file,exposed);
+  return {file,metadata:{language,pbwSha256:crypto.createHash('sha256').update(candidateBytes).digest('hex'),
+    installedPkjsSha256:crypto.createHash('sha256').update(candidateScript).digest('hex'),installedPkjsBytes:candidateScript.length,
+    actualGeneratedHtmlSha256:crypto.createHash('sha256').update(html).digest('hex'),actualGeneratedHtmlBytes:Buffer.byteLength(html),
+    realPackagedRuntime:true,realPackagedShowConfiguration:true,serializedFunctionUnchanged:true,
+    browserTestHook:'Expose stock Clay instance immediately before its unchanged customFn.call',syntheticProviders:true,
+    sourceSubscriptions:subscriptions,watchMessages:messages.length,phoneVmLogs:logs}};
+}
+if(candidateScript)for(const language of ['en','cs']){const result=packagedPage(language);packagedPages[language]=result.file;packagedMetadata[language]=result.metadata;}
 for(const scenario of ['en','cs','bounded','off-app']){
   const language=['bounded','off-app'].includes(scenario)?'en':scenario;
   const saved=scenario==='off-app'?{SHOW_MUSIC:false,SHOW_ACTIVITIES:false,SHOW_NOTIFICATIONS:false,NOTIFICATION_APP_ONLY:true,NOTIFICATION_PREVIEW:true}:
@@ -79,8 +132,12 @@ async function run(){
   socket.onmessage=message=>{const data=JSON.parse(message.data);if(data.id){const waiter=pending.get(data.id);pending.delete(data.id);data.error?waiter.reject(data.error):waiter.resolve(data.result);}else events.push(data);};
   const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});
   const evaluate=async expression=>{const result=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw new Error(result.result.description||result.exceptionDetails.text);return result.result.value;};
+  const settle=()=>evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
   const capture=async name=>{await evaluate('new Promise(resolve=>setTimeout(resolve,250))');const image=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(output,name+'.png'),Buffer.from(image.data,'base64'));};
   await send('Page.enable');await send('Runtime.enable');
+  // Runtime.enable can replay exceptions from the tab's previous document.
+  // The audit records only errors from pages it subsequently navigates to.
+  events.length=0;
   const results=[];
   for(const language of ['en','cs']){
     await send('Emulation.setDeviceMetricsOverride',{width:360,height:800,deviceScaleFactor:1,mobile:true});
@@ -108,6 +165,7 @@ async function run(){
       assert.equal(await evaluate('Array.from(document.querySelectorAll(".dynamic-preview-tabs button")).indexOf(document.activeElement)'),want);
     }
     await evaluate('document.querySelectorAll(".dynamic-preview-tabs button")[2].click()');
+    await settle();
     assert.match(await evaluate('document.getElementById("dynamic-preview-canvas").getAttribute("aria-label")'),new RegExp(localization.t('previewTimer',language)));
     assert.deepEqual(await evaluate('window.__testClay.serialize()'),paletteBefore,'sample selection never changes appearance or privacy');
     await evaluate('window.scrollTo(0,0)');await capture('timer-preview-'+language);
@@ -277,8 +335,94 @@ async function run(){
   assert.ok(visualOnly.visualHeight<visualOnly.layoutHeight);assert.equal(visualOnly.position,'static');
   await send('Emulation.setPageScaleFactor',{pageScaleFactor:1});
   boundary.responsive={layouts:responsive,visualViewportOnly:visualOnly,scope:'Actual Chromium layout at short heights, doubled computed CSS font sizes and visual-viewport-only browser zoom; not a physical keyboard or OS accessibility-font test.'};
+  const packaged=[];
+  if(candidateScript)for(const language of ['en','cs']){
+    await send('Emulation.setDeviceMetricsOverride',{width:360,height:800,deviceScaleFactor:1,mobile:true});
+    await send('Page.navigate',{url:'file://'+packagedPages[language]});
+    for(let i=0;i<100;i++){if(await evaluate('!!window.__testClay&&!!document.querySelector(".dynamic-activity-row")'))break;await new Promise(r=>setTimeout(r,30));}
+    await evaluate('document.fonts.ready');await settle();await evaluate('new Promise(resolve=>setTimeout(resolve,150))');
+    assert.equal(await evaluate('document.querySelectorAll(".dynamic-preview-tabs button").length'),6,'actual minified serialized settings function builds all six preview tabs');
+    assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true);
+    assert.equal(await evaluate('Boolean(window.__xss)'),false);
+    assert.equal(await evaluate('document.querySelectorAll(".dynamic-activity-name img").length'),0);
+    assert.deepEqual(await evaluate('Array.from(document.querySelectorAll(".dynamic-section-nav button"),button=>button.textContent)'),
+      ['appearance','content','helpConnection'].map(key=>localization.t(key,language)));
+    await evaluate('window.scrollTo(0,0)');await capture('packaged-default-'+language);
+    const initial=await evaluate('window.__testClay.serialize()');
+    await evaluate('document.querySelectorAll(".dynamic-preview-tabs button")[2].click()');await settle();
+    assert.deepEqual(await evaluate('window.__testClay.serialize()'),initial,'packaged sample controls preserve saved settings');
+    const notification='Array.from(document.querySelectorAll(".dynamic-activity-row")).find(row=>row.dataset.provider==="builtin:notifications").querySelector("input")';
+    await evaluate(notification+'.click()');
+    assert.equal((await evaluate('window.__testClay.serialize()')).SHOW_NOTIFICATIONS.value,true);
+    await evaluate(notification+'.click()');
+    const resize=[];
+    for(const target of ['window','visualViewport']){
+      if(target==='visualViewport'&&!await evaluate('!!window.visualViewport'))continue;
+      await evaluate('document.activeElement.blur()');await settle();
+      const counts=await evaluate(`(async()=>{
+        const bar=document.querySelector('.component-submit'),style=document.documentElement.style;
+        const originalRect=bar.getBoundingClientRect,originalSet=style.setProperty,originalToggle=document.body.classList.toggle;
+        const result={events:40,measurements:0,heightWrites:0,flowWrites:0};
+        bar.getBoundingClientRect=function(){++result.measurements;return originalRect.apply(this,arguments);};
+        style.setProperty=function(name){if(name==='--dynamic-save-height')++result.heightWrites;return originalSet.apply(this,arguments);};
+        document.body.classList.toggle=function(name){if(name==='dynamic-actions-flow')++result.flowWrites;return originalToggle.apply(this,arguments);};
+        for(let i=0;i<40;++i)${target}.dispatchEvent(new Event('resize'));
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        bar.getBoundingClientRect=originalRect;style.setProperty=originalSet;document.body.classList.toggle=originalToggle;
+        return result;
+      })()`);
+      assert.equal(counts.measurements,1,target+' resize burst performs one actual fixed-footer measurement');
+      assert.equal(counts.heightWrites,0,'unchanged measured height does not write CSS');
+      assert.equal(counts.flowWrites,0,'unchanged flow mode does not write its class');
+      resize.push({target,...counts});
+    }
+    await evaluate('window.__testClay.getItemByMessageKey("CLOCK_FORMAT").set(24);document.querySelectorAll(".dynamic-preview-tabs button")[2].click()');
+    await settle();await evaluate('new Promise(resolve=>setTimeout(resolve,100))');
+    const preview=await evaluate(`(async()=>{
+      const prototype=CanvasRenderingContext2D.prototype,draw=prototype.drawImage,put=prototype.putImageData;
+      const counts={changes:40,imageDraws:0,recolors:0};
+      prototype.drawImage=function(){if(this.canvas.id==='dynamic-preview-canvas')++counts.imageDraws;return draw.apply(this,arguments);};
+      prototype.putImageData=function(){if(this.canvas.id==='dynamic-preview-canvas')++counts.recolors;return put.apply(this,arguments);};
+      for(let i=0;i<40;++i)window.__testClay.getItemByMessageKey('ACCENT_COLOR').set(i%2?0xAA55FF:0xFFAA55);
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      prototype.drawImage=draw;prototype.putImageData=put;
+      return counts;
+    })()`);
+    assert.equal(preview.imageDraws,1,'rapid palette input draws the final native sample once');
+    assert.equal(preview.recolors,1,'rapid palette input recolors once');
+    await capture('packaged-custom-preview-'+language);
+    const comparisons=[];
+    if(language==='en'){
+      const assets=require(root+'/src/pkjs/settings-preview');
+      await evaluate('window.__testClay.getItemByMessageKey("BACKGROUND_COLOR").set(0x0055AA);window.__testClay.getItemByMessageKey("TEXT_COLOR").set(0xFFFFAA);window.__testClay.getItemByMessageKey("ACCENT_COLOR").set(0xAA55FF)');
+      for(const format of [12,24])for(const [index,state]of ['idle','music','timer','notification-summary','notification','timeline'].entries()){
+        const frame=assets.frames[state+'-'+format+'-light'];assert.ok(frame);
+        await evaluate('window.__testClay.getItemByMessageKey("CLOCK_FORMAT").set('+format+');document.querySelectorAll(".dynamic-preview-tabs button")['+index+'].click()');
+        await settle();await evaluate('new Promise(resolve=>setTimeout(resolve,80))');
+        const same=await evaluate(`(async()=>{
+          const frame=${JSON.stringify(frame)},source=typeof frame==='string'?{src:frame}:frame;
+          const image=new Image();image.src=source.src;await image.decode();
+          const reference=document.createElement('canvas');reference.width=200;reference.height=228;
+          const ctx=reference.getContext('2d');ctx.drawImage(image,0,0);
+          (new Function('ctx','frame','foreground','background','highlight',${JSON.stringify(referenceRecolor)}))(ctx,source,0xFFFFAA,0x0055AA,0xAA55FF);
+          const expected=ctx.getImageData(0,0,200,228).data;
+          const actual=document.getElementById('dynamic-preview-canvas').getContext('2d').getImageData(0,0,200,228).data;
+          let different=0;for(let i=0;i<expected.length;++i)if(actual[i]!==expected[i])++different;
+          return {differentChannels:different,pixels:45600};
+        })()`);
+        assert.equal(same.differentChannels,0,'optimized recoloring matches the actual approved old implementation: '+state+'/'+format);
+        comparisons.push({state,format,...same});
+      }
+    }
+    await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:'dark'}]});
+    await evaluate('window.__testClay.getItemByMessageKey("ACCENT_COLOR").set(0x55AAFF);(()=>{const theme=document.getElementById("dynamic-theme-select");theme.value="dark";theme.dispatchEvent(new Event("change",{bubbles:true}));})();document.querySelectorAll(".dynamic-preview-tabs button")[2].click();window.scrollTo(0,0)');
+    await settle();await capture('packaged-dark-'+language);
+    await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:'light'}]});
+    packaged.push({...packagedMetadata[language],resize,preview,referenceRecolor:{baseline:baselineRef,baselineSourceSha256:crypto.createHash('sha256').update(baselineSource).digest('hex'),comparisons},
+      checks:['actual minified PKJS executed','actual showConfiguration generated HTML','unchanged minified customFn serialized by actual Clay','six previews and translated sections built','preview selection leaves settings unchanged','Notifications toggle serializes','resize events batched','unchanged footer writes suppressed','rapid palette changes draw and recolor once'].concat(comparisons.length?['all twelve custom-color state/format pixel arrays match the actual approved old algorithm']:[])});
+  }
   const sourceSha256=Object.fromEntries(['src/pkjs/config.js','src/pkjs/index.js','src/pkjs/settings-page.js','src/pkjs/localization.js','src/pkjs/activity-presentation.js','vendor/ACTIVITIES.json','scripts/check-settings-activities.cjs'].map(file=>[file,crypto.createHash('sha256').update(fs.readFileSync(path.join(root,file))).digest('hex')]));
-  fs.writeFileSync(path.join(output,'validation.json'),JSON.stringify({version,actualClay:true,syntheticFixtures:true,viewport:{width:360,height:800},sourceSha256,results,boundary,errors:events.filter(e=>e.method==='Runtime.exceptionThrown')},null,2)+'\n');
+  fs.writeFileSync(path.join(output,'validation.json'),JSON.stringify({version,actualClay:true,syntheticFixtures:true,viewport:{width:360,height:800},sourceSha256,results,boundary,packaged,errors:events.filter(e=>e.method==='Runtime.exceptionThrown')},null,2)+'\n');
   assert.equal(events.filter(e=>e.method==='Runtime.exceptionThrown').length,0);
   socket.close();fs.rmSync(scratch,{recursive:true,force:true});console.log(JSON.stringify({passed:true,output,languages:results.map(result=>result.language)},null,2));
 }

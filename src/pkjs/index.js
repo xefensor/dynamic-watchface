@@ -1,16 +1,21 @@
 var MessageKeys = require('message_keys');
-var Clay = require('@rebble/clay');
-var clayConfig = require('./config');
 var core = require('pebble-watchface-core/readings');
-var activityLibrary = require('pebble-activities');
+var activityLibrary = require('pebble-activities/host');
 var activityPresentation = require('./activity-presentation');
 var navigation = require('../common/activity-navigation').create({storage:localStorage,now:function(){return Date.now();}});
 var createComplications = core.createComplications;
 var createContext = activityLibrary.createContext;
 var createMessageQueue = core.createMessageQueue;
 var localization = require('./localization');
-var previewAssets = require('./settings-preview');
-var clay = new Clay(clayConfig, require('./settings-page'), {autoHandleEvents: false});
+var clay,clayConfig;
+function settingsPage() {
+  if(!clay) {
+    var Clay=require('@rebble/clay');
+    clayConfig=require('./config');
+    clay=new Clay(clayConfig,require('./settings-page'),{autoHandleEvents:false});
+  }
+  return clay;
+}
 
 function settingsLanguage() {
   var watchLanguage;
@@ -25,9 +30,14 @@ function settingsLanguage() {
 function messageValue(payload, name) {
   return payload[name] !== undefined ? payload[name] : payload[MessageKeys[name]];
 }
+var cachedSettings,cachedPreferences;
+function invalidateSettings() {cachedSettings=undefined;cachedPreferences=undefined;}
 function savedSettings() {
-  try { return JSON.parse(localStorage.getItem('clay-settings')) || {}; }
-  catch (error) { return {}; }
+  if(cachedSettings===undefined) {
+    try { cachedSettings=JSON.parse(localStorage.getItem('clay-settings')) || {}; }
+    catch (error) { cachedSettings={}; }
+  }
+  return cachedSettings;
 }
 function clockFormat(settings) {
   var value = messageValue(settings, 'CLOCK_FORMAT');
@@ -77,6 +87,7 @@ function enabledSetting(name, fallback) {
 var ACTIVITY_PREFERENCES_KEY = 'dynamic-activity-preferences-v1';
 var ACTIVITY_PREFERENCES_RESPONSE = '__dynamicActivityPreferences';
 function activityPreferences() {
+  if(cachedPreferences)return cachedPreferences;
   var value;
   try { value = JSON.parse(localStorage.getItem(ACTIVITY_PREFERENCES_KEY)); } catch (ignored) {}
   var result = activityLibrary.selection.normalizePreferences(value);
@@ -89,7 +100,7 @@ function activityPreferences() {
   if (result.order.indexOf('builtin:notifications') < 0) {
     result.order = ['builtin:notifications'].concat(result.order).slice(0,64);
   }
-  return result;
+  cachedPreferences=result;return result;
 }
 var contextProjectionSignature = '[null,null]';
 function contextChanged() {
@@ -171,6 +182,7 @@ function requestContextSession(attempt) {
   });
 }
 Pebble.addEventListener('ready', function() {
+  invalidateSettings();
   resyncPresentation();
   complications.refresh(); context.refresh(true); activities.refresh(); requestContextSession(1);
 });
@@ -206,6 +218,8 @@ Pebble.addEventListener('appmessage', function(event) {
   else if(activityToken===1)activities.refresh();
 });
 Pebble.addEventListener('showConfiguration', function() {
+  invalidateSettings();settingsPage();
+  var previewAssets=require('./settings-preview');
   var clockQuery = {}; clockQuery[MessageKeys.CLOCK_FORMAT] = 255;
   send(clockQuery); // Native replies separately; this offline page remains a snapshot.
   var language = settingsLanguage();
@@ -398,7 +412,7 @@ Pebble.addEventListener('webviewclosed', function(event) {
     if (preferences && typeof preferences === 'object' && typeof preferences.value === 'string') {
       preferences = JSON.parse(preferences.value);
     }
-    payload = watchSettings(clay.getSettings(JSON.stringify(response)));
+    payload = watchSettings(settingsPage().getSettings(JSON.stringify(response)));
     if (preferences && typeof preferences === 'object' && !Array.isArray(preferences)) {
       // Only stable provider keys and visibility flags survive. Generic titles,
       // private music content and temporary run IDs never enter phone storage.
@@ -407,6 +421,7 @@ Pebble.addEventListener('webviewclosed', function(event) {
     }
   }
   catch (error) { log('Invalid settings response'); return; }
+  finally { invalidateSettings(); }
   // Apply phone-only source controls immediately, including privacy switches.
   // Theme delivery can retry independently without postponing a context clear.
   context.configure(); activities.reproject(); activities.configure();

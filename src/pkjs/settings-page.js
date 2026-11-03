@@ -616,11 +616,21 @@ module.exports = function() {
       var view=window.visualViewport,top=view?view.offsetTop:0;
       return {top:top,bottom:top+(view?view.height:window.innerHeight),height:view?view.height:window.innerHeight};
     }
+    var saveFrame=false,lastSaveHeight,lastSaveFlow;
     function saveSpace() {
+      if(saveFrame)return;
+      saveFrame=true;
+      (window.requestAnimationFrame||function(callback){return window.setTimeout(callback,16);})(function(){
+        saveFrame=false;measureSaveSpace();focusedVisible();
+      });
+    }
+    function measureSaveSpace() {
       if (!submitHost) { return; }
-      document.body.classList.toggle('dynamic-actions-flow',visibleViewport().height<=420);
+      var flow=visibleViewport().height<=420;
+      if(flow!==lastSaveFlow){document.body.classList.toggle('dynamic-actions-flow',flow);lastSaveFlow=flow;}
       var fixed=window.getComputedStyle(submitHost).position==='fixed';
-      document.documentElement.style.setProperty('--dynamic-save-height',fixed?Math.ceil(submitHost.getBoundingClientRect().height)+'px':'0px');
+      var height=fixed?Math.ceil(submitHost.getBoundingClientRect().height)+'px':'0px';
+      if(height!==lastSaveHeight){document.documentElement.style.setProperty('--dynamic-save-height',height);lastSaveHeight=height;}
     }
     function focusedVisible(target) {
       target=target||document.activeElement;
@@ -709,7 +719,16 @@ module.exports = function() {
       previewCaption = make('p',t('previewSettingsNote'),'dynamic-preview-note'); previewHost.appendChild(previewCaption);
       timelineCaption = make('p',t('previewTimelineHelp'),'dynamic-preview-note'); timelineCaption.hidden = true; previewHost.appendChild(timelineCaption);
     }
+    var previewPending=false;
     function renderPreview() {
+      ++request;
+      if(previewPending)return;
+      previewPending=true;
+      (window.requestAnimationFrame||function(callback){return window.setTimeout(callback,16);})(function(){
+        previewPending=false;drawPreview();
+      });
+    }
+    function drawPreview() {
       if (!canvas) { return; }
       var format = Number(field('CLOCK_FORMAT').get());
       if (format !== 12 && format !== 24) { format = Number(assets.systemFormat) === 12 ? 12 : 24; }
@@ -722,7 +741,7 @@ module.exports = function() {
       var sampleState = previewState;
       var key = sampleState + '-' + format + '-' + (exactTheme || 'light');
       var frame = (assets.frames || {})[key];
-      var ctx = canvas.getContext('2d'), serial = ++request;
+      var ctx = canvas.getContext('2d'), serial = request;
       canvas.setAttribute('aria-label',t('samplePreview') + ': ' + t({idle:'previewIdle',music:'previewMusic',timer:'previewTimer','notification-summary':'previewBanner',notification:'previewMessage',timeline:'previewTimeline'}[previewState]) +
         (night.get() ? ' · ' + t(quietPreview ? 'previewQuietTime' : 'previewDay') : ''));
       previewCaption.textContent = t(exactTheme ? 'previewSettingsNote' : 'previewCustomHelp');
@@ -743,23 +762,33 @@ module.exports = function() {
         // quantised capture cannot recover every coverage sample: the page
         // explicitly identifies these colours as approximate. Provider images
         // and the OS-owned Timeline card retain their captured pixels.
-        var pixels = ctx.getImageData(0,0,200,228), keep = frame.preserve || [];
+        var pixels = ctx.getImageData(0,0,200,228), keep = frame.preserve || [],colorMap={};
         function blend(front, back, amount) {
           var result = 0;
-          [16,8,0].forEach(function(shift) {
+          for(var shift=16;shift>=0;shift-=8) {
             var a = ((front >> shift) & 255) / 85, b = ((back >> shift) & 255) / 85;
             result |= Math.max(0,Math.min(3,Math.floor((a * amount + b * (16-amount) + 8) / 16))) * 85 << shift;
-          });
+          }
           return result;
         }
         for (var y=0;y<228;y++) { for (var x=0;x<200;x++) {
-          var preserve = keep.some(function(rect) { return x >= rect.x && x < rect.x + rect.width && y >= rect.y && y < rect.y + rect.height; });
+          var preserve=false;
+          for(var rectangle=0;rectangle<keep.length;rectangle++) {
+            var rect=keep[rectangle];
+            if(x>=rect.x&&x<rect.x+rect.width&&y>=rect.y&&y<rect.y+rect.height){preserve=true;break;}
+          }
           if (preserve) { continue; }
           var i=(y*200+x)*4, r=pixels.data[i]/85, g=pixels.data[i+1]/85, b=pixels.data[i+2]/85, mapped;
-          if (r === g && g === b) { mapped = blend(foreground,background,Math.round((3-r)*16/3)); }
-          else if (b === 3 && r < g && g <= b) { mapped = blend(highlight,background,Math.round((3-r)*8)); }
-          else if (r === 3 && g === 3 && b < 3) { mapped = blend(0xFFFF00,background,Math.round((3-b)*16/3)); }
-          else { continue; }
+          var source=(pixels.data[i]<<16)|(pixels.data[i+1]<<8)|pixels.data[i+2];
+          mapped=colorMap[source];
+          if(mapped===undefined) {
+            if (r === g && g === b) { mapped = blend(foreground,background,Math.round((3-r)*16/3)); }
+            else if (b === 3 && r < g && g <= b) { mapped = blend(highlight,background,Math.round((3-r)*8)); }
+            else if (r === 3 && g === 3 && b < 3) { mapped = blend(0xFFFF00,background,Math.round((3-b)*16/3)); }
+            else mapped=-1;
+            colorMap[source]=mapped;
+          }
+          if(mapped===-1)continue;
           pixels.data[i]=(mapped>>16)&255; pixels.data[i+1]=(mapped>>8)&255; pixels.data[i+2]=mapped&255;
         } }
         ctx.putImageData(pixels,0,0);
@@ -775,7 +804,7 @@ module.exports = function() {
     updateDirty();
     var form = document.getElementById('main-form');
     if (form) {
-      function resized() {saveSpace();focusedVisible();}
+      function resized() {saveSpace();}
       saveSpace();window.addEventListener('resize',resized);
       if(window.visualViewport)window.visualViewport.addEventListener('resize',resized);
       if(typeof ResizeObserver!=='undefined'&&submitHost)new ResizeObserver(saveSpace).observe(submitHost);

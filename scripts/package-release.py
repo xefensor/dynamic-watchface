@@ -3,6 +3,7 @@
 from pathlib import Path
 import hashlib, json, zipfile, subprocess
 from release_licenses import license_payloads
+from release_js import prepare_js, zip_payloads
 root = Path(__file__).resolve().parents[1]
 pkg = json.loads((root / 'package.json').read_text())
 source = root / 'build' / (pkg['name'] + '.pbw')
@@ -21,23 +22,23 @@ with zipfile.ZipFile(source) as sdk:
     info['manifestVersion'] = 2
     info['usesPermissions'] = pkg['pebble']['usesPermissions']
     info['plugin'] = pkg['pebble']['plugin']
-    payloads = {name: sdk.read(name) for name in sdk.namelist()}
+    payloads = {name: sdk.read(name) for name in sdk.namelist() if not name.endswith('.map')}
     payloads['appinfo.json'] = (json.dumps(info, sort_keys=True, separators=(',', ':')) + '\n').encode()
     assert not set(payloads).intersection(licenses)
     payloads.update(licenses)
-    payloads['plugin.js'] = (root/'build/plugin.js').read_bytes()
-    with zipfile.ZipFile(target, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as output:
-        for name, data in sorted(payloads.items()):
-            entry = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0))
-            entry.create_system = 3
-            entry.external_attr = 0o100644 << 16
-            entry.compress_type = zipfile.ZIP_DEFLATED
-            output.writestr(entry, data, compresslevel=9)
+    runtime, debug_payloads = prepare_js(root, pkg['version'], sdk.read('pebble-js-app.js'),
+                                        sdk.read('pebble-js-app.js.map'), (root/'build/plugin.js').read_bytes())
+    payloads.update(runtime)
+    target.write_bytes(zip_payloads(payloads))
+    debug = target.with_name('Dynamic-' + pkg['version'] + '-debug.zip')
+    debug.write_bytes(zip_payloads(debug_payloads))
     with zipfile.ZipFile(target) as result:
         assert result.testzip() is None
-        assert set(result.namelist()) == set(sdk.namelist()) | set(licenses) | {'plugin.js'}
+        assert set(result.namelist()) == (set(sdk.namelist()) - {'pebble-js-app.js.map'}) | set(licenses) | {'plugin.js'}
         for name in sdk.namelist():
-            if name != 'appinfo.json': assert sdk.read(name) == result.read(name)
+            if name not in ('appinfo.json', 'pebble-js-app.js', 'pebble-js-app.js.map'): assert sdk.read(name) == result.read(name)
         for name, data in licenses.items(): assert result.read(name) == data
 print(target)
 print(hashlib.sha256(target.read_bytes()).hexdigest())
+print(debug)
+print(hashlib.sha256(debug.read_bytes()).hexdigest())

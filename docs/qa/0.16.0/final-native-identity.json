@@ -1,0 +1,94 @@
+{
+  "result": "PASS",
+  "scope": "Final SDK linked executable and resources are byte-identical to captured native payloads. SDK-only regeneration timestamps differ in manifest; all other parsed fields match. No SDK files restored or modified.",
+  "capturedNativeCandidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/native-candidate.pbw",
+  "finalSdkCandidate": "dynamic-watchface/build/dynamic-watchface.pbw",
+  "capturedNativeCandidateSha256": "0d1473036a60bb07aa6456f32fd23f39673f50ac6e520dfd9bca9955e7b1af5a",
+  "finalSdkCandidateSha256": "5833c3bb1c077a6951ee76e0c33cee10ba451cd7de178ff7f28caa2f148ad812",
+  "payloads": {
+    "emery/pebble-app.bin": {
+      "identicalBytes": true,
+      "bytes": 64148,
+      "sha256": "f68822b312a586b9185cd6179fe8fcc9163c0a23e6b490749c4ef5cade04cfdb"
+    },
+    "emery/app_resources.pbpack": {
+      "identicalBytes": true,
+      "bytes": 246928,
+      "sha256": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+    }
+  },
+  "manifest": {
+    "capturedSha256": "da43585d1dbc7da90808183470d4fa921dc8b641ce734f9aaa6cbf62294cf0b1",
+    "finalSha256": "5c61d1d1f9156ed733b7db2ab2c75910a335d1d5a9e7b95902719e63733fa4b7",
+    "capturedBytes": 356,
+    "finalBytes": 356,
+    "differentByteOffsets": [
+      45,
+      46,
+      47,
+      118,
+      119,
+      120,
+      293,
+      294,
+      295
+    ],
+    "captured": {
+      "manifestVersion": 2,
+      "generatedAt": 1793740025,
+      "generatedBy": "",
+      "debug": {},
+      "application": {
+        "timestamp": 1793740023,
+        "sdk_version": {
+          "major": 5,
+          "minor": 106
+        },
+        "name": "pebble-app.bin",
+        "size": 64148,
+        "crc": 3928435180
+      },
+      "resources": {
+        "name": "app_resources.pbpack",
+        "timestamp": 1793740023,
+        "size": 246928,
+        "crc": 2697228144
+      },
+      "type": "application"
+    },
+    "final": {
+      "manifestVersion": 2,
+      "generatedAt": 1793740471,
+      "generatedBy": "",
+      "debug": {},
+      "application": {
+        "timestamp": 1793740471,
+        "sdk_version": {
+          "major": 5,
+          "minor": 106
+        },
+        "name": "pebble-app.bin",
+        "size": 64148,
+        "crc": 3928435180
+      },
+      "resources": {
+        "name": "app_resources.pbpack",
+        "timestamp": 1793740471,
+        "size": 246928,
+        "crc": 2697228144
+      },
+      "type": "application"
+    },
+    "timestampPaths": [
+      "generatedAt",
+      "application.timestamp",
+      "resources.timestamp"
+    ],
+    "allOtherParsedFieldsEqual": true
+  },
+  "startupHeapSample": {
+    "nativeStateBytes": 15288,
+    "freeHeapBytes": 46436,
+    "scope": "One actual native emulator startup log; not peak heap/stack, phone runtime or battery measurement."
+  }
+}

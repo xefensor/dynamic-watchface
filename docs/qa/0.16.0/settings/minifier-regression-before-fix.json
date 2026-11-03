@@ -1,0 +1,9 @@
+{
+  "scope": "Observed failure before the dollar-free minifier identifier fix; source-only Clay harness had passed.",
+  "actualGeneratedHtmlSha256": "7b7184c363bbfb320ca47599b6c88db917ab53d987d7aa113ab2d620bf9fcc19",
+  "unsubstitutedCustomFnTokens": 4,
+  "observedBrowserError": "ReferenceError: $$CUSTOM_FN$$ is not defined",
+  "observedFunction": "transport",
+  "cause": "Clay inserts customFn.toString using a String.replace replacement string. A minified local ending in $ followed by bitwise & creates $&, expanding the matched template placeholder inside serialized JavaScript.",
+  "regression": "The final audit executes actual packaged PKJS, fires showConfiguration, rejects leftover placeholders and opens the unchanged serialized custom function in Chromium."
+}

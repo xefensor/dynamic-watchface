@@ -310,6 +310,38 @@ class ReleaseTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 release.validate_artifacts(self.root, config, commit, package, assets)
 
+    def test_minified_watchface_requires_exact_debug_transform_and_committed_source(self):
+        package = {'version': '1.0.1', 'pebble': {'uuid': 'watchface-id'}}
+        config = {'kind': 'watchface', 'app_uuid': 'watchface-id',
+                  'source_archive': {'path': 'source.zip', 'prefix': ''},
+                  'javascript_debug_archive': 'debug.zip'}
+        self.write('package.json', json.dumps(package).encode())
+        minifier = release.ROOT / 'scripts/minify-js.cjs'
+        self.write('scripts/minify-js.cjs', minifier.read_bytes())
+        commit = self.commit()
+        names = self.run_git('ls-tree', '-r', '--name-only', commit).splitlines()
+        sources = {name: release.committed(self.root, commit, name) for name in names if release.critical(name)}
+        # Tests use the repository's already-locked tool, not another download.
+        (self.root / 'node_modules').symlink_to(release.ROOT / 'node_modules', target_is_directory=True)
+        original = sources['src/js/index.js']
+        mapping = {'version': 3, 'file': 'pebble-js-app.js', 'names': [], 'mappings': 'AAAA',
+                   'sources': ['./src/js/index.js'], 'sourcesContent': [original.decode()]}
+        from release_js import prepare_js
+        runtime, debug = prepare_js(release.ROOT, '1.0.1', original, json.dumps(mapping).encode(), b'var navigation={};\n')
+        pbw = {'appinfo.json': json.dumps({'versionLabel': '1.0.1', 'uuid': 'watchface-id',
+                'watchapp': {'watchface': True}}).encode(), **runtime}
+        assets = {'source.zip': zip_bytes(sources), 'public.pbw': zip_bytes(pbw), 'debug.zip': zip_bytes(debug)}
+        release.validate_artifacts(self.root, config, commit, package, assets)
+        forged = dict(pbw); forged['pebble-js-app.js'] += b'var changed=true;'
+        with self.assertRaisesRegex(ValueError, 'exact minification'):
+            release.validate_artifacts(self.root, config, commit, package,
+                                       {**assets, 'public.pbw': zip_bytes(forged)})
+        mapping['sourcesContent'] = ['module.exports={unexpected:true};\n']
+        runtime, debug = prepare_js(release.ROOT, '1.0.1', original, json.dumps(mapping).encode(), b'var navigation={};\n')
+        with self.assertRaisesRegex(ValueError, 'JavaScript/source differs'):
+            release.validate_artifacts(self.root, config, commit, package,
+                {**assets, 'public.pbw': zip_bytes({**pbw, **runtime}), 'debug.zip': zip_bytes(debug)})
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -120,7 +120,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.0 and Activities 0.4.1 explicitly. Upstream
+- This repository pins Core 0.5.1 and Activities 0.4.2 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 - Version 0.9.0 is a published GitHub development prerelease. Keep its tested
   artifacts, tag and the earlier 0.8.0 download links/bytes available.
@@ -174,3 +174,21 @@ support Home/End and wrapping arrows. The Save bar reserves its measured height;
 short layout or visual viewports put it into document flow. Use visualViewport
 bounds when available to keep focused inputs/selects visible. Native and phone
 pixels are fresh 0.15 evidence; older evidence remains historical.
+
+Version 0.16.0 reuses one activity plan, keyed by record/session invalidation,
+language, connection, all candidate clock seconds and earliest datum/source
+expiry. Hidden clocks still invalidate fitting on a host redraw. The cache's
+drawn flag means an actual stable paint, not merely a prepared or sliding plan.
+Preserve fresh native confirmation and final Peek geometry synchronization.
+Core 0.5.1 validates complete legacy context but Dynamic retains only
+WfcPhoneStatus; never restore a parallel private context allocation. Activities
+0.4.2 provides the host entry without unused publisher code.
+Release PBWs contain minified JavaScript and no external source maps. SDK output
+stays original; the separate debug ZIP retains original SDK inputs, exact chained
+maps and minifier identity. Pin Terser 5.46.0, preserve serialized Clay function
+boundaries (compression/property mangling remain disabled), and independently
+recompute code/maps in artifact and committed-release checks.
+Generated minifier identifiers must exclude `$` in every position: Clay inserts
+customFn.toString through String.replace replacement-string semantics. Keep the
+actual stock-Clay generation regression and actual packaged browser execution;
+source-only page tests cannot establish serialized/minified compatibility.

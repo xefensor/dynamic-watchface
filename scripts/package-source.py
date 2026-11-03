@@ -27,7 +27,8 @@ with zipfile.ZipFile(target) as archive:
     for name in names: assert archive.read(name) == (root / name).read_bytes()
 pbw = root / 'dist' / ('Dynamic-' + pkg['version'] + '.pbw')
 checks = []
-for path in (pbw, target):
+debug = root / 'dist' / ('Dynamic-' + pkg['version'] + '-debug.zip')
+for path in (pbw, target, debug):
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     checks.append(digest + '  ' + path.name)
     print(path.name, path.stat().st_size, digest)

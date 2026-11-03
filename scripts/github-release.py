@@ -8,12 +8,15 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
+import sys
 import tarfile
 import tempfile
 import zipfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from release_js import audit_js
 VERSION = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+")
 SHA = re.compile(r"[a-f0-9]{40}")
 
@@ -81,7 +84,7 @@ def critical(path):
     return path.startswith(("src/", "resources/", "vendor/", "include/", "licenses/")) or path in {
         "package.json", "package-lock.json", "wscript", "LICENSE", "THIRD-PARTY-NOTICES.md",
         "THIRD_PARTY.md", "scripts/build.py", "scripts/build-js.js", "scripts/package-release.py",
-        "scripts/package-source.py", "scripts/release_licenses.py"}
+        "scripts/package-source.py", "scripts/release_licenses.py", "scripts/minify-js.cjs", "scripts/release_js.py"}
 
 
 def validate_source(root, commit, source, prefix=""):
@@ -174,7 +177,17 @@ def validate_artifacts(root, config, commit, package, assets):
                 "CHMU configuration is not the public source build")
     else:
         require(info.get("watchapp", {}).get("watchface") is True, "Not a watchface PBW")
-        mapping = json.loads(pbw["pebble-js-app.js.map"])
+        debug_config = config.get('javascript_debug_archive')
+        if debug_config:
+            debug_path = expand(debug_config, package)
+            require(debug_path in assets, 'JavaScript debug archive is not a selected release asset')
+            debug = zip_files(assets[debug_path])
+            require('pebble-js-app.js.map' not in pbw, 'Release PBW still contains a debug map')
+            audit_js(root, package['version'], {name: pbw[name] for name in ('pebble-js-app.js', 'plugin.js')}, debug)
+            mapping = json.loads(debug['sdk/pebble-js-app.js.map'])
+        else:
+            require('pebble-js-app.js.map' in pbw, 'Watchface lacks source mapping/debug provenance')
+            mapping = json.loads(pbw["pebble-js-app.js.map"])
         require(len(mapping["sources"]) == len(mapping["sourcesContent"]), "Invalid PBW source map")
         mapped = 0
         for path, text in zip(mapping["sources"], mapping["sourcesContent"]):

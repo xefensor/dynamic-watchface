@@ -1,0 +1,1418 @@
+{
+  "scope": "Actual native activity-region pixel comparison. Live wall clock/date excluded; no pixel edits. Nonidentical clock-dependent frames remain explicit.",
+  "result": "PASS",
+  "total": 88,
+  "exact": 88,
+  "static": 60,
+  "staticExact": 60,
+  "comparisons": [
+    {
+      "group": "native-previews",
+      "name": "idle-24-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/idle-24-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/idle-24-light.png",
+      "activityRegion": [
+        0,
+        116,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "music-24-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/music-24-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/music-24-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timer-24-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timer-24-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timer-24-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-summary-24-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-summary-24-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-summary-24-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-24-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-24-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-24-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timeline-24-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timeline-24-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timeline-24-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "idle-12-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/idle-12-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/idle-12-light.png",
+      "activityRegion": [
+        0,
+        116,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "music-12-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/music-12-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/music-12-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timer-12-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timer-12-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timer-12-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-summary-12-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-summary-12-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-summary-12-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-12-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-12-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-12-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timeline-12-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timeline-12-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timeline-12-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "idle-24-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/idle-24-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/idle-24-dark.png",
+      "activityRegion": [
+        0,
+        116,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "music-24-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/music-24-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/music-24-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timer-24-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timer-24-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timer-24-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-summary-24-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-summary-24-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-summary-24-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-24-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-24-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-24-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timeline-24-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timeline-24-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timeline-24-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "idle-12-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/idle-12-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/idle-12-dark.png",
+      "activityRegion": [
+        0,
+        116,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "music-12-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/music-12-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/music-12-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timer-12-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timer-12-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timer-12-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-summary-12-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-summary-12-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-summary-12-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "notification-12-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/notification-12-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/notification-12-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-previews",
+      "name": "timeline-12-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-previews/timeline-12-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-previews/timeline-12-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "timer-media-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/timer-media-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/timer-media-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-timer-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-timer-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-timer-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "workout-timer-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/workout-timer-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/workout-timer-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "navigation-media-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/navigation-media-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/navigation-media-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "recording-delivery-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/recording-delivery-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/recording-delivery-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "download-recording-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/download-recording-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/download-recording-light-tick.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "message-timer-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/message-timer-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/message-timer-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-alone-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-alone-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-alone-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "timer-alone-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/timer-alone-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/timer-alone-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-timer-media-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-timer-media-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-timer-media-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-paused-timer-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-paused-timer-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-paused-timer-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-long-clock-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-long-clock-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-long-clock-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-long-label-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-long-label-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-long-label-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-long-primary-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-long-primary-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-long-primary-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "long-timer-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/long-timer-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/long-timer-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "long-artist-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/long-artist-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/long-artist-light-tick.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "delivery-text-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/delivery-text-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/delivery-text-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "local-promotion-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/local-promotion-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/local-promotion-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "compact-detail-clock-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/compact-detail-clock-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/compact-detail-clock-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "secondary-long-clock-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/secondary-long-clock-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/secondary-long-clock-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "secondary-unfit-value-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/secondary-unfit-value-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/secondary-unfit-value-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "direction-long-value-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/direction-long-value-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/direction-long-value-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "direction-formatted-value-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/direction-formatted-value-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/direction-formatted-value-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-value-state-unfit-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-value-state-unfit-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-value-state-unfit-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "timer-media-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/timer-media-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/timer-media-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-timer-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-timer-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-timer-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "workout-timer-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/workout-timer-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/workout-timer-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "navigation-media-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/navigation-media-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/navigation-media-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "recording-delivery-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/recording-delivery-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/recording-delivery-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "download-recording-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/download-recording-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/download-recording-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "message-timer-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/message-timer-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/message-timer-dark-tick.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-alone-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-alone-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-alone-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "timer-alone-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/timer-alone-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/timer-alone-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-timer-media-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-timer-media-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-timer-media-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-paused-timer-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-paused-timer-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-paused-timer-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-long-clock-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-long-clock-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-long-clock-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-long-label-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-long-label-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-long-label-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-long-primary-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-long-primary-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-long-primary-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "long-timer-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/long-timer-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/long-timer-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "long-artist-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/long-artist-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/long-artist-dark-tick.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "delivery-text-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/delivery-text-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/delivery-text-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "local-promotion-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/local-promotion-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/local-promotion-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "compact-detail-clock-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/compact-detail-clock-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/compact-detail-clock-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "secondary-long-clock-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/secondary-long-clock-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/secondary-long-clock-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "secondary-unfit-value-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/secondary-unfit-value-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/secondary-unfit-value-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "direction-long-value-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/direction-long-value-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/direction-long-value-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "direction-formatted-value-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/direction-formatted-value-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/direction-formatted-value-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "paused-value-state-unfit-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/paused-value-state-unfit-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/paused-value-state-unfit-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-media-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-media-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-media-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "timer-notification-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/timer-notification-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/timer-notification-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-summary-media-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-summary-media-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-summary-media-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-app-only-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-app-only-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-app-only-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-no-icon-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-no-icon-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-no-icon-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-long-message-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-long-message-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-long-message-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-promotes-timer-light",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-promotes-timer-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-promotes-timer-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-notification-light",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-notification-light.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-notification-light.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-media-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-media-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-media-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "timer-notification-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/timer-notification-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/timer-notification-dark-tick.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-summary-media-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-summary-media-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-summary-media-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-app-only-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-app-only-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-app-only-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-no-icon-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-no-icon-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-no-icon-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-long-message-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-long-message-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-long-message-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "notification-promotes-timer-dark",
+      "clockDependent": true,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/notification-promotes-timer-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/notification-promotes-timer-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    },
+    {
+      "group": "native-summary",
+      "name": "media-notification-dark",
+      "clockDependent": false,
+      "baseline": "dynamic-watchface/docs/qa/0.15.0/native-summary/media-notification-dark.png",
+      "candidate": "recovery-validation/optimization-2026-11-03/dynamic-native/native-summary/media-notification-dark.png",
+      "activityRegion": [
+        0,
+        92,
+        200,
+        228
+      ],
+      "exact": true,
+      "changedPixels": 0,
+      "bbox": null
+    }
+  ]
+}

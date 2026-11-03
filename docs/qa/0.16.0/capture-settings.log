@@ -1,0 +1,47 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  99.1 KiB/s 0:00:00
+N/A%[=                                                    ] 157.0 KiB/s 0:00:00
+N/A%[=                                                    ] 176.8 KiB/s 0:00:00
+N/A%[=                                                    ] 179.5 KiB/s 0:00:00
+N/A%[=                                                    ] 144.8 KiB/s 0:00:00
+N/A%[=                                                    ] 150.1 KiB/s 0:00:00
+N/A%[=                                                    ] 160.4 KiB/s 0:00:00
+N/A%[=                                                    ] 163.5 KiB/s 0:00:00
+N/A%[=                                                    ] 165.9 KiB/s 0:00:00
+N/A%[=                                                    ] 170.6 KiB/s 0:00:00
+N/A%[=                                                    ] 172.0 KiB/s 0:00:01
+N/A%[=                                                    ] 175.4 KiB/s 0:00:01
+N/A%[=                                                    ] 176.7 KiB/s 0:00:01
+N/A%[=                                                    ] 177.5 KiB/s 0:00:01
+N/A%[=                                                    ] 178.2 KiB/s 0:00:01
+N/A%[=                                                    ] 178.7 KiB/s 0:00:01
+N/A%[=                                                    ] 180.6 KiB/s 0:00:01
+N/A%[=                                                    ] 181.3 KiB/s 0:00:01
+N/A%[=                                                    ] 181.9 KiB/s 0:00:01
+N/A%[=                                                    ] 157.6 KiB/s 0:00:01
+Captured idle-24-light
+Captured music-24-light
+Captured timer-24-light
+Captured notification-summary-24-light
+Captured notification-24-light
+Captured timeline-24-light
+Captured idle-12-light
+Captured music-12-light
+Captured timer-12-light
+Captured notification-summary-12-light
+Captured notification-12-light
+Captured timeline-12-light
+Captured idle-24-dark
+Captured music-24-dark
+Captured timer-24-dark
+Captured notification-summary-24-dark
+Captured notification-24-dark
+Captured timeline-24-dark
+Captured idle-12-dark
+Captured music-12-dark
+Captured timer-12-dark
+Captured notification-summary-12-dark
+Captured notification-12-dark
+Captured timeline-12-dark
+{"result": "PASS", "captures": 24, "legacyNotificationFlagsAbsent": true}
