@@ -120,7 +120,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.1 and Activities 0.4.3 explicitly. Upstream
+- This repository pins Core 0.5.1 and Activities 0.4.4 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 - Version 0.9.0 is a published GitHub development prerelease. Keep its tested
   artifacts, tag and the earlier 0.8.0 download links/bytes available.
@@ -208,3 +208,13 @@ queries without changing other FIFO traffic. Preserve the matching ticket when
 the shared queue copies a payload; it must never become a native message field.
 `tests/test_native_lifecycle.py` compiles actual production callbacks against a
 counted fake SDK; this is work/lifecycle evidence, not watch battery measurement.
+
+Version 0.16.2 preserves explicit paused media state through Activities 0.4.4.
+Primary media puts the localized state first in its existing cover/artist footer;
+secondary media keeps the same single static row. Do not infer completion or
+new labels from stopped/buffering/unknown playback. Playback-only updates keep
+the original media item token and must not replay incoming-track motion. An
+expired or absent artist cannot hide Paused or reintroduce stale context.
+The footer uses existing ActivityPlan scratch; no new retained source data or
+timer is needed. Keep standard activities with a media icon in their declared
+standard presentation, including independent clocks in either role.

@@ -1,5 +1,31 @@
 # Dynamic validation
 
+## 0.16.2 activity display bugs — 5 November 2026
+
+The [display fix review](ACTIVITY-DISPLAY-FIXES.md) records two independent
+reproductions: schema-4 paused media was projected as active, and the native
+primary renderer omitted Paused even when a correct paused frame arrived.
+Unmodified 0.16.1 native baseline evidence and the expected failing typed-media
+consumer test are retained separately from final evidence in `qa/0.16.2/`.
+
+127 JS tests, 13 strict C suites, the actual-callback lifecycle harness and 50
+Python checks pass. Final native evidence covers 22 media state/role/artist-expiry
+cases and 24 fresh previews. All five playback enums are checked in both roles;
+only explicit paused shows Paused. State changes keep the track token, title,
+artwork and immutable source timestamps and do not replay incoming motion.
+Expired artist text disappears while Paused remains. A standard activity with a
+media icon retains its declared clock presentation and independent data.
+
+SDK and final exact package/ELF/font/pin/resource/minification checks pass.
+Actual minified/serialized EN/CS browser checks and twelve colour comparisons
+pass. Final native executable/resources match the captures; manifest differences
+are only SDK generation timestamps. Static extent is 62,576 bytes with 2,959
+bytes of headroom under the legacy limit. Full packaged cross-suite evidence is
+recorded with its exact candidate hashes: four display/recovery cases, six
+privacy/role cases, 48 selected launches, 48 expired closures and 336 unselected
+closures. No real phone, physical watch, measured
+battery or end-to-end delivery claim is made. Earlier artifacts stay unchanged.
+
 ## 0.16.1 battery and activity reliability — 5 November 2026
 
 The [candidate review](BATTERY-RELIABILITY.md) records the implementation and

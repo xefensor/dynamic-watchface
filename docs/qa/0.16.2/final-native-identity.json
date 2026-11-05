@@ -1,0 +1,58 @@
+{
+  "result": "PASS",
+  "finalPbwSha256": "74faf7961f0b29a85e3eb3748e41a88058422da84e2dd997eccfae43d13c7f80",
+  "nativePayloadSha256": {
+    "appinfo.json": "990dd65b58c1f74763c756891e80f5e61281282a4c225a6de7806c44a2ea94db",
+    "emery/pebble-app.bin": "92176f08e52e7c2955212c42d41b829ea75fd2f0a5f03b6be5b56c9e7bb5562b",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "94d5a258fe770161e222aff1ea0d08fbbe4164b4b5ba76a98f29f73c384da211"
+  },
+  "nativeExecutableAndResourcesMatch24PreviewsAnd22MediaCaptures": true,
+  "manifestDifference": "Only generatedAt/application.timestamp/resources.timestamp after preview-bound finalSDK rebuild.",
+  "capturedManifest": {
+    "manifestVersion": 2,
+    "generatedAt": 1793848491,
+    "generatedBy": "",
+    "debug": {},
+    "application": {
+      "timestamp": 1793848489,
+      "sdk_version": {
+        "major": 5,
+        "minor": 106
+      },
+      "name": "pebble-app.bin",
+      "size": 64540,
+      "crc": 3778740251
+    },
+    "resources": {
+      "name": "app_resources.pbpack",
+      "timestamp": 1793848489,
+      "size": 246928,
+      "crc": 2697228144
+    },
+    "type": "application"
+  },
+  "finalManifest": {
+    "manifestVersion": 2,
+    "generatedAt": 1793848863,
+    "generatedBy": "",
+    "debug": {},
+    "application": {
+      "timestamp": 1793848862,
+      "sdk_version": {
+        "major": 5,
+        "minor": 106
+      },
+      "name": "pebble-app.bin",
+      "size": 64540,
+      "crc": 3778740251
+    },
+    "resources": {
+      "name": "app_resources.pbpack",
+      "timestamp": 1793848862,
+      "size": 246928,
+      "crc": 2697228144
+    },
+    "type": "application"
+  }
+}

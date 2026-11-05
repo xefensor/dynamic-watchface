@@ -1,0 +1,94 @@
+{
+  "result": "REPRODUCED",
+  "version": "0.16.1",
+  "candidatePbwSha256": "7f8410835545c198582bb97199a394c2256f7cbc81bee955a00b98cf77f151a7",
+  "nativePayloadSha256": {
+    "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "bc866ed43d99cc8c59da27546c97eb2cfedd001eda9a0f6001cfa809c12b8fe0"
+  },
+  "syntheticSourceData": true,
+  "phoneJavascriptExecuted": false,
+  "captures": [
+    {
+      "name": "active-primary",
+      "file": "active-primary.png",
+      "sha256": "28a7934f85b810f4988f88b060931375cca71da2601cb246b7954d6d5cf7166c",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "paused-primary",
+      "file": "paused-primary.png",
+      "sha256": "28a7934f85b810f4988f88b060931375cca71da2601cb246b7954d6d5cf7166c",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "active-secondary",
+      "file": "active-secondary.png",
+      "sha256": "ec5785ea1fe8ad99ade49883c739c4b405d92a2cfaf6315a2e94f84162ae4b7c",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "paused-secondary",
+      "file": "paused-secondary.png",
+      "sha256": "2ab16408c0f0778191f56e339bd1c31e30fcb59c9c1604950923ddd3d11e8aa1",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "paused-primary-no-artist",
+      "file": "paused-primary-no-artist.png",
+      "sha256": "1cb06cf27bac02648d09f4ae614db699a2363098606128935bf97faba22a136a",
+      "nativePixelsModified": false
+    }
+  ],
+  "nativeStatuses": [
+    {
+      "primary": 0,
+      "secondary": 255,
+      "session": 4,
+      "view": 1008,
+      "sequence": 1,
+      "reported": 1793848103,
+      "expiry": 1793851703
+    },
+    {
+      "primary": 0,
+      "secondary": 255,
+      "session": 4,
+      "view": 5000,
+      "sequence": 2,
+      "reported": 1793848104,
+      "expiry": 1793851703
+    },
+    {
+      "primary": 0,
+      "secondary": 1,
+      "session": 4,
+      "view": 6000,
+      "sequence": 3,
+      "reported": 1793848104,
+      "expiry": 1793851703
+    },
+    {
+      "primary": 0,
+      "secondary": 1,
+      "session": 4,
+      "view": 6001,
+      "sequence": 4,
+      "reported": 1793848105,
+      "expiry": 1793851703
+    },
+    {
+      "primary": 0,
+      "secondary": 255,
+      "session": 4,
+      "view": 7000,
+      "sequence": 5,
+      "reported": 1793848106,
+      "expiry": 1793851703
+    }
+  ],
+  "primaryActiveAndPausedPixelsEqual": true,
+  "secondaryPausedPixelsDiffer": true,
+  "scope": "Actual Emery same-track primary/secondary state rendering. All source data synthetic; no real phone or watch claim."
+}

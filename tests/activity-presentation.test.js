@@ -61,11 +61,42 @@ test('schema4 selects an independent compact detail and preserves both typed dat
   assert.equal(projected.compactItem,1);assert.equal(projected.main.type,'value');assert.equal(projected.support.type,'clock');
   assert.equal(projected.support.baseSeconds,45);assert.equal(projected.caption,'Evening run');
 });
+test('a standard activity with a media icon preserves its clock presentation in either role',()=>{
+  const input={...source({id:'standard-media-icon',type:'standard',icon:'media',name:'Recording',
+    headline:{type:'clock',mode:'countdown',deadline:N+45},detail:{type:'text',text:'Saving audio'}}),type:'standard'};
+  const timer=card({provider:T,kind:'timer',support:null});
+  for(const order of [[P,T],[T,P]]) {
+    const selected=presentation.select([timer,input],{order}),projected=selected.find(item=>item.id==='standard-media-icon');
+    assert.equal(projected.presentation,3);assert.equal(projected.identitySymbol,3);
+    assert.equal(projected.main.type,'clock');assert.equal(projected.main.baseSeconds,45);
+    assert.equal(projected.support.text,'Saving audio');
+  }
+});
 test('media visual token changes on an item replacement, not artwork, artist or lease',()=>{
   const raw=source({id:'player',type:'media',title:'Song',artist:'Artist',itemId:'one'}, {private:true});
   const a=presentation.project({...raw,type:'media'}),artist=presentation.project({...raw,type:'media',record:{...raw.record,artist:'New artist'},validUntil:N+900});
   assert.deepEqual(a.visualToken,artist.visualToken);
   const next=presentation.project({...raw,type:'media',record:{...raw.record,itemId:'two'}});assert.notDeepEqual(a.visualToken,next.visualToken);
+});
+test('typed media playback reaches native state in either role without changing track identity or clocks',()=>{
+  const timer=card({provider:T,kind:'timer',support:null}),tokens=[];
+  for(const playback of ['playing','paused','buffering','stopped','unknown']) {
+    const raw={...source({id:'player',type:'media',title:'Song',artist:'Artist',itemId:'same-track',playback,
+      openApp:{watchAppUuid:'1f03293d-47af-4f28-b960-f2b02a6dd757'}},{private:true}),type:'media'};
+    const before=json(raw),projected=presentation.project(raw),expected=playback==='paused'?'paused':'active';
+    assert.equal(projected.state,expected,playback);
+    assert.equal(projected.observedAt,N);assert.equal(projected.validUntil,N+600);
+    assert.deepEqual(projected.openApp,raw.record.openApp);
+    const bytes=library.summaryView.encode([projected],{session:7,sequence:1,sentAt:N});
+    assert.equal(bytes[24+2],playback==='paused'?2:1,'ACT3 state: '+playback);
+    for(const order of [[P,T],[T,P]]) {
+      const selected=presentation.select([timer,raw],{order});
+      assert.equal(selected.find(item=>item.id==='player').state,expected);
+      assert.equal(selected.find(item=>item.provider===T).main.anchorAt,N);
+    }
+    tokens.push(projected.visualToken);assert.deepEqual(raw,before);
+  }
+  for(const token of tokens)assert.deepEqual(token,tokens[0],'playback changes are not track replacements');
 });
 test('only verified built-in media and Timer receive host-known app destinations',()=>{
   const music=card({provider:'00000000-0000-0000-0001-000000000003',kind:'music',private:true,main:{type:'text',label:'Track',text:'Song'},support:null});

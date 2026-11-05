@@ -1,0 +1,26 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  21.8 KiB/s 0:00:00
+N/A%[=                                                    ]  91.8 KiB/s 0:00:00
+N/A%[=                                                    ] 123.3 KiB/s 0:00:00
+N/A%[=                                                    ] 141.6 KiB/s 0:00:00
+N/A%[=                                                    ] 153.5 KiB/s 0:00:00
+N/A%[=                                                    ] 162.3 KiB/s 0:00:00
+N/A%[=                                                    ] 136.1 KiB/s 0:00:00
+N/A%[=                                                    ] 142.2 KiB/s 0:00:00
+N/A%[=                                                    ] 147.8 KiB/s 0:00:00
+N/A%[=                                                    ] 151.2 KiB/s 0:00:00
+N/A%[=                                                    ] 160.5 KiB/s 0:00:00
+N/A%[=                                                    ] 162.7 KiB/s 0:00:00
+N/A%[=                                                    ] 168.0 KiB/s 0:00:01
+N/A%[=                                                    ] 169.1 KiB/s 0:00:01
+N/A%[=                                                    ] 172.9 KiB/s 0:00:01
+N/A%[=                                                    ] 174.0 KiB/s 0:00:01
+N/A%[=                                                    ] 175.2 KiB/s 0:00:01
+N/A%[=                                                    ] 176.2 KiB/s 0:00:01
+N/A%[=                                                    ] 177.0 KiB/s 0:00:01
+N/A%[=                                                    ] 178.1 KiB/s 0:00:01
+N/A%[=                                                    ] 179.4 KiB/s 0:00:01
+N/A%[=                                                    ] 180.4 KiB/s 0:00:01
+N/A%[=                                                    ] 156.8 KiB/s 0:00:01
+{"result": "PASS", "version": "0.16.2", "primaryActiveAndPausedPixelsEqual": false, "secondaryPausedPixelsDiffer": true}

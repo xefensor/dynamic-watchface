@@ -12,6 +12,22 @@ enum { ACTIVITY_SECONDARY_TOP=96, ACTIVITY_SECONDARY_LEFT=32,
 static inline const char *activity_identity(const PavCard *card) {
   return pav_caption(card);
 }
+/* Playback state belongs beside the media context, without replacing the song
+ * title or changing the existing cover/artist footer composition. Put it first
+ * so a long artist or an absent/expired artist cannot hide the paused state. */
+static inline const char *activity_media_footer(const PavCard *card,uint32_t now,
+    bool connected,const char *paused,char *buffer,size_t capacity) {
+  const char *artist=pav_datum_visible(card,&card->support,now,connected)?
+      pav_text(card,&card->support):"";
+  if(card->source_state!=PAV_PAUSED)return artist;
+  watch_layout_copy_utf8(paused,buffer,capacity);
+  const size_t length=strlen(buffer);
+  if(artist[0]&&length+4<capacity) {
+    watch_layout_copy_utf8(" · ",buffer+length,capacity-length);
+    watch_layout_copy_utf8(artist,buffer+strlen(buffer),capacity-strlen(buffer));
+  }
+  return buffer;
+}
 static inline const char *activity_role(const PavCard *card,const PavDatum *datum) {
   const char *label=pav_label(card,datum);
   return strcmp(label,activity_identity(card))?label:"";

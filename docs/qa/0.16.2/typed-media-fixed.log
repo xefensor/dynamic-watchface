@@ -1,0 +1,23 @@
+✔ projection preserves instance context, independent clocks and authoritative metadata (2.98934ms)
+✔ unknown activity has no guessed timer identity or app destination (3.524235ms)
+✔ declared identity symbols retain distinct generated glyphs including calls and messages (2.062021ms)
+✔ media is explicit and preserves artwork and artist without placeholder labels (0.431485ms)
+✔ Music can occupy either role and follows Dynamic preferences (0.752739ms)
+✔ dual-convention media retains exact provider controls and cannot bypass a provider hide (0.352978ms)
+✔ schema4 selects an independent compact detail and preserves both typed datums (0.471595ms)
+✔ media visual token changes on an item replacement, not artwork, artist or lease (0.464143ms)
+✔ typed media playback reaches native state in either role without changing track identity or clocks (2.31702ms)
+✔ only verified built-in media and Timer receive host-known app destinations (0.288533ms)
+✔ unconfirmed native Timer predictions keep original leases while unrelated uncertain sources yield (0.263802ms)
+✔ unprojectable earlier sources cannot starve a valid secondary (0.236543ms)
+✔ Notifications use ordinary summary fields and routes with and without message text (1.142774ms)
+✔ notification priority can be secondary, hidden or absent just like other activities (0.725026ms)
+✔ notification adapter duplicates and provider hiding cannot create extra visible content (0.189205ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34.246733

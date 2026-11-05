@@ -9,10 +9,10 @@ still and truncates at its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
-Local 0.16.1 validation is complete on the battery/reliability branch. It adds
-covered-view work suppression and bootstrap recovery, pins Activities 0.4.3,
-and preserves Core 0.5.1 and the existing layouts. The published downloads below
-remain unchanged. See [the candidate review](docs/BATTERY-RELIABILITY.md).
+The local 0.16.2 candidate fixes missing paused-media state and provider recovery,
+pins Activities 0.4.4, and preserves Core 0.5.1 and the existing layouts. Earlier
+local 0.16.1 battery/reliability artifacts and the published downloads below remain
+unchanged. See [the activity display fixes](docs/ACTIVITY-DISPLAY-FIXES.md).
 
 The current release is [**v0.16.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.16.0).
 It is ready for sideload testing. Pebble appstore submission remains held.
@@ -358,7 +358,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.16.1.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.16.2.pbw
 python3 scripts/package-source.py
 ```
 
@@ -370,7 +370,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.16.1.pbw
+pebble install --emulator emery dist/Dynamic-0.16.2.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -405,12 +405,12 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-The local 0.16.1 candidate pins Core 0.5.1 and Activities 0.4.3; published
+The local 0.16.2 candidate pins Core 0.5.1 and Activities 0.4.4; published
 0.16.0 retains its original Activities 0.4.2 pin. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
 `vendor/pebble-watchface-core-0.5.1.tgz` and
-`vendor/pebble-activities-0.4.3.tgz` are committed, version-pinned Pebble packages.
+`vendor/pebble-activities-0.4.4.tgz` are committed, version-pinned Pebble packages.
 `package-lock.json` records their integrity; `vendor/CORE.json` and
 `vendor/ACTIVITIES.json` record upstream/version/checksum provenance. `npm ci`
 installs these archives; users install only Dynamic's PBW, not a separate

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.16.2
+
+- Show localized Paused in primary media's existing artwork/artist footer,
+  matching the secondary row. Keep the track title, cover and active layout.
+- Keep Paused visible when artist metadata is missing or expires; never show
+  an expired artist or replay a track transition for playback-only updates.
+- Pin Activities 0.4.4: preserve schema-4 paused playback in native frames and
+  recover failed provider subscriptions without replacing healthy ones.
+- Verify all five media playback states in both roles, original identity/leases,
+  standard activities with media icons, native presentation and packaged routes.
+
 ## 0.16.1
 
 - Stop Dynamic's motion, activity ticks and presentation heartbeat while covered;

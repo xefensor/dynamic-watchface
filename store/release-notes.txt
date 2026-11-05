@@ -1,5 +1,5 @@
-Dynamic 0.16.1 keeps the existing layouts while reducing unnecessary work and improving activity recovery.
+Dynamic 0.16.2 fixes missing paused-media state in both the source projection and primary display.
 
-Covered views stop decorative motion and activity ticks, retain source expiry, and return directly to the latest view. Static activity content no longer repaints for minute-only clock updates. Obsolete phone bootstrap retries are cancelled before they can reset a new native session. Activities 0.4.3 preserves healthy subscriptions and strengthens expiry/reconnect delivery barriers.
+Paused appears in the existing artwork/artist footer and remains visible if artist metadata is absent or expires. Track title, artwork, active layouts and source leases stay unchanged. Playback-only changes do not replay track transitions. Activities 0.4.4 also repairs failed-source recovery while retaining healthy subscriptions.
 
-Validated with portable tests, actual Emery captures, exact packaged-source checks and the actual minified EN/CS settings pages. Physical-watch battery savings and real-phone delivery remain device checks. Public appstore submission remains held for the Pebble plugin preview.
+Validated with portable checks, actual Emery playback/role captures and the actual packaged minified settings pages. Physical watch and real phone delivery remain separate checks. Public appstore submission remains held for the Pebble plugin preview.

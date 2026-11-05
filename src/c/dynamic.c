@@ -934,8 +934,8 @@ static void prv_prepare_activity(const PavCard *card,uint32_t now,ActivityPlan *
   out->numeric=scalar&&reading_parts(out->main,&out->number)&&activity_simple_unit(out->number.unit)&&
       prv_activity_clock_measure(NULL,out->number.number,26).width>0;
   const bool vector=card->main.type==PAV_CLOCK;
-  const char *footer=media?(pav_datum_visible(card,&card->support,now,s_phone_connected)?
-      pav_text(card,&card->support):""):activity_identity(card);
+  const char *footer=media?activity_media_footer(card,now,s_phone_connected,
+      language->paused,out->support,sizeof(out->support)):activity_identity(card);
   activity_layout_build(out->main,out->role,out->support,footer,media,vector,scalar,
       out->alternate!=NULL,(card->flags&PAV_HAS_IMAGE)!=0,
       pav_meter_visible(card,now,s_phone_connected),

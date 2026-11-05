@@ -1,0 +1,20 @@
+bounded portable state: view 2708, layout 1344, navigation 24 bytes (host ABI)
+covered callbacks: zero decorative registrations/dirty requests; fresh return and static-minute/expiry/locale gates passed
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.060s
+
+OK
+activity-memory.c: PASS
+activity-navigation.c: PASS
+activity-plan-cache.c: PASS
+activity-presentation.c: PASS
+activity-view.c: PASS
+context-effects.c: PASS
+context-session.c: PASS
+font-assets.c: PASS
+font-raster.c: PASS
+music-layout.c: PASS
+native-reading.c: PASS
+native-settings.c: PASS
+watch-layout.c: PASS

@@ -1,0 +1,200 @@
+{
+  "result": "PASS",
+  "baseline": "27558b692586d3fe7ad7f2ff3b3ecb032e2980cf",
+  "assets": [
+    {
+      "file": "dist/Dynamic-0.1.0-source.zip",
+      "sha256": "5abd28e66ff00b654c24615aa6ed0ca217f41e0760853def535e5c9d5246411b"
+    },
+    {
+      "file": "dist/Dynamic-0.1.0.pbw",
+      "sha256": "e7719433e2cc2f5e4025888190078164eabbed82abf61dba927fab7f1439e91a"
+    },
+    {
+      "file": "dist/Dynamic-0.10.0-source.zip",
+      "sha256": "ccb7e8e3d315f5aa9fb132e5a8c8c9fabecc0ec1b60a49871f6a824b1b75e473"
+    },
+    {
+      "file": "dist/Dynamic-0.10.0.pbw",
+      "sha256": "2c0c182c57b6f5a855d3bbaa718e83fa8613258a7e1e9f97a984222dd496a506"
+    },
+    {
+      "file": "dist/Dynamic-0.11.0-source.zip",
+      "sha256": "0a17d778793063e809dd8aa9399bd00c394da4780b6ae9266f2e3a111364db85"
+    },
+    {
+      "file": "dist/Dynamic-0.11.0.pbw",
+      "sha256": "991dcc4e9e66ea0dae7d750b37cefa4b7453daaf8779a9a0f41b49618c96c21d"
+    },
+    {
+      "file": "dist/Dynamic-0.12.0-source.zip",
+      "sha256": "d78aa844e37d9461c6ce5ba6059aa334f4457920a0fede14df2f952121792897"
+    },
+    {
+      "file": "dist/Dynamic-0.12.0.pbw",
+      "sha256": "335c92d0badda1e39300309f325c98622c503270c2bf5734ec581ecb5b4290b8"
+    },
+    {
+      "file": "dist/Dynamic-0.12.1-source.zip",
+      "sha256": "b6892cfe503f0626ede914f5ad9aef4d5d999b76f631a65fda653711988429b2"
+    },
+    {
+      "file": "dist/Dynamic-0.12.1.pbw",
+      "sha256": "0ca9c3835552f9a7353d4b79556833fda31718bb9e166414e2b61c14511e0de7"
+    },
+    {
+      "file": "dist/Dynamic-0.13.0-source.zip",
+      "sha256": "f94c81a08016b7a7157f68238b3a6be46c7e59812b8e0fe416f7c121ca81405e"
+    },
+    {
+      "file": "dist/Dynamic-0.13.0.pbw",
+      "sha256": "87572673c7ed342139bb27eb5770bfa250ed2c4e36fdaca7e931f85949a11dec"
+    },
+    {
+      "file": "dist/Dynamic-0.14.0-source.zip",
+      "sha256": "977c4be8a9037ad17e8f00084f11e0e9c41dc87a458fd5fd4561328506c34877"
+    },
+    {
+      "file": "dist/Dynamic-0.14.0.pbw",
+      "sha256": "3e68889f805736e578e49e8fef34387f48279e3b293c3a8fddd6633458cc367a"
+    },
+    {
+      "file": "dist/Dynamic-0.15.0-source.zip",
+      "sha256": "473e1c096b534cba933b83b7209a18153fb9417fff95c07b39841295aa9fdd35"
+    },
+    {
+      "file": "dist/Dynamic-0.15.0.pbw",
+      "sha256": "6501f1ed06a8b0814910e5ed36ec560747585e7af3751ccc5d7904f050bfc195"
+    },
+    {
+      "file": "dist/Dynamic-0.16.0-debug.zip",
+      "sha256": "28352b473fd00ce73b300af4457628e396c8706547369936850c6a86e1af2df9"
+    },
+    {
+      "file": "dist/Dynamic-0.16.0-source.zip",
+      "sha256": "477331b7e6b90a697de43d9ae69dc9aaac9b3c3a1b57a35ddf7bd69eba9ebf87"
+    },
+    {
+      "file": "dist/Dynamic-0.16.0.pbw",
+      "sha256": "e1cdd0d1b5fe26fafacd72b20eea071338cf3158bd9630afb1a9dd82229be6ca"
+    },
+    {
+      "file": "dist/Dynamic-0.16.1-debug.zip",
+      "sha256": "8aa8befb76b3fc4f14bd4a35e53511e18b8546c893a78fd52c3812f9f72a9b95"
+    },
+    {
+      "file": "dist/Dynamic-0.16.1-source.zip",
+      "sha256": "bbc7849ed8b4d3e22c83b111980e43e2118a08c435caef74f2a4cc4afbae5a41"
+    },
+    {
+      "file": "dist/Dynamic-0.16.1.pbw",
+      "sha256": "7f8410835545c198582bb97199a394c2256f7cbc81bee955a00b98cf77f151a7"
+    },
+    {
+      "file": "dist/Dynamic-0.2.0-source.zip",
+      "sha256": "6b81cab38bc3f2775b235c5fb338deeb14eeec7e65cc54adb37e7e7dc537c589"
+    },
+    {
+      "file": "dist/Dynamic-0.2.0.pbw",
+      "sha256": "afb2c9ba0cfd2882668c5581e44571459b4f3d16d8acd4ede121c8708804daac"
+    },
+    {
+      "file": "dist/Dynamic-0.3.0-source.zip",
+      "sha256": "50754668d8a9d0eb65af936823cd513a2a84df9b58bd9b4edd978a03b58ff6a2"
+    },
+    {
+      "file": "dist/Dynamic-0.3.0.pbw",
+      "sha256": "04489566a5f843ee611ac83df905ba91435c6e8e175a2ea3cd9d18f74c1f9c11"
+    },
+    {
+      "file": "dist/Dynamic-0.3.1-source.zip",
+      "sha256": "91168bb9a261be7577f0096e9cd4772018121044a2a54f350cb0c2ec3d6956c5"
+    },
+    {
+      "file": "dist/Dynamic-0.3.1.pbw",
+      "sha256": "f98a6bc977e176d121d391ae98b5d6305d40aa0394dd90f33babc92585e3f781"
+    },
+    {
+      "file": "dist/Dynamic-0.3.2-source.zip",
+      "sha256": "03127e1a8a072e309d178fa27db912a91b09c4f3fd46c0270380e9400289f9dc"
+    },
+    {
+      "file": "dist/Dynamic-0.3.2.pbw",
+      "sha256": "41ba35aab4ccf6c49f8416ad6cf3206fe29cfc58e956261edcb14507075b4cb8"
+    },
+    {
+      "file": "dist/Dynamic-0.4.0-source.zip",
+      "sha256": "f13cd6fd49231712b33e2ffa4f1cbef73556d3201f473acabb329383b073f3bd"
+    },
+    {
+      "file": "dist/Dynamic-0.4.0.pbw",
+      "sha256": "b83feab5e9ceef828632a95dd9ac25d45e29a6b3bdb392a8e309fc3a5b581946"
+    },
+    {
+      "file": "dist/Dynamic-0.4.1-source.zip",
+      "sha256": "c5ba5a2d1b2f617d1e924092b9ad74d2d5eeed0fef3f301782c4cd2d1ade16bf"
+    },
+    {
+      "file": "dist/Dynamic-0.4.1.pbw",
+      "sha256": "12da079f1040cbef88460f2326f88b2690e6b651342b6af134205eed25082625"
+    },
+    {
+      "file": "dist/Dynamic-0.5.0-source.zip",
+      "sha256": "4b3868f1cf5fd619bfa52bc9c531249f20eefbc5a6818f5d6292cdd5c87267b0"
+    },
+    {
+      "file": "dist/Dynamic-0.5.0.pbw",
+      "sha256": "fb2841fdf0a18072e269e79e4381ee962b5a9d94ae2ec3d985e60cb117e827a7"
+    },
+    {
+      "file": "dist/Dynamic-0.6.0-source.zip",
+      "sha256": "1c06d4894e077247bb24f06cef4bf99a1fe7bc440ac6f23a6becd4f2def45a51"
+    },
+    {
+      "file": "dist/Dynamic-0.6.0.pbw",
+      "sha256": "26a62a9c6209ebb65fd5f129685204d267d19d6dc0490c6837a77598c3b271bf"
+    },
+    {
+      "file": "dist/Dynamic-0.6.1-source.zip",
+      "sha256": "4af47e437eed16cb4b35ad71d96a24044fc62250676d0736a7ec32bb3ad70f64"
+    },
+    {
+      "file": "dist/Dynamic-0.6.1.pbw",
+      "sha256": "1328f66c3dff4f80d8590b7adb2d2f4b0c509a196201bb8ffebf396ce1a0123f"
+    },
+    {
+      "file": "dist/Dynamic-0.7.0-source.zip",
+      "sha256": "53478d1bb9d18fae342b2699c7499f2b55b81382a99a4b3193807619b97e6f7b"
+    },
+    {
+      "file": "dist/Dynamic-0.7.0.pbw",
+      "sha256": "d43fd4bb269b0e614e56abb3b02b1e2bd224b9ef4c9822fb2321147f7a00cf47"
+    },
+    {
+      "file": "dist/Dynamic-0.8.0-source.zip",
+      "sha256": "121743c20e1431ec36ddf3b6d2e98a3ec5b8fabf11560c40dbddefd4d3335d16"
+    },
+    {
+      "file": "dist/Dynamic-0.8.0.pbw",
+      "sha256": "a56c198fca4e7b5fcec2e438ecc0d678f8f29cdcc818972332b4fb9fea6f4bd8"
+    },
+    {
+      "file": "dist/Dynamic-0.9.0-source.zip",
+      "sha256": "c989642033fa20682883747f34d47f8bfd879f5fc1c2ddf7417768962152e742"
+    },
+    {
+      "file": "dist/Dynamic-0.9.0.pbw",
+      "sha256": "1e097d404819fe4de5455955da1f6e9bc22cf5458389552223987a9142da79f5"
+    },
+    {
+      "file": "dist/Dynamic-0.9.1-source.zip",
+      "sha256": "391d6bcfb4e50060160db72146b8672e95952e265cc6fc2bfb6a8d86dd13aaf2"
+    },
+    {
+      "file": "dist/Dynamic-0.9.1.pbw",
+      "sha256": "b810b5818b9aa7d04295f75252c62538bb0611fdd900fbea0e6adec7aee5028d"
+    }
+  ],
+  "count": 48,
+  "scope": "Existing artifact bytes unchanged; current shared SHA256SUMS will name the new candidate."
+}

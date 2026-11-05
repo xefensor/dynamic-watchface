@@ -49,9 +49,9 @@ ACTIVITY_MODULES = {
     "adapters/legacy/context.js", "adapters/legacy/complication-data.js", "summary.js", "summary-view.js",
 }
 ACTIVITY_RELEASE = {
-    "version": "0.4.3",
-    "sourceCommit": "fbd3ce42771a299e9ce79a23338ac254387f9d1b",
-    "archiveSha256": "049b5db1a20ccfec123291f8807302a6ee65835c5ca171bc302b546ad4b72123",
+    "version": "0.4.4",
+    "sourceCommit": "df4f30f4a66419ce835959eeeec6de7999704fa0",
+    "archiveSha256": "dffec3e05041515fbf9385a641adf6b40aedda7e8460c0d11ecb4ed019cd5abe",
 }
 PROCESS_INFO_BYTES = 130
 PROCESS_INFO_SIZE_LIMIT = 0xffff
@@ -753,7 +753,7 @@ def audit_preview_identity(root, version, binary, resources):
 def audit(pbw, root=ROOT, sdk_font_header=None):
     package = json.loads((root / "package.json").read_text(encoding="utf-8"))
     settings = package["pebble"]
-    require(package["version"] == "0.16.1", "Review this auditor for a different release version")
+    require(package["version"] == "0.16.2", "Review this auditor for a different release version")
     require(settings["uuid"] == APP_UUID and settings["displayName"] == "Dynamic",
             "Dynamic's identity changed")
     require(settings["targetPlatforms"] == ["emery"] and

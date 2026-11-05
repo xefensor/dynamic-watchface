@@ -1,0 +1,28 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  22.0 KiB/s 0:00:00
+N/A%[=                                                    ]  92.6 KiB/s 0:00:00
+N/A%[=                                                    ] 124.1 KiB/s 0:00:00
+N/A%[=                                                    ] 141.1 KiB/s 0:00:00
+N/A%[=                                                    ] 150.5 KiB/s 0:00:00
+N/A%[=                                                    ] 136.9 KiB/s 0:00:00
+N/A%[=                                                    ] 146.7 KiB/s 0:00:00
+N/A%[=                                                    ] 151.3 KiB/s 0:00:00
+N/A%[=                                                    ] 155.3 KiB/s 0:00:00
+N/A%[=                                                    ] 158.4 KiB/s 0:00:00
+N/A%[=                                                    ] 161.0 KiB/s 0:00:00
+N/A%[=                                                    ] 163.4 KiB/s 0:00:00
+N/A%[=                                                    ] 165.6 KiB/s 0:00:01
+N/A%[=                                                    ] 167.7 KiB/s 0:00:01
+N/A%[=                                                    ] 169.6 KiB/s 0:00:01
+N/A%[=                                                    ] 171.2 KiB/s 0:00:01
+N/A%[=                                                    ] 172.7 KiB/s 0:00:01
+N/A%[=                                                    ] 174.2 KiB/s 0:00:01
+N/A%[=                                                    ] 175.5 KiB/s 0:00:01
+N/A%[=                                                    ] 176.7 KiB/s 0:00:01
+N/A%[=                                                    ] 177.5 KiB/s 0:00:01
+N/A%[=                                                    ] 178.8 KiB/s 0:00:01
+N/A%[=                                                    ] 179.7 KiB/s 0:00:01
+N/A%[=                                                    ] 180.5 KiB/s 0:00:01
+N/A%[=                                                    ] 157.1 KiB/s 0:00:01
+{"result": "REPRODUCED", "version": "0.16.1", "primaryActiveAndPausedPixelsEqual": true, "secondaryPausedPixelsDiffer": true}
