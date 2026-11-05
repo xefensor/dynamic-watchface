@@ -47,10 +47,32 @@ function clockFormat(settings) {
   if (previous === false || previous === 0) { return 24; }
   return 0;
 }
+var contextBootstrapGeneration=0,contextBootstrapPending=false,contextBootstrapTimer=null;
+var contextBootstrapTickets=[];
+function removeBootstrapTicket(ticket) {
+  var at=contextBootstrapTickets.indexOf(ticket);
+  if(at>=0)contextBootstrapTickets.splice(at,1);
+}
+function cancelContextBootstrap() {
+  ++contextBootstrapGeneration;contextBootstrapPending=false;
+  if(contextBootstrapTimer!==null)clearTimeout(contextBootstrapTimer);
+  contextBootstrapTimer=null;
+}
 var send = createMessageQueue({
   keys: MessageKeys,
   snapshotChannels:[{name:'activities',dataKey:'ACTIVITY_DATA',sidecarKeys:['REQUEST_ACTIVITIES']}],
-  send: function(payload, success, failure) { Pebble.sendAppMessage(payload, success, failure); },
+  send: function(payload, success, failure) {
+    // The shared queue copies payloads. Keep an ordered, content-free ticket
+    // for each bootstrap so a request queued before the native baseline can
+    // be discarded at dispatch without changing settings/snapshot FIFO order.
+    if(Object.keys(payload).length===1&&messageValue(payload,'REQUEST_CONTEXT')===1) {
+      var ticket=contextBootstrapTickets.shift();
+      if(!ticket||ticket.generation!==contextBootstrapGeneration||!contextBootstrapPending) {
+        failure({code:'SUPERSEDED'});return;
+      }
+    }
+    Pebble.sendAppMessage(payload, success, failure);
+  },
   later: function(callback, delay) { return setTimeout(callback, delay); },
   cancelLater: function(timer) { clearTimeout(timer); }
 });
@@ -175,16 +197,25 @@ var activities = activityLibrary.createActivities({
     disabledProviders:activityPreferences().hidden.filter(function(id){return id!=='builtin:music'&&id!=='builtin:notifications';})};}
 });
 
-function requestContextSession(attempt) {
+function requestContextSession(attempt,generation) {
+  if(generation!==contextBootstrapGeneration||!contextBootstrapPending)return;
   var query = {}; query[MessageKeys.REQUEST_CONTEXT] = 1;
-  send(query, null, function() {
-    if (attempt < 3) { setTimeout(function() { requestContextSession(attempt + 1); }, attempt * 1000); }
+  var ticket={generation:generation};contextBootstrapTickets.push(ticket);
+  send(query, function(){removeBootstrapTicket(ticket);}, function() {
+    removeBootstrapTicket(ticket);
+    if(generation!==contextBootstrapGeneration||!contextBootstrapPending)return;
+    if(attempt<3)contextBootstrapTimer=setTimeout(function() {
+      contextBootstrapTimer=null;requestContextSession(attempt+1,generation);
+    },attempt*1000);
+    else contextBootstrapPending=false;
   });
 }
 Pebble.addEventListener('ready', function() {
   invalidateSettings();
   resyncPresentation();
-  complications.refresh(); context.refresh(true); activities.refresh(); requestContextSession(1);
+  complications.refresh(); context.refresh(true); activities.refresh();
+  cancelContextBootstrap();contextBootstrapPending=true;
+  requestContextSession(1,contextBootstrapGeneration);
 });
 var SYSTEM_CLOCK_KEY = 'dynamic-system-clock-v1';
 function systemClockFormat() {
@@ -206,6 +237,7 @@ Pebble.addEventListener('appmessage', function(event) {
   var requested = messageValue(event.payload || {}, 'REQUEST_CONTEXT');
   var token = Number(requested);
   if (Number.isInteger(token) && token >= 2 && token <= 2147483647) {
+    cancelContextBootstrap();
     context.connectionChanged(true, token);
     // A reset or another watch can reuse the same counter. Every marked
     // baseline request may need recovery; ordinary refreshes use token 1.

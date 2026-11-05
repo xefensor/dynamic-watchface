@@ -1,1 +1,5 @@
-Dynamic 0.16.0 reduces rendering work, activity memory and download size while preserving the approved layouts, local countdowns, bounded transitions and privacy settings. Developer maps are a separate download. This candidate remains held from public appstore submission during plugin preview.
+Dynamic 0.16.1 keeps the existing layouts while reducing unnecessary work and improving activity recovery.
+
+Covered views stop decorative motion and activity ticks, retain source expiry, and return directly to the latest view. Static activity content no longer repaints for minute-only clock updates. Obsolete phone bootstrap retries are cancelled before they can reset a new native session. Activities 0.4.3 preserves healthy subscriptions and strengthens expiry/reconnect delivery barriers.
+
+Validated with portable tests, actual Emery captures, exact packaged-source checks and the actual minified EN/CS settings pages. Physical-watch battery savings and real-phone delivery remain device checks. Public appstore submission remains held for the Pebble plugin preview.

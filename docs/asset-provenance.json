@@ -1,14 +1,14 @@
 {
-  "version": "0.16.0",
+  "version": "0.16.1",
   "pbw": {
-    "file": "Dynamic-0.16.0.pbw",
-    "sha256": "e1cdd0d1b5fe26fafacd72b20eea071338cf3158bd9630afb1a9dd82229be6ca"
+    "file": "Dynamic-0.16.1.pbw",
+    "sha256": "7f8410835545c198582bb97199a394c2256f7cbc81bee955a00b98cf77f151a7"
   },
   "native_payload_sha256": {
-    "appinfo.json": "4ff03601d37629d5c2782bbe3999a0a2c08100dfbe32dbe44c98d05cc83214b9",
-    "emery/pebble-app.bin": "f68822b312a586b9185cd6179fe8fcc9163c0a23e6b490749c4ef5cade04cfdb",
+    "appinfo.json": "06c48a9a605952c18cd257c81ebdb837c03eeef3bfbb4f91a7926918cdd1fb3a",
+    "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
     "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
-    "emery/manifest.json": "5c61d1d1f9156ed733b7db2ab2c75910a335d1d5a9e7b95902719e63733fa4b7"
+    "emery/manifest.json": "bc866ed43d99cc8c59da27546c97eb2cfedd001eda9a0f6001cfa809c12b8fe0"
   },
   "core": {
     "package": "pebble-watchface-core",
@@ -25,94 +25,122 @@
   },
   "activities": {
     "package": "pebble-activities",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "repository": "https://github.com/xefensor/pebble-activities",
-    "artifact": "pebble-activities-0.4.2.tgz",
-    "sha256": "a182681ad59f258bb9a7f865839d59ed8cf76a8a54cdd03264b52a7577ad1ec3",
-    "integrity": "sha512-gKk5k6lsEAY2mafyZI3/bMSlRogGjczkBE6BcDGmpQAWrpBq5jmAy3EyU036mYSSymUnPJzDafFqGYx7yJYRpQ==",
+    "artifact": "pebble-activities-0.4.3.tgz",
+    "sha256": "049b5db1a20ccfec123291f8807302a6ee65835c5ca171bc302b546ad4b72123",
+    "integrity": "sha512-zUj0DoPK6EeT7Xrd0GcbkbXgRF8ErDlE7UBNEIbcNmaluItmpYrRXJ0qiNdUcKo+UzZYS/fGSOwDVrRixdJeVA==",
     "sdk": "4.33.1",
     "platforms": [
       "emery"
     ],
-    "source_commit": "45e848d7ef84044b465fddc43eeab310bb2c2594"
+    "source_commit": "fbd3ce42771a299e9ce79a23338ac254387f9d1b"
   },
   "images": [
     {
       "file": "docs/images/normal.png",
-      "source": "docs/qa/0.16.0/native-previews/idle-24-light.png",
-      "sha256": "ad63481a56c91fd0bb030e8e08a9b414cbd127032e96d6c551b3eba747a4d8cf",
+      "source": "docs/qa/0.16.1/native-previews/idle-24-light.png",
+      "sha256": "3b91d7b157549aed2f03a8cb45dc3dbe6da3a11b999fa953b6522de4f8b9714f",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/music.png",
-      "source": "docs/qa/0.16.0/native-previews/music-24-light.png",
-      "sha256": "b9d915c77b694c01d36f6d253537c0b66640c651313ddfcc32bd386be3187088",
+      "source": "docs/qa/0.16.1/native-previews/music-24-light.png",
+      "sha256": "8b0a5e053b6118cc62236051b433edae7475dc056c55f47efe7b0748f4258fec",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/notification-summary.png",
-      "source": "docs/qa/0.16.0/native-previews/notification-summary-24-light.png",
-      "sha256": "d3bcee2aa7d789ce217d6e39c075b5920597e5824c464c6a0cfa3a818e00803d",
+      "source": "docs/qa/0.16.1/native-previews/notification-summary-24-light.png",
+      "sha256": "8f6112f54cd3857dad4858d2a274e8b248b818e48c0b5284ddd2eb15f9adc7f6",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/notification.png",
-      "source": "docs/qa/0.16.0/native-previews/notification-24-light.png",
-      "sha256": "6139566d9ff8d596ccbec12eecf623d8c7f577c4215986b23d7b043fd8df263c",
+      "source": "docs/qa/0.16.1/native-previews/notification-24-light.png",
+      "sha256": "b9c57276434f4eb8437d6ef901c03ff1cab82d1cbf041753221e7f425ff09fdd",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/dark.png",
-      "source": "docs/qa/0.16.0/native-previews/idle-24-dark.png",
-      "sha256": "5e6f95fabcd5b9af36dc2560a02bd8f4c94c6bbd2c791ae5db53e5ebf7b29765",
+      "source": "docs/qa/0.16.1/native-previews/idle-24-dark.png",
+      "sha256": "16711cca8a7e95807e7434b2043219033ba096b48b8d624faff19c39e3e12316",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/activity-timer.png",
-      "source": "docs/qa/0.16.0/native-summary/timer-media-light.png",
-      "sha256": "d8ecb2021c9b948c4de7c84bf7f13b9b14483c74928c9c1262eb2ffd801eb1ab",
+      "source": "docs/qa/0.16.1/native-previews/timer-24-light.png",
+      "sha256": "46fea0b9bab46f73da396bd0f740c8aab708d81793183b4fc485e965d1858436",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/activity-music.png",
-      "source": "docs/qa/0.16.0/native-summary/media-timer-light.png",
-      "sha256": "5ed93207a44e3f39bc470f41092b2ece6f087b97dc45ed7e6ec3b9b080f45438",
+      "source": "docs/qa/0.16.1/native-previews/music-24-light.png",
+      "sha256": "8b0a5e053b6118cc62236051b433edae7475dc056c55f47efe7b0748f4258fec",
       "pixels": [
         200,
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/activity-workout.png",
@@ -123,46 +151,53 @@
         228
       ],
       "native_pixels_modified": false,
-      "kind": "native Emery screenshot"
+      "kind": "native Emery screenshot",
+      "historical_evidence": "Retained0.16.0 native frame; activity coordinates/layout unchanged; not claimed as a fresh0.16.1 capture."
     },
     {
       "file": "docs/images/settings-light.png",
-      "source": "docs/qa/0.16.0/settings/appearance-light.png",
-      "sha256": "cd20c582276205817d7b6e69afc4576df8082c0c5f165ea4bb5b800150d57e3d",
+      "source": "docs/qa/0.16.1/settings/packaged-default-en.png",
+      "sha256": "bea7f8dd0d8877eeea824d5c35cf6d2e0d41a57b9907486c59f49169c376c4c1",
       "pixels": [
         360,
         800
       ],
       "native_pixels_modified": false,
-      "kind": "actual Clay browser"
+      "kind": "actual Clay browser",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     },
     {
       "file": "docs/images/settings-dark.png",
-      "source": "docs/qa/0.16.0/settings/appearance-dark.png",
-      "sha256": "b0e215e275a5cbdb7f59a1728502b22b4d8d837675041a183409001699d8cbbd",
+      "source": "docs/qa/0.16.1/settings/packaged-dark-en.png",
+      "sha256": "a7b1d3af63c318f07236c01bf983ba97d224029ae34f6b661b7bca4253871d13",
       "pixels": [
         360,
         800
       ],
       "native_pixels_modified": false,
-      "kind": "actual Clay browser"
+      "kind": "actual Clay browser",
+      "renderer_native_payload_sha256": {
+        "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+        "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb"
+      }
     }
   ],
   "native_qa": [
-    "docs/qa/0.16.0/native-previews/previews.json",
-    "docs/qa/0.16.0/native-previews/presentation-statuses.json",
-    "docs/qa/0.16.0/native-summary/summary.json",
-    "docs/qa/0.16.0/bundle-audit.json",
-    "docs/qa/0.16.0/final-native-identity.json",
-    "docs/qa/0.16.0/pixel-comparison.json",
-    "docs/qa/0.16.0/settings/validation.json",
-    "docs/qa/0.16.0/packaged-handoff.json"
+    "docs/qa/0.16.1/native-previews/previews.json",
+    "docs/qa/0.16.1/native-lifecycle/lifecycle.json",
+    "docs/qa/0.16.1/bundle-audit.json",
+    "docs/qa/0.16.1/final-native-identity.json",
+    "docs/qa/0.16.1/settings/validation.json",
+    "docs/qa/0.16.1/packaged-handoff.json"
   ],
   "fixture_data": true,
-  "scope": "Fresh0.16 evidence:121JS/13C/49Python;64actual Emery compositions,24presets,24local-clock followups;expiry/promotion,heartbeat,boundedmotion;88activityregion comparisons match0.15 with explicitclockalternatives.24browsercaptures incl actualoptimized/serialized EN/CSClay;burstworkand12customcolourRGBAcomparisons. Finaloptimizedcross-app6privacy/rolecases,48selectedlaunches,48expiredclosures,336unselectedclosures. Finalnativecode/resources matchcaptures;manifestgenerationtimestamps separatelyverified. SyntheticSDK/source/native fixtures; no realphone,physicalwatch,battery,peakstack/heap or coldstartmeasurement.",
+  "scope": "Fresh0.16.1:125JS/13portableC/actualcallbackharness/50Python;24nativepresets+9focusedclock/heartbeat/OScover/expiry/promotion captures. Actual optimized/serialized EN/CSClay browser suite including12customcolor comparisons. Final packaged cross-suite6privacy/role,48selected,48expired,336unselected plus provider-hide/reconnect invalidation. Native executable/resources match captured bytes; SDK manifest timestamps separatelyverified. Synthetic SDK/source data; no realphone/physicalwatch/battery/peakheap claim.",
   "historical_images": "Other older composites and unused screenshots retain their original validation scope; published archives and tags are unchanged.",
   "debug": {
-    "file": "Dynamic-0.16.0-debug.zip",
-    "sha256": "28352b473fd00ce73b300af4457628e396c8706547369936850c6a86e1af2df9"
+    "file": "Dynamic-0.16.1-debug.zip",
+    "sha256": "8aa8befb76b3fc4f14bd4a35e53511e18b8546c893a78fd52c3812f9f72a9b95"
   }
 }

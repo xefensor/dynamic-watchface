@@ -1,0 +1,123 @@
+{
+  "result": "PASS",
+  "version": "0.16.1",
+  "candidatePbwSha256": "2267fc6421a006725ff7c9a19fc875cda5cff8f7f0adba7bf1c44361c50dfc25",
+  "nativePayloadSha256": {
+    "emery/pebble-app.bin": "07252312c0295b912885323860d2f39ba8fa7fe22fe1d9475d77eb95af34c5cd",
+    "emery/app_resources.pbpack": "2bf4e3cbeaae59e48d65993ece095cc59364cc91528485a588c8fdd254bb8fbb",
+    "emery/manifest.json": "9252abda953f75238325cfafc815b3ed9f73de520d69c36822277481ae1a674d"
+  },
+  "syntheticSourceData": true,
+  "phoneJavascriptExecuted": false,
+  "captures": [
+    {
+      "name": "independent-clock-before",
+      "file": "independent-clock-before.png",
+      "sha256": "42b541898c490e44ce9a78f1fa9a30752d0c112288276da60e53c3bc1e33c77e",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "independent-clock-after",
+      "file": "independent-clock-after.png",
+      "sha256": "a5d10d3ad17189e826748518aec10c4ee267c8f997483ec8a6bdcbab2ba1f6d4",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "static-before-heartbeat",
+      "file": "static-before-heartbeat.png",
+      "sha256": "64ebc9201c010afa3a08c65f59141a7c73ec6d1a77fd9797d56ab318c8907e56",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "static-after-heartbeat",
+      "file": "static-after-heartbeat.png",
+      "sha256": "64ebc9201c010afa3a08c65f59141a7c73ec6d1a77fd9797d56ab318c8907e56",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "actual-os-call-cover",
+      "file": "actual-os-call-cover.png",
+      "sha256": "1de084ec0e50f43d4db2f73dacbd9bf47dad48fbf730e1c1e877dec3db46ec87",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "covered-after-source-expiry",
+      "file": "covered-after-source-expiry.png",
+      "sha256": "5dd7842d0ea663455187546de7dfd6215f479ee10ba73f5703acef72fd38005b",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "actual-os-call-summary",
+      "file": "actual-os-call-summary.png",
+      "sha256": "9884086168a2be369a2e275e7d0db562fd0918daee495272fe42efdfe7018d9a",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "returned-promoted-media",
+      "file": "returned-promoted-media.png",
+      "sha256": "64ebc9201c010afa3a08c65f59141a7c73ec6d1a77fd9797d56ab318c8907e56",
+      "nativePixelsModified": false
+    },
+    {
+      "name": "returned-still-media",
+      "file": "returned-still-media.png",
+      "sha256": "64ebc9201c010afa3a08c65f59141a7c73ec6d1a77fd9797d56ab318c8907e56",
+      "nativePixelsModified": false
+    }
+  ],
+  "nativeStatuses": [
+    {
+      "primary": 0,
+      "secondary": 1,
+      "session": 6,
+      "view": 1001,
+      "sequence": 1,
+      "reported": 1793845273,
+      "expiry": 1793848873
+    },
+    {
+      "primary": 0,
+      "secondary": 255,
+      "session": 6,
+      "view": 2008,
+      "sequence": 2,
+      "reported": 1793845275,
+      "expiry": 1793848875
+    },
+    {
+      "primary": 0,
+      "secondary": 255,
+      "session": 6,
+      "view": 2008,
+      "sequence": 3,
+      "reported": 1793845305,
+      "expiry": 1793848875
+    },
+    {
+      "primary": 255,
+      "secondary": 255,
+      "session": 6,
+      "view": 5000,
+      "sequence": 4,
+      "reported": 1793845306,
+      "expiry": 0
+    },
+    {
+      "primary": 1,
+      "secondary": 255,
+      "session": 6,
+      "view": 6000,
+      "sequence": 5,
+      "reported": 1793845313,
+      "expiry": 1793848906
+    }
+  ],
+  "proofs": {
+    "localClockAdvancedWithoutResend": true,
+    "staticHeartbeatWithoutPaintChange": true,
+    "coveredPresentationAbsent": true,
+    "coveredExpiryPromotedOriginalIndex": 1,
+    "returnStillWithoutMotionReplay": true
+  },
+  "scope": "Actual isolated Emery source/cover/expiry/clock pixels. Callback work counts are separately proven by the fake-SDK test; no physical battery measurement."
+}

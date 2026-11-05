@@ -120,7 +120,7 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
   versioned in Git; buildable embedded previews and product screenshots stay in
   the source ZIP. Committed source recipes are allowed; archive path
   and runtime/build-input checks still apply.
-- This repository pins Core 0.5.1 and Activities 0.4.2 explicitly. Upstream
+- This repository pins Core 0.5.1 and Activities 0.4.3 explicitly. Upstream
   releases do not automatically repin or rebuild the watchface.
 - Version 0.9.0 is a published GitHub development prerelease. Keep its tested
   artifacts, tag and the earlier 0.8.0 download links/bytes available.
@@ -192,3 +192,19 @@ Generated minifier identifiers must exclude `$` in every position: Clay inserts
 customFn.toString through String.replace replacement-string semantics. Keep the
 actual stock-Clay generation regression and actual packaged browser execution;
 source-only page tests cannot establish serialized/minified compatibility.
+
+Version 0.16.1 pins Activities 0.4.3 and keeps Core 0.5.1. Covered native views
+still validate and expire source data, but do not schedule decorative motion,
+activity ticks, presentation heartbeats or host paint invalidations. The OS may
+still request a background draw. Such a draw cannot confirm or withdraw the
+recent navigation hint; its original source and 45-second bounds remain.
+Focus return reconciles identity/expiry/clock/palette before one fresh visible
+paint without replaying motion. Static minute updates dirty the background only
+unless the activity plan or geometry is stale. A failed motion-timer allocation
+settles the final composition immediately.
+Bootstrap generations own their retry timer and content-free transport tickets.
+Native baseline receipt invalidates active retries and already queued bootstrap
+queries without changing other FIFO traffic. Preserve the matching ticket when
+the shared queue copies a payload; it must never become a native message field.
+`tests/test_native_lifecycle.py` compiles actual production callbacks against a
+counted fake SDK; this is work/lifecycle evidence, not watch battery measurement.

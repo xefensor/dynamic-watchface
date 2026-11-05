@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.16.1
+
+- Stop Dynamic's motion, activity ticks and presentation heartbeat while covered;
+  retain expiry checks and restore the latest clock, palette and activity without
+  replaying a transition when the face returns.
+- Keep static activity pixels out of minute-only wall-clock invalidations while
+  preserving running clocks, locale changes, expiry and promotion. Settle an
+  incoming layout immediately if its decorative timer cannot be allocated.
+- Cancel obsolete phone bootstrap retries and discard their queued requests
+  after a native baseline arrives, preserving other messages' FIFO order.
+- Pin Activities 0.4.3 for subscription reuse, source/expiry invalidation and
+  reconnect delivery barriers. Preserve Core 0.5.1, layouts and privacy defaults.
+
 ## 0.16.0
 
 - Reuse one activity plan across scheduling, drawing and bounded motion. Recheck

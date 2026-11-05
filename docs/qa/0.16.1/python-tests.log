@@ -1,0 +1,6 @@
+...................covered callbacks: zero decorative registrations/dirty requests; fresh return and static-minute/expiry/locale gates passed
+...............................
+----------------------------------------------------------------------
+Ran 50 tests in 2.141s
+
+OK

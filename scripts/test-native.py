@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run portable layout/protocol tests using the pinned core package headers."""
 from pathlib import Path
-import os, subprocess, tempfile, zipfile
+import os, subprocess, sys, tempfile, zipfile
 root = Path(__file__).resolve().parents[1]
 core = root / 'node_modules/pebble-watchface-core'
 activities = root / 'node_modules/pebble-activities'
@@ -31,3 +31,4 @@ with tempfile.TemporaryDirectory(prefix='watchface-tests-') as tmp:
         subprocess.run(command, check=True)
         subprocess.run([str(output)], check=True, cwd=root)
         print(source.name + ': PASS')
+subprocess.run([sys.executable, str(root / 'tests/test_native_lifecycle.py')], check=True)

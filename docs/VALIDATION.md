@@ -1,5 +1,27 @@
 # Dynamic validation
 
+## 0.16.1 battery and activity reliability — 5 November 2026
+
+The [candidate review](BATTERY-RELIABILITY.md) records the implementation and
+limits. 125 JS tests, 13 strict portable C suites, the actual-callback fake-SDK
+lifecycle harness and 50 Python checks pass. Fresh evidence under `qa/0.16.1/`
+contains 24 native preview states and nine focused clock/heartbeat/OS-cover/
+expiry/promotion captures. The covered callback regression counts zero host
+dirty requests and zero decorative timers across twenty incoming updates.
+Static activity minute updates skip painting; locale, clocks, datum expiry and
+promotion still invalidate. Native background paints remain available to the OS.
+
+The final PBW passes exact source/ELF/font/resource/pin/minification audits.
+Native executable/resources match the captures; SDK manifest differences are
+only generation timestamps. Actual optimized/serialized EN/CS Clay browser
+checks and twelve custom-colour pixel comparisons pass. Final packaged cross-app
+checks cover six privacy/role cases, 48 selected launches, 48 expired closures,
+336 unselected closures, provider withdrawal and reconnect restoration.
+
+This is a local unpublished candidate. Published 0.16.0 artifacts/tags remain
+unchanged. Core stays 0.5.1; Activities is pinned to 0.4.3. No physical watch,
+real-phone delivery, measured battery saving or peak heap/stack claim is made.
+
 ## 0.16.0 optimization pass — 3 November 2026
 
 The [optimization review](OPTIMIZATION-REVIEW.md) records implementation, measured

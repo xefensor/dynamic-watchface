@@ -121,8 +121,17 @@ static MusicTextMetrics prv_music_measure(void *context,const char *text,int poi
 static void prv_activity_reset(void);
 static void prv_apply_colors(void);
 static void prv_activity_clock_schedule(void);
+static void prv_cancel_motion(void);
+static void prv_schedule_motion(void);
 static void prv_send_presentation(void);
 static void prv_note_presentation(const PavCard *card,bool stable);
+
+// Keep source validation/expiry running under system windows, but defer our
+// own paint invalidations until the face is visible again. The OS can still
+// request a background paint; the draw callbacks remain available for that.
+static void prv_dirty(Layer *layer) {
+  if(s_app_focused&&layer)layer_mark_dirty(layer);
+}
 
 
 // Fixed-width UTF-8 prefixes avoid one relocated pointer per weekday while
@@ -446,6 +455,7 @@ static void prv_private_clear(void) {
 }
 static void prv_motion_frame(void *context) {
   (void)context;s_motion_timer=NULL;
+  if(!s_app_focused){prv_cancel_motion();s_pose=s_pose_target;return;}
   const uint32_t now=prv_millis();
   if(s_layout_active) {
     const float t=watch_clamp((now-s_layout_started)/(float)LAYOUT_DURATION_MS);
@@ -456,18 +466,28 @@ static void prv_motion_frame(void *context) {
     s_slide_amount=watch_smooth((now-s_slide_started)/280.0f);
     if(s_slide_amount>=1)s_slide_active=false;
   }
-  if(s_slide_active&&!s_layout_active&&s_context_layer)layer_mark_dirty(s_context_layer);
+  if(s_slide_active&&!s_layout_active&&s_context_layer)prv_dirty(s_context_layer);
   else prv_sync_layers();
-  if(s_layout_active || s_slide_active) s_motion_timer=app_timer_register(MOTION_FRAME_MS,prv_motion_frame,NULL);
+  if(s_layout_active || s_slide_active) prv_schedule_motion();
   else prv_activity_clock_schedule();
 }
 static void prv_cancel_motion(void) {
   if(s_motion_timer) { app_timer_cancel(s_motion_timer);s_motion_timer=NULL; }
   s_layout_active=false;s_slide_active=false;s_slide_amount=1;
 }
+static void prv_schedule_motion(void) {
+  if((!s_layout_active&&!s_slide_active)||s_motion_timer)return;
+  s_motion_timer=app_timer_register(MOTION_FRAME_MS,prv_motion_frame,NULL);
+  if(!s_motion_timer) {
+    // A decorative allocation failure must settle the visible composition,
+    // rather than leave a partial incoming paint waiting for the next minute.
+    prv_cancel_motion();s_pose=s_pose_target;
+    prv_sync_layers();prv_activity_clock_schedule();
+  }
+}
 static void prv_apply_unobstructed_layout(void) {
   if(s_window_layer==NULL) return;
-  const bool motion=s_animations_enabled && !s_peek_transition &&
+  const bool motion=s_app_focused && s_animations_enabled && !s_peek_transition &&
       layer_get_unobstructed_bounds(s_window_layer).size.h>=228;
   const PavCard *activity=prv_primary_activity();
   char identity[PAV_PROVIDER_BYTES+PAV_ID_BYTES+2]={0};
@@ -496,21 +516,20 @@ static void prv_apply_unobstructed_layout(void) {
   }
   if(!s_animations_enabled) {prv_cancel_motion();s_pose=s_pose_target;}
   if(layout_changed||s_peek_transition)prv_sync_layers();
-  else if(s_context_layer)layer_mark_dirty(s_context_layer);
+  else if(s_context_layer)prv_dirty(s_context_layer);
   prv_activity_clock_schedule();
-  if((s_layout_active||s_slide_active)&&s_motion_timer==NULL)
-    s_motion_timer=app_timer_register(MOTION_FRAME_MS,prv_motion_frame,NULL);
+  prv_schedule_motion();
 }
 static void prv_sync_layers(void) {
-  if(!s_background_layer || !s_context_layer) return;
+  if(!s_app_focused || !s_background_layer || !s_context_layer) return;
   const WatchPose p=prv_current_pose();
   const float reveal=watch_smooth((watch_context_visibility(p)-0.72f)/0.28f);
   const int height=prv_round(142*reveal);
   layer_set_frame(s_context_layer,GRect(0,86,200,height));
   layer_set_bounds(s_context_layer,GRect(0,0,200,height));
   layer_set_hidden(s_context_layer,height<=0);
-  layer_mark_dirty(s_context_layer);
-  if(!(s_slide_active&&!s_layout_active))layer_mark_dirty(s_background_layer);
+  prv_dirty(s_context_layer);
+  if(!(s_slide_active&&!s_layout_active))prv_dirty(s_background_layer);
 }
 static void prv_schedule_context_expiry(void) {
   if(s_context_timer) {app_timer_cancel(s_context_timer);s_context_timer=NULL;}
@@ -528,13 +547,14 @@ static void prv_schedule_context_expiry(void) {
 }
 static void prv_activity_clock_tick(void *context) {
   (void)context;s_activity_timer=NULL;
+  if(!s_app_focused)return;
   pav_state_prune(&s_activities,(uint32_t)time(NULL));
-  if(s_context_layer)layer_mark_dirty(s_context_layer);
+  if(s_context_layer)prv_dirty(s_context_layer);
   prv_activity_clock_schedule();
 }
 static void prv_context_expired(void *context) {
   (void)context;s_context_timer=NULL;
-  if(s_background_layer)layer_mark_dirty(s_background_layer);
+  if(s_background_layer)prv_dirty(s_background_layer);
   prv_schedule_context_expiry();prv_apply_unobstructed_layout();
 }
 
@@ -1085,7 +1105,7 @@ static void prv_presentation_refresh(void *context) {
       watch_context_visibility(pose)>=0.999f&&
       activity_plan_current(&plan->cache,card,reading_language(i18n_get_system_locale()),now,s_phone_connected))
     prv_note_presentation(card,true);
-  else if(s_context_layer)layer_mark_dirty(s_context_layer);
+  else if(s_context_layer)prv_dirty(s_context_layer);
 }
 static void prv_note_presentation(const PavCard *card,bool stable) {
   uint8_t primary=ACTIVITY_NAV_ABSENT,secondary=ACTIVITY_NAV_ABSENT;uint32_t expiry=0;
@@ -1121,7 +1141,7 @@ static void prv_draw_context(Layer *layer,GContext *ctx) {
   const bool stable=s_app_focused&&!s_peek_transition&&p.peek<0.01f&&
       reveal>=0.99f&&!s_slide_active;
   s_native->activity_plan.cache.drawn=stable&&activity&&s_native->activity_plan.layout.main.count;
-  prv_note_presentation(activity,stable);
+  if(s_app_focused)prv_note_presentation(activity,stable);
 }
 static void prv_update_clock(void) {
   const time_t now=time(NULL);struct tm *current=localtime(&now);if(!current)return;
@@ -1134,8 +1154,16 @@ static void prv_update_clock(void) {
   if(day_number<1||day_number>31||month<1||month>12)return;
   snprintf(s_numeric_date_buffer,sizeof(s_numeric_date_buffer),"%u.%u.",day_number,month);
   snprintf(s_compact_date_buffer,sizeof(s_compact_date_buffer),"%s · %s",s_weekday_buffer,s_numeric_date_buffer);
-  if(s_background_layer)layer_mark_dirty(s_background_layer);
-  prv_apply_unobstructed_layout();
+  if(s_background_layer)prv_dirty(s_background_layer);
+  // Minute/date changes need the background only. Repaint a static activity
+  // only when its actual plan, locale, expiry or geometry has changed.
+  const PavCard *activity=prv_primary_activity();
+  const WatchPose target=prv_full_pose();
+  if(!s_pose_ready||s_layout_active||s_slide_active||
+      memcmp(&target,&s_pose_target,sizeof(target))||
+      (activity&&!activity_plan_current(&s_native->activity_plan.cache,activity,
+          reading_language(i18n_get_system_locale()),(uint32_t)now,s_phone_connected)))
+    prv_apply_unobstructed_layout();
 }
 
 // A settings preview asks for the OS clock style, independently of this
@@ -1196,7 +1224,7 @@ static void prv_phone_connection_changed(bool connected) {
   prv_private_clear();
   s_seen_burst=0;
   s_private_rebaseline=false;
-  if(s_background_layer)layer_mark_dirty(s_background_layer);
+  if(s_background_layer)prv_dirty(s_background_layer);
   prv_schedule_context_expiry();
   prv_apply_unobstructed_layout();
   if (connected&&s_transport_ready) {
@@ -1208,7 +1236,7 @@ static void prv_phone_connection_changed(bool connected) {
 
 static void prv_battery_changed(BatteryChargeState charge) {
   s_battery = charge;
-  if(s_background_layer)layer_mark_dirty(s_background_layer);
+  if(s_background_layer)prv_dirty(s_background_layer);
 }
 
 static void prv_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -1256,10 +1284,24 @@ static void prv_save_bool(int key,bool value) {
   if(!persist_exists(key)||persist_read_bool(key)!=value)persist_write_bool(key,value);
 }
 static void prv_focus_will_change(bool focused) {
-  if(!focused){s_app_focused=false;s_native->activity_plan.cache.drawn=false;if(s_activity_timer){app_timer_cancel(s_activity_timer);s_activity_timer=NULL;}}
+  if(!focused) {
+    s_app_focused=false;s_native->activity_plan.cache.drawn=false;
+    prv_cancel_motion();s_pose=s_pose_target;
+    if(s_activity_timer){app_timer_cancel(s_activity_timer);s_activity_timer=NULL;}
+    if(s_presentation_timer){app_timer_cancel(s_presentation_timer);s_presentation_timer=NULL;}
+  }
 }
 static void prv_focus_did_change(bool focused) {
-  if(focused){s_app_focused=true;prv_sync_layers();prv_activity_clock_schedule();}
+  if(focused) {
+    // Reconcile expiry, identity and geometry without replaying an incoming
+    // transition for content that changed beneath a system window. Refresh
+    // clock/palette before the first visible paint after a minute boundary.
+    s_app_focused=false;
+    prv_schedule_context_expiry();prv_apply_unobstructed_layout();
+    s_app_focused=true;
+    prv_update_clock();prv_apply_colors();
+    prv_sync_layers();prv_activity_clock_schedule();
+  }
 }
 
 static uint32_t prv_context_request_value(const Tuple *marker) {
@@ -1287,7 +1329,7 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
     s_startup_timer=app_timer_register(100,prv_startup_request,NULL);
   }
   if(prv_context_request_value(dict_find(iterator,MESSAGE_KEY_REQUEST_PRESENTATION))==1&&s_context_layer) {
-    s_native->navigation.reported_at=0;layer_mark_dirty(s_context_layer);
+    s_native->navigation.reported_at=0;prv_dirty(s_context_layer);
   }
   if(activity_data) {
     layout_changed=true;
@@ -1385,7 +1427,7 @@ static void prv_inbox_received(DictionaryIterator *iterator, void *context) {
   }
   if(clock_changed)prv_update_clock();
   else if(layout_changed)prv_apply_unobstructed_layout();
-  if(background_changed&&s_background_layer)layer_mark_dirty(s_background_layer);
+  if(background_changed&&s_background_layer)prv_dirty(s_background_layer);
   prv_apply_colors();
 }
 

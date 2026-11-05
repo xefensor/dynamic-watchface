@@ -126,6 +126,45 @@ test('ready and named/numeric complication requests refresh the generic coordina
   assert.equal(f.refreshes(),3);
 });
 
+test('native baseline cancels bootstrap retries including an already queued timer callback',()=>{
+  const f=fixture();f.fail(true);f.handlers.ready();
+  assert.equal(f.deliveries.length,1);assert.equal(f.timers.length,1);
+  const late=f.timers[0].fn;
+  f.handlers.appmessage({payload:{REQUEST_CONTEXT:91}});
+  assert.equal(f.timers.length,0);
+  late();assert.equal(f.deliveries.length,1);
+  assert.deepEqual(f.connections,[{value:true,token:91}]);
+});
+
+test('obsolete bootstrap waiting behind settings never resets the new native session',()=>{
+  const f=fixture();f.hold(true);
+  f.handlers.webviewclosed({response:JSON.stringify({TEXT_COLOR:111})});
+  f.handlers.ready();f.handlers.showConfiguration();
+  f.handlers.webviewclosed({response:JSON.stringify({TEXT_COLOR:222})});
+  f.handlers.appmessage({payload:{[keys.REQUEST_CONTEXT]:92}});
+  f.hold(false);f.deferred.shift().ok();
+  assert.equal(f.deliveries.filter(p=>p[keys.REQUEST_CONTEXT]===1).length,0);
+  assert.deepEqual(f.deliveries.map(p=>p[keys.TEXT_COLOR]),[111,111,222,222]);
+  assert.equal(f.clockQueries.length,1,'the unrelated clock query retains its FIFO place');
+});
+
+test('another ready event replaces the bootstrap retry generation without duplicate chains',()=>{
+  const f=fixture();f.fail(true);f.handlers.ready();
+  const late=f.timers[0].fn;
+  f.handlers.ready();assert.equal(f.timers.length,1);
+  const before=f.deliveries.length;late();assert.equal(f.deliveries.length,before);
+  while(f.timers.length)f.timers.shift().fn();
+  assert.equal(f.deliveries.length,4,'one obsolete attempt plus three bounded current attempts');
+});
+
+test('late bootstrap transport failure cannot recreate a retry after native confirmation',()=>{
+  const f=fixture();f.hold(true);f.handlers.ready();
+  f.handlers.appmessage({payload:{REQUEST_CONTEXT:93}});
+  f.deferred.shift().error({code:'DISCONNECTED'});
+  assert.equal(f.timers.length,0);
+  assert.equal(f.deliveries.length,1);
+});
+
 test('the coordinator receives saved clock preference and active-watch language',()=>{
   for(const previous of [{USE_12_HOUR:true},{10007:true}]) {
     const f=fixture(previous,{watch:'cs-CZ',phone:'de-DE'});

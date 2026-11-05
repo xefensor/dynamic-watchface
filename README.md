@@ -9,6 +9,11 @@ still and truncates at its end. Dynamic is an independent watchface by Xef.
 
 ## Download
 
+Local 0.16.1 validation is complete on the battery/reliability branch. It adds
+covered-view work suppression and bootstrap recovery, pins Activities 0.4.3,
+and preserves Core 0.5.1 and the existing layouts. The published downloads below
+remain unchanged. See [the candidate review](docs/BATTERY-RELIABILITY.md).
+
 The current release is [**v0.16.0 — GitHub development prerelease**](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.16.0).
 It is ready for sideload testing. Pebble appstore submission remains held.
 
