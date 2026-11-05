@@ -110,8 +110,9 @@ existing AppMessage key numbers. Append new keys; never reuse retired ones.
 - Keep published assets and tags unchanged. Later README/docs/AGENTS or
   release-automation improvements on `main` do not require rewriting an older
   source archive or republishing its version.
-- The bootstrap in `.github/release.json` ties existing v0.14.0 artifacts to their
-  original tested commit. Do not repoint it to a documentation commit. A later
+- The bootstrap in `.github/release.json` ties published v0.16.2 artifacts to
+  tested commit `48a5aaec1aac4e2805bad2bb7e793b5da58b5165`.
+  Do not repoint it to a documentation commit. A later
   version uses its own artifact commit; refresh the finite filenames/checksums.
 - Published-byte changes need a new version. The workflow refuses changed or
   incomplete published assets, conflicting tags and RC/beta promotion to stable.

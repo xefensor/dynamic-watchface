@@ -21,7 +21,7 @@
     "heading": "## {version}"
   },
   "bootstrap": {
-    "version": "0.14.0",
-    "source_commit": "0afe14f1c54802bd687ee32a7d69036802290f99"
+    "version": "0.16.2",
+    "source_commit": "48a5aaec1aac4e2805bad2bb7e793b5da58b5165"
   }
 }

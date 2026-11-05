@@ -1,5 +1,21 @@
 # Dynamic validation
 
+## 0.16.2 publication — 5 November 2026
+
+[Dynamic 0.16.2](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.16.2)
+is published as a GitHub development prerelease from the tested artifact commit
+`48a5aaec1aac4e2805bad2bb7e793b5da58b5165`. The release workflow passed and
+published the committed PBW, source ZIP, debug ZIP and checksums without an SDK
+rebuild. All four GitHub asset digests match the frozen local release manifest.
+
+The PBW SHA-256 remains
+`74faf7961f0b29a85e3eb3748e41a88058422da84e2dd997eccfae43d13c7f80`;
+the source ZIP remains
+`50782520f58d736af88e2b05211ba5ae6c6c055c3af7356a5467392a005b2102`.
+Later publication-status documentation uses the release bootstrap pinned to that
+artifact commit. It does not regenerate the source archive, change runtime
+payloads, or repoint the published tag. Earlier releases remain unchanged.
+
 ## 0.16.2 activity display bugs — 5 November 2026
 
 The [display fix review](ACTIVITY-DISPLAY-FIXES.md) records two independent
