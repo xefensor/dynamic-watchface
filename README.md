@@ -358,7 +358,7 @@ npm ci --ignore-scripts
 npm test
 pebble build
 python3 scripts/package-release.py
-python3 scripts/check-native-style.py --pbw dist/Dynamic-0.16.0.pbw
+python3 scripts/check-native-style.py --pbw dist/Dynamic-0.16.1.pbw
 python3 scripts/package-source.py
 ```
 
@@ -370,7 +370,7 @@ assets. Native captures check the appearance of the clock, text and motion.
 Validation is recorded separately for each release. For a packaged build:
 
 ```sh
-pebble install --emulator emery dist/Dynamic-0.16.0.pbw
+pebble install --emulator emery dist/Dynamic-0.16.1.pbw
 ```
 
 The clock outline and body-baseline headers are committed with their source
@@ -405,11 +405,12 @@ See [the release guide](docs/GITHUB-RELEASES.md) and [maintainer notes](AGENTS.m
 
 ## Shared core
 
-Dynamic 0.16.0 pins Core 0.5.1 and Activities 0.4.2. Halftone keeps its own
+The local 0.16.1 candidate pins Core 0.5.1 and Activities 0.4.3; published
+0.16.0 retains its original Activities 0.4.2 pin. Halftone keeps its own
 dependency pin; installing Dynamic does not change Halftone.
 
 `vendor/pebble-watchface-core-0.5.1.tgz` and
-`vendor/pebble-activities-0.4.2.tgz` are committed, version-pinned Pebble packages.
+`vendor/pebble-activities-0.4.3.tgz` are committed, version-pinned Pebble packages.
 `package-lock.json` records their integrity; `vendor/CORE.json` and
 `vendor/ACTIVITIES.json` record upstream/version/checksum provenance. `npm ci`
 installs these archives; users install only Dynamic's PBW, not a separate
