@@ -54,6 +54,11 @@ closures and disconnect/provider-withdrawal routing checks. These are synthetic
 owner/native/SDK inputs to actual optimized scripts, not remote Timer control
 or physical app-launch measurements.
 
+A Dashboard notice-only packaging correction was followed by a fresh run of
+the same global checks. The current handoff report names that final Dashboard
+PBW; the previous candidate report is retained separately. Dynamic's PBW/debug
+bytes and every executed script hash remain unchanged.
+
 The dependency pin is Activities 0.4.4, source
 `df4f30f4a66419ce835959eeeec6de7999704fa0`, archive SHA-256
 `dffec3e05041515fbf9385a641adf6b40aedda7e8460c0d11ecb4ed019cd5abe`.

@@ -57,7 +57,7 @@
     "dashboard": {
       "path": "pebble-app-dashboard/dist/Dashboard-0.3.3.pbw",
       "version": "0.3.3",
-      "sha256": "9306c213111c8e18be276486c6e0d97bc8183e3e531bb920434bb17bde36889e",
+      "sha256": "fd3a1c758bc1bd045fdd00f94fe32b6d65e5caef5186a3e164de0549f2b80bc9",
       "executedScripts": {
         "pebble-js-app.js": "670dd7e399743e9adf40e00344aac15158249c5021c1f106062be4ea7993c460",
         "plugin.js": "d6c1727fd1134a2f708539b9197e24d3d6594d301968e9e8c34d5af69380b172"

@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "scope": "Documentation follow-up after Dashboard notice-only packaging correction; Dynamic PBW/debug and all executed runtime scripts unchanged.",
+  "currentReport": "packaged-handoff.json",
+  "previousCandidateReport": "packaged-handoff-before-dashboard-notice.json",
+  "previousDashboardPbwSha256": "9306c213111c8e18be276486c6e0d97bc8183e3e531bb920434bb17bde36889e",
+  "finalDashboardPbwSha256": "fd3a1c758bc1bd045fdd00f94fe32b6d65e5caef5186a3e164de0549f2b80bc9",
+  "dynamicPbwSha256": "74faf7961f0b29a85e3eb3748e41a88058422da84e2dd997eccfae43d13c7f80",
+  "executedScriptHashesUnchanged": true,
+  "displayAndReliabilityResultsUnchanged": true
+}
