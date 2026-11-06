@@ -1,3 +1,9 @@
+> [!IMPORTANT]
+> **This repository has moved to [xefensor/pebble-watchface-dynamic](https://github.com/xefensor/pebble-watchface-dynamic).**
+> Current development and documentation are maintained there as part of XOCE — Xef's Open Computing Ecosystem.
+> [Downloads and releases](https://github.com/xefensor/pebble-watchface-dynamic/releases) · [Report an issue](https://github.com/xefensor/pebble-watchface-dynamic/issues)
+> This repository is retained as a historical archive so existing links and releases remain available.
+
 # Dynamic
 
 A Pebble Time 2 watchface with rounded time, two horizontal readings and
